@@ -22,6 +22,7 @@ import Courses from './pages/Courses';
 import Reseller from './pages/Reseller';
 import TripwireSuccess from './pages/TripwireSuccess';
 import ResellerSuccess from './pages/ResellerSuccess';
+import Profile from './pages/Profile';
 
 // Import training pages
 import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
@@ -280,7 +281,7 @@ function App() {
         <Route
           path="/admin/*"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireAdmin>
               <Admin />
             </ProtectedRoute>
           }
@@ -312,6 +313,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CourseModule />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
