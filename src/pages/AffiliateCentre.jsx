@@ -16,7 +16,7 @@ export default function AffiliateCentre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const baseUrl = 'https://revenueripple.org';
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const affiliateLink = `${baseUrl}/?ref=${user?.id}`;
 
   const copyAffiliateLink = () => {

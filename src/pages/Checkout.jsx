@@ -12,7 +12,7 @@ export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:3001/create-payment-intent', {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/create-payment-intent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
