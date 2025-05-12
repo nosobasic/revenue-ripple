@@ -362,7 +362,7 @@ export default function Home() {
                 You'll get access to lead magnets, landing pages, promo scripts, and full walkthroughs so you're never guessing what to do next. We're even dropping exclusive digital books and templates in the mix—because we're not just teaching you how to make money, we're handing you the blueprint.
               </p>
               <div className="affiliate-visual-highlight">
-                <img src="/assets/images/images/affiliate-reseller-dash.png" alt="Affiliate Dashboard Preview" className="responsive-image" />
+                <img src="/assets/images/images/Affilate-reseller-earnings-dash.png" alt="Affiliate Dashboard Preview" className="responsive-image" />
                 <p className="caption">Real dashboard. Real payouts. Real growth.</p>
               </div>
             </div>
