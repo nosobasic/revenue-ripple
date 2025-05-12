@@ -1,18 +1,8 @@
-# requirements.txt
-Flask
-flask-cors
-python-dotenv
-requests
-stripe
-supabase
-gunicorn
-
-# render.yaml
 services:
   - type: web
     name: revenue-ripple-api
     env: python
-    buildCommand: ""
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn server:app --bind 0.0.0.0:$PORT
     envVars:
       - key: SUPABASE_URL
@@ -26,4 +16,4 @@ services:
       - key: GETRESPONSE_API_KEY
         fromEnvVar: GETRESPONSE_API_KEY
       - key: GETRESPONSE_CAMPAIGN_ID
-        fromEnvVar: GETRESPONSE_CAMPAIGN_ID
+        fromEnvVar: GETRESPONSE_CAMPAIGN_ID 
