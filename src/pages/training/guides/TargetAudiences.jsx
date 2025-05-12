@@ -25,7 +25,7 @@ const TargetAudiences = () => {
                   <h3>🎯 Target Audiences</h3>
                   <p>If you're trying to make money online, your target audience is almost anyone—because almost everyone wants more income. From students to retirees, this opens the door to billions of potential customers.</p>
                   <img 
-                    src="/public/assets/images/images/target.png" 
+                    src="/assets/images/images/target.png" 
                     alt="Target audience visualization" 
                     className="guide-image"
                     style={{

@@ -317,7 +317,7 @@ export default function Home() {
             {/* More Courses Summary */}
             <div className="course-card summary-card">
               <div className="course-image">
-                <img src="/public/assets/images/images/courses-preview.png" alt="Online Learning Course" />
+                <img src="/assets/images/images/courses-preview.png" alt="Online Learning Course" />
               </div>
               <div className="course-content">
                 <h3 className="course-title">Plus 14 More Courses Inside</h3>
@@ -351,7 +351,7 @@ export default function Home() {
 
             <div className="affiliate-image">
               <img 
-                src="/public/assets/images/images/ebook-explosion.png" 
+                src="/assets/images/images/ebook-explosion.png" 
                 alt="Affiliate Program Materials" 
                 className="responsive-image"
               />
@@ -413,7 +413,7 @@ export default function Home() {
               <div className="stars">★★★★★</div>
               <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
               <div className="testimonial-author">
-                <img src="/public/assets/images/images/profile-pic1.png" alt="Profile of Sarah Johnson" className="testimonial-avatar" />
+                <img src="/assets/images/images/profile-pic1.png" alt="Profile of Sarah Johnson" className="testimonial-avatar" />
                 <div className="author-info">
                   <h4>Sarah Johnson</h4>
                   <p>Digital Marketing Consultant</p>
@@ -425,7 +425,7 @@ export default function Home() {
               <div className="stars">★★★★★</div>
               <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
               <div className="testimonial-author">
-                <img src="/public/assets/images/images/profile-pic2.png" alt="Profile of Michael Chen" className="testimonial-avatar" />
+                <img src="/assets/images/images/profile-pic2.png" alt="Profile of Michael Chen" className="testimonial-avatar" />
                 <div className="author-info">
                   <h4>Gloria Chen</h4>
                   <p>E-commerce Entrepreneur</p>
@@ -437,7 +437,7 @@ export default function Home() {
               <div className="stars">★★★★★</div>
               <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
               <div className="testimonial-author">
-                <img src="/public/assets/images/images/profile-pic3.png" alt="Profile of Paul Rodriguez" className="testimonial-avatar" />
+                <img src="/assets/images/images/profile-pic3.png" alt="Profile of Paul Rodriguez" className="testimonial-avatar" />
                 <div className="author-info">
                   <h4>Paul Rodriguez</h4>
                   <p>Agency Founder</p>
@@ -451,7 +451,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The affiliate program is a game-changer! Not only am I learning valuable skills, but I'm also earning while implementing what I learn. It's a win-win situation."</p>
                   <div className="testimonial-author">
-                    <img src="/public/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
+                    <img src="/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>David Thompson</h4>
                       <p>Affiliate Marketer</p>
@@ -463,7 +463,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The support team is incredible! They're always there to help and the community is so encouraging. It's like having a marketing family that wants you to succeed."</p>
                   <div className="testimonial-author">
-                    <img src="/public/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
+                    <img src="/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Adin Parker</h4>
                       <p>Small Business Owner</p>
@@ -475,7 +475,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The video courses are pure gold! Each lesson is packed with actionable insights that I could implement immediately. My social media engagement has tripled!"</p>
                   <div className="testimonial-author">
-                    <img src="/public/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
+                    <img src="/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>James Wilson</h4>
                       <p>Social Media Manager</p>
@@ -487,7 +487,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"I love how the platform keeps updating with new content and strategies. It helps me stay ahead of the curve in this fast-paced digital marketing world."</p>
                   <div className="testimonial-author">
-                    <img src="/public/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
+                    <img src="/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Nina Patel</h4>
                       <p>Marketing Director</p>
@@ -499,7 +499,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The ROI tracking templates and analytics tutorials helped me prove the value of my marketing efforts to clients. My retainer rates have doubled!"</p>
                   <div className="testimonial-author">
-                    <img src="/public/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
+                    <img src="/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Alex Foster</h4>
                       <p>Marketing Analytics Specialist</p>

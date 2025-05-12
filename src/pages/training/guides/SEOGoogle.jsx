@@ -25,7 +25,7 @@ const SEOGoogle = () => {
                   <h3>SEO: SLAPPING BACK AT GOOGLE — THE SMART WAY</h3>
                   <p>Search Engine Optimization (SEO) is how your site shows up <em>organically</em> in Google, Yahoo, or Bing—without paying for ads. Top rankings = more visibility = free traffic. But with everyone chasing that same free traffic, the competition is fierce.</p>
                   <img 
-                    src="/public/assets/images/images/seo-slap.png" 
+                    src="/assets/images/images/seo-slap.png" 
                     alt="SEO strategy infographic" 
                     className="guide-image"
                     style={{

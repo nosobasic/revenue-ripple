@@ -40,7 +40,7 @@ const UnderstandingRelevance = () => {
                     <li><strong>Send to relevant pages:</strong> Fulfill the promise you made in your ad</li>
                   </ul>
                   <img 
-                    src="/public/assets/images/images/flow-relevance.png" 
+                    src="/assets/images/images/flow-relevance.png" 
                     alt="Flow of relevance visualization" 
                     className="guide-image"
                     style={{
