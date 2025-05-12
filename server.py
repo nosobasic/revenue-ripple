@@ -282,5 +282,5 @@ def set_user_role(email, role):
     except Exception as e:
         print(f"❌ Failed to set role: {str(e)}")
 
-if __name__ == '__main__':
-    app.run(port=3001)
+# Do not include `app.run(...)` when using gunicorn
+# Gunicorn will use `app` defined at the global level
