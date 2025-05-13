@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
@@ -50,291 +51,327 @@ import UnderstandingRelevance from './pages/training/guides/UnderstandingRelevan
 import WritingAdCopy from './pages/training/guides/WritingAdCopy';
 import SalesCopy from './pages/training/guides/SalesCopy';
 
+console.log("App component loaded");
+
 function App() {
+  // Version check state
+  const [showReload, setShowReload] = useState(false);
+
+  useEffect(() => {
+    // Fetch meta.json on load
+    fetch('/meta.json')
+      .then(res => res.json())
+      .then(meta => {
+        const lastVersion = localStorage.getItem('app_version');
+        if (lastVersion && lastVersion !== meta.build) {
+          setShowReload(true);
+        }
+        localStorage.setItem('app_version', meta.build);
+      });
+  }, []);
+
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/affiliate-login" element={<AffiliateLogin />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/thank-you" element={<ThankYou />} />
-      <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
-      <Route path="/special" element={<Reseller />} />
-      <Route path="/tripwire-success" element={<TripwireSuccess />} />
-      <Route path="/reseller-success" element={<ResellerSuccess />} />
-      <Route path="/pro-reseller-upsell" element={<ProResellerUpsell />} />
-      <Route path="/three-months-free-upsell" element={<ThreeMonthsFreeUpsell />} />
-      
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/courses"
-        element={
-          <ProtectedRoute>
-            <Courses />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training"
-        element={
-          <ProtectedRoute>
-            <Training />
-          </ProtectedRoute>
-        }
-      />
+    <div>
+      {/* Version update banner */}
+      {showReload && (
+        <div style={{
+          background: 'yellow',
+          color: 'black',
+          padding: '1rem',
+          textAlign: 'center',
+          position: 'fixed',
+          top: 0,
+          width: '100%',
+          zIndex: 9999
+        }}>
+          A new version is available. <button onClick={() => window.location.reload(true)}>Refresh</button>
+        </div>
+      )}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/affiliate-login" element={<AffiliateLogin />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
+        <Route path="/special" element={<Reseller />} />
+        <Route path="/tripwire-success" element={<TripwireSuccess />} />
+        <Route path="/reseller-success" element={<ResellerSuccess />} />
+        <Route path="/pro-reseller-upsell" element={<ProResellerUpsell />} />
+        <Route path="/three-months-free-upsell" element={<ThreeMonthsFreeUpsell />} />
+        
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute>
+              <Courses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training"
+          element={
+            <ProtectedRoute>
+              <Training />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Admin Routes */}
-      <Route
-        path="/admin/*"
-        element={
-          <ProtectedRoute requireAdmin>
-            <Admin />
-          </ProtectedRoute>
-        }
-      />
+        {/* Admin Routes */}
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute requireAdmin>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Affiliate Centre Routes */}
-      <Route
-        path="/affiliate-centre/*"
-        element={
-          <ProtectedRoute>
-            <Routes>
-              <Route path="/" element={<AffiliateCentre />} />
-              <Route path="tools" element={<AffiliateTools />} />
-              <Route path="training" element={<AffiliateTraining />} />
-              <Route path="payouts" element={<AffiliatePayouts />} />
-              <Route path="support" element={<AffiliateSupport />} />
-            </Routes>
-          </ProtectedRoute>
-        }
-      />
+        {/* Affiliate Centre Routes */}
+        <Route
+          path="/affiliate-centre/*"
+          element={
+            <ProtectedRoute>
+              <Routes>
+                <Route path="/" element={<AffiliateCentre />} />
+                <Route path="tools" element={<AffiliateTools />} />
+                <Route path="training" element={<AffiliateTraining />} />
+                <Route path="payouts" element={<AffiliatePayouts />} />
+                <Route path="support" element={<AffiliateSupport />} />
+              </Routes>
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Course Routes */}
-      <Route
-        path="/courses/:courseSlug"
-        element={
-          <ProtectedRoute>
-            <CourseOverview />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/courses/:courseSlug/module-:moduleId"
-        element={
-          <ProtectedRoute>
-            <CourseModule />
-          </ProtectedRoute>
-        }
-      />
+        {/* Course Routes */}
+        <Route
+          path="/courses/:courseSlug"
+          element={
+            <ProtectedRoute>
+              <CourseOverview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/courses/:courseSlug/module-:moduleId"
+          element={
+            <ProtectedRoute>
+              <CourseModule />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Profile Route */}
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
+        {/* Profile Route */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Training Video Routes */}
-      <Route
-        path="/training/videos/entrepreneurial"
-        element={
-          <ProtectedRoute>
-            <EntrepreneurialBrainstorming />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/videos/bulletproof-branding"
-        element={
-          <ProtectedRoute>
-            <BulletproofBranding />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/videos/shoestring-startups"
-        element={
-          <ProtectedRoute>
-            <ShoestringStartups />
-          </ProtectedRoute>
-        }
-      />
+        {/* Training Video Routes */}
+        <Route
+          path="/training/videos/entrepreneurial"
+          element={
+            <ProtectedRoute>
+              <EntrepreneurialBrainstorming />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/videos/bulletproof-branding"
+          element={
+            <ProtectedRoute>
+              <BulletproofBranding />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/videos/shoestring-startups"
+          element={
+            <ProtectedRoute>
+              <ShoestringStartups />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* Training Guide Routes */}
-      <Route
-        path="/training/guides/adwords-quality"
-        element={
-          <ProtectedRoute>
-            <AdwordsQualityScore />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/analyzing-data"
-        element={
-          <ProtectedRoute>
-            <AnalyzingData />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/article-marketing"
-        element={
-          <ProtectedRoute>
-            <ArticleMarketing />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/mailing-list"
-        element={
-          <ProtectedRoute>
-            <BuildingMailingList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/keyword-technique"
-        element={
-          <ProtectedRoute>
-            <KeywordTechnique />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/landing-components"
-        element={
-          <ProtectedRoute>
-            <LandingComponents />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/purchase-cycle"
-        element={
-          <ProtectedRoute>
-            <PurchaseCycle />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/backlinks-social"
-        element={
-          <ProtectedRoute>
-            <BacklinksSocial />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/backlinks-article"
-        element={
-          <ProtectedRoute>
-            <BacklinksArticle />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/landing-optimization"
-        element={
-          <ProtectedRoute>
-            <LandingOptimization />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/men-guide"
-        element={
-          <ProtectedRoute>
-            <MenGuide />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/market-research"
-        element={
-          <ProtectedRoute>
-            <MarketResearch />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/keyword-research"
-        element={
-          <ProtectedRoute>
-            <KeywordResearch />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/ppc-start"
-        element={
-          <ProtectedRoute>
-            <PPCStart />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/seo-google"
-        element={
-          <ProtectedRoute>
-            <SEOGoogle />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/target-audiences"
-        element={
-          <ProtectedRoute>
-            <TargetAudiences />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/marketing-mistakes"
-        element={
-          <ProtectedRoute>
-            <MarketingMistakes />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/understanding-relevance"
-        element={
-          <ProtectedRoute>
-            <UnderstandingRelevance />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/writing-ad-copy"
-        element={
-          <ProtectedRoute>
-            <WritingAdCopy />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/training/guides/sales-copy"
-        element={
-          <ProtectedRoute>
-            <SalesCopy />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Training Guide Routes */}
+        <Route
+          path="/training/guides/adwords-quality"
+          element={
+            <ProtectedRoute>
+              <AdwordsQualityScore />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/analyzing-data"
+          element={
+            <ProtectedRoute>
+              <AnalyzingData />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/article-marketing"
+          element={
+            <ProtectedRoute>
+              <ArticleMarketing />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/mailing-list"
+          element={
+            <ProtectedRoute>
+              <BuildingMailingList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/keyword-technique"
+          element={
+            <ProtectedRoute>
+              <KeywordTechnique />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/landing-components"
+          element={
+            <ProtectedRoute>
+              <LandingComponents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/purchase-cycle"
+          element={
+            <ProtectedRoute>
+              <PurchaseCycle />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/backlinks-social"
+          element={
+            <ProtectedRoute>
+              <BacklinksSocial />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/backlinks-article"
+          element={
+            <ProtectedRoute>
+              <BacklinksArticle />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/landing-optimization"
+          element={
+            <ProtectedRoute>
+              <LandingOptimization />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/men-guide"
+          element={
+            <ProtectedRoute>
+              <MenGuide />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/market-research"
+          element={
+            <ProtectedRoute>
+              <MarketResearch />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/keyword-research"
+          element={
+            <ProtectedRoute>
+              <KeywordResearch />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/ppc-start"
+          element={
+            <ProtectedRoute>
+              <PPCStart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/seo-google"
+          element={
+            <ProtectedRoute>
+              <SEOGoogle />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/target-audiences"
+          element={
+            <ProtectedRoute>
+              <TargetAudiences />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/marketing-mistakes"
+          element={
+            <ProtectedRoute>
+              <MarketingMistakes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/understanding-relevance"
+          element={
+            <ProtectedRoute>
+              <UnderstandingRelevance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/writing-ad-copy"
+          element={
+            <ProtectedRoute>
+              <WritingAdCopy />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/training/guides/sales-copy"
+          element={
+            <ProtectedRoute>
+              <SalesCopy />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      <div style={{color: 'red'}}>App is rendering</div>
+    </div>
   );
 }
 
