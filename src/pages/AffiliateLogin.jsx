@@ -11,7 +11,7 @@ export default function AffiliateLogin() {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
-  const { signIn, resetPassword } = useAuth();
+  const { login, resetPassword } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ export default function AffiliateLogin() {
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      await login(email, password);
       // Check if user is an affiliate or reseller
       const { data: userData, error: userError } = await supabase
         .from('users')
