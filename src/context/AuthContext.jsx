@@ -116,6 +116,16 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function resetPassword(email) {
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -174,7 +184,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
-    updateUserProfile
+    updateUserProfile,
+    resetPassword
   };
 
   return (

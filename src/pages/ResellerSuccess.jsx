@@ -1,10 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 export default function ResellerSuccess() {
+  const navigate = useNavigate();
+
   useEffect(() => {
-    // Add any post-purchase tracking or analytics here
-  }, []);
+    // Redirect to Pro Reseller upsell after 3 seconds
+    const timer = setTimeout(() => {
+      navigate('/pro-reseller-upsell');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <div className="frontend-container">
@@ -99,15 +106,29 @@ export default function ResellerSuccess() {
       </section>
 
       {/* Support Section */}
-      <section className="cta-section">
-        <h2 className="cta-title">Need Help Getting Started?</h2>
-        <p className="cta-description">
-          Our support team is here to help you succeed. Schedule a one-on-one onboarding call with our experts.
-        </p>
-        <Link to="/schedule-call" className="cta-button">
-          Schedule Onboarding Call
-        </Link>
+      <section className="stats-section">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-number">24/7</div>
+            <div className="stat-label">Support Available</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">100%</div>
+            <div className="stat-label">Satisfaction Guarantee</div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-number">30</div>
+            <div className="stat-label">Day Money-Back</div>
+          </div>
+        </div>
       </section>
+
+      {/* Redirect Notice */}
+      <div style={{ textAlign: 'center', marginTop: '2rem', padding: '1rem', background: '#f8fafc', borderRadius: '8px' }}>
+        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
+          Redirecting to an exclusive upgrade offer in 3 seconds...
+        </p>
+      </div>
     </div>
   );
 }

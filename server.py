@@ -61,11 +61,22 @@ def create_pro_reseller_session():
     try:
         data = request.get_json()
         referrer_username = data.get('referrer_username')
+        three_months_free = data.get('three_months_free', False)
+
+        # Create a coupon for 3 months free if requested
+        coupon = None
+        if three_months_free:
+            coupon = stripe.Coupon.create(
+                duration='repeating',
+                duration_in_months=3,
+                percent_off=100,
+                name='3 Months Free Pro Reseller'
+            )
 
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Replace with your Pro Reseller $97/month Price ID
+                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
                 'quantity': 1,
             }],
             mode='subscription',
@@ -73,8 +84,10 @@ def create_pro_reseller_session():
             cancel_url='https://revenueripple.org/pro-reseller-cancel',
             metadata={
                 'referrer_username': referrer_username or 'none',
-                'product': 'pro_reseller_subscription'
-            }
+                'product': 'pro_reseller_subscription',
+                'three_months_free': str(three_months_free)
+            },
+            discounts=[{'coupon': coupon.id}] if coupon else None
         )
         return jsonify({'url': session.url})
     except Exception as e:

@@ -92,6 +92,60 @@ function App() {
         }
       />
 
+      {/* Admin Routes */}
+      <Route
+        path="/admin/*"
+        element={
+          <ProtectedRoute requireAdmin>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Affiliate Centre Routes */}
+      <Route
+        path="/affiliate-centre/*"
+        element={
+          <ProtectedRoute>
+            <Routes>
+              <Route path="/" element={<AffiliateCentre />} />
+              <Route path="tools" element={<AffiliateTools />} />
+              <Route path="training" element={<AffiliateTraining />} />
+              <Route path="payouts" element={<AffiliatePayouts />} />
+              <Route path="support" element={<AffiliateSupport />} />
+            </Routes>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Course Routes */}
+      <Route
+        path="/courses/:courseSlug"
+        element={
+          <ProtectedRoute>
+            <CourseOverview />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/courses/:courseSlug/module-:moduleId"
+        element={
+          <ProtectedRoute>
+            <CourseModule />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Profile Route */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Training Video Routes */}
       <Route
         path="/training/videos/entrepreneurial"
