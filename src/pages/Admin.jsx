@@ -17,6 +17,7 @@ import {
   FaClipboardCheck,
 } from 'react-icons/fa';
 import './admin.css';
+import { useAuth } from '../context/AuthContext';
 
 // Dashboard Overview Component
 const DashboardOverview = ({ stats, recentActivity }) => (
@@ -208,7 +209,9 @@ const Commissions = () => <h1>Commissions</h1>;
 const Content = () => <h1>Content</h1>;
 const Analytics = () => <h1>Analytics</h1>;
 
-export default function Admin() {
+// Admin dashboard page for users with the 'admin' role
+const Admin = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -219,6 +222,11 @@ export default function Admin() {
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Debug log to help trace admin access issues
+  useEffect(() => {
+    console.log('Admin.jsx: user object:', user);
+  }, [user]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -386,24 +394,19 @@ export default function Admin() {
     fetchFilteredUsers();
   };
 
-  if (loading) {
+  // Show loading spinner if user data is not loaded yet
+  if (!user) {
     return (
-      <div className="admin-layout">
-        <div className="admin-main">
-          <div className="loading-spinner">Loading...</div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <span style={{ marginLeft: 16 }}>Loading admin panel...</span>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="admin-layout">
-        <div className="admin-main">
-          <div className="error-message">{error}</div>
-        </div>
-      </div>
-    );
+  // Show access denied if user is not an admin
+  if (user.role !== 'admin') {
+    return <div style={{ color: 'red', padding: 20 }}>Access denied: You do not have admin privileges.</div>;
   }
 
   return (
@@ -486,4 +489,6 @@ export default function Admin() {
       </main>
     </div>
   );
-}
+};
+
+export default Admin;
