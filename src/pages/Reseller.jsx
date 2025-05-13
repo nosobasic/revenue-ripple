@@ -214,20 +214,31 @@ So for example if you were to send just 10 people to the site, $470 would be add
           <div className="container">
             <div className="stats-grid">
               <div className="stat-card">
-                <img src="/images/membership-mastery-cover.png" alt="Membership Mastery" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
+                <img src="./assets/images/membership-mastery.png" alt="Membership Mastery" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
                 <div className="stat-number" style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 700 }}>Membership Mastery</div>
                 <p className="stat-label">The ultimate guide to creating a thriving membership site from scratch and monetizing it!</p>
               </div>
               <div className="stat-card">
-                <img src="/images/unlock-marketing-potential-cover.png" alt="Unlock Your Marketing Potential" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
+                <img src="./assets/images/unlock-marketing-potential-book.png" alt="Unlock Your Marketing Potential" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
                 <div className="stat-number" style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 700 }}>Unlock Your Marketing Potential</div>
                 <p className="stat-label">Learn how to create high-converting lead magnets, landing pages, and snappy headlines.</p>
               </div>
               <div className="stat-card">
-                <img src="/images/unleash-power-traffic-cover.png" alt="Unleash the Power of Traffic" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
+                <img src="./assets/images/power-of-traffic-book.png" alt="Unleash the Power of Traffic" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
                 <div className="stat-number" style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 700 }}>Unleash the Power of Traffic</div>
                 <p className="stat-label">Drive visitors to your landing page without Google and grow your audience fast.</p>
               </div>
+              <div className="stat-card">
+                <img src="./assets/images/DMD-book.png" alt="Digital Marketing Domination" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
+                <div className="stat-number" style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 700 }}>Digital Marketing Domination</div>
+                <p className="stat-label">Learn how to create high-converting lead magnets, landing pages, and snappy headlines.</p>
+              </div>
+              <div className="stat-card">
+                <img src="./assets/images/Social-Media.png" alt="Social Media Marketing" style={{ width: '100%', maxWidth: 180, margin: '0 auto 1rem', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }} />
+                <div className="stat-number" style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 700 }}>Social Media Marketing</div>
+                
+                
+               </div>
             </div>
             <div>
               <h1>Get Three Months for the Price of One</h1>

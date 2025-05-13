@@ -46,21 +46,25 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     try {
+      console.log("login: signing in with", email);
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      console.log("login: authData", authData, "authError", authError);
 
       if (authError) throw authError;
+      if (!authData.user) throw new Error("No user returned from signInWithPassword");
 
-      // Fetch additional user data from Supabase
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('*')
+        .select('id, email, role, plan, created_at, name, status, username, commission_rate')
         .eq('id', authData.user.id)
         .single();
+      console.log("login: userData", userData, "userError", userError);
 
       if (userError) throw userError;
+      if (!userData) throw new Error("No user row found in users table");
 
       setUser({
         ...authData.user,
@@ -69,6 +73,7 @@ export function AuthProvider({ children }) {
 
       return authData.user;
     } catch (error) {
+      console.error("login: error", error);
       throw error;
     }
   }
@@ -127,16 +132,17 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    // Get initial session
+    console.log("AuthProvider useEffect: running");
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("AuthProvider: got session", session);
       if (session?.user) {
-        // Fetch additional user data
         supabase
           .from('users')
-          .select('*')
+          .select('id, email, role, plan, created_at, name, status, username, commission_rate')
           .eq('id', session.user.id)
           .single()
           .then(({ data: userData, error }) => {
+            console.log("AuthProvider: got userData", userData, error);
             if (!error && userData) {
               setUser({
                 ...session.user,
@@ -150,13 +156,12 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("AuthProvider: onAuthStateChange", event, session);
       if (session?.user) {
-        // Fetch additional user data
         const { data: userData, error } = await supabase
           .from('users')
-          .select('*')
+          .select('id, email, role, plan, created_at, name, status, username, commission_rate')
           .eq('id', session.user.id)
           .single();
 
@@ -190,7 +195,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
