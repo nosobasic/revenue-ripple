@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      await logout();
       navigate('/');
     } catch (error) {
       console.error('Failed to log out:', error);
