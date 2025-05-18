@@ -25,6 +25,7 @@ import ResellerSuccess from './pages/ResellerSuccess';
 import ProResellerUpsell from './pages/ProResellerUpsell';
 import ThreeMonthsFreeUpsell from './pages/ThreeMonthsFreeUpsell';
 import Profile from './pages/Profile';
+import DMDLanding from './pages/DMDLanding';
 
 // Import training pages
 import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
@@ -100,6 +101,7 @@ function App() {
         <Route path="/reseller-success" element={<ResellerSuccess />} />
         <Route path="/pro-reseller-upsell" element={<ProResellerUpsell />} />
         <Route path="/three-months-free-upsell" element={<ThreeMonthsFreeUpsell />} />
+        <Route path="/DMD" element={<DMDLanding />} />
         
         {/* Protected Routes */}
         <Route
@@ -370,7 +372,7 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <div style={{color: 'red'}}>App is rendering</div>
+     
     </div>
   );
 }
