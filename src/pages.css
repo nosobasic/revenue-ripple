@@ -1665,4 +1665,330 @@
   .guide-step p {
     font-size: 1rem;
   }
+}
+
+.material-details {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  align-items: flex-start;
+}
+
+.material-details img {
+  width: 200px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.material-details .detail-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-group strong {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.detail-group span {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .material-details {
+    flex-direction: column;
+  }
+  
+  .material-details img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+  }
+  
+  .format-buttons {
+    justify-content: flex-start;
+  }
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.button-group .cta-button {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .button-group .cta-button {
+    width: 100%;
+  }
+}
+
+.affiliate-opportunity {
+  margin-bottom: 2rem;
+}
+
+.opportunity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.opportunity-intro {
+  font-size: 1.1rem;
+  color: #1f2937;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.opportunity-description,
+.opportunity-benefit {
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.opportunity-cta {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.opportunity-cta .cta-text {
+  color: #1f2937;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.opportunity-cta .cta-button {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  padding: 0.85rem 2rem;
+  font-size: 1.1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: white;
+}
+
+.opportunity-cta .cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .opportunity-content {
+    gap: 1rem;
+  }
+  
+  .opportunity-intro {
+    font-size: 1rem;
+  }
+  
+  .opportunity-description,
+  .opportunity-benefit {
+    font-size: 1rem;
+  }
+  
+  .opportunity-cta {
+    padding: 1.25rem;
+  }
+  
+  .opportunity-cta .cta-text {
+    font-size: 1rem;
+  }
+}
+
+.reseller-pro {
+  margin-top: 3rem;
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+}
+
+.reseller-pro-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.reseller-intro {
+  font-size: 1.15rem;
+  color: #1f2937;
+  line-height: 1.7;
+}
+
+.inline-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.inline-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.reseller-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #f0f9ff;
+  border-radius: 12px;
+  border: 1px solid #bae6fd;
+}
+
+.benefit-highlight {
+  font-size: 1.2rem;
+  color: #1e40af;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.benefit-explanation {
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+.benefit-cta {
+  color: #1f2937;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.reseller-pro-cta {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.reseller-pro-cta h3 {
+  font-size: 1.4rem;
+  color: #1e40af;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 2rem;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.cta-box h4 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.cta-highlight {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.pro-button {
+  background: white;
+  color: #1e40af;
+  font-size: 1.2rem;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.pro-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+  background: #f8fafc;
+}
+
+@media (max-width: 768px) {
+  .reseller-pro-content {
+    gap: 1.5rem;
+  }
+  
+  .reseller-intro {
+    font-size: 1.1rem;
+  }
+  
+  .benefit-highlight {
+    font-size: 1.1rem;
+  }
+  
+  .benefit-explanation,
+  .benefit-cta {
+    font-size: 1rem;
+  }
+  
+  .reseller-pro-cta h3 {
+    font-size: 1.2rem;
+  }
+  
+  .cta-box {
+    padding: 1.5rem;
+  }
+  
+  .cta-box h4 {
+    font-size: 1.3rem;
+  }
+  
+  .cta-highlight {
+    font-size: 1.1rem;
+  }
+  
+  .pro-button {
+    font-size: 1.1rem;
+    padding: 0.85rem 2rem;
+  }
+}
+
+.format-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.format-button {
+  padding: 0.4rem 0.8rem;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.format-button:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+  border-color: #d1d5db;
+}
+
+.format-button:active {
+  transform: translateY(1px);
 } 
