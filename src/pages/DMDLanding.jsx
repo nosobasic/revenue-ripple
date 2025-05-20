@@ -24,7 +24,7 @@ export default function DMDLanding() {
             <li>Analytics and data-driven decision making</li>
           </ul>
           <Link to="/checkout?product=dmd" className="cta-button" style={{ background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)', color: 'white', fontWeight: 700, fontSize: '1.25rem', padding: '1rem 2.5rem', borderRadius: 8, textDecoration: 'none', boxShadow: '0 2px 8px rgba(37,99,235,0.10)', transition: 'background 0.2s' }}>
-            Buy Now for $27
+            Buy Now for $7
           </Link>
           <div style={{ marginTop: '2.5rem' }}>
             <h3 style={{ color: '#1e293b', fontWeight: 800, fontSize: '1.2rem', marginBottom: '1rem' }}>What Readers Are Saying:</h3>
