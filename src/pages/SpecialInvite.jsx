@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function SpecialInvite() {
@@ -39,7 +39,7 @@ export default function SpecialInvite() {
                 As an affiliate, you currently earn a 50% commission for every member you refer. We've provided you with comprehensive marketing tools and step-by-step guides on the Reseller Tools page to make promotion simple and effective.
               </p>
               <p className="text-gray-300">
-                However, there’s an even greater opportunity—becoming a Reseller. This upgrade allows you to earn 100% commission on every $47/month subscription you generate. It's a powerful way to take full control of your earnings.
+                However, there's an even greater opportunity—becoming a Reseller. This upgrade allows you to earn 100% commission on every $47/month subscription you generate. It's a powerful way to take full control of your earnings.
               </p>
               <p className="text-gray-300 font-semibold">
                 Getting started as a Reseller is straightforward. We encourage all affiliates to consider this step to take full ownership of their audience. As a Reseller, you'll also gain access to additional tools, training, and support designed to maximize your results.
