@@ -1,4 +1,74 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabase/client';
+import { useAuth } from '../context/AuthContext';
+
 export default function AffiliateSign() {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    contactEmail: '',
+    paypal: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      // Validate passwords match
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+
+      // Create user account
+      const { data: authData, error: authError } = await signUp(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName
+      );
+
+      if (authError) throw authError;
+
+      // Create affiliate profile
+      const { error: profileError } = await supabase
+        .from('users')
+        .update({
+          role: 'affiliate',
+          contact_email: formData.contactEmail,
+          paypal_email: formData.paypal,
+          commission_rate: 50 // Default commission rate
+        })
+        .eq('id', authData.user.id);
+
+      if (profileError) throw profileError;
+
+      // Redirect to special invite page
+      navigate('/special-invite');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -31,37 +101,104 @@ export default function AffiliateSign() {
               <b>Please Note:</b> You must have a verified Premier or Business account in order to receive affiliate payments.
             </p>
             <p>To create your affiliate account, please fill out the form below.</p>
-            <form>
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">First Name</label>
-                <input type="text" id="name" name="name" className="form-input" />
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="form-input"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="lastname">Last Name</label>
-                <input type="text" id="lastname" name="lastname" className="form-input" />
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="form-input"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input type="email" id="email" name="email" className="form-input" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="form-input"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="contactEmail">Preferred Contact Email</label>
-                <input type="email" id="contactEmail" name="contactEmail" className="form-input" />
+                <input
+                  type="email"
+                  id="contactEmail"
+                  name="contactEmail"
+                  className="form-input"
+                  value={formData.contactEmail}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="paypal">PayPal Email</label>
-                <input type="email" id="paypal" name="paypal" className="form-input" />
+                <input
+                  type="email"
+                  id="paypal"
+                  name="paypal"
+                  className="form-input"
+                  value={formData.paypal}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input type="password" id="password" name="password" className="form-input" />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="form-input"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" className="form-input" />
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="form-input"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <button className="cta-button" type="submit">Sign Me Up</button>
+                <button
+                  className="cta-button"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? 'Signing up...' : 'Sign Me Up'}
+                </button>
               </div>
             </form>
           </div>

@@ -356,11 +356,11 @@ const AffiliateTools = () => {
 
               <div className="reseller-benefits">
                 <p className="benefit-highlight">
-                  Reseller PRO puts you in the driver’s seat with 100% commissions on every membership *and* reseller program sale. No splits, no caps — just full control of your earning potential.
+                  Reseller PRO puts you in the driver's seat with 100% commissions on every membership *and* reseller program sale. No splits, no caps — just full control of your earning potential.
                 </p>
 
                 <p className="benefit-explanation">
-                  You might be asking, “Is the extra $97/month worth it?” Look at it like this — Reseller PRO turns you from a participant to a true partner. It’s like stepping into the owner’s suite of your own marketing business, backed by tools, assets, and a system built to scale. 
+                  You might be asking, "Is the extra $97/month worth it?" Look at it like this — Reseller PRO turns you from a participant to a true partner. It's like stepping into the owner's suite of your own marketing business, backed by tools, assets, and a system built to scale. 
                 </p>
 
                 <p className="benefit-cta">
@@ -373,7 +373,7 @@ const AffiliateTools = () => {
                 <div className="cta-box">
                   <h4>Make the Switch Today</h4>
                   <p className="cta-highlight">Earn 100% Commissions Promoting the Membership and Reseller Program</p>
-                  <Link to="/pro-reseller-upsell" className="cta-button pro-button">Upgrade to Reseller PRO</Link>
+                  <Link to="/reseller-checkout" className="cta-button pro-button">Upgrade to Reseller PRO</Link>
                 </div>
               </div>
             </div>

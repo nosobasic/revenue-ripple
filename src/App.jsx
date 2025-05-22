@@ -26,6 +26,9 @@ import ProResellerUpsell from './pages/ProResellerUpsell';
 import ThreeMonthsFreeUpsell from './pages/ThreeMonthsFreeUpsell';
 import Profile from './pages/Profile';
 import DMDLanding from './pages/DMDLanding';
+import SpecialInvite from './pages/SpecialInvite';
+import ResellerCheckout from './pages/ResellerCheckout';
+import ResellerTrial from './pages/ResellerTrial';
 
 // Import training pages
 import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
@@ -102,6 +105,9 @@ function App() {
         <Route path="/pro-reseller-upsell" element={<ProResellerUpsell />} />
         <Route path="/three-months-free-upsell" element={<ThreeMonthsFreeUpsell />} />
         <Route path="/DMD" element={<DMDLanding />} />
+        <Route path="/special-invite" element={<SpecialInvite />} />
+        <Route path="/reseller-checkout" element={<ResellerCheckout />} />
+        <Route path="/reseller-trial" element={<ResellerTrial />} />
         
         {/* Protected Routes */}
         <Route
