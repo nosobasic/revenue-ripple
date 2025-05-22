@@ -371,6 +371,16 @@
   background: linear-gradient(135deg, #4f46e5, #2563eb);
 }
 
+.section-header.ai {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.section-header.coming-soon {
+  background-color: #7c3aed;
+  color: white;
+}
+
 .section-icon {
   font-size: 1.5rem;
   margin-right: 1rem;
@@ -1991,4 +2001,86 @@
 
 .format-button:active {
   transform: translateY(1px);
+}
+
+/* AI Section Styles */
+.ai .course-details ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 1rem 0;
+}
+
+.ai .course-details li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai .course-details li:last-child {
+  border-bottom: none;
+}
+
+/* Coming Soon Section Styles */
+.coming-soon-content {
+  padding: 1.5rem;
+}
+
+.coming-soon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.coming-soon-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.coming-soon-item:hover {
+  transform: translateY(-5px);
+}
+
+.coming-soon-icon {
+  font-size: 2rem;
+  color: #7c3aed;
+  margin-bottom: 1rem;
+}
+
+.coming-soon-item h3 {
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.coming-soon-item p {
+  color: #4b5563;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.coming-soon-cta {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: rgba(124, 58, 237, 0.1);
+  border-radius: 0.5rem;
+}
+
+.coming-soon-cta p {
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-size: 1.125rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .coming-soon-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .coming-soon-item {
+    padding: 1rem;
+  }
 } 

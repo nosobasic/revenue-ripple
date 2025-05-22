@@ -38,7 +38,8 @@ import {
   FaChartLine, 
   FaBox, 
   FaTruck, 
-  FaExclamationTriangle 
+  FaExclamationTriangle, 
+  FaBell 
 } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -263,6 +264,108 @@ const Dashboard = () => {
                     Remember, this order is just a suggestion, and you can adjust it based on your personal interests and business goals. 
                     The most important thing is to take notes and apply what you learn to your own business.
                   </p>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Section */}
+            <div className="section">
+              <div className="section-header ai">
+                <FaRobot className="section-icon" />
+                <h2>AI BUSINESS ACCELERATION</h2>
+              </div>
+              <div className="section-content">
+                <div 
+                  className={`course-item ${expandedSection === 'ai-automation' ? 'expanded' : ''}`}
+                  onClick={() => toggleSection('ai-automation')}
+                >
+                  <h3>AI Automation Mastery</h3>
+                  {expandedSection === 'ai-automation' && (
+                    <div className="course-details">
+                      <p>Discover how to leverage AI to automate and scale your business operations. Learn about:</p>
+                      <ul>
+                        <li>AI-powered content creation and marketing</li>
+                        <li>Customer service automation with AI chatbots</li>
+                        <li>Data analysis and business intelligence</li>
+                        <li>AI-driven sales and lead generation</li>
+                        <li>Process automation and optimization</li>
+                      </ul>
+                      <Link to="/courses/ai-automation" className="cta-link">
+                        <FaRobot style={{ marginRight: '8px' }} />
+                        Master AI Automation →
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <div 
+                  className={`course-item ${expandedSection === 'ai-content' ? 'expanded' : ''}`}
+                  onClick={() => toggleSection('ai-content')}
+                >
+                  <h3>AI Content Generation</h3>
+                  {expandedSection === 'ai-content' && (
+                    <div className="course-details">
+                      <p>Learn how to use AI tools to create high-quality content at scale:</p>
+                      <ul>
+                        <li>Blog posts and articles</li>
+                        <li>Social media content</li>
+                        <li>Email marketing campaigns</li>
+                        <li>Product descriptions</li>
+                        <li>SEO-optimized content</li>
+                      </ul>
+                      <Link to="/courses/ai-content" className="cta-link">
+                        <FaNewspaper style={{ marginRight: '8px' }} />
+                        Start AI Content Course →
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Coming Soon Section */}
+            <div className="section">
+              <div className="section-header coming-soon">
+                <FaFlask className="section-icon" />
+                <h2>COMING SOON: EXCITING NEW FEATURES</h2>
+              </div>
+              <div className="section-content">
+                <div className="coming-soon-content">
+                  <p>We're constantly working to bring you the latest and most effective business strategies. Here's what's coming soon:</p>
+                  
+                  <div className="coming-soon-grid">
+                    <div className="coming-soon-item">
+                      <FaChartLine className="coming-soon-icon" />
+                      <h3>Advanced Analytics Dashboard</h3>
+                      <p>Track your business metrics in real-time with our new comprehensive analytics platform.</p>
+                    </div>
+
+                    <div className="coming-soon-item">
+                      <FaUsers className="coming-soon-icon" />
+                      <h3>Community Platform</h3>
+                      <p>Connect with other entrepreneurs, share experiences, and grow your network.</p>
+                    </div>
+
+                    <div className="coming-soon-item">
+                      <FaBriefcase className="coming-soon-icon" />
+                      <h3>Business Automation Suite</h3>
+                      <p>Streamline your operations with our new suite of automation tools.</p>
+                    </div>
+
+                    <div className="coming-soon-item">
+                      <FaImage className="coming-soon-icon" />
+                      <h3>AI Image Generation</h3>
+                      <p>Create stunning visuals for your business using advanced AI image generation.</p>
+                    </div>
+                  </div>
+
+                  <div className="coming-soon-cta">
+                    <p>Want to be the first to know when these features launch?</p>
+                    <Link to="/notifications" className="cta-link">
+                      <FaBell style={{ marginRight: '8px' }} />
+                      Enable Notifications →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

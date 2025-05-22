@@ -141,7 +141,7 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-# Replace with your actual Stripe webhook signing secret
+
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 @app.route('/webhook', methods=['POST'])
