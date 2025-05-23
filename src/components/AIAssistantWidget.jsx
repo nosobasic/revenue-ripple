@@ -18,7 +18,7 @@ export default function AIAssistantWidget() {
     setMessages([...messages, { from: 'user', text: input }]);
     setLoading(true);
     try {
-      const res = await fetch('/api/ai-assistant', {
+      const res = await fetch('https://revenue-ripple.onrender.com/api/ai-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
