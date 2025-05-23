@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function AIAssistantWidget() {
   const { user } = useAuth();
-  const allowedRoles = ['member', 'affiliate', 'reseller'];
+  const allowedRoles = ['member', 'affiliate', 'reseller', 'admin'];
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
     { from: 'ai', text: "👋 Hi! I'm Ripple, your AI Marketing Assistant. Ask me anything about Revenue Ripple or internet marketing!" }
