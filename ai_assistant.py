@@ -7,7 +7,7 @@ ai_assistant_bp = Blueprint('ai_assistant', __name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def is_authorized(user_role):
-    return user_role in ["member", "affiliate", "reseller"]
+    return user_role in ["member", "affiliate", "reseller", "admin"]
 
 @ai_assistant_bp.route('/api/ai-assistant', methods=['POST'])
 def ai_assistant():
