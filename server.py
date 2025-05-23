@@ -6,6 +6,7 @@ import requests
 
 from supabase import create_client, Client
 from dotenv import load_dotenv
+from ai_assistant import ai_assistant_bp
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -18,6 +19,8 @@ CORS(app)
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+app.register_blueprint(ai_assistant_bp)
 
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():
@@ -295,5 +298,4 @@ def set_user_role(email, role):
     except Exception as e:
         print(f"❌ Failed to set role: {str(e)}")
 
-# Do not include `app.run(...)` when using gunicorn
-# Gunicorn will use `app` defined at the global level
+# Do not include `app.run(...)`
