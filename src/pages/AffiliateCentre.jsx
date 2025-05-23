@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabase/client';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 
 export default function AffiliateCentre() {
   const { user } = useAuth();
@@ -84,6 +85,7 @@ export default function AffiliateCentre() {
     return (
       <div className="dashboard">
         <Navbar />
+        <AIAssistantWidget />
         <div className="dashboard-content">
           <div className="loading-spinner">Loading...</div>
         </div>
@@ -95,6 +97,7 @@ export default function AffiliateCentre() {
     return (
       <div className="dashboard">
         <Navbar />
+        <AIAssistantWidget />
         <div className="dashboard-content">
           <div className="error-message">{error}</div>
         </div>
@@ -105,6 +108,7 @@ export default function AffiliateCentre() {
   return (
     <div className="dashboard">
       <Navbar />
+      <AIAssistantWidget />
       <div className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Affiliate & Reseller Centre</h1>

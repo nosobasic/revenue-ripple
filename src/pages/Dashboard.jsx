@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client.jsx';
 import Navbar from '../components/Navbar';
 import ReferralTracker from '../components/ReferralTracker.js';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 import { 
   FaUserCircle, 
@@ -80,6 +81,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <ReferralTracker />
       <Navbar />
+      <AIAssistantWidget />
       <div className="dashboard">
         {/* Header */}
         <header className="dashboard-header">

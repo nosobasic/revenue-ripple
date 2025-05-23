@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 
 const AffiliateTools = () => {
@@ -95,6 +96,7 @@ const AffiliateTools = () => {
   return (
     <div className="dashboard">
       <Navbar />
+      <AIAssistantWidget />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Affiliate & Reseller Tools</h1>
