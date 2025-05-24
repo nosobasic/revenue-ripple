@@ -3,13 +3,14 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import ReferralTracker from '../components/ReferralTracker.js';
-import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook } from 'react-icons/fa';
+import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook, FaQuoteLeft, FaRobot, FaBrain, FaCode } from 'react-icons/fa';
 import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
 
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
+  const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -42,12 +43,27 @@ export default function Home() {
             As a Member You'll Get Instant Access To The Walkthroughs, "Watch Over Our Shoulder" Videos, Trainings, and Support You Need TO GET MARKETING DONE.
           </p>
           
-          <div style={{ marginTop: '2rem' }}>
+          <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             {!user && (
-              <div className="hero-buttons">
-                <Link to="/register" className="btn btn-primary">Get Started</Link>
-                <Link to="/courses" className="btn btn-secondary">View Courses</Link>
-              </div>
+              <Link 
+                to="/checkout" 
+                className="cta-button"
+                style={{
+                  background: '#2563eb',
+                  color: 'white',
+                  padding: '1rem 2.5rem',
+                  borderRadius: '50px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '1.25rem',
+                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                }}
+              >
+                <FaRocket /> Begin Checkout - $47/month
+              </Link>
             )}
           </div>
         </div>
@@ -130,7 +146,7 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">Benefits of Membership</h2>
           <hr />
-          <h1 className="section-title">25 Expert-Led Video Courses
+          <h1 className="section-title">25+ Expert-Led Video Courses
           That GET STUFF DONE</h1>
           <div className="courses-grid">
             <h2 className="course-category-title">Foundational Skills</h2>
@@ -339,6 +355,68 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
+
+      {/* AI Education Section */}
+      <motion.section 
+        className="ai-education-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="container">
+          <h2 className="section-title">AI-Powered Marketing Education</h2>
+          <p className="section-subtitle">Learn to leverage AI for unprecedented marketing success</p>
+          
+          <div className="ai-features-grid">
+            <div className="ai-feature-card">
+              <FaRobot className="ai-feature-icon" />
+              <h3 className="ai-feature-title">AI Fundamentals</h3>
+              <p className="ai-feature-description">
+                Master the basics of AI and machine learning. Learn how to use AI tools to automate tasks, analyze data, and make data-driven decisions that drive real results.
+              </p>
+            </div>
+            
+            <div className="ai-feature-card">
+              <FaBrain className="ai-feature-icon" />
+              <h3 className="ai-feature-title">Prompt Engineering</h3>
+              <p className="ai-feature-description">
+                Learn to craft effective prompts that get the best results from AI tools. Create compelling content, generate ideas, and optimize your marketing copy with precision.
+              </p>
+            </div>
+            
+            <div className="ai-feature-card">
+              <FaCode className="ai-feature-icon" />
+              <h3 className="ai-feature-title">AI Automation</h3>
+              <p className="ai-feature-description">
+                Discover how to automate your marketing workflows with AI. Save time, reduce errors, and scale your marketing efforts efficiently with cutting-edge tools.
+              </p>
+            </div>
+          </div>
+
+          <div className="ai-cta-container">
+            <Link 
+              to="/checkout" 
+              className="cta-button"
+              style={{
+                background: '#2563eb',
+                color: 'white',
+                padding: '1rem 2.5rem',
+                borderRadius: '50px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontSize: '1.25rem',
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }}
+            >
+              <FaRocket /> Begin Checkout - $47/month
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
       {/* Affiliate Program Section */}
       <motion.section 
         className="affiliate-program-section"
@@ -571,6 +649,7 @@ export default function Home() {
             Join thousands of successful marketers who have already transformed their businesses with Revenue Ripple.
             Start your journey today and get instant access to all our premium features.
           </p>
+        
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
             <Link to="/checkout" className="cta-button">
               Join Now for Only $47/month
@@ -578,6 +657,173 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
+
+      {/* Floating See More Reviews Button */}
+      <button
+        onClick={() => setShowTestimonialModal(true)}
+        style={{
+          position: 'fixed',
+          bottom: '32px',
+          right: '32px',
+          zIndex: 1200,
+          background: '#2563eb',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50px',
+          padding: '0.75rem 1.5rem',
+          fontWeight: 600,
+          fontSize: '1rem',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+        }}
+        aria-label="See More Reviews"
+      >
+        <FaQuoteLeft style={{ fontSize: '1.25rem' }} /> See More Reviews
+      </button>
+      {/* Testimonial Modal Overlay */}
+      {showTestimonialModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 1300,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+          onClick={() => setShowTestimonialModal(false)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '1rem',
+              maxWidth: '700px',
+              width: '90vw',
+              maxHeight: '80vh',
+              overflowY: 'auto',
+              padding: '2rem',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowTestimonialModal(false)}
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#4b5563',
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <h2 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#2563eb' }}>What Our Members Say</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* Render all testimonials, including the extra ones */}
+              {/* Always show all testimonials in the modal */}
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic1.png" alt="Profile of Sarah Johnson" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Sarah Johnson</h4>
+                    <p>Digital Marketing Consultant</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic2.png" alt="Profile of Michael Chen" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Gloria Chen</h4>
+                    <p>E-commerce Entrepreneur</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic3.png" alt="Profile of Paul Rodriguez" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Paul Rodriguez</h4>
+                    <p>Agency Founder</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"The affiliate program is a game-changer! Not only am I learning valuable skills, but I'm also earning while implementing what I learn. It's a win-win situation."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>David Thompson</h4>
+                    <p>Affiliate Marketer</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"The support team is incredible! They're always there to help and the community is so encouraging. It's like having a marketing family that wants you to succeed."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Adin Parker</h4>
+                    <p>Small Business Owner</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"The video courses are pure gold! Each lesson is packed with actionable insights that I could implement immediately. My social media engagement has tripled!"</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>James Wilson</h4>
+                    <p>Social Media Manager</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"I love how the platform keeps updating with new content and strategies. It helps me stay ahead of the curve in this fast-paced digital marketing world."</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Nina Patel</h4>
+                    <p>Marketing Director</p>
+                  </div>
+                </div>
+              </div>
+              <div className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p className="testimonial-text">"The ROI tracking templates and analytics tutorials helped me prove the value of my marketing efforts to clients. My retainer rates have doubled!"</p>
+                <div className="testimonial-author">
+                  <img src="/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
+                  <div className="author-info">
+                    <h4>Alex Foster</h4>
+                    <p>Marketing Analytics Specialist</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="footer">

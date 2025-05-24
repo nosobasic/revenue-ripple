@@ -693,4 +693,160 @@
   .affiliate-visual-highlight .caption {
     font-size: 1rem;
   }
+}
+
+/* AI Education Section */
+.ai-education-section {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.ai-education-section .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.ai-education-section .section-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  color: #64748b;
+  margin-bottom: 3rem;
+  font-weight: 500;
+}
+
+.ai-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.ai-feature-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ai-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ai-feature-icon {
+  font-size: 2.5rem;
+  color: #2563eb;
+  margin-bottom: 1rem;
+}
+
+.ai-feature-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.ai-feature-description {
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.ai-cta-container {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  .ai-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .ai-feature-card {
+    padding: 1.5rem;
+  }
+
+  .ai-feature-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Trust Badges Section */
+.trust-badges-section {
+  padding: 3rem 0;
+  background: white;
+  text-align: center;
+}
+
+.trust-badges-title {
+  font-size: 1.5rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+}
+
+.trust-badges-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.trust-badge {
+  height: 40px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.trust-badge:hover {
+  opacity: 1;
+}
+
+/* Sticky CTA */
+.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sticky-cta.visible {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ai-education-section .section-title {
+    font-size: 2rem;
+  }
+
+  .ai-education-section .section-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .trust-badges-container {
+    gap: 2rem;
+  }
+
+  .trust-badge {
+    height: 30px;
+  }
+
+  .sticky-cta {
+    padding: 0.75rem;
+  }
 } 
