@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, abort
 import openai
 import os
+import traceback
 
 ai_assistant_bp = Blueprint('ai_assistant', __name__)
 
@@ -12,11 +13,15 @@ def is_authorized(user_role):
 @ai_assistant_bp.route('/api/ai-assistant', methods=['POST'])
 def ai_assistant():
     user_role = request.headers.get("x-user-role")
+    print("User role:", user_role)
     if not is_authorized(user_role):
+        print("Unauthorized access attempt")
         abort(403, "Not authorized")
 
     data = request.get_json()
+    print("Request data:", data)
     user_message = data.get("message", "")
+    print("User message:", user_message)
     prompt = (
         "You are Revenue Ripple's AI Assistant, a seasoned internet marketing pro and support agent. "
         "Greet the user warmly, use the brand voice, and provide actionable, friendly, and expert advice. "
@@ -32,4 +37,6 @@ def ai_assistant():
         )
         return jsonify({"reply": response.choices[0].message["content"]})
     except Exception as e:
+        print("AI Assistant error:", e)
+        print(traceback.format_exc())
         return jsonify({"error": str(e)}), 500 
