@@ -5,7 +5,7 @@ import traceback
 
 ai_assistant_bp = Blueprint('ai_assistant', __name__)
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def is_authorized(user_role):
     return user_role in ["member", "affiliate", "reseller", "admin"]
@@ -29,13 +29,13 @@ def ai_assistant():
         f"User: {user_message}\nAI:"
     )
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500,
             temperature=0.7
         )
-        return jsonify({"reply": response.choices[0].message["content"]})
+        return jsonify({"reply": response.choices[0].message.content})
     except Exception as e:
         print("AI Assistant error:", e)
         print(traceback.format_exc())
