@@ -1,7 +1,14 @@
 import React from 'react';
 
-const VideoModal = ({ isOpen, onClose, videoUrl, title }) => {
+const VideoModal = ({ isOpen, onClose, video, title }) => {
   if (!isOpen) return null;
+
+  let embedUrl = '';
+  if (video?.vimeoId) {
+    embedUrl = `https://player.vimeo.com/video/${video.vimeoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
+  } else if (video?.url) {
+    embedUrl = video.url;
+  }
 
   return (
     <div style={{
@@ -47,7 +54,7 @@ const VideoModal = ({ isOpen, onClose, videoUrl, title }) => {
           overflow: 'hidden'
         }}>
           <iframe
-            src={videoUrl}
+            src={embedUrl}
             style={{
               position: 'absolute',
               top: 0,
@@ -56,7 +63,7 @@ const VideoModal = ({ isOpen, onClose, videoUrl, title }) => {
               height: '100%',
               border: 'none'
             }}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
             allowFullScreen
           />
         </div>

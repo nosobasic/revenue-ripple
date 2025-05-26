@@ -75,7 +75,7 @@ const CourseModule = () => {
 
       <div className="video-container">
         <VideoPlayer 
-          videoUrl={module.video.url}
+          video={module.video}
           title={module.title}
         />
       </div>

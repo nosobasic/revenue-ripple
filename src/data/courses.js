@@ -10,7 +10,7 @@ export const courses = [
         title: 'Building Your List', 
         description: 'Learn how to build a high-quality email list from scratch.',
         video: {
-          url: 'https://www.youtube.com/embed/APgMe8E7DB0',
+          vimeoId: '1087796068',
           duration: '15:30',
           thumbnail: 'https://img.youtube.com/vi/APgMe8E7DB0/maxresdefault.jpg'
         }
@@ -20,7 +20,7 @@ export const courses = [
         title: 'Segmentation & Automation', 
         description: 'Master segmentation and automation for better results.',
         video: {
-          url: 'https://www.youtube.com/embed/B9eMiBHMhHw',
+         vimeoId: '1087796011',
           duration: '12:45',
           thumbnail: 'https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg'
         }

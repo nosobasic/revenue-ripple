@@ -81,7 +81,7 @@ const CourseOverview = () => {
         <VideoModal
           isOpen={true}
           onClose={handleCloseModal}
-          videoUrl={selectedModule.video.url}
+          video={selectedModule.video}
           title={selectedModule.title}
         />
       )}
