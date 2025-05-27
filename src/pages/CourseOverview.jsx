@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoModal from '../components/VideoModal';
+import VideoPlayer from '../components/VideoPlayer';
 import '../styles/courses.css';
 
 const CourseOverview = () => {
@@ -40,6 +41,14 @@ const CourseOverview = () => {
         </div>
         <h1 className="course-title">{course.title}</h1>
       </div>
+
+      {/* Intro Video Section */}
+      {course.introVideo && (
+        <div className="intro-video-section" style={{ marginBottom: '2rem' }}>
+          <h2 className="intro-video-title">Course Introduction</h2>
+          <VideoPlayer video={course.introVideo} title={`${course.title} Introduction`} />
+        </div>
+      )}
 
       <div className="course-info">
         <p className="course-description">
