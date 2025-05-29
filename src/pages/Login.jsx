@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../pages.css';
 import Navbar from '../components/Navbar';
@@ -11,7 +11,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, resetPassword } = useAuth();
+
+  // Get the intended redirect path, default to dashboard
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,7 +24,7 @@ export default function Login() {
 
     try {
       await login(email, password);
-      navigate('/dashboard');
+      navigate(from, { replace: true }); // Redirect to intended page
     } catch (error) {
       setError(error.message);
     } finally {

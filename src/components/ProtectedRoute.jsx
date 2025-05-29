@@ -29,6 +29,14 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
+  // Debug logging
+  console.log('ProtectedRoute:', {
+    user,
+    loading,
+    requireAdmin,
+    path: location.pathname
+  });
+
   // Show a loading spinner while auth state is loading
   if (loading) {
     return (
@@ -41,12 +49,21 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
 
   // Redirect to login if not authenticated
   if (!user) {
+    console.log('No user found, redirecting to login');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Redirect to dashboard if not admin and admin is required
-  if (requireAdmin && user.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
+  // Check if user has required role
+  if (requireAdmin) {
+    console.log('Checking admin role:', {
+      userRole: user.role,
+      isAdmin: user.role === 'admin'
+    });
+    
+    if (user.role !== 'admin') {
+      console.log('User is not admin, redirecting to dashboard');
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   // Wrap children in error boundary for safety

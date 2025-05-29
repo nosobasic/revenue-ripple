@@ -168,18 +168,18 @@ export const courses = [
     description: 'Learn effective strategies for generating high-quality leads.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000004',
-      duration: '1:55',
+      vimeoId: '1088245091',
+      duration: '0:40',
       thumbnail: 'https://vumbnail.com/000000004.jpg'
     },
     modules: [
       { 
         id: 1, 
         title: 'Lead Magnets', 
-        description: 'Create irresistible lead magnets.',
+        description: 'From PDFs to Premium Bundles',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:20',
+          vimeoId: '1088245085',
+          duration: '5:10',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
@@ -188,8 +188,18 @@ export const courses = [
         title: 'Landing Pages', 
         description: 'Build landing pages that convert.',
         video: {
-          vimeoId: '1087796031',
-          duration: '16:45',
+          vimeoId: '1088245079',
+          duration: '3:30',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Masterring Paid Traffic',
+        description: 'Facebook, Google, and more',
+        video: {
+          vimeoId: '1088245073',
+          duration: '4:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -201,27 +211,37 @@ export const courses = [
     description: 'Master LinkedIn advertising to reach professionals and decision-makers.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000005',
+      vimeoId: '1088824025',
       duration: '1:50',
       thumbnail: 'https://vumbnail.com/000000005.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'LinkedIn Ad Setup', 
+        title: 'Your Ultimate Begginer Guide to LinkedIn', 
         description: 'How to set up your first LinkedIn ad.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088824115',
           duration: '12:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Targeting on LinkedIn', 
-        description: 'Reach the right audience on LinkedIn.',
+        title: 'Step-by-Step Guide to Creating a Business Page', 
+        description: 'How to create a business page on LinkedIn.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088824003',
+          duration: '15:20',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Master Your Profile & Groups',
+        description: 'How to optimize your profile and groups for better results.',
+        video: {
+          vimeoId: '1088823982',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
@@ -234,7 +254,7 @@ export const courses = [
     description: 'Learn how to use Messenger for marketing and automation.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000006',
+      vimeoId: '1088833375',
       duration: '1:55',
       thumbnail: 'https://vumbnail.com/000000006.jpg'
     },
@@ -244,18 +264,28 @@ export const courses = [
         title: 'Messenger Bots', 
         description: 'Automate conversations with Messenger bots.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088833391',
           duration: '14:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Broadcasts & Sequences', 
-        description: 'Send broadcasts and set up sequences.',
+        title: 'A Comprehensive Platform Overview', 
+        description: 'How to use the platform to its full potential.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088833414',
           duration: '16:40',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Your First Broadcast Setup',
+        description: 'How to create your first broadcast.',
+        video: {
+          vimeoId: '1088833436',
+          duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -267,28 +297,48 @@ export const courses = [
     description: 'Master newsfeed advertising across social platforms.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000007',
+      vimeoId: '1088848202',
       duration: '1:50',
       thumbnail: 'https://vumbnail.com/000000007.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Newsfeed Ad Creation', 
-        description: 'Create ads for social media newsfeeds.',
+        title: 'Choose Wisely For Sucess', 
+        description: 'How to choose the right platform for your business.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088848188',
           duration: '13:25',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Optimizing for Engagement', 
-        description: 'Get more clicks and engagement.',
+        title: 'Mastering Audience Targeting and Ad Placement', 
+        description: 'How to target the right audience and place your ads for best results.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088848176',
           duration: '15:50',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Mastering Facebook Ads Budget',
+        description: 'How to budget and scale your campaigns.',
+        video: {
+          vimeoId: '1088848160',
+          duration: '15:20',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 4,
+        title: 'From Carosel To Single Image',
+        description: 'How to create a newsfeed ad for your business.',
+        video: {
+          vimeoId: '1088848149',
+          duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -461,32 +511,42 @@ export const courses = [
   },
   {
     slug: 'automation',
-    title: 'Automation',
+    title: 'Marketing Automation',
     description: 'Learn how to automate your marketing tasks.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000013',
+      vimeoId: '1088241575',
       duration: '1:50',
       thumbnail: 'https://vumbnail.com/000000013.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Automation Tools', 
+        title: 'Unlocking the Power of Marketing Automation', 
         description: 'Overview of marketing automation tools.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088241557',
           duration: '14:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Building Automated Workflows', 
+        title: 'Essential Workflows For Success', 
         description: 'How to build automated marketing workflows.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088241542',
           duration: '16:40',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Building a Workflow from Scratch',
+        description: 'How to build automated marketing workflows.',
+        video: {
+          vimeoId: '1088241528',
+          duration: '6:32',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
