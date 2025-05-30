@@ -36,18 +36,19 @@ const EntrepreneurialBrainstorming = () => {
               
               <div className="video-description">
                 <h3>About This Video</h3>
-                <p>Get in the mind of real entrepreneurs and see how they come up with money-making ideas from scratch. Simple systems, big results.</p>
+                <p>Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This session breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.</p>
                 
                 <h3>What You'll Learn</h3>
                 <ul>
-                  <li>How successful entrepreneurs generate business ideas</li>
-                  <li>Techniques for effective brainstorming sessions</li>
-                  <li>Methods to validate and refine your ideas</li>
-                  <li>Real-world examples of successful business concepts</li>
+                  <li>How to generate business ideas from real-life problems and markets</li>
+                  <li>Fast, practical research techniques to validate demand</li>
+                  <li>How to test offers before building a full product</li>
+                  <li>Steps for building a Minimum Viable Product (MVP)</li>
+                  <li>Brand positioning strategies for long-term growth</li>
                 </ul>
 
                 <h3>Expert Bio</h3>
-                <p>[Expert name] is a successful entrepreneur with [X] years of experience in [industry]. They have founded multiple successful businesses and are passionate about helping others achieve their entrepreneurial dreams.</p>
+                <p>Jordan Blake is a seasoned founder and startup strategist who’s helped launch over a dozen successful digital products. With 12+ years in the tech and education space, Jordan specializes in turning ideas into action. His approach blends lean startup methodology with real-world hustle — perfect for first-time founders and serial entrepreneurs alike.</p>
               </div>
             </div>
           </div>

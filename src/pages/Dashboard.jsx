@@ -417,12 +417,12 @@ const Dashboard = () => {
                     className={`course-item ${expandedSection === 'building-wordpress' ? 'expanded' : ''}`}
                     onClick={() => toggleSection('building-wordpress')}
                   >
-                    <h3>WordPress Mastery</h3>
+                    <h3>Outsourcing</h3>
                     {expandedSection === 'building-wordpress' && (
                       <div className="course-details">
-                        <p>Become a WordPress expert. Learn theme customization, plugin development, and site optimization.</p>
-                        <Link to="/courses/wordpress" className="cta-link">
-                          Master WordPress →
+                        <p>Learn how to outsource your marketing tasks to freelancers.</p>
+                        <Link to="/courses/outsourcing" className="cta-link">
+                          Start Outsourcing →
                         </Link>
                       </div>
                     )}

@@ -350,28 +350,38 @@ export const courses = [
     description: 'Master paid traffic sources and campaign optimization.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000008',
+      vimeoId: '1088882669',
       duration: '1:55',
       thumbnail: 'https://vumbnail.com/000000008.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Paid Traffic Basics', 
-        description: 'Introduction to paid traffic sources.',
+        title: 'Facebook Ad Campaigns A Step By Step Guide', 
+        description: 'How to create a Facebook Ad Campaign.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088882623',
           duration: '14:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Budgeting & Scaling', 
-        description: 'How to budget and scale your campaigns.',
+        title: 'Google Search Ads A Step By Step Guide', 
+        description: 'How to create a Google Search Ad Campaign.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088882591',
           duration: '17:20',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'From Design to Google Display Campaign',
+        description: 'How to create a Google Display Campaign.',
+        video: {
+          vimeoId: '1088882539',
+          duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -383,28 +393,38 @@ export const courses = [
     description: 'Learn Pinterest marketing strategies for business growth.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000009',
+      vimeoId: '1088887746',
       duration: '1:50',
       thumbnail: 'https://vumbnail.com/000000009.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Pinterest Setup', 
-        description: 'Set up your Pinterest business account.',
+        title: 'Navigating Pinterest', 
+        description: 'How to navigate the platform and get started.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1088887758',
           duration: '12:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Pin Design & Strategy', 
-        description: 'Design pins and plan your strategy.',
+        title: 'Business SetUp to Analytics Insights', 
+        description: 'How to set up your Pinterest business account and get analytics insights.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1088887848',
           duration: '15:40',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Essential Tools and Strategies',
+        description: 'How to use the platform to its full potential.',
+        video: {
+          vimeoId: '1088887884',
+          duration: '4:00',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -416,28 +436,38 @@ export const courses = [
     description: 'Master search advertising and keyword targeting.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000010',
-      duration: '1:55',
+      vimeoId: '1089074820',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000010.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Search Ad Basics', 
-        description: 'How search ads work.',
+        title: 'Choosing the Right Campaign Goals', 
+        description: 'How to choose the right campaign goals for your business.',
         video: {
-          vimeoId: '1087796011',
-          duration: '13:20',
+          vimeoId: '1089074806',
+          duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Keyword Targeting', 
-        description: 'Target the right keywords for your ads.',
+        title: 'Campaign Setup Essentials', 
+        description: 'How to set up your campaign for success.',
         video: {
-          vimeoId: '1087796031',
-          duration: '16:30',
+          vimeoId: '1089074777',
+          duration: '3:30',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'Creation to Performance Monitoring',
+        description: 'How to create a search ad and monitor its performance.',
+        video: {
+          vimeoId: '1089074757',
+          duration: '3:00',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -449,28 +479,48 @@ export const courses = [
     description: 'Master social media marketing strategies for business growth.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000011',
-      duration: '1:50',
+      vimeoId: '1089077296',
+      duration: '0:37',
       thumbnail: 'https://vumbnail.com/000000011.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Content Planning', 
-        description: 'Plan your social media content.',
+        title: 'Organic Marketing with Facebook and Instagram', 
+        description: 'How to use organic marketing with Facebook and Instagram.',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:20',
+          vimeoId: '1089077270',
+          duration: '4:35',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Engagement Tactics', 
-        description: 'Boost engagement on your posts.',
+        title: 'Organic Marketing On Twitter and Youtube', 
+        description: 'How to use organic marketing on Twitter and Youtube.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1089077251',
+          duration: '4:00',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'LinkedIn and Pinterest Strategies',
+        description: 'How to use LinkedIn and Pinterest for your business.',
+        video: {
+          vimeoId: '1089077226',
           duration: '16:45',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 4,
+        title: 'Viral Growth and Engagement',
+        description: 'How to use viral growth and engagement for your business.',
+        video: {
+          vimeoId: '1089077212',
+          duration: '4:05',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       }
@@ -480,29 +530,39 @@ export const courses = [
     slug: 'twitter-ads',
     title: 'X/Twitter Advertising',
     description: 'Master Twitter advertising to reach your target audience.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '25-30 minutes',
     introVideo: {
-      vimeoId: '000000012',
-      duration: '1:55',
+      vimeoId: '1089091992',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000012.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Twitter Ad Setup', 
-        description: 'Set up your first Twitter ad.',
+        title: 'Choosing the Right Campaign Objective', 
+        description: 'How to choose the right campaign objective for your business.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1089091972',
           duration: '12:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Analytics & Optimization', 
-        description: 'Analyze and optimize your Twitter ads.',
+        title: 'Targeting Your Ideal Audience', 
+        description: 'How to target your ideal audience for your business.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1089091950',
+          duration: '15:20',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      {
+        id: 3,
+        title: 'From Creation to Launch',
+        description: 'How to create your first campaign and launch it.',
+        video: {
+          vimeoId: '1089091937',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
@@ -558,61 +618,42 @@ export const courses = [
     description: 'Learn to build professional, responsive websites from scratch. Master HTML, CSS, and modern design principles.',
     estimatedTime: '3-4 hours',
     introVideo: {
-      vimeoId: '000000014',
+      vimeoId: '1089098390',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000014.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Introduction to Web Design', 
+        title: 'Essential Pages Every Business Website Needs', 
         description: 'Learn the fundamentals of web design and modern development practices.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1089098357',
           duration: '15:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'HTML Fundamentals', 
-        description: 'Master HTML5 and create well-structured web pages.',
+        title: 'Wordpress, Weebly, or Wix', 
+        description: 'How to choose the right platform for your business.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1089098340',
           duration: '18:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'CSS Styling', 
-        description: 'Learn CSS3 to create beautiful and responsive designs.',
+        title: 'Step By Step Guide To Building A Website with Wix', 
+        description: 'How to build a website from scratch.',
         video: {
-          vimeoId: '1087796055',
+          vimeoId: '1089098322',
           duration: '20:15',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       },
-      { 
-        id: 4, 
-        title: 'Responsive Design', 
-        description: 'Create websites that work perfectly on all devices.',
-        video: {
-          vimeoId: '1087796011',
-          duration: '16:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 5, 
-        title: 'Modern Design Principles', 
-        description: 'Apply modern design principles to create stunning websites.',
-        video: {
-          vimeoId: '1087796031',
-          duration: '17:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
+      
     ]
   },
   {
@@ -682,52 +723,52 @@ export const courses = [
     slug: 'funnel-building',
     title: 'Funnel Building',
     description: 'Create high-converting sales funnels that turn visitors into customers.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '15-20 minutes',
     introVideo: {
-      vimeoId: '000000016',
-      duration: '1:55',
+      vimeoId: '1089118712',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000016.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Funnel Fundamentals', 
-        description: 'Learn the basics of sales funnels and their importance.',
+        title: 'Choosing the Right Type with Click Funnels',  
+        description: 'How to choose the right type of funnel for your business.',
         video: {
-          vimeoId: '1087796011',
-          duration: '13:45',
+          vimeoId: '1089118712',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Funnel Types', 
-        description: 'Explore different types of sales funnels for various goals.',
+        title: 'Cfrafting Offers ans Splintering for Success', 
+        description: 'How to craft offers and split test for success.',
         video: {
-          vimeoId: '1087796031',
-          duration: '15:30',
+          vimeoId: '1089118665',
+          duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Funnel Optimization', 
-        description: 'Optimize your funnels for maximum conversions.',
+        title: 'Building Your Sales Funnel From Start to Finish', 
+        description: 'How to build your sales funnel from start to finish.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:20',
+          vimeoId: '1089118646',
+          duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
     ]
   },
   {
-    slug: 'wordpress',
-    title: 'WordPress Mastery',
-    description: 'Become a WordPress expert. Learn theme customization, plugin development, and site optimization.',
-    estimatedTime: '3-4 hours',
+    slug: 'outsourcing',
+    title: 'Outsourcing',
+    description: 'Learn how to outsource your marketing tasks to freelancers.',
+    estimatedTime: '15-20 minutes',
     introVideo: {
-      vimeoId: '000000017',
+      vimeoId: '1089120856',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000017.jpg'
     },
