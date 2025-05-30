@@ -1,16 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
+import { courses } from '../../../data/courses';
 import '../../../pages.css';
 
+const course = courses.find(c => c.slug === 'entrepreneurial-brainstorming');
+const modules = course ? course.modules : [];
+
 const EntrepreneurialBrainstorming = () => {
+  const [selected, setSelected] = React.useState(0);
   return (
     <div className="dashboard">
       <Navbar />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">ENTREPRENEURIAL BRAINSTORMING</h1>
-          <div className="dashboard-welcome">Guest Expert Video</div>
+          <div className="dashboard-welcome">Guest Expert Video Series</div>
         </div>
       </header>
 
@@ -18,38 +23,45 @@ const EntrepreneurialBrainstorming = () => {
         <div className="main-content">
           <div className="section">
             <div className="section-header">
-              <h2>Video Content</h2>
+              <h2>Video Modules</h2>
             </div>
             <div className="section-content">
-              <div className="video-container">
-                {/* Replace VIDEO_ID with actual YouTube video ID */}
-                <iframe
-                  width="100%"
-                  height="600"
-                  src="https://www.youtube.com/embed/VIDEO_ID"
-                  title="Entrepreneurial Brainstorming"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+              <div className="modules-list" style={{ marginBottom: 16 }}>
+                {modules.map((mod, idx) => (
+                  <button
+                    key={mod.title}
+                    onClick={() => setSelected(idx)}
+                    style={{
+                      fontWeight: selected === idx ? 'bold' : 'normal',
+                      marginRight: 8,
+                      padding: '6px 12px',
+                      borderRadius: 4,
+                      border: selected === idx ? '2px solid #2563eb' : '1px solid #ccc',
+                      background: selected === idx ? '#e0e7ff' : '#fff',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {mod.title}
+                  </button>
+                ))}
               </div>
-              
-              <div className="video-description">
-                <h3>About This Video</h3>
-                <p>Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This session breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.</p>
-                
-                <h3>What You'll Learn</h3>
-                <ul>
-                  <li>How to generate business ideas from real-life problems and markets</li>
-                  <li>Fast, practical research techniques to validate demand</li>
-                  <li>How to test offers before building a full product</li>
-                  <li>Steps for building a Minimum Viable Product (MVP)</li>
-                  <li>Brand positioning strategies for long-term growth</li>
-                </ul>
-
-                <h3>Expert Bio</h3>
-                <p>Jordan Blake is a seasoned founder and startup strategist who’s helped launch over a dozen successful digital products. With 12+ years in the tech and education space, Jordan specializes in turning ideas into action. His approach blends lean startup methodology with real-world hustle — perfect for first-time founders and serial entrepreneurs alike.</p>
-              </div>
+              {modules[selected] && (
+                <div className="video-container" style={{ marginTop: 16 }}>
+                  <iframe
+                    src={`https://player.vimeo.com/video/${modules[selected].video.vimeoId}`}
+                    width="100%"
+                    height="480"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={modules[selected].title}
+                  ></iframe>
+                  <div className="video-description">
+                    <h3>{modules[selected].title}</h3>
+                    <p>{modules[selected].description}</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

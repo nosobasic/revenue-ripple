@@ -775,31 +775,31 @@ export const courses = [
     modules: [
       { 
         id: 1, 
-        title: 'WordPress Basics', 
-        description: 'Get started with WordPress and understand its core features.',
+        title: 'Hiring Virtual Teams', 
+        description: 'How to hire a virtual team for your business.',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:15',
+          vimeoId: '1089120835',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Theme Customization', 
-        description: 'Learn how to customize WordPress themes to match your needs.',
+        title: 'Upwork vs Fiverr', 
+        description: 'How to choose the right platform for your business.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1089120811',
           duration: '17:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Plugin Development', 
-        description: 'Create custom plugins to extend WordPress functionality.',
+        title: 'Trello & Slack Essential for Team Management', 
+        description: 'How to use Trello and Slack to manage your team.',
         video: {
-          vimeoId: '1087796055',
-          duration: '19:45',
+          vimeoId: '1089120794',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -1141,6 +1141,67 @@ export const courses = [
           duration: '16:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
+      }
+    ]
+  },
+  {
+    slug: 'entrepreneurial-brainstorming',
+    title: 'Entrepreneurial Brainstorming',
+    description: 'Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This series breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.',
+    estimatedTime: '2 hours',
+    introVideo: {
+      vimeoId: '1089154879',
+      duration: '2:00',
+      thumbnail: 'https://vumbnail.com/999999999.jpg'
+    },
+    modules: [
+      {
+        id: 1,
+        title: 'Module 1: Idea Generation',
+        description: 'How to generate business ideas from real-life problems and markets.',
+        video: { vimeoId: '123456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 2,
+        title: 'Module 2: Market Validation',
+        description: 'Fast, practical research techniques to validate demand.',
+        video: { vimeoId: '223456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 3,
+        title: 'Module 3: Offer Testing',
+        description: 'How to test offers before building a full product.',
+        video: { vimeoId: '323456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 4,
+        title: 'Module 4: MVP Building',
+        description: 'Steps for building a Minimum Viable Product (MVP).',
+        video: { vimeoId: '423456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 5,
+        title: 'Module 5: Brand Positioning',
+        description: 'Brand positioning strategies for long-term growth.',
+        video: { vimeoId: '523456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 6,
+        title: 'Module 6: Funding & Launch',
+        description: 'How to fund and launch your startup.',
+        video: { vimeoId: '623456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 7,
+        title: 'Module 7: Scaling Up',
+        description: 'Strategies for scaling your business after launch.',
+        video: { vimeoId: '723456789', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 8,
+        title: 'Module 8: Real-World Case Studies',
+        description: 'Lessons from successful entrepreneurs and their journeys.',
+        video: { vimeoId: '823456789', duration: '10:00', thumbnail: '' }
       }
     ]
   }
