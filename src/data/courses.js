@@ -662,61 +662,41 @@ export const courses = [
     description: 'Master the art of SEO to boost your website\'s visibility and ranking on search engines.',
     estimatedTime: '3-4 hours',
     introVideo: {
-      vimeoId: '000000015',
+      vimeoId: '1089388714',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000015.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'SEO Fundamentals', 
-        description: 'Learn the core principles of search engine optimization.',
+        title: 'SEO Sucess with Keyword Research', 
+        description: 'How to find the right keywords for your business.',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:20',
+          vimeoId: '1089388695',
+          duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Keyword Research', 
-        description: 'Discover and target the right keywords for your content.',
+        title: 'Optimization Techniques', 
+        description: 'How to optimize your website for search engines.',
         video: {
-          vimeoId: '1087796031',
-          duration: '16:45',
+          vimeoId: '1089388621',
+          duration: '7:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'On-Page Optimization', 
+        title: 'Essential Tools and Strategies', 
         description: 'Optimize your website content for better search rankings.',
         video: {
-          vimeoId: '1087796055',
+          vimeoId: '1089388664',
           duration: '18:30',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       },
-      { 
-        id: 4, 
-        title: 'Off-Page SEO', 
-        description: 'Build quality backlinks and improve your site\'s authority.',
-        video: {
-          vimeoId: '1087796011',
-          duration: '15:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 5, 
-        title: 'Technical SEO', 
-        description: 'Master technical aspects of SEO for better performance.',
-        video: {
-          vimeoId: '1087796031',
-          duration: '17:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
     ]
   },
   {
@@ -983,7 +963,7 @@ export const courses = [
     description: 'Learn how to run effective split (A/B) tests to optimize your marketing campaigns.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000022',
+      vimeoId: '1089391814',
       duration: '1:50',
       thumbnail: 'https://vumbnail.com/000000022.jpg'
     },
@@ -993,27 +973,27 @@ export const courses = [
         title: 'Split Testing Basics', 
         description: 'Understand the fundamentals of A/B testing.',
         video: {
-          vimeoId: '1087796011',
-          duration: '12:45',
+          vimeoId: '1089391800',
+          duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Test Planning', 
-        description: 'Learn how to plan and execute effective tests.',
+        title: 'Step By Step Guide To Boost Your Conversions', 
+        description: 'How to boost your conversions with A/B testing.',
         video: {
-          vimeoId: '1087796031',
-          duration: '14:30',
+          vimeoId: '1089391783',
+          duration: '2:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Analysis & Implementation', 
-        description: 'Analyze test results and implement winning variations.',
+        title: 'Decoding Results for Maximum Impact', 
+        description: 'How to decode test results and implement winning variations.',
         video: {
-          vimeoId: '1087796055',
+          vimeoId: '1089391773',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
@@ -1026,17 +1006,17 @@ export const courses = [
     description: 'Master the art of effective cold calling and closing deals.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000023',
+      vimeoId: '1089406341',
       duration: '1:55',
       thumbnail: 'https://vumbnail.com/000000023.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Cold Calling Basics', 
+        title: 'From Slides to Scr', 
         description: 'Learn the fundamentals of effective cold calling.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1089406316',
           duration: '13:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
@@ -1111,23 +1091,28 @@ export const courses = [
     title: 'Online Learning',
     description: 'Learn how to create and sell online courses effectively.',
     estimatedTime: '2-3 hours',
+    introVideo: {
+      vimeoId: '1089406361',
+      duration: '1:50',
+      thumbnail: 'https://vumbnail.com/000000025.jpg'
+    },
     modules: [
       { 
         id: 1, 
-        title: 'Course Creation', 
+        title: 'From Slides to Screen Recordings', 
         description: 'Learn how to create engaging online courses.',
         video: {
-          vimeoId: '1087796011',
+          vimeoId: '1089406316',
           duration: '15:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Platform Selection', 
-        description: 'Choose the right platform for your online courses.',
+        title: 'Guide to Building & Uploading Your Course', 
+        description: 'How to build and upload your online course.',
         video: {
-          vimeoId: '1087796031',
+          vimeoId: '1089406327',
           duration: '13:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
