@@ -1103,7 +1103,7 @@ export const courses = [
         description: 'Learn how to create engaging online courses.',
         video: {
           vimeoId: '1089406316',
-          duration: '15:30',
+          duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
@@ -1113,7 +1113,7 @@ export const courses = [
         description: 'How to build and upload your online course.',
         video: {
           vimeoId: '1089406327',
-          duration: '13:45',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
@@ -1122,8 +1122,8 @@ export const courses = [
         title: 'Marketing & Sales', 
         description: 'Effectively market and sell your online courses.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:20',
+          vimeoId: '1089406336',
+          duration: '6:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
