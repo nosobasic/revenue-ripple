@@ -200,72 +200,20 @@ const Dashboard = () => {
               </div>
               <div className="section-content">
                 <div className="suggested-content">
-                  <p>
-                    If you're new to online marketing, it can be overwhelming to know where to start. But don't worry, here's a suggested order to watch the video courses that will help you build a solid foundation and get the most out of each course.
-                  </p>
-
-                  <div className="section-break" />
-
-                  <p>
-                    First, start with <Link to="/courses/website-design" className="course-link">Web Design</Link>. 
-                    This will give you a good foundation for creating a website that is both visually appealing and user-friendly. 
-                    Once you've learned the basics of web design, move on to <Link to="/courses/seo" className="course-link">SEO</Link>. 
-                    This course will teach you how to optimize your website for search engines, which is crucial for getting organic traffic.
-                  </p>
-
-                  <p>
-                    Next, watch <Link to="/courses/email-marketing" className="course-link">Email Marketing</Link> to learn how to build an email list 
-                    and communicate effectively with your subscribers. Then, move on to <Link to="/courses/social-media-marketing" className="course-link">Social Marketing</Link> 
-                    to learn how to use social media platforms to grow your business. <Link to="/courses/affiliate-marketing" className="course-link">Affiliate Marketing</Link> and 
-                    <Link to="/courses/ecommerce" className="course-link">Ecommerce</Link> come next, as they teach you how to promote other people's products 
-                    and sell your own products online.
-                  </p>
-
-                  <p>
-                    After that, watch <Link to="/courses/paid-traffic" className="course-link">Paid Traffic</Link> to learn how to use platforms like Google Ads 
-                    and Facebook Ads to drive targeted traffic to your website. <Link to="/courses/linkedin-ads" className="course-link">LinkedIn Marketing</Link> (organic) 
-                    and <Link to="/courses/lead-generation" className="course-link">Lead Generation</Link> come next, as they teach you how to use LinkedIn to 
-                    generate leads and attract potential customers.
-                  </p>
-
-                  <p>
-                    <Link to="/courses/funnel-building" className="course-link">Funnel Building</Link> and <Link to="/courses/messenger-marketing" className="course-link">Messenger Marketing</Link> 
-                    are next, as they teach you how to create a sales funnel that takes your leads through the buying process and how to use 
-                    Facebook Messenger to communicate with your customers and automate certain tasks. <Link to="/courses/freelancing" className="course-link">Freelancing</Link> comes 
-                    next, as it teaches you how to offer your services as a freelancer and find clients.
-                  </p>
-
-                  <div className="section-break" />
-
-                  <p>
-                    <Link to="/courses/automation" className="course-link">Marketing automation</Link> is next, as it teaches you how to automate repetitive marketing tasks, 
-                    saving you time and increasing efficiency. <Link to="/courses/pinterest-marketing" className="course-link">Pinterest Marketing</Link>, 
-                    <Link to="/courses/affiliate-recruiting" className="course-link">Affiliate Recruiting</Link>, and <Link to="/courses/search-ads" className="course-link">Search Advertising</Link> 
-                    are next on the list, as they teach you how to use Pinterest to drive traffic to your website, recruit other affiliates to promote your products, 
-                    and advertise your products or services on search engines.
-                  </p>
-
-                  <p>
-                    <Link to="/courses/twitter-ads" className="course-link">Twitter Timeline Advertising</Link> and <Link to="/courses/cold-calling" className="course-link">Cold Calling</Link> 
-                    are next, as they teach you how to use Twitter Ads to promote your products or services and make effective sales calls and close deals. 
-                    <Link to="/courses/split-testing" className="course-link">Split Testing</Link> and <Link to="/courses/online-learning" className="course-link">Online Learning</Link> come next, 
-                    as they teach you how to test different marketing strategies and create and sell online courses.
-                  </p>
-
-                  <p>
-                    Finally, watch <Link to="/courses/newsfeed-ads" className="course-link">Newsfeed Ads</Link>, <Link to="/courses/banner-ads" className="course-link">Banner Ads</Link>, 
-                    <Link to="/courses/online-learning" className="course-link">Online Learning</Link>, <Link to="/courses/geo-targeting" className="course-link">Geo Targeting</Link>, 
-                    and <Link to="/courses/linkedin-ads" className="course-link">LinkedIn Ads</Link> to learn how to create effective ads that appear in users' newsfeeds 
-                    on social media platforms, create effective banner ads that appear on other websites, create and sell online courses, target specific geographic 
-                    areas with your marketing campaigns, and create and run ads on LinkedIn to reach your target audience.
-                  </p>
-
-                  <div className="section-break" />
-
-                  <p>
-                    Remember, this order is just a suggestion, and you can adjust it based on your personal interests and business goals. 
-                    The most important thing is to take notes and apply what you learn to your own business.
-                  </p>
+                  <p>For the best learning experience, we recommend following this order:</p>
+                  <ol>
+                    <li>Start with <Link to="/courses/ai-essentials" className="course-link">AI Essentials</Link> to build your foundation in artificial intelligence.</li>
+                    <li>Move on to <Link to="/courses/ai-agent-fundamentals" className="course-link">AI Agent Fundamentals</Link> to learn how to build and deploy AI agents.</li>
+                    <li>Complete your AI journey with <Link to="/courses/prompt-engineering" className="course-link">Prompt Engineering</Link> to master AI interactions.</li>
+                    <li>Then dive into <Link to="/courses/email-marketing" className="course-link">Email Marketing</Link> to learn how to build and nurture your audience.</li>
+                    <li>Follow up with <Link to="/courses/lead-generation" className="course-link">Lead Generation</Link> to master attracting potential customers.</li>
+                    <li>Learn <Link to="/courses/funnel-building" className="course-link">Funnel Building</Link> to convert leads into customers.</li>
+                    <li>Master <Link to="/courses/paid-traffic" className="course-link">Paid Traffic</Link> to scale your marketing efforts.</li>
+                    <li>Explore <Link to="/courses/social-marketing" className="course-link">Social Marketing</Link> for organic growth.</li>
+                    <li>Dive into <Link to="/courses/seo" className="course-link">SEO</Link> for long-term traffic growth.</li>
+                    <li>Finally, learn <Link to="/courses/automation" className="course-link">Marketing Automation</Link> to scale your efforts.</li>
+                  </ol>
+                  <p>This order ensures you build a strong foundation before moving on to more advanced topics. Each course builds upon the knowledge from previous ones.</p>
                 </div>
               </div>
             </div>
@@ -278,46 +226,69 @@ const Dashboard = () => {
               </div>
               <div className="section-content">
                 <div 
-                  className={`course-item ${expandedSection === 'ai-automation' ? 'expanded' : ''}`}
-                  onClick={() => toggleSection('ai-automation')}
+                  className={`course-item ${expandedSection === 'ai-essentials' ? 'expanded' : ''}`}
+                  onClick={() => toggleSection('ai-essentials')}
                 >
-                  <h3>AI Automation Mastery</h3>
-                  {expandedSection === 'ai-automation' && (
+                  <h3>AI Essentials</h3>
+                  {expandedSection === 'ai-essentials' && (
                     <div className="course-details">
-                      <p>Discover how to leverage AI to automate and scale your business operations. Learn about:</p>
+                      <p>Build your foundation in artificial intelligence and learn how to leverage AI in your business:</p>
                       <ul>
-                        <li>AI-powered content creation and marketing</li>
-                        <li>Customer service automation with AI chatbots</li>
-                        <li>Data analysis and business intelligence</li>
-                        <li>AI-driven sales and lead generation</li>
-                        <li>Process automation and optimization</li>
+                        <li>Understanding AI basics and terminology</li>
+                        <li>AI applications in business operations</li>
+                        <li>Getting started with popular AI tools</li>
+                        <li>AI implementation strategies</li>
+                        <li>Future of AI in business</li>
                       </ul>
-                      <Link to="/courses/ai-automation" className="cta-link">
+                      <Link to="/courses/ai-essentials" className="cta-link">
                         <FaRobot style={{ marginRight: '8px' }} />
-                        Master AI Automation →
+                        Start AI Essentials →
                       </Link>
                     </div>
                   )}
                 </div>
 
                 <div 
-                  className={`course-item ${expandedSection === 'ai-content' ? 'expanded' : ''}`}
-                  onClick={() => toggleSection('ai-content')}
+                  className={`course-item ${expandedSection === 'ai-agent-fundamentals' ? 'expanded' : ''}`}
+                  onClick={() => toggleSection('ai-agent-fundamentals')}
                 >
-                  <h3>AI Content Generation</h3>
-                  {expandedSection === 'ai-content' && (
+                  <h3>AI Agent Fundamentals</h3>
+                  {expandedSection === 'ai-agent-fundamentals' && (
                     <div className="course-details">
-                      <p>Learn how to use AI tools to create high-quality content at scale:</p>
+                      <p>Master the art of building and deploying AI agents for your business:</p>
                       <ul>
-                        <li>Blog posts and articles</li>
-                        <li>Social media content</li>
-                        <li>Email marketing campaigns</li>
-                        <li>Product descriptions</li>
-                        <li>SEO-optimized content</li>
+                        <li>Understanding AI agents and their capabilities</li>
+                        <li>Building your first AI agent</li>
+                        <li>Advanced agent features and integration</li>
+                        <li>Automation workflows with AI agents</li>
+                        <li>Scaling business operations with AI</li>
                       </ul>
-                      <Link to="/courses/ai-content" className="cta-link">
-                        <FaNewspaper style={{ marginRight: '8px' }} />
-                        Start AI Content Course →
+                      <Link to="/courses/ai-agent-fundamentals" className="cta-link">
+                        <FaRobot style={{ marginRight: '8px' }} />
+                        Master AI Agents →
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <div 
+                  className={`course-item ${expandedSection === 'prompt-engineering' ? 'expanded' : ''}`}
+                  onClick={() => toggleSection('prompt-engineering')}
+                >
+                  <h3>Prompt Engineering</h3>
+                  {expandedSection === 'prompt-engineering' && (
+                    <div className="course-details">
+                      <p>Learn how to craft effective prompts for optimal AI interactions:</p>
+                      <ul>
+                        <li>Fundamentals of prompt design</li>
+                        <li>Advanced prompt techniques</li>
+                        <li>Real-world applications and case studies</li>
+                        <li>Optimizing AI responses</li>
+                        <li>Best practices for different AI models</li>
+                      </ul>
+                      <Link to="/courses/prompt-engineering" className="cta-link">
+                        <FaRobot style={{ marginRight: '8px' }} />
+                        Master Prompt Engineering →
                       </Link>
                     </div>
                   )}

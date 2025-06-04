@@ -832,40 +832,40 @@ export const courses = [
     slug: 'affiliate-marketing',
     title: 'Affiliate Marketing',
     description: 'Learn how to successfully promote products and earn commissions through affiliate marketing.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '15-20 minutes',
     introVideo: {
-      vimeoId: '000000019',
-      duration: '1:50',
+      vimeoId: '1090438838',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000019.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Affiliate Marketing Basics', 
-        description: 'Learn the fundamentals of affiliate marketing.',
+        title: 'Choosing the Right Products to Promote', 
+        description: 'How to choose the right products to promote as an affiliate.',
         video: {
-          vimeoId: '1087796011',
-          duration: '13:45',
+          vimeoId: '1090438864',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Finding Products', 
-        description: 'Discover the best products to promote as an affiliate.',
+        title: 'Unleashing the Power of Email, SEO, and Youtube', 
+        description: 'How to use email, SEO, and Youtube to promote affiliate products.',
         video: {
-          vimeoId: '1087796031',
-          duration: '15:30',
+          vimeoId: '1090438844',
+          duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Promotion Strategies', 
-        description: 'Learn effective strategies to promote affiliate products.',
+        title: 'Your Path to Affiliate Success', 
+        description: 'How to be successful as an affiliate.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:20',
+          vimeoId: '1090438817',
+          duration: '2:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -877,38 +877,48 @@ export const courses = [
     description: 'Learn how to build and run a successful online store.',
     estimatedTime: '3-4 hours',
     introVideo: {
-      vimeoId: '000000020',
-      duration: '2:00',
+      vimeoId: '1089912578',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000020.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'eCommerce Basics', 
-        description: 'Understand the fundamentals of online retail.',
+        title: 'Ultimate Guide to Starting an Online Store', 
+        description: 'How to start an online store with Shopify.',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:15',
+          vimeoId: '1089912560',
+          duration: '6:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Store Setup', 
-        description: 'Set up your online store with the right platform.',
+        title: 'Shopify Store Customization Guide', 
+        description: 'How to customize your Shopify store to your brand.',
         video: {
-          vimeoId: '1087796031',
-          duration: '17:30',
+          vimeoId: '1089912546',
+          duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Product Management', 
-        description: 'Learn how to manage your product catalog effectively.',
+        title: 'Stock Your Shopify Store', 
+        description: 'How to stock your Shopify store with products.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:45',
+          vimeoId: '1089912515',
+          duration: '4:45',
+          thumbnail: 'https://vumbnail.com/1087796055.jpg'
+        }
+      },
+      {
+        id: 4,
+        title: 'Final Steps to Go Live',
+        description: 'How to go live with your Shopify store.',
+        video: {
+          vimeoId: '1089912530',
+          duration: '4:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -920,38 +930,38 @@ export const courses = [
     description: 'Learn how to build a successful freelancing business.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '000000021',
-      duration: '1:55',
+      vimeoId: '1089909777',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000021.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Getting Started', 
-        description: 'Learn how to start your freelancing journey.',
+        title: 'Discover High Demand Services You Can Offer', 
+        description: 'How to find the right services to offer as a freelancer.',
         video: {
-          vimeoId: '1087796011',
-          duration: '13:30',
+          vimeoId: '1089909743',
+          duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Finding Clients', 
-        description: 'Discover strategies to find and retain clients.',
+        title: 'Elevate Your Service Delivery', 
+        description: 'How to deliver your services to your clients.',
         video: {
-          vimeoId: '1087796031',
-          duration: '15:45',
+          vimeoId: '1089909766',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Business Management', 
-        description: 'Learn how to manage your freelancing business effectively.',
+        title: 'Your Guide to Freelancing Success', 
+        description: 'How to be successful as a freelancer.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:20',
+          vimeoId: '1089909758',
+          duration: '3:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -1006,38 +1016,38 @@ export const courses = [
     description: 'Master the art of effective cold calling and closing deals.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '1089406341',
+      vimeoId: '1089907504',
       duration: '1:55',
       thumbnail: 'https://vumbnail.com/000000023.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'From Slides to Scr', 
-        description: 'Learn the fundamentals of effective cold calling.',
+        title: 'Preliminary Research for Effective Cold Calling', 
+        description: 'How to do preliminary research for effective cold calling.',
         video: {
-          vimeoId: '1089406316',
-          duration: '13:15',
+          vimeoId: '1089907494',
+          duration: '3:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Script Development', 
-        description: 'Create compelling cold calling scripts.',
+        title: 'From Gatekeeper to Decision Maker', 
+        description: 'How to get past the gatekeeper and get to the decision maker.',
         video: {
-          vimeoId: '1087796031',
-          duration: '15:30',
+          vimeoId: '1089907480',
+          duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Closing Techniques', 
-        description: 'Master techniques for closing deals effectively.',
+        title: 'Outsourcing Strategies for Success', 
+        description: 'How to outsource your cold calling to a virtual team.',
         video: {
-          vimeoId: '1087796055',
-          duration: '16:45',
+          vimeoId: '1089907472',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -1047,40 +1057,40 @@ export const courses = [
     slug: 'affiliate-recruiting',
     title: 'Affiliate Recruiting',
     description: 'Master the strategies for building and managing a successful affiliate network.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '15-20 minutes',
     introVideo: {
-      vimeoId: '000000024',
-      duration: '1:50',
+      vimeoId: '1090442328',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000024.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Recruitment Strategy', 
-        description: 'Learn how to find and recruit quality affiliates.',
+        title: 'Mastering High Converting JV Pages. Launch vs Evergreen', 
+        description: 'How to master high converting JV pages and launch vs evergreen.',
         video: {
-          vimeoId: '1087796011',
-          duration: '14:20',
+          vimeoId: '1090442265',
+          duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Network Management', 
-        description: 'Effectively manage and grow your affiliate network.',
+        title: 'Launch Visibility', 
+        description: 'How to get your affiliate products in front of the right people.',
         video: {
-          vimeoId: '1087796031',
-          duration: '16:30',
+          vimeoId: '1090442284',
+          duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Performance Optimization', 
-        description: 'Optimize your affiliate program for better results.',
+        title: 'From Headhunters List to Launch Success', 
+        description: 'How to get your launch to the next level.',
         video: {
-          vimeoId: '1087796055',
-          duration: '15:45',
+          vimeoId: '1090442313',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -1187,6 +1197,135 @@ export const courses = [
         title: 'Module 8: Real-World Case Studies',
         description: 'Lessons from successful entrepreneurs and their journeys.',
         video: { vimeoId: '823456789', duration: '10:00', thumbnail: '' }
+      }
+    ]
+  },
+  {
+    slug: 'ai-essentials',
+    title: 'AI Essentials',
+    description: 'Master the fundamentals of artificial intelligence and its practical applications in business.',
+    estimatedTime: '2-3 hours',
+    introVideo: {
+      vimeoId: '1089912579',
+      duration: '2:00',
+      thumbnail: 'https://vumbnail.com/000000026.jpg'
+    },
+    modules: [
+      { 
+        id: 1, 
+        title: 'Understanding AI Basics', 
+        description: 'Learn the core concepts and terminology of artificial intelligence.',
+        video: {
+          vimeoId: '1089912580',
+          duration: '15:30',
+          thumbnail: 'https://vumbnail.com/1087796011.jpg'
+        }
+      },
+      { 
+        id: 2, 
+        title: 'AI in Business Applications', 
+        description: 'Discover how AI is transforming various business operations.',
+        video: {
+          vimeoId: '1089912581',
+          duration: '18:45',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      { 
+        id: 3, 
+        title: 'Getting Started with AI Tools', 
+        description: 'Hands-on introduction to popular AI tools and platforms.',
+        video: {
+          vimeoId: '1089912582',
+          duration: '20:15',
+          thumbnail: 'https://vumbnail.com/1087796055.jpg'
+        }
+      }
+    ]
+  },
+  {
+    slug: 'ai-agent-fundamentals',
+    title: 'AI Agent Fundamentals',
+    description: 'Learn how to build and deploy AI agents for automation and enhanced productivity.',
+    estimatedTime: '2-3 hours',
+    introVideo: {
+      vimeoId: '1089912583',
+      duration: '2:00',
+      thumbnail: 'https://vumbnail.com/000000027.jpg'
+    },
+    modules: [
+      { 
+        id: 1, 
+        title: 'Introduction to AI Agents', 
+        description: 'Understanding what AI agents are and how they work.',
+        video: {
+          vimeoId: '1089912584',
+          duration: '16:30',
+          thumbnail: 'https://vumbnail.com/1087796011.jpg'
+        }
+      },
+      { 
+        id: 2, 
+        title: 'Building Your First AI Agent', 
+        description: 'Step-by-step guide to creating a basic AI agent.',
+        video: {
+          vimeoId: '1089912585',
+          duration: '19:45',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      { 
+        id: 3, 
+        title: 'Advanced Agent Capabilities', 
+        description: 'Exploring advanced features and integration possibilities.',
+        video: {
+          vimeoId: '1089912586',
+          duration: '21:15',
+          thumbnail: 'https://vumbnail.com/1087796055.jpg'
+        }
+      }
+    ]
+  },
+  {
+    slug: 'prompt-engineering',
+    title: 'Prompt Engineering',
+    description: 'Master the art of crafting effective prompts for AI language models to get optimal results.',
+    estimatedTime: '2-3 hours',
+    introVideo: {
+      vimeoId: '1089912587',
+      duration: '2:00',
+      thumbnail: 'https://vumbnail.com/000000028.jpg'
+    },
+    modules: [
+      { 
+        id: 1, 
+        title: 'Prompt Engineering Basics', 
+        description: 'Learn the fundamental principles of effective prompt design.',
+        video: {
+          vimeoId: '1089912588',
+          duration: '17:30',
+          thumbnail: 'https://vumbnail.com/1087796011.jpg'
+        }
+      },
+      { 
+        id: 2, 
+        title: 'Advanced Prompt Techniques', 
+        description: 'Master advanced techniques for complex AI interactions.',
+        video: {
+          vimeoId: '1089912589',
+          duration: '20:45',
+          thumbnail: 'https://vumbnail.com/1087796031.jpg'
+        }
+      },
+      { 
+        id: 3, 
+        title: 'Real-World Applications', 
+        description: 'Practical applications and case studies of prompt engineering.',
+        video: {
+          vimeoId: '1089912590',
+          duration: '22:15',
+          thumbnail: 'https://vumbnail.com/1087796055.jpg'
+        }
       }
     ]
   }

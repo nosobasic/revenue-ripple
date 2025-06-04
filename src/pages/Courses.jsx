@@ -143,6 +143,21 @@ const Courses = () => {
       id: 'web-design',
       title: 'Web Design',
       description: 'Learn to build professional, responsive websites from scratch.'
+    },
+    {
+      id: 'ai-essentials',
+      title: 'AI Essentials',
+      description: 'Master the fundamentals of artificial intelligence and its practical applications in business.'
+    },
+    {
+      id: 'ai-agent-fundamentals',
+      title: 'AI Agent Fundamentals',
+      description: 'Learn how to build and deploy AI agents for automation and enhanced productivity.'
+    },
+    {
+      id: 'prompt-engineering',
+      title: 'Prompt Engineering',
+      description: 'Master the art of crafting effective prompts for AI language models to get optimal results.'
     }
   ];
 
