@@ -7,7 +7,7 @@ export default function DMDLanding() {
       <div style={{ maxWidth: 900, width: '100%', background: 'white', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', padding: '2.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '2.5rem' }}>
         {/* Book Cover */}
         <div style={{ flex: 1, minWidth: 320, textAlign: 'center' }}>
-          <img src="/assets/images/DMD-book.png" alt="Digital Marketing Domination Book Cover" style={{ width: '100%', maxWidth: 340, borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.10)' }} />
+          <img src="/assets/images/images/DMD-book.png" alt="Digital Marketing Domination Book Cover" style={{ width: '100%', maxWidth: 340, borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.10)' }} />
         </div>
         {/* Content */}
         <div style={{ flex: 2, minWidth: 320 }}>

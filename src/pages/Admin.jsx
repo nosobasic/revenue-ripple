@@ -452,6 +452,18 @@ const Admin = () => {
             <RiBarChartLine size={20} />
             Analytics
           </Link>
+          <Link 
+            to="/admin/widgets" 
+            className={`admin-nav-item ${location.pathname === '/admin/widgets' ? 'active' : ''}`}
+          >
+            Dashboard Widgets
+          </Link>
+          <Link 
+            to="/admin/embedded-widget" 
+            className={`admin-nav-item ${location.pathname === '/admin/embedded-widget' ? 'active' : ''}`}
+          >
+            Embedded Widget
+          </Link>
         </nav>
       </aside>
 
@@ -484,6 +496,33 @@ const Admin = () => {
           <Route path="commissions" element={<Commissions />} />
           <Route path="content" element={<Content />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route
+            path="widgets"
+            element={
+              <DashboardIntegration>
+                <DashboardHeader title="AI Dashboard" />
+                <KPIWidget agentId={4} />
+                {/* Add more widgets as needed */}
+              </DashboardIntegration>
+            }
+          />
+          <Route
+            path="embedded-widget"
+            element={
+              <div style={{ width: '100%', height: '600px' }}>
+                <iframe 
+                  src="https://dev-ops-modules-wdonte97.replit.app/embed"
+                  width="100%" 
+                  height="600px"
+                  frameBorder="0"
+                  style={{ border: 'none', display: 'block' }}
+                  allow="web-share"
+                  sandbox="allow-scripts allow-same-origin"
+                  title="Embedded Widget"
+                />
+              </div>
+            }
+          />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>

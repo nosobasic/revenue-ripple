@@ -628,7 +628,7 @@ export const courses = [
         title: 'Essential Pages Every Business Website Needs', 
         description: 'Learn the fundamentals of web design and modern development practices.',
         video: {
-          vimeoId: '1089098357',
+          vimeoId: '1089098371',
           duration: '15:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
@@ -1206,7 +1206,7 @@ export const courses = [
     description: 'Master the fundamentals of artificial intelligence and its practical applications in business.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '1089912579',
+      vimeoId: '1090695313',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000026.jpg'
     },
@@ -1216,28 +1216,38 @@ export const courses = [
         title: 'Understanding AI Basics', 
         description: 'Learn the core concepts and terminology of artificial intelligence.',
         video: {
-          vimeoId: '1089912580',
-          duration: '15:30',
+          vimeoId: '1090695302',
+          duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'AI in Business Applications', 
+        title: 'Boost Productivity with Smart Interactions', 
         description: 'Discover how AI is transforming various business operations.',
         video: {
           vimeoId: '1089912581',
-          duration: '18:45',
+          duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Getting Started with AI Tools', 
-        description: 'Hands-on introduction to popular AI tools and platforms.',
+        title: 'The Art of Prompt Engineering', 
+        description: 'How to use AI to create effective prompts.',
         video: {
-          vimeoId: '1089912582',
-          duration: '20:15',
+          vimeoId: '1090695280',
+          duration: '3:45',
+          thumbnail: 'https://vumbnail.com/1087796055.jpg'
+        }
+      },
+      {
+        id: 4,
+        title: 'The Final Step to Step in Your Entrepreneurial Journey',
+        description: 'How to take the final step in your entrepreneurial journey.',
+        video: {
+          vimeoId: '1090695271',
+          duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
