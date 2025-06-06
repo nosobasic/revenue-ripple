@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoModal from '../components/VideoModal';
 import VideoPlayer from '../components/VideoPlayer';
 import '../styles/courses.css';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase/client';
 
 const CourseOverview = () => {
   const { courseSlug } = useParams();
+  const { user } = useAuth();
   const [selectedModule, setSelectedModule] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [progressLoading, setProgressLoading] = useState(true);
   
   const course = courses.find(c => c.slug === courseSlug);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!user) return;
+      setProgressLoading(true);
+      const { data } = await supabase
+        .from('user_progress')
+        .select('percent_done, status')
+        .eq('user_id', user.id)
+        .eq('course_id', courseSlug)
+        .single();
+      setProgress(data);
+      setProgressLoading(false);
+    };
+    fetchProgress();
+  }, [user, courseSlug]);
 
   if (!course) {
     return (
@@ -40,6 +61,25 @@ const CourseOverview = () => {
           <span>{course.title}</span>
         </div>
         <h1 className="course-title">{course.title}</h1>
+        {/* Progress Bar */}
+        {user && (
+          <div style={{ marginTop: 16, marginBottom: 16 }}>
+            {progressLoading ? (
+              <div>Loading progress...</div>
+            ) : progress ? (
+              <div style={{ maxWidth: 400 }}>
+                <div style={{ fontWeight: 500, marginBottom: 4 }}>
+                  Progress: {progress.percent_done}% ({progress.status.replace('_', ' ')})
+                </div>
+                <div style={{ height: 10, background: '#eee', borderRadius: 5 }}>
+                  <div style={{ width: `${progress.percent_done}%`, height: '100%', background: '#38bdf8', borderRadius: 5, transition: 'width 0.3s' }} />
+                </div>
+              </div>
+            ) : (
+              <div style={{ color: '#888' }}>No progress yet</div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Intro Video Section */}

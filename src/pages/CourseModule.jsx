@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase/client';
 import '../styles/courses.css';
 
 const CourseModule = () => {
   const { courseSlug, moduleId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [completed, setCompleted] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const course = courses.find(c => c.slug === courseSlug);
   const moduleNumber = parseInt(moduleId.split('-')[1]);
@@ -22,6 +27,70 @@ const CourseModule = () => {
     }
     setIsLoading(false);
   }, [course, module]);
+
+  // Check if this module is already completed for this user
+  useEffect(() => {
+    const fetchCompletion = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('user_module_completion')
+        .select('completed')
+        .eq('user_id', user.id)
+        .eq('course_id', courseSlug)
+        .eq('module_id', moduleId)
+        .single();
+      if (data && data.completed) setCompleted(true);
+    };
+    fetchCompletion();
+  }, [user, courseSlug, moduleId]);
+
+  // Mark module as complete and recalculate progress
+  const markModuleComplete = async () => {
+    if (!user) return;
+    setButtonLoading(true);
+    // Upsert completion
+    await supabase
+      .from('user_module_completion')
+      .upsert([
+        {
+          user_id: user.id,
+          course_id: courseSlug,
+          module_id: moduleId,
+          completed: true,
+          completed_at: new Date().toISOString(),
+        }
+      ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+    setCompleted(true);
+    await recalculateProgress();
+    setButtonLoading(false);
+  };
+
+  // Recalculate course progress for this user
+  const recalculateProgress = async () => {
+    // Get total modules in course
+    const totalModules = course.modules.length;
+    // Get completed modules from Supabase
+    const { data: completedModules } = await supabase
+      .from('user_module_completion')
+      .select('module_id')
+      .eq('user_id', user.id)
+      .eq('course_id', courseSlug)
+      .eq('completed', true);
+    const percentDone = Math.round((completedModules.length / totalModules) * 100);
+    const status = percentDone === 100 ? 'completed' : 'in_progress';
+    // Upsert user_progress
+    await supabase
+      .from('user_progress')
+      .upsert([
+        {
+          user_id: user.id,
+          course_id: courseSlug,
+          percent_done: percentDone,
+          status,
+          last_updated: new Date().toISOString(),
+        }
+      ], { onConflict: ['user_id', 'course_id'] });
+  };
 
   if (error) {
     return (
@@ -82,6 +151,16 @@ const CourseModule = () => {
 
       <div className="course-info">
         <p className="course-description">{module.description}</p>
+        <div style={{ marginTop: 16 }}>
+          <button
+            className={`nav-button primary${completed ? ' completed' : ''}`}
+            onClick={markModuleComplete}
+            disabled={completed || buttonLoading}
+            style={{ minWidth: 160 }}
+          >
+            {completed ? 'Completed' : buttonLoading ? 'Marking...' : 'Mark as Complete'}
+          </button>
+        </div>
       </div>
 
       <div className="module-navigation">
