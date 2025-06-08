@@ -69,26 +69,14 @@ const AffiliateTools = () => {
     },
     {
       id: 5,
-      title: 'Social Media Posts',
+      title: 'Social Media Secrets',
       description: 'Engaging social media content for all platforms',
       formats: ['PNG', 'JPG'],
       platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
-      image: '/assets/images/images/social-media-posts.png',
+      image: '/assets/images/images/social-media-book.png',
       downloads: {
         PNG: '/assets/downloads/social-media-posts.zip',
         JPG: '/assets/downloads/social-media-posts-jpg.zip'
-      }
-    },
-    {
-      id: 6,
-      title: 'Landing Pages',
-      description: 'Pre-built landing pages optimized for conversions',
-      formats: ['HTML', 'CSS'],
-      features: ['Mobile-friendly', 'A/B Tested'],
-      image: '/assets/images/images/landing-pages.png',
-      downloads: {
-        HTML: '/assets/downloads/landing-pages.zip',
-        CSS: '/assets/downloads/landing-pages-css.zip'
       }
     }
   ];
@@ -353,7 +341,7 @@ const AffiliateTools = () => {
           <div className="section-content">
             <div className="reseller-pro-content">
               <p className="reseller-intro">
-                If you're already reselling this membership site, you're in a strong position — but Reseller PRO is how you really level up. This isn't just an upgrade; it's a strategic move for serious earners. And if you're still just an affiliate? <Link to="/reseller-landing" className="inline-link">Click here to become a reseller</Link> first, then come back and take it up a notch.
+                If you're already reselling this membership site, you're in a strong position — but Reseller PRO is how you really level up. This isn't just an upgrade; it's a strategic move for serious earners. And if you're still just an affiliate? <Link to="/reseller-checkout" className="inline-link">Click here to become a reseller</Link> first, then come back and take it up a notch.
               </p>
 
               <div className="reseller-benefits">
