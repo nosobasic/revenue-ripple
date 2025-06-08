@@ -298,4 +298,36 @@ def set_user_role(email, role):
     except Exception as e:
         print(f"❌ Failed to set role: {str(e)}")
 
+@app.route('/your-existing-api/dashboard', methods=['GET'])
+def dashboard_data():
+    try:
+        # --- USERS DATA ---
+        users_resp = supabase.table("users").select("id").execute()
+        total_users = len(users_resp.data) if users_resp.data else 0
+
+        # TODO: Replace with real growth rate and trend calculations
+        user_growth_rate = 5.2
+        user_trend = "up"
+
+        # --- REVENUE DATA ---
+        revenue_resp = supabase.table("payments").select("amount").execute()
+        total_revenue = sum([p["amount"] for p in (revenue_resp.data or [])])
+        revenue_growth_rate = 2.1  # TODO: Replace with real calculation
+        revenue_trend = "stable"   # TODO: Replace with real calculation
+
+        return jsonify({
+            "users": {
+                "total": total_users,
+                "growthRate": user_growth_rate,
+                "trend": user_trend
+            },
+            "revenue": {
+                "total": total_revenue,
+                "growthRate": revenue_growth_rate,
+                "trend": revenue_trend
+            }
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Do not include `app.run(...)`
