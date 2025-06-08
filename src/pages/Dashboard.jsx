@@ -134,10 +134,6 @@ const Dashboard = () => {
                     Get Paid Every Month Like Clockwork
                     <span className={`chevron ${expandedSection === 'affiliate-paid' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'affiliate-paid' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
-                  {/* Optional: user progress indicator */}
-                  <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '40%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
-                  </div>
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
@@ -178,9 +174,6 @@ const Dashboard = () => {
                     Premium Membership Reseller Program
                     <span className={`chevron ${expandedSection === 'reseller-paid' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'reseller-paid' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
-                  <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '20%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
-                  </div>
                   {expandedSection === 'reseller-paid' && (
                     <div className="course-details">
                       <p>
@@ -227,9 +220,6 @@ const Dashboard = () => {
                     The 12 Month Email Course In One Book
                     <span className={`chevron ${expandedSection === 'digital-email' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'digital-email' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
-                  <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '60%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
-                  </div>
                   {expandedSection === 'digital-email' && (
                     <div className="course-details">
                       <p>Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation in one complete package.</p>
