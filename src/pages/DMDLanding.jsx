@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import './DMDLanding.css';
+
 
 export default function DMDLanding() {
   return (
