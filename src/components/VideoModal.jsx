@@ -1,6 +1,6 @@
 import React from 'react';
 
-const VideoModal = ({ isOpen, onClose, video, title }) => {
+const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, buttonLoading }) => {
   if (!isOpen) return null;
 
   let embedUrl = '';
@@ -66,6 +66,24 @@ const VideoModal = ({ isOpen, onClose, video, title }) => {
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
             allowFullScreen
           />
+        </div>
+        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+          <button
+            onClick={onMarkComplete}
+            disabled={completed || buttonLoading}
+            style={{
+              background: completed ? '#ccc' : '#2563eb',
+              color: 'white',
+              padding: '0.75rem 2rem',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: 600,
+              cursor: completed ? 'not-allowed' : 'pointer',
+              fontSize: '1.1rem'
+            }}
+          >
+            {completed ? 'Module Completed' : buttonLoading ? 'Marking...' : 'Mark as Complete'}
+          </button>
         </div>
       </div>
     </div>

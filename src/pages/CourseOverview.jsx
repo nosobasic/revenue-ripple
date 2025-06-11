@@ -13,6 +13,8 @@ const CourseOverview = () => {
   const [selectedModule, setSelectedModule] = useState(null);
   const [progress, setProgress] = useState(null);
   const [progressLoading, setProgressLoading] = useState(true);
+  const [moduleCompletion, setModuleCompletion] = useState({});
+  const [buttonLoading, setButtonLoading] = useState(false);
   
   const course = courses.find(c => c.slug === courseSlug);
 
@@ -31,6 +33,68 @@ const CourseOverview = () => {
     };
     fetchProgress();
   }, [user, courseSlug]);
+
+  useEffect(() => {
+    const fetchModuleCompletion = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('user_module_completion')
+        .select('module_id, completed')
+        .eq('user_id', user.id)
+        .eq('course_id', courseSlug);
+      const completionMap = {};
+      if (data) {
+        data.forEach(row => {
+          completionMap[row.module_id] = row.completed;
+        });
+      }
+      setModuleCompletion(completionMap);
+    };
+    fetchModuleCompletion();
+  }, [user, courseSlug]);
+
+  const markModuleComplete = async (moduleId) => {
+    if (!user) return;
+    setButtonLoading(true);
+    await supabase
+      .from('user_module_completion')
+      .upsert([
+        {
+          user_id: user.id,
+          course_id: courseSlug,
+          module_id: moduleId,
+          completed: true,
+          completed_at: new Date().toISOString(),
+        }
+      ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+    setModuleCompletion(prev => ({ ...prev, [moduleId]: true }));
+    await recalculateProgress();
+    setButtonLoading(false);
+  };
+
+  const recalculateProgress = async () => {
+    const totalModules = course.modules.length;
+    const { data: completedModules } = await supabase
+      .from('user_module_completion')
+      .select('module_id')
+      .eq('user_id', user.id)
+      .eq('course_id', courseSlug)
+      .eq('completed', true);
+    const percentDone = Math.round((completedModules.length / totalModules) * 100);
+    const status = percentDone === 100 ? 'completed' : 'in_progress';
+    await supabase
+      .from('user_progress')
+      .upsert([
+        {
+          user_id: user.id,
+          course_id: courseSlug,
+          percent_done: percentDone,
+          status,
+          last_updated: new Date().toISOString(),
+        }
+      ], { onConflict: ['user_id', 'course_id'] });
+    setProgress({ percent_done: percentDone, status });
+  };
 
   if (!course) {
     return (
@@ -132,6 +196,9 @@ const CourseOverview = () => {
           onClose={handleCloseModal}
           video={selectedModule.video}
           title={selectedModule.title}
+          onMarkComplete={() => markModuleComplete(selectedModule.id)}
+          completed={!!moduleCompletion[selectedModule.id]}
+          buttonLoading={buttonLoading}
         />
       )}
     </div>

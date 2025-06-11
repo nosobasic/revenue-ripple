@@ -42,6 +42,7 @@ import {
   FaExclamationTriangle, 
   FaBell 
 } from 'react-icons/fa';
+import { courses } from '../data/courses';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -59,6 +60,7 @@ const Dashboard = () => {
     totalCommissions: 0,
     lowStockItems: 0
   });
+  const [courseProgress, setCourseProgress] = useState({});
 
   const toggleSection = (section) => {
     if (expandedSection === section) {
@@ -74,6 +76,32 @@ const Dashboard = () => {
       setLoading(false);
     }, 1000);
   }, []);
+
+  // Fetch all course progress for the user
+  useEffect(() => {
+    const fetchAllProgress = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('user_progress')
+        .select('course_id, percent_done')
+        .eq('user_id', user.id);
+      if (error) {
+        setError('Failed to fetch progress');
+        return;
+      }
+      // Map course_id to percent_done
+      const progressMap = {};
+      if (data) {
+        data.forEach(row => {
+          progressMap[row.course_id] = row.percent_done;
+        });
+      }
+      setCourseProgress(progressMap);
+    };
+    fetchAllProgress();
+    // Optionally, refetch on location change to dashboard
+    // eslint-disable-next-line
+  }, [user, location.pathname]);
 
   const handleSignOut = async () => {
     try {
@@ -132,7 +160,6 @@ const Dashboard = () => {
                 >
                   <h3>
                     Get Paid Every Month Like Clockwork
-                    <span className={`chevron ${expandedSection === 'affiliate-paid' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'affiliate-paid' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
@@ -172,7 +199,6 @@ const Dashboard = () => {
                 >
                   <h3>
                     Premium Membership Reseller Program
-                    <span className={`chevron ${expandedSection === 'reseller-paid' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'reseller-paid' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   {expandedSection === 'reseller-paid' && (
                     <div className="course-details">
@@ -218,7 +244,6 @@ const Dashboard = () => {
                 >
                   <h3>
                     The 12 Month Email Course In One Book
-                    <span className={`chevron ${expandedSection === 'digital-email' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'digital-email' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   {expandedSection === 'digital-email' && (
                     <div className="course-details">
@@ -280,7 +305,7 @@ const Dashboard = () => {
                     <span className={`chevron ${expandedSection === 'ai-essentials' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'ai-essentials' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '75%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                    <div style={{ width: `${courseProgress['ai-essentials'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                   </div>
                   {expandedSection === 'ai-essentials' && (
                     <div className="course-details">
@@ -312,7 +337,7 @@ const Dashboard = () => {
                     <span className={`chevron ${expandedSection === 'ai-agent-fundamentals' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'ai-agent-fundamentals' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '50%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                    <div style={{ width: `${courseProgress['ai-agent-fundamentals'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                   </div>
                   {expandedSection === 'ai-agent-fundamentals' && (
                     <div className="course-details">
@@ -344,7 +369,7 @@ const Dashboard = () => {
                     <span className={`chevron ${expandedSection === 'prompt-engineering' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'prompt-engineering' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: '10%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                    <div style={{ width: `${courseProgress['prompt-engineering'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                   </div>
                   {expandedSection === 'prompt-engineering' && (
                     <div className="course-details">
