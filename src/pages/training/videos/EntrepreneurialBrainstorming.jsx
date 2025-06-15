@@ -12,6 +12,46 @@ const EntrepreneurialBrainstorming = () => {
 
   return (
     <div className="dashboard">
+      <style>{`
+        .dashboard {
+          background: #f8fafc !important;
+          min-height: 100vh;
+        }
+        .main-content, .side-content {
+          padding-bottom: 2rem;
+        }
+        .modal-backdrop {
+          z-index: 2000 !important;
+        }
+        .modal-content {
+          z-index: 2100 !important;
+        }
+        .video-container {
+          background: #fff;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+          padding: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        .modules-list button {
+          color: #1e293b;
+          background: #f1f5f9;
+          border: 1.5px solid #cbd5e1;
+          font-weight: 500;
+          transition: all 0.2s;
+        }
+        .modules-list button:hover {
+          background: #e0e7ff;
+          color: #2563eb;
+          border-color: #2563eb;
+        }
+        .modules-list button.selected, .modules-list button[aria-current="true"] {
+          background: #2563eb;
+          color: #fff;
+          border: 2px solid #2563eb;
+          font-weight: bold;
+        }
+      `}</style>
       <Navbar />
       <header className="dashboard-header">
         <div className="container">
@@ -46,20 +86,42 @@ const EntrepreneurialBrainstorming = () => {
                 </div>
               )}
 
+              {/* Overview and Details Section */}
+              <div className="video-description" style={{ marginBottom: 32 }}>
+                <h3>About This Video</h3>
+                <p>
+                  Discover the art of entrepreneurial brainstorming and how to generate, validate, and refine startup ideas. This session is designed to help you unlock your creative potential and turn ideas into actionable business opportunities.
+                </p>
+                <h3>What You'll Learn</h3>
+                <ul>
+                  <li>How to brainstorm and validate business ideas</li>
+                  <li>Techniques for creative problem-solving</li>
+                  <li>Real-world examples of successful startups</li>
+                  <li>How to avoid common pitfalls in the ideation phase</li>
+                </ul>
+                <h3>Expert Bio</h3>
+                <p>
+                  Jordan Reyes is a seasoned startup strategist and serial entrepreneur with over 15 years of experience in launching, scaling, and advising tech-focused businesses. Having raised over $40 million in venture funding and taken two companies through successful exits, Jordan is known for his no-fluff approach to validating business models and building lean, profitable ventures. He's mentored hundreds of founders globally through programs like Techstars and Y Combinator’s Startup School, and is a frequent speaker on innovation, hustle culture, and early-stage growth.
+                </p>
+              </div>
+
               {/* Module Tabs/Buttons */}
               <div className="modules-list" style={{ marginBottom: 16 }}>
                 {modules.map((mod, idx) => (
                   <button
                     key={mod.title}
                     onClick={() => setModalIdx(idx)}
+                    className={modalIdx === idx ? 'selected' : ''}
                     style={{
-                      fontWeight: modalIdx === idx ? 'bold' : 'normal',
+                      fontWeight: modalIdx === idx ? 'bold' : '500',
                       marginRight: 8,
                       padding: '6px 12px',
                       borderRadius: 4,
-                      border: modalIdx === idx ? '2px solid #2563eb' : '1px solid #ccc',
-                      background: modalIdx === idx ? '#e0e7ff' : '#fff',
-                      cursor: 'pointer'
+                      border: modalIdx === idx ? '2px solid #2563eb' : '1.5px solid #cbd5e1',
+                      background: modalIdx === idx ? '#2563eb' : '#f1f5f9',
+                      color: modalIdx === idx ? '#fff' : '#1e293b',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     {mod.title}

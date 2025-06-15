@@ -41,6 +41,9 @@ export default function Reseller() {
   return (
     <div className="home">
       <style>{`
+        .home::before {
+          display: none !important;
+        }
         .hero-title, .hero-subtitle {
           background: none !important;
           -webkit-background-clip: unset !important;
