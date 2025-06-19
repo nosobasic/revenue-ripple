@@ -31,7 +31,9 @@
 }
 
 .navbar-logo {
-  height: 40px;
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
@@ -172,7 +174,8 @@
   margin-top: 0.5rem;
 }
 
-.auth-button:hover, .auth-button:focus {
+.auth-button:hover,
+.auth-button:focus {
   background: linear-gradient(90deg, #1d4ed8 0%, #3730a3 100%);
 }
 
@@ -183,7 +186,8 @@
   transition: color 0.2s;
 }
 
-.auth-link:hover, .auth-link:focus {
+.auth-link:hover,
+.auth-link:focus {
   color: #1d4ed8;
   text-decoration: underline;
 }
@@ -521,11 +525,14 @@
     gap: 1.5rem;
     padding: 1rem 0.25rem;
   }
-  .main-content, .side-content {
+
+  .main-content,
+  .side-content {
     max-width: 100% !important;
     width: 100% !important;
     padding: 0;
   }
+
   .grid-layout {
     display: flex !important;
     flex-direction: column !important;
@@ -540,27 +547,35 @@
     gap: 1.5rem;
     padding: 1rem 0.25rem;
   }
-  .main-content, .side-content {
+
+  .main-content,
+  .side-content {
     max-width: 100% !important;
     width: 100% !important;
     padding: 0;
   }
+
   .section-header {
     padding: 0.75rem;
   }
+
   .section-header h2 {
     font-size: 1.1rem;
   }
+
   .course-item {
     padding: 0.75rem;
   }
+
   .course-item h3 {
     font-size: 1rem;
   }
+
   .course-details {
     font-size: 0.97rem;
     padding: 0.5rem 0.25rem;
   }
+
   .cta-link {
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -976,7 +991,7 @@
 .testimonials-section {
   background: #fff;
   border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   margin-bottom: 2rem;
   padding: 2rem;
 }
@@ -992,7 +1007,9 @@
 }
 
 /* CTA Button */
-.cta-button, .show-more-button, button {
+.cta-button,
+.show-more-button,
+button {
   background: #2563eb;
   color: #fff;
   border: none;
@@ -1004,7 +1021,10 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-.cta-button:hover, .show-more-button:hover, button:hover {
+
+.cta-button:hover,
+.show-more-button:hover,
+button:hover {
   background: #1d4ed8;
 }
 
@@ -1015,24 +1035,28 @@
   gap: 2rem;
   margin-top: 2rem;
 }
+
 .testimonial-card {
   background: #fff;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   padding: 2rem 1.5rem;
   text-align: left;
   position: relative;
 }
+
 .stars {
   color: #fbbf24;
   font-size: 1.3rem;
   margin-bottom: 0.5rem;
 }
+
 .testimonial-author h4 {
   margin: 0;
   color: #2563eb;
   font-weight: 700;
 }
+
 .testimonial-author p {
   margin: 0;
   color: #64748b;
@@ -1046,24 +1070,28 @@
   gap: 2rem;
   margin-top: 2rem;
 }
+
 .stat-card {
   background: #fff;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   padding: 2rem 1.5rem;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .stat-card:hover {
   transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 6px 16px rgba(37,99,235,0.08);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
 }
+
 .stat-number {
   font-size: 1.25rem;
   color: #1e293b;
   font-weight: 700;
   margin-top: 0.75rem;
 }
+
 .stat-label {
   color: #64748b;
   font-size: 1rem;
@@ -1072,20 +1100,28 @@
 
 /* Responsive tweaks */
 @media (max-width: 900px) {
-  .content-section, .testimonials-section {
+
+  .content-section,
+  .testimonials-section {
     padding: 1.25rem;
   }
+
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
+
 @media (max-width: 600px) {
-  .content-section, .testimonials-section {
+
+  .content-section,
+  .testimonials-section {
     padding: 0.75rem;
   }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
@@ -1245,23 +1281,23 @@
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.125rem;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .cta-section {
     padding: 2rem 1rem;
   }
-  
+
   .cta-title {
     font-size: 1.75rem;
   }
@@ -1273,13 +1309,16 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.feature-card, .stat-card, .cta-section {
+.feature-card,
+.stat-card,
+.cta-section {
   animation: fadeIn 0.6s ease-out forwards;
 }
 
@@ -1667,11 +1706,11 @@
   .guide-step {
     padding: 1rem;
   }
-  
+
   .guide-step h3 {
     font-size: 1.1rem;
   }
-  
+
   .guide-step p {
     font-size: 1rem;
   }
@@ -1716,13 +1755,13 @@
   .material-details {
     flex-direction: column;
   }
-  
+
   .material-details img {
     width: 100%;
     height: auto;
     max-height: 200px;
   }
-  
+
   .format-buttons {
     justify-content: flex-start;
   }
@@ -1744,7 +1783,7 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .button-group .cta-button {
     width: 100%;
   }
@@ -1808,20 +1847,20 @@
   .opportunity-content {
     gap: 1rem;
   }
-  
+
   .opportunity-intro {
     font-size: 1rem;
   }
-  
+
   .opportunity-description,
   .opportunity-benefit {
     font-size: 1rem;
   }
-  
+
   .opportunity-cta {
     padding: 1.25rem;
   }
-  
+
   .opportunity-cta .cta-text {
     font-size: 1rem;
   }
@@ -1938,36 +1977,36 @@
   .reseller-pro-content {
     gap: 1.5rem;
   }
-  
+
   .reseller-intro {
     font-size: 1.1rem;
   }
-  
+
   .benefit-highlight {
     font-size: 1.1rem;
   }
-  
+
   .benefit-explanation,
   .benefit-cta {
     font-size: 1rem;
   }
-  
+
   .reseller-pro-cta h3 {
     font-size: 1.2rem;
   }
-  
+
   .cta-box {
     padding: 1.5rem;
   }
-  
+
   .cta-box h4 {
     font-size: 1.3rem;
   }
-  
+
   .cta-highlight {
     font-size: 1.1rem;
   }
-  
+
   .pro-button {
     font-size: 1.1rem;
     padding: 0.85rem 2rem;
@@ -2079,8 +2118,8 @@
   .coming-soon-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .coming-soon-item {
     padding: 1rem;
   }
-} 
+}

@@ -1,13 +1,14 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
-import '../pages.css';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
+import { supabase } from "../supabase/client";
+import "../pages.css";
 
 export default function AffiliateLogin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
@@ -15,24 +16,27 @@ export default function AffiliateLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
-      await login(email, password);
+      const response = await login(email, password);
+      console.log("response", response);
       // Check if user is an affiliate or reseller
       const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('role')
-        .eq('email', email)
+        .from("users")
+        .select("role")
+        .eq("email", email)
         .single();
 
       if (userError) throw userError;
 
-      if (userData.role === 'affiliate' || userData.role === 'reseller') {
-        navigate('/affiliate-centre');
+      if (userData.role === "affiliate" || userData.role === "reseller") {
+        navigate("/affiliate-centre");
       } else {
-        setError('This login is for affiliates and resellers only. Please use the regular login.');
+        setError(
+          "This login is for affiliates and resellers only. Please use the regular login."
+        );
         await signOut();
       }
     } catch (error) {
@@ -44,12 +48,12 @@ export default function AffiliateLogin() {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await resetPassword(email);
-      alert('Check your email for password reset instructions');
+      alert("Check your email for password reset instructions");
       setShowForgotPassword(false);
     } catch (error) {
       setError(error.message);
@@ -64,27 +68,23 @@ export default function AffiliateLogin() {
       <div className="auth-box">
         <div className="auth-header">
           <h2 className="auth-title">
-            {showForgotPassword ? 'Reset your password' : 'Affiliate & Reseller Login'}
+            {showForgotPassword
+              ? "Reset your password"
+              : "Affiliate & Reseller Login"}
           </h2>
           <p className="auth-subtitle">
-            Not an affiliate yet?{' '}
+            Not an affiliate yet?{" "}
             <Link to="/affiliate/sign-up" className="auth-link">
               Apply to become an affiliate
             </Link>
           </p>
         </div>
-        
+
         {showForgotPassword ? (
           <form className="auth-form" onSubmit={handleForgotPassword}>
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
+            {error && <div className="error-message">{error}</div>}
             <div className="form-group">
-              <label htmlFor="email-address">
-                Email address
-              </label>
+              <label htmlFor="email-address">Email address</label>
               <input
                 id="email-address"
                 name="email"
@@ -105,26 +105,16 @@ export default function AffiliateLogin() {
               >
                 Back to login
               </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="auth-button"
-              >
-                {loading ? 'Sending...' : 'Send reset instructions'}
+              <button type="submit" disabled={loading} className="auth-button">
+                {loading ? "Sending..." : "Send reset instructions"}
               </button>
             </div>
           </form>
         ) : (
           <form className="auth-form" onSubmit={handleLogin}>
-            {error && (
-              <div className="error-message">
-                {error}
-              </div>
-            )}
+            {error && <div className="error-message">{error}</div>}
             <div className="form-group">
-              <label htmlFor="email-address">
-                Email address
-              </label>
+              <label htmlFor="email-address">Email address</label>
               <input
                 id="email-address"
                 name="email"
@@ -138,9 +128,7 @@ export default function AffiliateLogin() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="password">
-                Password
-              </label>
+              <label htmlFor="password">Password</label>
               <input
                 id="password"
                 name="password"
@@ -164,12 +152,8 @@ export default function AffiliateLogin() {
               </button>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="auth-button"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
+            <button type="submit" disabled={loading} className="auth-button">
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
         )}
@@ -181,4 +165,4 @@ export default function AffiliateLogin() {
       </footer>
     </div>
   );
-} 
+}

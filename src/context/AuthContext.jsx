@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '../supabase/client';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
 
@@ -13,7 +13,17 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    // Get initial session
+    const token = localStorage.getItem("revenue-ripple-auth-token");
+
+    if (!token) {
+      supabase.auth.signOut().finally(() => {
+        setUser(null);
+        setSession(null);
+        setLoading(false);
+      });
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
@@ -23,13 +33,12 @@ export function AuthProvider({ children }) {
       }
     });
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
-      
       if (session?.user) {
-        await fetchUserData(session.user);
+        fetchUserData(session.user);
       } else {
         setUser(null);
       }
@@ -44,9 +53,11 @@ export function AuthProvider({ children }) {
   const fetchUserData = async (authUser) => {
     try {
       const { data: userData, error } = await supabase
-        .from('users')
-        .select('id, email, role, plan, created_at, name, status, username, commission_rate')
-        .eq('id', authUser.id)
+        .from("users")
+        .select(
+          "id, email, role, plan, created_at, name, status, username, commission_rate"
+        )
+        .eq("id", authUser.id)
         .single();
 
       if (error) throw error;
@@ -54,13 +65,13 @@ export function AuthProvider({ children }) {
       if (userData) {
         setUser({
           ...authUser,
-          ...userData
+          ...userData,
         });
       } else {
         setUser(authUser);
       }
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error("Error fetching user data:", error);
       setUser(authUser);
     }
   };
@@ -75,20 +86,18 @@ export function AuthProvider({ children }) {
       if (authError) throw authError;
 
       // Create a user document in Supabase
-      const { error: userError } = await supabase
-        .from('users')
-        .insert([
-          {
-            id: authData.user.id,
-            name,
-            email,
-            role: 'member',
-            created_at: new Date().toISOString(),
-            phone: '',
-            company: '',
-            bio: ''
-          }
-        ]);
+      const { error: userError } = await supabase.from("users").insert([
+        {
+          id: authData.user.id,
+          name,
+          email,
+          role: "member",
+          created_at: new Date().toISOString(),
+          phone: "",
+          company: "",
+          bio: "",
+        },
+      ]);
 
       if (userError) throw userError;
 
@@ -100,13 +109,15 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     try {
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (authError) throw authError;
-      if (!authData.user) throw new Error("No user returned from signInWithPassword");
+      if (!authData.user)
+        throw new Error("No user returned from signInWithPassword");
 
       await fetchUserData(authData.user);
       return authData.user;
@@ -117,6 +128,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+    localStorage.removeItem("revenue-ripple-auth-token");
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
@@ -129,11 +141,11 @@ export function AuthProvider({ children }) {
 
   async function updateUserProfile(profileData) {
     try {
-      if (!user) throw new Error('No user logged in');
-      
+      if (!user) throw new Error("No user logged in");
+
       // Update the user's data in Supabase
       const { error } = await supabase
-        .from('users')
+        .from("users")
         .update({
           name: profileData.name,
           email: profileData.email,
@@ -141,21 +153,21 @@ export function AuthProvider({ children }) {
           company: profileData.company,
           role: profileData.role,
           bio: profileData.bio,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', user.id);
+        .eq("id", user.id);
 
       if (error) throw error;
 
       // Update the local user state
-      setUser(prev => ({
+      setUser((prev) => ({
         ...prev,
-        ...profileData
+        ...profileData,
       }));
 
       return true;
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
       throw error;
     }
   }
@@ -177,12 +189,8 @@ export function AuthProvider({ children }) {
     login,
     logout,
     updateUserProfile,
-    resetPassword
+    resetPassword,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
