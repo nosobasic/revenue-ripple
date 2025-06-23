@@ -1145,22 +1145,22 @@ export const courses = [
     description: 'Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This series breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.',
     estimatedTime: '2 hours',
     introVideo: {
-      vimeoId: '1089154879',
+      vimeoId: '1094436546',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/999999999.jpg'
     },
     modules: [
       {
         id: 1,
-        title: 'Module 1: Idea Generation',
+        title: 'Unlock Your Million Dollar Idea',
         description: 'How to generate business ideas from real-life problems and markets.',
-        video: { vimeoId: '123456789', duration: '10:00', thumbnail: '' }
+        video: { vimeoId: '1095681148', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
       },
       {
         id: 2,
         title: 'Module 2: Market Validation',
         description: 'Fast, practical research techniques to validate demand.',
-        video: { vimeoId: '223456789', duration: '10:00', thumbnail: '' }
+        video: { vimeoId: '1095682845', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
       },
       {
         id: 3,
@@ -1259,38 +1259,38 @@ export const courses = [
     description: 'Learn how to build and deploy AI agents for automation and enhanced productivity.',
     estimatedTime: '2-3 hours',
     introVideo: {
-      vimeoId: '1089912583',
+      vimeoId: '1090892607',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000027.jpg'
     },
     modules: [
       { 
         id: 1, 
-        title: 'Introduction to AI Agents', 
-        description: 'Understanding what AI agents are and how they work.',
+        title: 'Power of AI Agents', 
+        description: 'How to use AI agents to automate your business.',
         video: {
-          vimeoId: '1089912584',
-          duration: '16:30',
+          vimeoId: '1090892582',
+          duration: '6:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Building Your First AI Agent', 
-        description: 'Step-by-step guide to creating a basic AI agent.',
+        title: 'Understanding AI Agents Design Patterns', 
+        description: 'How to use AI agents to automate your business.',
         video: {
-          vimeoId: '1089912585',
-          duration: '19:45',
+          vimeoId: '1090892561',
+          duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Advanced Agent Capabilities', 
-        description: 'Exploring advanced features and integration possibilities.',
+        title: 'From Design to Implementation', 
+        description: 'How to use AI agents to automate your business.',
         video: {
-          vimeoId: '1089912586',
-          duration: '21:15',
+          vimeoId: '1090892500',
+          duration: '2:15',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
@@ -1300,9 +1300,9 @@ export const courses = [
     slug: 'prompt-engineering',
     title: 'Prompt Engineering',
     description: 'Master the art of crafting effective prompts for AI language models to get optimal results.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '10-15 minutes',
     introVideo: {
-      vimeoId: '1089912587',
+      vimeoId: '1092539509',
       duration: '2:00',
       thumbnail: 'https://vumbnail.com/000000028.jpg'
     },
@@ -1312,28 +1312,28 @@ export const courses = [
         title: 'Prompt Engineering Basics', 
         description: 'Learn the fundamental principles of effective prompt design.',
         video: {
-          vimeoId: '1089912588',
-          duration: '17:30',
+          vimeoId: '1092539476',
+          duration: '1:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
       { 
         id: 2, 
-        title: 'Advanced Prompt Techniques', 
-        description: 'Master advanced techniques for complex AI interactions.',
+        title: 'Real-World Applications of Prompt Engineering', 
+        description: 'How to use prompt engineering to automate your business.',
         video: {
-          vimeoId: '1089912589',
-          duration: '20:45',
+          vimeoId: '1092539424',
+          duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
       { 
         id: 3, 
-        title: 'Real-World Applications', 
+        title: 'Advanced Prompt Techniques for AI Agents', 
         description: 'Practical applications and case studies of prompt engineering.',
         video: {
-          vimeoId: '1089912590',
-          duration: '22:15',
+          vimeoId: '1092539377',
+          duration: '2:15',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
