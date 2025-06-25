@@ -19,6 +19,9 @@ import {
 import './admin.css';
 import { useAuth } from '../context/AuthContext';
 
+// Import components for dashboard widgets (these may need to be created or imported from correct location)
+// import { DashboardIntegration, DashboardHeader, KPIWidget } from '../components/KPITrackerAgent';
+
 // Dashboard Overview Component
 const DashboardOverview = ({ stats, recentActivity }) => (
   <>
@@ -211,11 +214,11 @@ const Analytics = () => <h1>Analytics</h1>;
 
 // Admin dashboard page for users with the 'admin' role
 const Admin = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const [dashboardLoading, setDashboardLoading] = useState(true);
   const [stats, setStats] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
   const [users, setUsers] = useState([]);
@@ -225,48 +228,74 @@ const Admin = () => {
 
   // Debug log to help trace admin access issues
   useEffect(() => {
-    console.log('Admin.jsx: user object:', user);
-  }, [user]);
+    console.log('Admin.jsx: Current state:', {
+      user: user ? { id: user.id, role: user.role, email: user.email } : null,
+      authLoading,
+      dashboardLoading
+    });
+  }, [user, authLoading, dashboardLoading]);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    // Only fetch dashboard data if user is loaded and is admin
+    if (!authLoading && user && user.role === 'admin') {
+      fetchDashboardData();
+    }
+  }, [user, authLoading]);
 
   useEffect(() => {
-    fetchFilteredUsers();
-  }, [searchTerm, filterStatus]);
+    // Only fetch filtered users if user is loaded and is admin
+    if (!authLoading && user && user.role === 'admin') {
+      fetchFilteredUsers();
+    }
+  }, [searchTerm, filterStatus, user, authLoading]);
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
+      setDashboardLoading(true);
       setError(null);
 
       // Fetch total users count
-      const { count: totalUsers } = await supabase
+      const { count: totalUsers, error: usersError } = await supabase
         .from('users')
         .select('id', { count: 'exact', head: true });
 
+      if (usersError) {
+        console.error('Error fetching users count:', usersError);
+      }
+
       // Fetch active users count
-      const { count: activeUsers } = await supabase
+      const { count: activeUsers, error: activeError } = await supabase
         .from('users')
         .select('id', { count: 'exact', head: true })
         .eq('status', 'active');
 
+      if (activeError) {
+        console.error('Error fetching active users count:', activeError);
+      }
+
       // Fetch monthly revenue from subscriptions table
-      const { data: revenueData } = await supabase
+      const { data: revenueData, error: revenueError } = await supabase
         .from('subscriptions')
         .select('amount')
         .gte('subscribed_at', new Date(new Date().setDate(1)).toISOString());
 
-      const monthlyRevenue = revenueData?.reduce((sum, payment) => sum + payment.amount, 0) || 0;
+      if (revenueError) {
+        console.error('Error fetching revenue data:', revenueError);
+      }
+
+      const monthlyRevenue = revenueData?.reduce((sum, payment) => sum + (payment.amount || 0), 0) || 0;
 
       // Fetch commission data
-      const { data: commissionData } = await supabase
+      const { data: commissionData, error: commissionError } = await supabase
         .from('commissions')
         .select('amount')
         .gte('created_at', new Date(new Date().setDate(1)).toISOString());
 
-      const commissionPaid = commissionData?.reduce((sum, commission) => sum + commission.amount, 0) || 0;
+      if (commissionError) {
+        console.error('Error fetching commission data:', commissionError);
+      }
+
+      const commissionPaid = commissionData?.reduce((sum, commission) => sum + (commission.amount || 0), 0) || 0;
 
       // Set stats
       setStats([
@@ -297,16 +326,20 @@ const Admin = () => {
       ]);
 
       // Fetch recent activity
-      const { data: activityData } = await supabase
+      const { data: activityData, error: activityError } = await supabase
         .from('activity_log')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(5);
 
+      if (activityError) {
+        console.error('Error fetching activity data:', activityError);
+      }
+
       setRecentActivity(activityData?.map(activity => ({
         id: activity.id,
-        type: activity.type,
-        text: activity.description,
+        type: activity.type || 'general',
+        text: activity.description || 'No description',
         time: new Date(activity.created_at).toLocaleTimeString(),
       })) || []);
 
@@ -314,13 +347,12 @@ const Admin = () => {
       setError(err.message);
       console.error('Error fetching dashboard data:', err);
     } finally {
-      setLoading(false);
+      setDashboardLoading(false);
     }
   };
 
   const fetchFilteredUsers = async () => {
     try {
-      setLoading(true);
       setError(null);
 
       let query = supabase
@@ -337,7 +369,7 @@ const Admin = () => {
         query = query.eq('status', filterStatus);
       }
 
-      const { data, error } = await query;
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -354,8 +386,6 @@ const Admin = () => {
     } catch (err) {
       setError(err.message);
       console.error('Error fetching users:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -394,8 +424,8 @@ const Admin = () => {
     fetchFilteredUsers();
   };
 
-  // Show loading spinner if user data is not loaded yet
-  if (!user) {
+  // Show loading spinner if auth is still loading
+  if (authLoading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -404,9 +434,37 @@ const Admin = () => {
     );
   }
 
-  // Show access denied if user is not an admin
+  // Show access denied if user is not an admin (this should be handled by ProtectedRoute, but double-check)
   if (user.role !== 'admin') {
-    return <div style={{ color: 'red', padding: 20 }}>Access denied: You do not have admin privileges.</div>;
+    return (
+      <div style={{ 
+        color: 'red', 
+        padding: 20, 
+        textAlign: 'center',
+        minHeight: '50vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column'
+      }}>
+        <h2>Access Denied</h2>
+        <p>You do not have admin privileges to access this page.</p>
+        <button 
+          onClick={() => window.history.back()}
+          style={{
+            marginTop: 16,
+            padding: "8px 16px",
+            background: "#3b82f6",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -499,11 +557,11 @@ const Admin = () => {
           <Route
             path="widgets"
             element={
-              <DashboardIntegration>
-                <DashboardHeader title="AI Dashboard" />
-                <KPIWidget agentId={4} />
-                {/* Add more widgets as needed */}
-              </DashboardIntegration>
+              <div style={{ padding: '20px' }}>
+                <h1>Dashboard Widgets</h1>
+                <p>Widget components will be available here once implemented.</p>
+                {/* TODO: Import and implement DashboardIntegration, DashboardHeader, KPIWidget components */}
+              </div>
             }
           />
           <Route

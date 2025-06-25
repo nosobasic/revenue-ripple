@@ -30,16 +30,16 @@ class ErrorBoundary extends React.Component {
 }
 
 export default function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, loading } = useAuth();
+  const { user, loading, session } = useAuth();
   const location = useLocation();
-  const token = localStorage.getItem("revenue-ripple-auth-token");
 
-  // Debug logging
+  // Debug logging for troubleshooting
   console.log("ProtectedRoute:", {
-    user,
+    user: user ? { id: user.id, role: user.role, email: user.email } : null,
     loading,
     requireAdmin,
     path: location.pathname,
+    hasSession: !!session,
   });
 
   // Show a loading spinner while auth state is loading
@@ -52,22 +52,50 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
     );
   }
 
-  // Redirect to login if not authenticated
-  if (!token) {
-    console.log("No user found, redirecting to login");
+  // Redirect to login if not authenticated (no session or user)
+  if (!session || !user) {
+    console.log("No authenticated session found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has required role
+  // Check if user has required admin role
   if (requireAdmin) {
-    console.log("Checking admin role:", {
+    console.log("Checking admin access:", {
       userRole: user.role,
       isAdmin: user.role === "admin",
     });
 
     if (user.role !== "admin") {
-      console.log("User is not admin, redirecting to dashboard");
-      return <Navigate to="/dashboard" replace />;
+      console.log("User does not have admin role, redirecting to dashboard");
+      return (
+        <div style={{ 
+          color: "red", 
+          padding: 20, 
+          textAlign: "center",
+          minHeight: "50vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column"
+        }}>
+          <h2>Access Denied</h2>
+          <p>You do not have admin privileges to access this page.</p>
+          <button 
+            onClick={() => window.history.back()}
+            style={{
+              marginTop: 16,
+              padding: "8px 16px",
+              background: "#3b82f6",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer"
+            }}
+          >
+            Go Back
+          </button>
+        </div>
+      );
     }
   }
 

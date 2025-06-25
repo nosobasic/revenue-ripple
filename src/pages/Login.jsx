@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { clearSessionRefreshFlag, resolveSessionConflicts } from '../utils/authUtils';
+import ClearCacheButton from '../components/ClearCacheButton';
 import '../pages.css';
 import Navbar from '../components/Navbar';
 
@@ -17,6 +19,11 @@ export default function Login() {
   // Get the intended redirect path, default to dashboard
   const from = location.state?.from?.pathname || '/dashboard';
 
+  // Resolve any session conflicts on component mount
+  useEffect(() => {
+    resolveSessionConflicts();
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -24,9 +31,14 @@ export default function Login() {
 
     try {
       await login(email, password);
+      
+      // Clear any session refresh flags on successful login
+      clearSessionRefreshFlag();
+      
       navigate(from, { replace: true }); // Redirect to intended page
     } catch (error) {
-      setError(error.message);
+      console.error('Login error:', error);
+      setError(error.message || 'Failed to login. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -161,6 +173,11 @@ export default function Login() {
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
+            
+            {/* Debug: Cache clear button for troubleshooting */}
+            <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '12px', color: '#666' }}>
+              Having login issues? <ClearCacheButton variant="link" />
+            </div>
           </form>
         )}
       </div>

@@ -13,35 +13,46 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("revenue-ripple-auth-token");
-
-    if (!token) {
-      supabase.auth.signOut().finally(() => {
-        setUser(null);
-        setSession(null);
-        setLoading(false);
-      });
-      return;
+    // Clear any stale manual tokens that might conflict with Supabase's session management
+    const manualToken = localStorage.getItem("revenue-ripple-auth-token");
+    if (manualToken && !manualToken.startsWith('{"')) {
+      // Remove old-style manual tokens that aren't Supabase session objects
+      localStorage.removeItem("revenue-ripple-auth-token");
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Get current session from Supabase
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error("Error getting session:", error);
+        setSession(null);
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
       setSession(session);
       if (session?.user) {
         fetchUserData(session.user);
       } else {
+        setUser(null);
         setLoading(false);
       }
     });
 
+    // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session?.user?.id);
+      
       setSession(session);
+      
       if (session?.user) {
-        fetchUserData(session.user);
+        await fetchUserData(session.user);
       } else {
         setUser(null);
       }
+      
       setLoading(false);
     });
 
@@ -52,6 +63,8 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
+      setLoading(true);
+      
       const { data: userData, error } = await supabase
         .from("users")
         .select(
@@ -60,7 +73,16 @@ export function AuthProvider({ children }) {
         .eq("id", authUser.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching user data:", error);
+        // If user doesn't exist in users table, create basic user object
+        setUser({
+          ...authUser,
+          role: 'member', // default role
+          status: 'active'
+        });
+        return;
+      }
 
       if (userData) {
         setUser({
@@ -68,16 +90,28 @@ export function AuthProvider({ children }) {
           ...userData,
         });
       } else {
-        setUser(authUser);
+        setUser({
+          ...authUser,
+          role: 'member',
+          status: 'active'
+        });
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
-      setUser(authUser);
+      console.error("Error in fetchUserData:", error);
+      setUser({
+        ...authUser,
+        role: 'member',
+        status: 'active'
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   async function signup(email, password, name) {
     try {
+      setLoading(true);
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -86,29 +120,38 @@ export function AuthProvider({ children }) {
       if (authError) throw authError;
 
       // Create a user document in Supabase
-      const { error: userError } = await supabase.from("users").insert([
-        {
-          id: authData.user.id,
-          name,
-          email,
-          role: "member",
-          created_at: new Date().toISOString(),
-          phone: "",
-          company: "",
-          bio: "",
-        },
-      ]);
+      if (authData.user) {
+        const { error: userError } = await supabase.from("users").insert([
+          {
+            id: authData.user.id,
+            name,
+            email,
+            role: "member",
+            status: "active",
+            created_at: new Date().toISOString(),
+            phone: "",
+            company: "",
+            bio: "",
+          },
+        ]);
 
-      if (userError) throw userError;
+        if (userError) {
+          console.error("Error creating user record:", userError);
+        }
+      }
 
       return authData.user;
     } catch (error) {
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
   async function login(email, password) {
     try {
+      setLoading(true);
+      
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email,
@@ -119,23 +162,33 @@ export function AuthProvider({ children }) {
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
-      await fetchUserData(authData.user);
+      // Don't manually fetch user data here - let the auth state change handler do it
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
   async function logout() {
-    localStorage.removeItem("revenue-ripple-auth-token");
     try {
+      setLoading(true);
+      
+      // Clear any manual tokens
+      localStorage.removeItem("revenue-ripple-auth-token");
+      
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
       setUser(null);
       setSession(null);
     } catch (error) {
+      console.error("Logout error:", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -174,7 +227,9 @@ export function AuthProvider({ children }) {
 
   async function resetPassword(email) {
     try {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/login`,
+      });
       if (error) throw error;
       return data;
     } catch (error) {
@@ -185,6 +240,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     session,
+    loading,
     signup,
     login,
     logout,
