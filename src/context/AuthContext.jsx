@@ -20,8 +20,12 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("revenue-ripple-auth-token");
     }
 
+    console.log("AuthContext: Initializing auth state...");
+
     // Get current session from Supabase
     supabase.auth.getSession().then(({ data: { session }, error }) => {
+      console.log("AuthContext: Got session from Supabase:", session ? "exists" : "none");
+      
       if (error) {
         console.error("Error getting session:", error);
         setSession(null);
@@ -43,7 +47,7 @@ export function AuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session?.user?.id);
+      console.log("AuthContext: Auth state changed:", event, session?.user?.id);
       
       setSession(session);
       
@@ -63,6 +67,7 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
+      console.log("AuthContext: Fetching user data for:", authUser.id);
       setLoading(true);
       
       const { data: userData, error } = await supabase
@@ -76,33 +81,40 @@ export function AuthProvider({ children }) {
       if (error) {
         console.error("Error fetching user data:", error);
         // If user doesn't exist in users table, create basic user object
-        setUser({
+        const fallbackUser = {
           ...authUser,
           role: 'member', // default role
           status: 'active'
-        });
+        };
+        console.log("AuthContext: Using fallback user data:", fallbackUser);
+        setUser(fallbackUser);
         return;
       }
 
       if (userData) {
-        setUser({
+        const combinedUser = {
           ...authUser,
           ...userData,
-        });
+        };
+        console.log("AuthContext: User data loaded successfully:", combinedUser.email, combinedUser.role);
+        setUser(combinedUser);
       } else {
-        setUser({
+        const fallbackUser = {
           ...authUser,
           role: 'member',
           status: 'active'
-        });
+        };
+        console.log("AuthContext: No user data found, using fallback:", fallbackUser);
+        setUser(fallbackUser);
       }
     } catch (error) {
       console.error("Error in fetchUserData:", error);
-      setUser({
+      const fallbackUser = {
         ...authUser,
         role: 'member',
         status: 'active'
-      });
+      };
+      setUser(fallbackUser);
     } finally {
       setLoading(false);
     }
