@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
+import AdminDebug from './pages/AdminDebug';
+import AdminSimple from './pages/AdminSimple';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
 import AffiliateSign from './pages/AffiliateSign';
@@ -137,10 +139,18 @@ function App() {
 
         {/* Admin Routes */}
         <Route
+          path="/admin-debug"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminDebug />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin/*"
           element={
             <ProtectedRoute requireAdmin>
-              <Admin />
+              <AdminSimple />
             </ProtectedRoute>
           }
         />
