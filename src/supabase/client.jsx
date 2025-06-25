@@ -23,6 +23,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
           return item ? JSON.parse(item) : null;
         } catch (error) {
           console.error('Error reading from localStorage:', error);
+          // Clear corrupted storage
+          localStorage.removeItem(key);
           return null;
         }
       },
@@ -31,6 +33,15 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
           localStorage.setItem(key, JSON.stringify(value));
         } catch (error) {
           console.error('Error writing to localStorage:', error);
+          // If storage is full, try to clear old data
+          if (error.name === 'QuotaExceededError') {
+            try {
+              localStorage.clear();
+              localStorage.setItem(key, JSON.stringify(value));
+            } catch (clearError) {
+              console.error('Could not clear localStorage:', clearError);
+            }
+          }
         }
       },
       removeItem: (key) => {
@@ -40,6 +51,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
           console.error('Error removing from localStorage:', error);
         }
       }
-    }
+    },
+    // Add session timeout to prevent stale sessions
+    sessionTimeout: 3600000, // 1 hour in milliseconds
   }
 });
