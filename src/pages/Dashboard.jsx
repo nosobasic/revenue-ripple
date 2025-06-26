@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client.jsx';
-import Navbar from '../components/Navbar';
+import AnimatedNavbar from '../components/enhanced/AnimatedNavbar';
 import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
@@ -116,14 +116,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <ReferralTracker />
       {/* Persistent nav for key dashboard features */}
-      <Navbar
-        navLinks={[
-          { to: '/dashboard', label: 'Dashboard', icon: <FaChartBar /> },
-          { to: '/affiliate-centre/stats', label: 'Affiliate Stats', icon: <FaFunnelDollar /> },
-          { to: '/courses', label: 'My Courses', icon: <FaGraduationCap /> },
-          { to: '/support', label: 'Support', icon: <FaUserTie /> }
-        ]}
-      />
+      <AnimatedNavbar />
       <AIAssistantWidget />
       {loading ? (
         <div className="spinner" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

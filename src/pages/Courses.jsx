@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import AnimatedNavbar from '../components/enhanced/AnimatedNavbar';
 import '../pages.css';
 import { FaGraduationCap, FaPlay } from 'react-icons/fa';
 
@@ -163,7 +163,7 @@ const Courses = () => {
 
   return (
     <div className="dashboard">
-      <Navbar />
+      <AnimatedNavbar />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">VIDEO COURSES</h1>
