@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 import './admin.css';
@@ -10,20 +10,54 @@ const AdminSimple = () => {
   const [stats, setStats] = useState([]);
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const initializationRef = useRef(false);
 
   console.log('AdminSimple: User:', user);
+  console.log('AdminSimple: AuthLoading:', authLoading);
+  console.log('AdminSimple: DataLoaded:', dataLoaded);
 
   useEffect(() => {
-    if (!authLoading && user && user.role === 'admin') {
+    // Only initialize once when we have a confirmed admin user
+    if (!authLoading && user?.role === 'admin' && !initializationRef.current) {
+      console.log('AdminSimple: Initializing data...');
+      initializationRef.current = true;
       fetchDashboardData();
       fetchUsers();
     }
+  }, [authLoading, user?.role, user?.id]); // Use user.id instead of whole user object
+
+  // Add a separate effect to handle user state changes
+  useEffect(() => {
+    if (authLoading) {
+      console.log('AdminSimple: Auth is loading...');
+      return;
+    }
+
+    if (!user) {
+      console.log('AdminSimple: No user found, resetting state...');
+      initializationRef.current = false;
+      setDataLoaded(false);
+      setStats([]);
+      setUsers([]);
+      return;
+    }
+
+    if (user.role !== 'admin') {
+      console.log('AdminSimple: User is not admin, resetting state...');
+      initializationRef.current = false;
+      setDataLoaded(false);
+      return;
+    }
+
+    console.log('AdminSimple: Valid admin user confirmed');
   }, [user, authLoading]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('AdminSimple: Fetching dashboard data...');
 
       // Fetch total users count
       const { count: totalUsers, error: usersError } = await supabase
@@ -72,6 +106,9 @@ const AdminSimple = () => {
         },
       ]);
 
+      setDataLoaded(true);
+      console.log('AdminSimple: Dashboard data loaded successfully');
+
     } catch (err) {
       setError(err.message);
       console.error('Error fetching dashboard data:', err);
@@ -82,6 +119,7 @@ const AdminSimple = () => {
 
   const fetchUsers = async () => {
     try {
+      console.log('AdminSimple: Fetching users...');
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -99,13 +137,22 @@ const AdminSimple = () => {
         role: user.role || 'member',
       })) || []);
 
+      console.log('AdminSimple: Users loaded successfully');
+
     } catch (err) {
       console.error('Error fetching users:', err);
     }
   };
 
-  // Show loading while auth is still loading
-  if (authLoading) {
+  // Handle refresh data manually
+  const handleRefreshData = () => {
+    console.log('AdminSimple: Manual refresh triggered');
+    fetchDashboardData();
+    fetchUsers();
+  };
+
+  // Show loading while auth is still loading or if we don't have user data
+  if (authLoading || (!user && !authLoading === false)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -184,6 +231,59 @@ const AdminSimple = () => {
           >
             🔗 Webhooks
           </button>
+          <button 
+            onClick={handleRefreshData}
+            className="admin-nav-item"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              width: '100%', 
+              textAlign: 'left',
+              marginTop: '20px',
+              opacity: '0.7'
+            }}
+          >
+            🔄 Refresh Data
+          </button>
+          
+          {/* Navigation Test Buttons */}
+          <div style={{ 
+            marginTop: '30px', 
+            paddingTop: '20px', 
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '12px',
+            opacity: '0.7'
+          }}>
+            <div style={{ marginBottom: '10px', color: '#94a3b8' }}>Navigation Test:</div>
+            <button 
+              onClick={() => window.location.href = '/dashboard'}
+              className="admin-nav-item"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                width: '100%', 
+                textAlign: 'left',
+                fontSize: '12px',
+                padding: '5px 10px'
+              }}
+            >
+              → Dashboard
+            </button>
+            <button 
+              onClick={() => window.location.href = '/admin'}
+              className="admin-nav-item"
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                width: '100%', 
+                textAlign: 'left',
+                fontSize: '12px',
+                padding: '5px 10px'
+              }}
+            >
+              ← Back to Admin
+            </button>
+          </div>
         </nav>
       </aside>
 
@@ -198,6 +298,18 @@ const AdminSimple = () => {
             marginBottom: '24px'
           }}>
             Error: {error}
+            <button 
+              onClick={() => setError(null)}
+              style={{ 
+                marginLeft: '10px', 
+                background: 'transparent', 
+                border: 'none', 
+                color: '#b91c1c',
+                cursor: 'pointer' 
+              }}
+            >
+              ✕
+            </button>
           </div>
         )}
 
@@ -206,6 +318,32 @@ const AdminSimple = () => {
           <>
             <header className="admin-header">
               <h1 className="admin-title">Dashboard Overview</h1>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {dataLoaded && (
+                  <span style={{ 
+                    background: '#dcfce7', 
+                    color: '#15803d', 
+                    padding: '4px 8px', 
+                    borderRadius: '4px',
+                    fontSize: '12px'
+                  }}>
+                    ✅ Data Loaded
+                  </span>
+                )}
+                <button 
+                  onClick={handleRefreshData}
+                  style={{
+                    padding: '6px 12px',
+                    background: '#f3f4f6',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                >
+                  🔄 Refresh
+                </button>
+              </div>
             </header>
 
             {/* Stats Grid */}
@@ -223,9 +361,36 @@ const AdminSimple = () => {
 
             {loading && (
               <div style={{ textAlign: 'center', padding: '20px' }}>
-                Loading dashboard data...
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" style={{ display: 'inline-block' }}></div>
+                <span style={{ marginLeft: 10 }}>Loading dashboard data...</span>
               </div>
             )}
+            
+            {!loading && !dataLoaded && stats.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                <p>No data loaded yet. Click "Refresh Data" to load dashboard information.</p>
+              </div>
+            )}
+
+            {/* Debug Information */}
+            <div style={{ 
+              background: '#f8fafc', 
+              padding: '16px', 
+              borderRadius: '8px', 
+              marginTop: '20px',
+              fontSize: '12px',
+              color: '#64748b'
+            }}>
+              <h4 style={{ margin: '0 0 8px 0', color: '#374151' }}>Debug Information:</h4>
+              <div><strong>Auth Loading:</strong> {authLoading ? 'Yes' : 'No'}</div>
+              <div><strong>User Email:</strong> {user?.email || 'Not loaded'}</div>
+              <div><strong>User Role:</strong> {user?.role || 'Not loaded'}</div>
+              <div><strong>Data Initialized:</strong> {initializationRef.current ? 'Yes' : 'No'}</div>
+              <div><strong>Data Loaded:</strong> {dataLoaded ? 'Yes' : 'No'}</div>
+              <div><strong>Stats Count:</strong> {stats.length}</div>
+              <div><strong>Users Count:</strong> {users.length}</div>
+              <div><strong>Component Loading:</strong> {loading ? 'Yes' : 'No'}</div>
+            </div>
           </>
         )}
 
@@ -234,6 +399,19 @@ const AdminSimple = () => {
           <>
             <header className="admin-header">
               <h1 className="admin-title">User Management</h1>
+              <button 
+                onClick={handleRefreshData}
+                style={{
+                  padding: '6px 12px',
+                  background: '#f3f4f6',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                🔄 Refresh Users
+              </button>
             </header>
             
             <div className="user-management">
@@ -241,28 +419,34 @@ const AdminSimple = () => {
                 <h2 className="activity-title">Users ({users.length})</h2>
               </div>
               
-              <table className="user-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Member Since</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.slice(0, 20).map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.role}</td>
-                      <td>{user.status}</td>
-                      <td>{user.memberSince}</td>
+              {users.length > 0 ? (
+                <table className="user-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Member Since</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {users.slice(0, 20).map((user) => (
+                      <tr key={user.id}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
+                        <td>{user.status}</td>
+                        <td>{user.memberSince}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                  <p>No users loaded. Click "Refresh Users" to load user data.</p>
+                </div>
+              )}
             </div>
           </>
         )}
