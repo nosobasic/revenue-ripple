@@ -16,6 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storageKey: 'revenue-ripple-auth-token',
+    flowType: 'pkce', // Use PKCE flow for better security
     storage: {
       getItem: (key) => {
         try {
@@ -52,7 +53,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
         }
       }
     },
-    // Add session timeout to prevent stale sessions
-    sessionTimeout: 3600000, // 1 hour in milliseconds
+  },
+  // Reduce timeout for better performance
+  global: {
+    headers: {
+      'X-Client-Info': 'revenue-ripple-web'
+    }
   }
 });

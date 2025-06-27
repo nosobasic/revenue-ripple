@@ -29,27 +29,33 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+// Loading component to prevent white screen
+const LoadingSpinner = ({ message = "Loading..." }) => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600 text-lg">{message}</p>
+    </div>
+  </div>
+);
+
 export default function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, loading, session } = useAuth();
+  const { user, loading, session, initialized } = useAuth();
   const location = useLocation();
 
   // Debug logging for troubleshooting
   console.log("ProtectedRoute:", {
     user: user ? { id: user.id, role: user.role, email: user.email } : null,
     loading,
+    initialized,
     requireAdmin,
     path: location.pathname,
     hasSession: !!session,
   });
 
-  // Show a loading spinner while auth state is loading
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <span style={{ marginLeft: 16 }}>Loading...</span>
-      </div>
-    );
+  // Show loading spinner while auth is initializing
+  if (!initialized || loading) {
+    return <LoadingSpinner message="Checking authentication..." />;
   }
 
   // Redirect to login if not authenticated (no session or user)
@@ -66,7 +72,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
     });
 
     if (user.role !== "admin") {
-      console.log("User does not have admin role, redirecting to dashboard");
+      console.log("User does not have admin role, showing access denied");
       return (
         <div style={{ 
           color: "red", 

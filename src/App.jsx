@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
 import Training from './pages/Training';
@@ -59,7 +60,18 @@ import SalesCopy from './pages/training/guides/SalesCopy';
 
 console.log("App component loaded");
 
+// Loading component for app initialization
+const AppLoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600 text-xl">Initializing Revenue Ripple...</p>
+    </div>
+  </div>
+);
+
 function App() {
+  const { loading, initialized } = useAuth();
   // Version check state
   const [showReload, setShowReload] = useState(false);
 
@@ -73,8 +85,16 @@ function App() {
           setShowReload(true);
         }
         localStorage.setItem('app_version', meta.build);
+      })
+      .catch(error => {
+        console.log('Meta.json not found, skipping version check');
       });
   }, []);
+
+  // Show loading spinner while auth is initializing
+  if (!initialized && loading) {
+    return <AppLoadingSpinner />;
+  }
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
@@ -11,39 +11,73 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
+  const [initialized, setInitialized] = useState(false);
+  const authStateChangeRef = useRef(null);
 
   useEffect(() => {
-    // Clear any stale manual tokens that might conflict with Supabase's session management
-    const manualToken = localStorage.getItem("revenue-ripple-auth-token");
-    if (manualToken && !manualToken.startsWith('{"')) {
-      // Remove old-style manual tokens that aren't Supabase session objects
-      localStorage.removeItem("revenue-ripple-auth-token");
-    }
+    let mounted = true;
 
-    // Get current session from Supabase
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error("Error getting session:", error);
-        setSession(null);
-        setUser(null);
-        setLoading(false);
-        return;
-      }
+    const initializeAuth = async () => {
+      try {
+        // Clear any stale manual tokens that might conflict with Supabase's session management
+        const manualToken = localStorage.getItem("revenue-ripple-auth-token");
+        if (manualToken && !manualToken.startsWith('{"')) {
+          // Remove old-style manual tokens that aren't Supabase session objects
+          localStorage.removeItem("revenue-ripple-auth-token");
+        }
 
-      setSession(session);
-      if (session?.user) {
-        fetchUserData(session.user);
-      } else {
-        setUser(null);
-        setLoading(false);
+        // Get current session from Supabase
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+
+        if (error) {
+          console.error("Error getting session:", error);
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          setInitialized(true);
+          return;
+        }
+
+        setSession(session);
+        if (session?.user) {
+          await fetchUserData(session.user);
+        } else {
+          setUser(null);
+        }
+        
+        if (mounted) {
+          setLoading(false);
+          setInitialized(true);
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+        if (mounted) {
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          setInitialized(true);
+        }
       }
-    });
+    };
+
+    // Initialize auth
+    initializeAuth();
 
     // Listen for auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
       console.log("Auth state changed:", event, session?.user?.id);
+      
+      // Prevent race conditions by checking if this is a duplicate event
+      if (authStateChangeRef.current === session?.access_token) {
+        return;
+      }
+      authStateChangeRef.current = session?.access_token;
       
       setSession(session);
       
@@ -53,18 +87,20 @@ export function AuthProvider({ children }) {
         setUser(null);
       }
       
+      if (!initialized) {
+        setInitialized(true);
+      }
       setLoading(false);
     });
 
     return () => {
+      mounted = false;
       subscription?.unsubscribe();
     };
   }, []);
 
   const fetchUserData = async (authUser) => {
     try {
-      setLoading(true);
-      
       const { data: userData, error } = await supabase
         .from("users")
         .select(
@@ -103,8 +139,6 @@ export function AuthProvider({ children }) {
         role: 'member',
         status: 'active'
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -240,7 +274,8 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     session,
-    loading,
+    loading: loading && !initialized, // Only show loading if not initialized yet
+    initialized,
     signup,
     login,
     logout,
