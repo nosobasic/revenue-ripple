@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
@@ -11,92 +11,41 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
-  const [initialized, setInitialized] = useState(false);
-  const authStateChangeRef = useRef(null);
 
   useEffect(() => {
-    let mounted = true;
+    const token = localStorage.getItem("revenue-ripple-auth-token");
 
-    const initializeAuth = async () => {
-      try {
-        // Clear any stale manual tokens that might conflict with Supabase's session management
-        const manualToken = localStorage.getItem("revenue-ripple-auth-token");
-        if (manualToken && !manualToken.startsWith('{"')) {
-          // Remove old-style manual tokens that aren't Supabase session objects
-          localStorage.removeItem("revenue-ripple-auth-token");
-        }
+    if (!token) {
+      supabase.auth.signOut().finally(() => {
+        setUser(null);
+        setSession(null);
+        setLoading(false);
+      });
+      return;
+    }
 
-        // Get current session from Supabase
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (!mounted) return;
-
-        if (error) {
-          console.error("Error getting session:", error);
-          setSession(null);
-          setUser(null);
-          setLoading(false);
-          setInitialized(true);
-          return;
-        }
-
-        setSession(session);
-        if (session?.user) {
-          await fetchUserData(session.user);
-        } else {
-          setUser(null);
-        }
-        
-        if (mounted) {
-          setLoading(false);
-          setInitialized(true);
-        }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
-        if (mounted) {
-          setSession(null);
-          setUser(null);
-          setLoading(false);
-          setInitialized(true);
-        }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserData(session.user);
+      } else {
+        setLoading(false);
       }
-    };
+    });
 
-    // Initialize auth
-    initializeAuth();
-
-    // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-      
-      console.log("Auth state changed:", event, session?.user?.id);
-      
-      // Prevent race conditions by checking if this is a duplicate event
-      if (authStateChangeRef.current === session?.access_token) {
-        return;
-      }
-      authStateChangeRef.current = session?.access_token;
-      
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
-      
       if (session?.user) {
-        await fetchUserData(session.user);
+        fetchUserData(session.user);
       } else {
         setUser(null);
-      }
-      
-      if (!initialized) {
-        setInitialized(true);
       }
       setLoading(false);
     });
 
-    return () => {
-      mounted = false;
-      subscription?.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchUserData = async (authUser) => {
@@ -196,7 +145,7 @@ export function AuthProvider({ children }) {
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
-      // Don't manually fetch user data here - let the auth state change handler do it
+      await fetchUserData(authData.user);
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
@@ -207,11 +156,9 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+    localStorage.removeItem("revenue-ripple-auth-token");
     try {
       setLoading(true);
-      
-      // Clear any manual tokens
-      localStorage.removeItem("revenue-ripple-auth-token");
       
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
@@ -274,8 +221,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     session,
-    loading: loading && !initialized, // Only show loading if not initialized yet
-    initialized,
+    loading,
     signup,
     login,
     logout,
