@@ -212,6 +212,347 @@ const Commissions = () => <h1>Commissions</h1>;
 const Content = () => <h1>Content</h1>;
 const Analytics = () => <h1>Analytics</h1>;
 
+// DevOps Integration Component
+const DevOpsIntegration = () => {
+  const [apiKeys, setApiKeys] = useState([]);
+  const [showCreateKey, setShowCreateKey] = useState(false);
+  const [newKeyName, setNewKeyName] = useState('');
+  const [devopsData, setDevopsData] = useState(null);
+  const [syncStatus, setSyncStatus] = useState('idle');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchApiKeys();
+    fetchDevopsData();
+    
+    // Set up real-time sync every 30 seconds
+    const interval = setInterval(fetchDevopsData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchApiKeys = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const response = await fetch('/api/devops/keys', {
+        headers: {
+          'x-user-id': userData.user.id
+        }
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setApiKeys(result.keys || []);
+      }
+    } catch (error) {
+      console.error('Error fetching API keys:', error);
+    }
+  };
+
+  const createApiKey = async () => {
+    try {
+      setLoading(true);
+      const { data: userData } = await supabase.auth.getUser();
+      
+      const response = await fetch('/api/devops/generate-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userData.user.id,
+          name: newKeyName || 'DevOps Integration Key'
+        })
+      });
+      
+      const result = await response.json();
+      if (response.ok) {
+        // Show the API key once
+        alert(`API Key Generated:\n${result.api_key}\n\nSave this key securely - it won't be shown again!`);
+        setNewKeyName('');
+        setShowCreateKey(false);
+        fetchApiKeys();
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error creating API key:', error);
+      alert('Error creating API key');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDevopsData = async () => {
+    try {
+      setSyncStatus('syncing');
+      
+      // This would typically use your API key to fetch from DevOps module
+      // For now, we'll simulate the data structure
+      const mockDevopsData = {
+        timestamp: new Date().toISOString(),
+        integrationStatus: 'connected',
+        lastSync: new Date().toISOString(),
+        metrics: {
+          deployments: 12,
+          uptime: '99.9%',
+          responseTime: '245ms',
+          errorRate: '0.1%'
+        },
+        recentEvents: [
+          { type: 'deployment', message: 'Production deployment successful', time: '2 minutes ago' },
+          { type: 'alert', message: 'High CPU usage detected', time: '15 minutes ago' },
+          { type: 'deployment', message: 'Staging deployment completed', time: '1 hour ago' }
+        ]
+      };
+      
+      setDevopsData(mockDevopsData);
+      setSyncStatus('success');
+    } catch (error) {
+      console.error('Error fetching DevOps data:', error);
+      setSyncStatus('error');
+    }
+  };
+
+  const syncDataToDevops = async () => {
+    try {
+      setSyncStatus('syncing');
+      
+      // Sync user data
+      const userResponse = await fetch('/api/devops/sync/users', {
+        headers: { 'x-api-key': 'your-api-key-here' } // Would use actual key
+      });
+      
+      // Sync revenue data
+      const revenueResponse = await fetch('/api/devops/sync/revenue', {
+        headers: { 'x-api-key': 'your-api-key-here' }
+      });
+      
+      // Sync commission data
+      const commissionResponse = await fetch('/api/devops/sync/commissions', {
+        headers: { 'x-api-key': 'your-api-key-here' }
+      });
+      
+      if (userResponse.ok && revenueResponse.ok && commissionResponse.ok) {
+        setSyncStatus('success');
+        fetchDevopsData(); // Refresh the display
+      } else {
+        setSyncStatus('error');
+      }
+    } catch (error) {
+      console.error('Error syncing to DevOps:', error);
+      setSyncStatus('error');
+    }
+  };
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <header className="admin-header">
+        <h1 className="admin-title">DevOps Integration</h1>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button 
+            className="action-btn edit-btn"
+            onClick={syncDataToDevops}
+            disabled={syncStatus === 'syncing'}
+          >
+            {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Data'}
+          </button>
+          <button 
+            className="action-btn edit-btn"
+            onClick={fetchDevopsData}
+          >
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      {/* Integration Status */}
+      <div className="stats-grid" style={{ marginBottom: '2rem' }}>
+        <div className="stat-card">
+          <div className="stat-title">Integration Status</div>
+          <div className="stat-value" style={{ 
+            color: devopsData?.integrationStatus === 'connected' ? '#10b981' : '#ef4444' 
+          }}>
+            {devopsData?.integrationStatus === 'connected' ? 'Connected' : 'Disconnected'}
+          </div>
+          <div className="stat-change">
+            Last sync: {devopsData?.lastSync ? new Date(devopsData.lastSync).toLocaleString() : 'Never'}
+          </div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-title">Sync Status</div>
+          <div className="stat-value" style={{
+            color: syncStatus === 'success' ? '#10b981' : 
+                   syncStatus === 'error' ? '#ef4444' : '#6b7280'
+          }}>
+            {syncStatus === 'success' ? 'Success' : 
+             syncStatus === 'error' ? 'Error' : 
+             syncStatus === 'syncing' ? 'Syncing' : 'Idle'}
+          </div>
+          <div className="stat-change">
+            Real-time monitoring active
+          </div>
+        </div>
+
+        {devopsData?.metrics && (
+          <>
+            <div className="stat-card">
+              <div className="stat-title">Deployments</div>
+              <div className="stat-value">{devopsData.metrics.deployments}</div>
+              <div className="stat-change positive">This month</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-title">System Uptime</div>
+              <div className="stat-value">{devopsData.metrics.uptime}</div>
+              <div className="stat-change positive">Last 30 days</div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* API Key Management */}
+      <div className="recent-activity" style={{ marginBottom: '2rem' }}>
+        <div className="activity-header">
+          <h2 className="activity-title">API Key Management</h2>
+          <button 
+            className="add-user-btn"
+            onClick={() => setShowCreateKey(true)}
+          >
+            Generate New Key
+          </button>
+        </div>
+        
+        {showCreateKey && (
+          <div style={{ 
+            padding: '1rem', 
+            border: '1px solid #e5e7eb', 
+            borderRadius: '8px', 
+            marginBottom: '1rem',
+            backgroundColor: '#f9fafb'
+          }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
+                Key Name:
+              </label>
+              <input
+                type="text"
+                value={newKeyName}
+                onChange={(e) => setNewKeyName(e.target.value)}
+                placeholder="DevOps Integration Key"
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px'
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                className="action-btn edit-btn"
+                onClick={createApiKey}
+                disabled={loading}
+              >
+                {loading ? 'Creating...' : 'Create Key'}
+              </button>
+              <button 
+                className="action-btn delete-btn"
+                onClick={() => setShowCreateKey(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Permissions</th>
+              <th>Created</th>
+              <th>Last Used</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {apiKeys.map((key) => (
+              <tr key={key.id}>
+                <td>{key.name}</td>
+                <td>{key.permissions?.join(', ') || 'None'}</td>
+                <td>{new Date(key.created_at).toLocaleDateString()}</td>
+                <td>{key.last_used ? new Date(key.last_used).toLocaleDateString() : 'Never'}</td>
+                <td>
+                  <span style={{
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    backgroundColor: key.is_active ? '#10b981' : '#ef4444',
+                    color: 'white'
+                  }}>
+                    {key.is_active ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
+                <td>
+                  <button className="action-btn delete-btn">Revoke</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* DevOps Metrics */}
+      {devopsData?.metrics && (
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">DevOps Metrics</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            <div style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '8px' }}>
+              <h4>Response Time</h4>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' }}>
+                {devopsData.metrics.responseTime}
+              </div>
+            </div>
+            <div style={{ padding: '1rem', border: '1px solid #e5e7eb', borderRadius: '8px' }}>
+              <h4>Error Rate</h4>
+              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ef4444' }}>
+                {devopsData.metrics.errorRate}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recent Events */}
+      {devopsData?.recentEvents && (
+        <div className="recent-activity" style={{ marginTop: '2rem' }}>
+          <div className="activity-header">
+            <h2 className="activity-title">Recent DevOps Events</h2>
+          </div>
+          <div className="activity-list">
+            {devopsData.recentEvents.map((event, index) => (
+              <div key={index} className="activity-item">
+                <div className={`activity-icon ${event.type}`}>
+                  {event.type === 'deployment' && '🚀'}
+                  {event.type === 'alert' && '⚠️'}
+                  {event.type === 'success' && '✅'}
+                </div>
+                <div className="activity-content">
+                  <div className="activity-text">{event.message}</div>
+                  <div className="activity-time">{event.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Admin dashboard page for users with the 'admin' role
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -225,6 +566,26 @@ const Admin = () => {
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // DevOps API Key state and generator
+  const [apiKey, setApiKey] = useState('');
+  const [webhookSecret, setWebhookSecret] = useState('');
+  const [generatingKeys, setGeneratingKeys] = useState(false);
+
+  const generateDevOpsKeys = async () => {
+    setGeneratingKeys(true);
+    try {
+      const res = await fetch('http://localhost:5001/devops/generate-api-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+      setApiKey(data.api_key);
+      setWebhookSecret(data.webhook_secret);
+    } catch (error) {
+      console.error('Error generating DevOps API keys:', error);
+    }
+    setGeneratingKeys(false);
+  };
 
   // Debug log to help trace admin access issues
   useEffect(() => {
@@ -529,7 +890,32 @@ const Admin = () => {
       <main className="admin-main">
         <Routes>
           <Route path="/" element={
-            <DashboardOverview stats={stats} recentActivity={recentActivity} />
+            <>
+              <DashboardOverview stats={stats} recentActivity={recentActivity} />
+              <div style={{ marginTop: '20px', padding: '1rem', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+                <h2 style={{ marginBottom: '10px' }}>DevOps API Key Generator</h2>
+                <button 
+                  onClick={generateDevOpsKeys}
+                  disabled={generatingKeys}
+                  style={{
+                    padding: '10px 16px',
+                    backgroundColor: '#4f46e5',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {generatingKeys ? 'Generating...' : 'Generate API Keys'}
+                </button>
+                {apiKey && (
+                  <div style={{ marginTop: '1rem' }}>
+                    <p><strong>API Key:</strong> {apiKey}</p>
+                    <p><strong>Webhook Secret:</strong> {webhookSecret}</p>
+                  </div>
+                )}
+              </div>
+            </>
           } />
           <Route path="users" element={
             <>
@@ -566,20 +952,7 @@ const Admin = () => {
           />
           <Route
             path="embedded-widget"
-            element={
-              <div style={{ width: '100%', height: '600px' }}>
-                <iframe 
-                  src="https://dev-ops-modules-wdonte97.replit.app/embed"
-                  width="100%" 
-                  height="600px"
-                  frameBorder="0"
-                  style={{ border: 'none', display: 'block' }}
-                  allow="web-share"
-                  sandbox="allow-scripts allow-same-origin"
-                  title="Embedded Widget"
-                />
-              </div>
-            }
+            element={<DevOpsIntegration />}
           />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>

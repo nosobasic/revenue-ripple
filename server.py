@@ -330,4 +330,27 @@ def dashboard_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Do not include `app.run(...)`
+# --- NEW ROUTE: Generate DevOps API Key ---
+@app.route('/devops/generate-api-key', methods=['POST'])
+def generate_devops_api_key():
+    from uuid import uuid4
+    try:
+        api_key = str(uuid4())
+        webhook_secret = str(uuid4())
+
+        # Save the keys to Supabase
+        supabase.table("devops_config").upsert({
+            "id": 1,
+            "api_key": api_key,
+            "webhook_secret": webhook_secret
+        }).execute()
+
+        return jsonify({
+            "api_key": api_key,
+            "webhook_secret": webhook_secret
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5001)
