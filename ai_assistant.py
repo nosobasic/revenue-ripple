@@ -5,13 +5,26 @@ import traceback
 
 ai_assistant_bp = Blueprint('ai_assistant', __name__)
 
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Make OpenAI client optional
+try:
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if openai_api_key:
+        client = openai.OpenAI(api_key=openai_api_key)
+    else:
+        client = None
+        print("⚠️ OpenAI API key not found - AI assistant will be disabled")
+except Exception as e:
+    client = None
+    print(f"⚠️ Failed to initialize OpenAI client: {e}")
 
 def is_authorized(user_role):
     return user_role in ["member", "affiliate", "reseller", "admin"]
 
 @ai_assistant_bp.route('/api/ai-assistant', methods=['POST'])
 def ai_assistant():
+    if not client:
+        return jsonify({"error": "AI assistant is not available - OpenAI API key not configured"}), 503
+    
     user_role = request.headers.get("x-user-role")
     print("User role:", user_role)
     if not is_authorized(user_role):
