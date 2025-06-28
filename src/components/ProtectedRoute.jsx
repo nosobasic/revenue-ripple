@@ -40,39 +40,38 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
 );
 
 export default function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, loading, session, initialized } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
+  const token = localStorage.getItem("revenue-ripple-auth-token");
 
-  // Debug logging for troubleshooting
+  // Debug logging
   console.log("ProtectedRoute:", {
-    user: user ? { id: user.id, role: user.role, email: user.email } : null,
+    user,
     loading,
-    initialized,
     requireAdmin,
     path: location.pathname,
-    hasSession: !!session,
   });
 
-  // Show loading spinner while auth is initializing
-  if (!initialized || loading) {
+  // Show a loading spinner while auth state is loading
+  if (loading) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 
-  // Redirect to login if not authenticated (no session or user)
-  if (!session || !user) {
-    console.log("No authenticated session found, redirecting to login");
+  // Redirect to login if not authenticated
+  if (!token) {
+    console.log("No user found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has required admin role
+  // Check if user has required role
   if (requireAdmin) {
-    console.log("Checking admin access:", {
-      userRole: user.role,
-      isAdmin: user.role === "admin",
+    console.log("Checking admin role:", {
+      userRole: user?.role,
+      isAdmin: user?.role === "admin",
     });
 
-    if (user.role !== "admin") {
-      console.log("User does not have admin role, showing access denied");
+    if (user?.role !== "admin") {
+      console.log("User is not admin, showing access denied");
       return (
         <div style={{ 
           color: "red", 
