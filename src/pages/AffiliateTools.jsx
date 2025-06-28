@@ -6,16 +6,49 @@ import '../pages.css';
 
 const AffiliateTools = () => {
   const handleDownload = (materialId, format) => {
-    // This would typically be an API call to get the secure download URL
-    const downloadUrl = `/api/downloads/${materialId}/${format}`;
+    // Find the material by ID
+    const material = marketingMaterials.find(m => m.id === materialId);
+    if (!material || !material.downloads[format]) {
+      console.error('Download not found for material:', materialId, 'format:', format);
+      return;
+    }
+
+    // Get the download URL from the material's downloads object
+    const downloadUrl = material.downloads[format];
     
     // Create a temporary link element
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', ''); // This will force download instead of navigation
+    
+    // Set a meaningful filename for the download
+    const filename = `${material.title.toLowerCase().replace(/\s+/g, '-')}-${format.toLowerCase()}`;
+    link.setAttribute('download', filename);
+    
+    // Append to body, click, and remove
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadAll = (materialId) => {
+    const material = marketingMaterials.find(m => m.id === materialId);
+    if (!material) {
+      console.error('Material not found:', materialId);
+      return;
+    }
+
+    // Download each format with a small delay to prevent browser blocking
+    Object.entries(material.downloads).forEach(([format, url], index) => {
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = url;
+        const filename = `${material.title.toLowerCase().replace(/\s+/g, '-')}-${format.toLowerCase()}`;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, index * 1000); // 1 second delay between downloads
+    });
   };
 
   const marketingMaterials = [
@@ -23,36 +56,34 @@ const AffiliateTools = () => {
       id: 1,
       title: 'Membership Mastery',
       description: "As an affiliate/reseller, you're probably aware of the importance of building an email list for your business. That's why the Membership Mastery book can be an excellent lead magnet to help you achieve this goal. This comprehensive guide teaches readers how to create a membership site from scratch and monetize it, making it a valuable resource that your subscribers will appreciate. By offering this book as a freebie to your email list, you're not only providing them with valuable information, but you're also establishing a stronger connection with them. This can lead to increased loyalty and engagement, which are both critical for becoming a top Reseller.",
-      formats: ['TXT', 'PDF'],
+      formats: ['PDF'],
       sizes: ['728x90', '300x250', '160x600'],
       image: '/assets/images/images/Membership-Mastery.png',
       downloads: {
-        TXT: '/assets/downloads/membership-mastery.txt',
-        PDF: '/assets/downloads/membership-mastery.pdf'
+        PDF: '/assets/downloads/MembershipMastery.pdf',
+        ZIP: '/assets/downloads/MembershipMastery-LandingPageInfo.zip'
       }
     },
     {
       id: 2,
       title: 'Unlock Your Marketing Potential',
       description: "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
-      formats: ['HTML', 'CSS'],
+      formats: ['ZIP'],
       features: ['Mobile-friendly', 'A/B Tested'],
       image: '/assets/images/images/Marketing-Potential-book.png',
       downloads: {
-        HTML: '/assets/downloads/marketing-potential.html',
-        CSS: '/assets/downloads/marketing-potential.css'
+        PDF: '/assets/downloads/Unlock-Your-Marketing-Potential.pdf'
       }
     },
     {
       id: 3,
       title: 'Unleash the Power of Traffic',
       description: "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
-      formats: ['PNG', 'JPG'],
+      formats: ['PDF'],
       platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
       image: '/assets/images/images/Power-of-traffic-book.png',
       downloads: {
-        PNG: '/assets/downloads/power-of-traffic.zip',
-        JPG: '/assets/downloads/power-of-traffic-jpg.zip'
+        ZIP: '/assets/downloads/Unleash-the-Power-of-Traffic.zip'
       }
     },
     {
@@ -63,8 +94,7 @@ const AffiliateTools = () => {
       features: ['Responsive', 'Customizable'],
       image: '/assets/images/images/DMD-book.png',
       downloads: {
-        TXT: '/assets/downloads/digital-marketing.txt',
-        PDF: '/assets/downloads/digital-marketing.pdf'
+        ZIP: '/assets/downloads/26-Lessons.zip'
       }
     },
     {
@@ -143,9 +173,15 @@ const AffiliateTools = () => {
                         )}
                       </div>
                       <div className="button-group">
-                        <button className="cta-button">Download All</button>
+                        <button className="cta-button" onClick={() => handleDownloadAll(material.id)}>Download</button>
                         {material.id === 1 && (
-                          <button className="cta-button" style={{ marginLeft: '1rem' }}>Landing Page Info</button>
+                          <button 
+                            className="cta-button" 
+                            style={{ marginLeft: '1rem' }}
+                            onClick={() => handleDownload(material.id, 'ZIP')}
+                          >
+                            Landing Page Info
+                          </button>
                         )}
                       </div>
                     </div>
