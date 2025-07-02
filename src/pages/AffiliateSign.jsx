@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function AffiliateSign() {
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const { signup } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -38,7 +38,7 @@ export default function AffiliateSign() {
       }
 
       // Create user account
-      const { data: authData, error: authError } = await signUp(
+      const { data: authData, error: authError } = await signup(
         formData.email,
         formData.password,
         formData.firstName,

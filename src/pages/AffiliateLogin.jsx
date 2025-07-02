@@ -12,7 +12,7 @@ export default function AffiliateLogin() {
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
-  const { login, resetPassword } = useAuth();
+  const { login, resetPassword, logout } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ export default function AffiliateLogin() {
         setError(
           "This login is for affiliates and resellers only. Please use the regular login."
         );
-        await signOut();
+        await logout();
       }
     } catch (error) {
       setError(error.message);

@@ -13,7 +13,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const { signup } = useAuth();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ export default function Register() {
     }
 
     try {
-      await signUp(email, password, firstName, lastName);
+      await signup(email, password, firstName, lastName);
       alert('Registration successful! Please check your email for verification.');
       navigate('/login');
     } catch (error) {

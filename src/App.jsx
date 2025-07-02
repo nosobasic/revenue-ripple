@@ -84,18 +84,19 @@ const App = () => {
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
-        <Route path="/checkout" element={<UnprotectedRoute><Checkout /></UnprotectedRoute>} />
-        <Route path="/thank-you" element={<UnprotectedRoute><ThankYou /></UnprotectedRoute>} />
+
+        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSign /></UnprotectedRoute>} />
-        <Route path="/special" element={<UnprotectedRoute><Reseller /></UnprotectedRoute>} />
-        <Route path="/tripwire-success" element={<UnprotectedRoute><TripwireSuccess /></UnprotectedRoute>} />
-        <Route path="/reseller-success" element={<UnprotectedRoute><ResellerSuccess /></UnprotectedRoute>} />
-        <Route path="/pro-reseller-upsell" element={<UnprotectedRoute><ProResellerUpsell /></UnprotectedRoute>} />
-        <Route path="/three-months-free-upsell" element={<UnprotectedRoute><ThreeMonthsFreeUpsell /></UnprotectedRoute>} />
-        <Route path="/DMD" element={<UnprotectedRoute><DMDLanding /></UnprotectedRoute>} />
-        <Route path="/special-invite" element={<UnprotectedRoute><SpecialInvite /></UnprotectedRoute>} />
-        <Route path="/reseller-checkout" element={<UnprotectedRoute><ResellerCheckout /></UnprotectedRoute>} />
-        <Route path="/reseller-trial" element={<UnprotectedRoute><ResellerTrial /></UnprotectedRoute>} />
+        <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
+        <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
+        <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
+        <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
+        <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
+        <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
+        <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
+        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
+        <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />

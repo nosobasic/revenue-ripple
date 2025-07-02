@@ -7,42 +7,25 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 import { 
-  FaUserCircle, 
-  FaSignOutAlt, 
   FaMoneyBillWave, 
   FaChartBar, 
   FaGraduationCap, 
   FaLightbulb, 
   FaGlobe, 
-  FaEnvelope, 
   FaShareAlt, 
   FaShoppingCart, 
-  FaAd, 
-  FaLinkedin, 
   FaUsers, 
   FaFunnelDollar, 
-  FaFacebookMessenger, 
   FaBriefcase, 
   FaRobot, 
-  FaPinterest, 
   FaUserPlus, 
-  FaSearch, 
-  FaTwitter, 
-  FaPhone, 
   FaFlask, 
   FaUserTie, 
-  FaNewspaper, 
   FaImage, 
   FaBook, 
-  FaMapMarkerAlt, 
-  FaLinkedinIn, 
   FaChartLine, 
-  FaBox, 
-  FaTruck, 
-  FaExclamationTriangle, 
   FaBell 
 } from 'react-icons/fa';
-import { courses } from '../data/courses';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
