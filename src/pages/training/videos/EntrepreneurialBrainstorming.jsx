@@ -60,8 +60,8 @@ const EntrepreneurialBrainstorming = () => {
         </div>
       </header>
 
-      <div className="container dashboard-content">
-        <div className="main-content">
+      <div className="container dashboard-content" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start' }}>
+        <div className="main-content" style={{ flex: '1 1 600px', maxWidth: 800, margin: '0 auto' }}>
           <div className="section">
             <div className="section-header">
               <h2>Video Modules</h2>
@@ -69,17 +69,18 @@ const EntrepreneurialBrainstorming = () => {
             <div className="section-content">
               {/* Intro Video */}
               {course?.introVideo?.vimeoId && (
-                <div className="video-container" style={{ marginBottom: 24 }}>
-                  <iframe
-                    src={`https://player.vimeo.com/video/${course.introVideo.vimeoId}`}
-                    width="100%"
-                    height="400"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    title="Intro Video"
-                  ></iframe>
-                  <div className="video-description">
+                <div className="video-container" style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 12, overflow: 'hidden' }}>
+                    <iframe
+                      src={`https://player.vimeo.com/video/${course.introVideo.vimeoId}`}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                      frameBorder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      title="Intro Video"
+                    ></iframe>
+                  </div>
+                  <div className="video-description" style={{ width: '100%', maxWidth: 700 }}>
                     <h3>Introduction</h3>
                     <p>{course.description}</p>
                   </div>
@@ -143,7 +144,7 @@ const EntrepreneurialBrainstorming = () => {
                     zIndex: 1000,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
                   }}
                   onClick={() => setModalIdx(null)}
                 >
@@ -153,9 +154,13 @@ const EntrepreneurialBrainstorming = () => {
                       background: '#fff',
                       borderRadius: 8,
                       padding: 24,
-                      maxWidth: 700,
-                      width: '90%',
-                      position: 'relative'
+                      maxWidth: 800,
+                      width: '95vw',
+                      position: 'relative',
+                      boxSizing: 'border-box',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
                     }}
                     onClick={e => e.stopPropagation()}
                   >
@@ -168,23 +173,23 @@ const EntrepreneurialBrainstorming = () => {
                         background: 'transparent',
                         border: 'none',
                         fontSize: 24,
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                       }}
                       aria-label="Close"
                     >
                       ×
                     </button>
-                    <iframe
-                      src={`https://player.vimeo.com/video/${modules[modalIdx].video.vimeoId}`}
-                      width="100%"
-                      height="400"
-                      frameBorder="0"
-                      allow="autoplay; fullscreen; picture-in-picture"
-                      allowFullScreen
-                      title={modules[modalIdx].title}
-                      style={{ borderRadius: 8 }}
-                    ></iframe>
-                    <div className="video-description" style={{ marginTop: 16 }}>
+                    <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 8, overflow: 'hidden' }}>
+                      <iframe
+                        src={`https://player.vimeo.com/video/${modules[modalIdx].video.vimeoId}`}
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                        title={modules[modalIdx].title}
+                      ></iframe>
+                    </div>
+                    <div className="video-description" style={{ marginTop: 16, width: '100%', maxWidth: 700 }}>
                       <h3>{modules[modalIdx].title}</h3>
                       <p>{modules[modalIdx].description}</p>
                     </div>
