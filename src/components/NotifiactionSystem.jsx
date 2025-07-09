@@ -5,36 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
-import { 
-  Bell, 
-  AlertTriangle, 
-  TrendingDown, 
-  TrendingUp, 
-  X, 
+import {
+  Bell,
+  AlertTriangle,
+  TrendingDown,
+  TrendingUp,
+  X,
   Eye,
   EyeOff,
-  Settings
 } from "lucide-react";
 
-interface Notification {
-  id: string;
-  type: "critical" | "warning" | "info" | "success";
-  title: string;
-  message: string;
-  timestamp: Date;
-  agentId?: number;
-  agentName?: string;
-  actionRequired: boolean;
-  acknowledged: boolean;
-  data?: any;
-}
-
-interface NotificationSystemProps {
-  className?: string;
-}
-
-export function NotificationSystem({ className }: NotificationSystemProps) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+export function NotificationSystem({ className }) {
+  const [notifications, setNotifications] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showOnlyUnread, setShowOnlyUnread] = useState(false);
 
@@ -50,79 +32,90 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
 
   useEffect(() => {
     // Simulate real-time notifications from agents
-    const mockNotifications: Notification[] = [
+    const mockNotifications = [
       {
         id: "1",
         type: "critical",
         title: "Revenue Drop Alert",
-        message: "Daily revenue down 15% from yesterday - immediate attention required",
+        message:
+          "Daily revenue down 15% from yesterday - immediate attention required",
         timestamp: new Date(Date.now() - 5 * 60 * 1000),
         agentId: 5,
         agentName: "Revenue Ripple Tracker",
         actionRequired: true,
         acknowledged: false,
-        data: { previousRevenue: 41850, currentRevenue: 35604, dropPercentage: 14.9 }
+        data: {
+          previousRevenue: 41850,
+          currentRevenue: 35604,
+          dropPercentage: 14.9,
+        },
       },
       {
         id: "2",
         type: "warning",
         title: "KPI Threshold Exceeded",
-        message: "User growth rate below target threshold (2.1% vs 3.0% target)",
+        message:
+          "User growth rate below target threshold (2.1% vs 3.0% target)",
         timestamp: new Date(Date.now() - 15 * 60 * 1000),
         agentId: 4,
         agentName: "KPI Tracker",
         actionRequired: true,
         acknowledged: false,
-        data: { currentRate: 2.1, targetRate: 3.0 }
+        data: { currentRate: 2.1, targetRate: 3.0 },
       },
       {
         id: "3",
         type: "critical",
         title: "Funnel Conversion Drop",
-        message: "Checkout conversion rate dropped to 1.8% (30% below baseline)",
+        message:
+          "Checkout conversion rate dropped to 1.8% (30% below baseline)",
         timestamp: new Date(Date.now() - 25 * 60 * 1000),
         agentId: 1,
         agentName: "Funnel Tester",
         actionRequired: true,
         acknowledged: false,
-        data: { currentRate: 1.8, baselineRate: 2.6 }
+        data: { currentRate: 1.8, baselineRate: 2.6 },
       },
       {
         id: "4",
         type: "warning",
         title: "Webhook Latency Issue",
-        message: "Stripe webhook response time increased to 2.3s (above 1.5s threshold)",
+        message:
+          "Stripe webhook response time increased to 2.3s (above 1.5s threshold)",
         timestamp: new Date(Date.now() - 35 * 60 * 1000),
         agentId: 3,
         agentName: "Webhook Validator",
         actionRequired: false,
         acknowledged: true,
-        data: { responseTime: 2.3, threshold: 1.5 }
+        data: { responseTime: 2.3, threshold: 1.5 },
       },
       {
         id: "5",
         type: "success",
         title: "Traffic Surge Detected",
-        message: "Daily active users increased 22% - scaling systems automatically",
+        message:
+          "Daily active users increased 22% - scaling systems automatically",
         timestamp: new Date(Date.now() - 45 * 60 * 1000),
         agentId: 5,
         agentName: "Revenue Ripple Tracker",
         actionRequired: false,
         acknowledged: true,
-        data: { increase: 22, currentDAU: 237 }
-      }
+        data: { increase: 22, currentDAU: 237 },
+      },
     ];
-    
+
     setNotifications(mockNotifications);
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.acknowledged).length;
-  const criticalCount = notifications.filter(n => n.type === "critical" && !n.acknowledged).length;
-  const filteredNotifications = showOnlyUnread 
-    ? notifications.filter(n => !n.acknowledged)
+  const unreadCount = notifications.filter((n) => !n.acknowledged).length;
+  const criticalCount = notifications.filter(
+    (n) => n.type === "critical" && !n.acknowledged
+  ).length;
+  const filteredNotifications = showOnlyUnread
+    ? notifications.filter((n) => !n.acknowledged)
     : notifications;
 
-  const getNotificationIcon = (type: string) => {
+  const getNotificationIcon = (type) => {
     switch (type) {
       case "critical":
         return <AlertTriangle className="h-4 w-4 text-red-500" />;
@@ -135,7 +128,7 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
     }
   };
 
-  const getNotificationBadgeVariant = (type: string) => {
+  const getNotificationBadgeVariant = (type) => {
     switch (type) {
       case "critical":
         return "destructive";
@@ -148,20 +141,20 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
     }
   };
 
-  const acknowledgeNotification = (id: string) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === id ? { ...n, acknowledged: true } : n)
+  const acknowledgeNotification = (id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, acknowledged: true } : n))
     );
   };
 
-  const formatTimeAgo = (date: Date) => {
+  const formatTimeAgo = (date) => {
     const diffMins = Math.floor((Date.now() - date.getTime()) / (1000 * 60));
     if (diffMins < 1) return "just now";
     if (diffMins < 60) return `${diffMins}m ago`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours}h ago`;
-    
+
     const diffDays = Math.floor(diffHours / 24);
     return `${diffDays}d ago`;
   };
@@ -207,7 +200,8 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                 <div className="flex items-center space-x-2">
                   <AlertTriangle className="h-4 w-4 text-red-500 animate-pulse" />
                   <span className="text-sm font-medium text-red-700 dark:text-red-300">
-                    {criticalCount} critical alert{criticalCount > 1 ? 's' : ''} need attention
+                    {criticalCount} critical alert{criticalCount > 1 ? "s" : ""}{" "}
+                    need attention
                   </span>
                   <Button
                     size="sm"
@@ -246,7 +240,11 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                       size="sm"
                       onClick={() => setShowOnlyUnread(!showOnlyUnread)}
                     >
-                      {showOnlyUnread ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                      {showOnlyUnread ? (
+                        <Eye className="h-4 w-4" />
+                      ) : (
+                        <EyeOff className="h-4 w-4" />
+                      )}
                     </Button>
                     <Button
                       variant="ghost"
@@ -259,7 +257,10 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                 </div>
                 {unreadCount > 0 && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <span>{unreadCount} unread notification{unreadCount > 1 ? 's' : ''}</span>
+                    <span>
+                      {unreadCount} unread notification
+                      {unreadCount > 1 ? "s" : ""}
+                    </span>
                     {showOnlyUnread && (
                       <Badge variant="secondary" className="text-xs">
                         Unread only
@@ -277,7 +278,9 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         className={`p-3 border rounded-lg space-y-2 ${
-                          !notification.acknowledged ? 'bg-muted/50' : 'opacity-75'
+                          !notification.acknowledged
+                            ? "bg-muted/50"
+                            : "opacity-75"
                         }`}
                       >
                         <div className="flex items-start justify-between">
@@ -288,8 +291,10 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                                 <span className="font-medium text-sm">
                                   {notification.title}
                                 </span>
-                                <Badge 
-                                  variant={getNotificationBadgeVariant(notification.type)}
+                                <Badge
+                                  variant={getNotificationBadgeVariant(
+                                    notification.type
+                                  )}
                                   className="text-xs"
                                 >
                                   {notification.type}
@@ -300,13 +305,16 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                               </p>
                               <div className="flex items-center justify-between mt-2">
                                 <span className="text-xs text-muted-foreground">
-                                  {notification.agentName} • {formatTimeAgo(notification.timestamp)}
+                                  {notification.agentName} •{" "}
+                                  {formatTimeAgo(notification.timestamp)}
                                 </span>
                                 {!notification.acknowledged && (
                                   <Button
                                     size="sm"
                                     variant="ghost"
-                                    onClick={() => acknowledgeNotification(notification.id)}
+                                    onClick={() =>
+                                      acknowledgeNotification(notification.id)
+                                    }
                                     className="text-xs h-6"
                                   >
                                     Acknowledge
@@ -318,7 +326,7 @@ export function NotificationSystem({ className }: NotificationSystemProps) {
                         </div>
                       </motion.div>
                     ))}
-                    
+
                     {filteredNotifications.length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
                         <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
