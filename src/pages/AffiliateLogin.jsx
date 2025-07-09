@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import { supabase } from "../supabase/client";
-import "../pages.css";
+import "../../public/css/pages.css";
 
 export default function AffiliateLogin() {
   const [email, setEmail] = useState("");

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { courses } from '../data/courses';
-import VideoPlayer from '../components/VideoPlayer';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '../supabase/client';
-import '../styles/courses.css';
+import { useState, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { courses } from "../constants/data/courses";
+import VideoPlayer from "../components/VideoPlayer";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../supabase/client";
+import "../../public/css/courses.css";
 
 const CourseModule = () => {
   const { courseSlug, moduleId } = useParams();
@@ -15,15 +15,15 @@ const CourseModule = () => {
   const [completed, setCompleted] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
 
-  const course = courses.find(c => c.slug === courseSlug);
-  const moduleNumber = parseInt(moduleId.split('-')[1]);
-  const module = course?.modules.find(m => m.id === moduleNumber);
-  const prevModule = course?.modules.find(m => m.id === moduleNumber - 1);
-  const nextModule = course?.modules.find(m => m.id === moduleNumber + 1);
+  const course = courses.find((c) => c.slug === courseSlug);
+  const moduleNumber = parseInt(moduleId.split("-")[1]);
+  const module = course?.modules.find((m) => m.id === moduleNumber);
+  const prevModule = course?.modules.find((m) => m.id === moduleNumber - 1);
+  const nextModule = course?.modules.find((m) => m.id === moduleNumber + 1);
 
   useEffect(() => {
     if (!course || !module) {
-      setError('Module not found');
+      setError("Module not found");
     }
     setIsLoading(false);
   }, [course, module]);
@@ -33,11 +33,11 @@ const CourseModule = () => {
     const fetchCompletion = async () => {
       if (!user) return;
       const { data, error } = await supabase
-        .from('user_module_completion')
-        .select('completed')
-        .eq('user_id', user.id)
-        .eq('course_id', courseSlug)
-        .eq('module_id', moduleId)
+        .from("user_module_completion")
+        .select("completed")
+        .eq("user_id", user.id)
+        .eq("course_id", courseSlug)
+        .eq("module_id", moduleId)
         .single();
       if (data && data.completed) setCompleted(true);
     };
@@ -49,17 +49,18 @@ const CourseModule = () => {
     if (!user) return;
     setButtonLoading(true);
     // Upsert completion
-    await supabase
-      .from('user_module_completion')
-      .upsert([
+    await supabase.from("user_module_completion").upsert(
+      [
         {
           user_id: user.id,
           course_id: courseSlug,
           module_id: moduleId,
           completed: true,
           completed_at: new Date().toISOString(),
-        }
-      ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+        },
+      ],
+      { onConflict: ["user_id", "course_id", "module_id"] }
+    );
     setCompleted(true);
     await recalculateProgress();
     setButtonLoading(false);
@@ -71,25 +72,28 @@ const CourseModule = () => {
     const totalModules = course.modules.length;
     // Get completed modules from Supabase
     const { data: completedModules } = await supabase
-      .from('user_module_completion')
-      .select('module_id')
-      .eq('user_id', user.id)
-      .eq('course_id', courseSlug)
-      .eq('completed', true);
-    const percentDone = Math.round((completedModules.length / totalModules) * 100);
-    const status = percentDone === 100 ? 'completed' : 'in_progress';
+      .from("user_module_completion")
+      .select("module_id")
+      .eq("user_id", user.id)
+      .eq("course_id", courseSlug)
+      .eq("completed", true);
+    const percentDone = Math.round(
+      (completedModules.length / totalModules) * 100
+    );
+    const status = percentDone === 100 ? "completed" : "in_progress";
     // Upsert user_progress
-    await supabase
-      .from('user_progress')
-      .upsert([
+    await supabase.from("user_progress").upsert(
+      [
         {
           user_id: user.id,
           course_id: courseSlug,
           percent_done: percentDone,
           status,
           last_updated: new Date().toISOString(),
-        }
-      ], { onConflict: ['user_id', 'course_id'] });
+        },
+      ],
+      { onConflict: ["user_id", "course_id"] }
+    );
   };
 
   if (error) {
@@ -98,12 +102,12 @@ const CourseModule = () => {
         <div className="course-breadcrumb">
           <Link to="/dashboard">Dashboard</Link>
           <span>/</span>
-          <Link to={`/courses/${courseSlug}`}>{course?.title || 'Course'}</Link>
+          <Link to={`/courses/${courseSlug}`}>{course?.title || "Course"}</Link>
         </div>
         <div className="error-container">
           <h2 className="error-title">Error</h2>
           <p className="error-message">{error}</p>
-          <button 
+          <button
             onClick={() => navigate(`/courses/${courseSlug}`)}
             className="nav-button primary"
           >
@@ -120,7 +124,7 @@ const CourseModule = () => {
         <div className="course-breadcrumb">
           <Link to="/dashboard">Dashboard</Link>
           <span>/</span>
-          <Link to={`/courses/${courseSlug}`}>{course?.title || 'Course'}</Link>
+          <Link to={`/courses/${courseSlug}`}>{course?.title || "Course"}</Link>
         </div>
         <div className="loading-container">
           <div className="loading-spinner" />
@@ -143,29 +147,30 @@ const CourseModule = () => {
       <h1 className="course-title">{module.title}</h1>
 
       <div className="video-container">
-        <VideoPlayer 
-          video={module.video}
-          title={module.title}
-        />
+        <VideoPlayer video={module.video} title={module.title} />
       </div>
 
       <div className="course-info">
         <p className="course-description">{module.description}</p>
         <div style={{ marginTop: 16 }}>
           <button
-            className={`nav-button primary${completed ? ' completed' : ''}`}
+            className={`nav-button primary${completed ? " completed" : ""}`}
             onClick={markModuleComplete}
             disabled={completed || buttonLoading}
             style={{ minWidth: 160 }}
           >
-            {completed ? 'Completed' : buttonLoading ? 'Marking...' : 'Mark as Complete'}
+            {completed
+              ? "Completed"
+              : buttonLoading
+              ? "Marking..."
+              : "Mark as Complete"}
           </button>
         </div>
       </div>
 
       <div className="module-navigation">
         {prevModule ? (
-          <Link 
+          <Link
             to={`/courses/${courseSlug}/module-${prevModule.id}`}
             className="nav-button secondary"
           >
@@ -174,14 +179,11 @@ const CourseModule = () => {
         ) : (
           <div />
         )}
-        <Link 
-          to={`/courses/${courseSlug}`}
-          className="nav-button secondary"
-        >
+        <Link to={`/courses/${courseSlug}`} className="nav-button secondary">
           Back to Course Overview
         </Link>
         {nextModule ? (
-          <Link 
+          <Link
             to={`/courses/${courseSlug}/module-${nextModule.id}`}
             className="nav-button primary"
           >
@@ -195,4 +197,4 @@ const CourseModule = () => {
   );
 };
 
-export default CourseModule; 
+export default CourseModule;

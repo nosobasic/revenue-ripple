@@ -1,8 +1,7 @@
-import React from 'react';
-import './VideoPlayer.css';
+import "../../public/css/VideoPlayer.css";
 
 const VideoPlayer = ({ video, title }) => {
-  let embedUrl = '';
+  let embedUrl = "";
   if (video?.vimeoId) {
     embedUrl = `https://player.vimeo.com/video/${video.vimeoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
   } else if (video?.url) {
@@ -27,4 +26,4 @@ const VideoPlayer = ({ video, title }) => {
   );
 };
 
-export default VideoPlayer; 
+export default VideoPlayer;

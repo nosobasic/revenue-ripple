@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-import { courses } from '../../../data/courses';
-import '../../../pages.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import Navbar from "../../../components/Navbar";
+import { courses } from "../../../constants/data/courses";
+import "../../../../public/css/pages.css";
 
-const course = courses.find(c => c.slug === 'entrepreneurial-brainstorming');
+const course = courses.find((c) => c.slug === "entrepreneurial-brainstorming");
 const modules = course ? course.modules : [];
 
 const EntrepreneurialBrainstorming = () => {
@@ -90,7 +90,10 @@ const EntrepreneurialBrainstorming = () => {
               <div className="video-description" style={{ marginBottom: 32 }}>
                 <h3>About This Video</h3>
                 <p>
-                  Discover the art of entrepreneurial brainstorming and how to generate, validate, and refine startup ideas. This session is designed to help you unlock your creative potential and turn ideas into actionable business opportunities.
+                  Discover the art of entrepreneurial brainstorming and how to
+                  generate, validate, and refine startup ideas. This session is
+                  designed to help you unlock your creative potential and turn
+                  ideas into actionable business opportunities.
                 </p>
                 <h3>What You'll Learn</h3>
                 <ul>
@@ -101,7 +104,16 @@ const EntrepreneurialBrainstorming = () => {
                 </ul>
                 <h3>Expert Bio</h3>
                 <p>
-                  Jordan Reyes is a seasoned startup strategist and serial entrepreneur with over 15 years of experience in launching, scaling, and advising tech-focused businesses. Having raised over $40 million in venture funding and taken two companies through successful exits, Jordan is known for his no-fluff approach to validating business models and building lean, profitable ventures. He's mentored hundreds of founders globally through programs like Techstars and Y Combinator’s Startup School, and is a frequent speaker on innovation, hustle culture, and early-stage growth.
+                  Jordan Reyes is a seasoned startup strategist and serial
+                  entrepreneur with over 15 years of experience in launching,
+                  scaling, and advising tech-focused businesses. Having raised
+                  over $40 million in venture funding and taken two companies
+                  through successful exits, Jordan is known for his no-fluff
+                  approach to validating business models and building lean,
+                  profitable ventures. He's mentored hundreds of founders
+                  globally through programs like Techstars and Y Combinator’s
+                  Startup School, and is a frequent speaker on innovation,
+                  hustle culture, and early-stage growth.
                 </p>
               </div>
 
@@ -111,17 +123,20 @@ const EntrepreneurialBrainstorming = () => {
                   <button
                     key={mod.title}
                     onClick={() => setModalIdx(idx)}
-                    className={modalIdx === idx ? 'selected' : ''}
+                    className={modalIdx === idx ? "selected" : ""}
                     style={{
-                      fontWeight: modalIdx === idx ? 'bold' : '500',
+                      fontWeight: modalIdx === idx ? "bold" : "500",
                       marginRight: 8,
-                      padding: '6px 12px',
+                      padding: "6px 12px",
                       borderRadius: 4,
-                      border: modalIdx === idx ? '2px solid #2563eb' : '1.5px solid #cbd5e1',
-                      background: modalIdx === idx ? '#2563eb' : '#f1f5f9',
-                      color: modalIdx === idx ? '#fff' : '#1e293b',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      border:
+                        modalIdx === idx
+                          ? "2px solid #2563eb"
+                          : "1.5px solid #cbd5e1",
+                      background: modalIdx === idx ? "#2563eb" : "#f1f5f9",
+                      color: modalIdx === idx ? "#fff" : "#1e293b",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
                     }}
                   >
                     {mod.title}
@@ -134,41 +149,41 @@ const EntrepreneurialBrainstorming = () => {
                 <div
                   className="modal-backdrop"
                   style={{
-                    position: 'fixed',
+                    position: "fixed",
                     top: 0,
                     left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    background: 'rgba(0,0,0,0.6)',
+                    width: "100vw",
+                    height: "100vh",
+                    background: "rgba(0,0,0,0.6)",
                     zIndex: 1000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                   onClick={() => setModalIdx(null)}
                 >
                   <div
                     className="modal-content"
                     style={{
-                      background: '#fff',
+                      background: "#fff",
                       borderRadius: 8,
                       padding: 24,
                       maxWidth: 700,
-                      width: '90%',
-                      position: 'relative'
+                      width: "90%",
+                      position: "relative",
                     }}
-                    onClick={e => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <button
                       onClick={() => setModalIdx(null)}
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 12,
                         right: 12,
-                        background: 'transparent',
-                        border: 'none',
+                        background: "transparent",
+                        border: "none",
                         fontSize: 24,
-                        cursor: 'pointer'
+                        cursor: "pointer",
                       }}
                       aria-label="Close"
                     >
@@ -184,7 +199,10 @@ const EntrepreneurialBrainstorming = () => {
                       title={modules[modalIdx].title}
                       style={{ borderRadius: 8 }}
                     ></iframe>
-                    <div className="video-description" style={{ marginTop: 16 }}>
+                    <div
+                      className="video-description"
+                      style={{ marginTop: 16 }}
+                    >
                       <h3>{modules[modalIdx].title}</h3>
                       <p>{modules[modalIdx].description}</p>
                     </div>
@@ -202,13 +220,24 @@ const EntrepreneurialBrainstorming = () => {
             </div>
             <div className="section-content">
               <div className="related-videos">
-                <Link to="/training/videos/bulletproof-branding" className="related-video-item">
+                <Link
+                  to="/training/videos/bulletproof-branding"
+                  className="related-video-item"
+                >
                   <h4>Bulletproof Branding</h4>
-                  <p>Your brand is your reputation. Learn how to build one that hits hard...</p>
+                  <p>
+                    Your brand is your reputation. Learn how to build one that
+                    hits hard...
+                  </p>
                 </Link>
-                <Link to="/training/videos/shoestring-startups" className="related-video-item">
+                <Link
+                  to="/training/videos/shoestring-startups"
+                  className="related-video-item"
+                >
                   <h4>Shoestring Startups</h4>
-                  <p>Launching on a tight budget? This guide walks you through...</p>
+                  <p>
+                    Launching on a tight budget? This guide walks you through...
+                  </p>
                 </Link>
               </div>
             </div>
@@ -219,4 +248,4 @@ const EntrepreneurialBrainstorming = () => {
   );
 };
 
-export default EntrepreneurialBrainstorming; 
+export default EntrepreneurialBrainstorming;

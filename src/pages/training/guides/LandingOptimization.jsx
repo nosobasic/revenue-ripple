@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-import '../../../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../../../components/Navbar";
+import "../../../../public/css/pages.css";
 
 const LandingOptimization = () => {
   return (
@@ -47,22 +46,42 @@ const LandingOptimization = () => {
 
                 <div className="guide-intro">
                   <h3>Boost Your Landing Page Click-Through Rate</h3>
-                  <p>This guide breaks down powerful ways to turn visitors into buyers — with better headlines, strategic benefits, smart links, and a layout that gets results.</p>
+                  <p>
+                    This guide breaks down powerful ways to turn visitors into
+                    buyers — with better headlines, strategic benefits, smart
+                    links, and a layout that gets results.
+                  </p>
                 </div>
 
                 <div className="guide-section">
                   <h4>🧠 Lesson 1: Headlines That Convert</h4>
-                  <p>Most people leave within 5–10 seconds. Headlines must hook them immediately. Try asking a powerful question, raising doubt, and ending with a strong benefit.</p>
+                  <p>
+                    Most people leave within 5–10 seconds. Headlines must hook
+                    them immediately. Try asking a powerful question, raising
+                    doubt, and ending with a strong benefit.
+                  </p>
                   <ul>
-                    <li><strong>Question:</strong> Are You Maximizing the Potential of Your Website Traffic?</li>
-                    <li><strong>Doubt:</strong> If Not, You're Losing Thousands Every Year!</li>
-                    <li><strong>Benefit:</strong> Learn How Opt-In Lists Can Boost Profits by 500%!</li>
+                    <li>
+                      <strong>Question:</strong> Are You Maximizing the
+                      Potential of Your Website Traffic?
+                    </li>
+                    <li>
+                      <strong>Doubt:</strong> If Not, You're Losing Thousands
+                      Every Year!
+                    </li>
+                    <li>
+                      <strong>Benefit:</strong> Learn How Opt-In Lists Can Boost
+                      Profits by 500%!
+                    </li>
                   </ul>
                 </div>
 
                 <div className="guide-section">
                   <h4>💥 Lesson 2: Highlight Benefits</h4>
-                  <p>People want results, not features. Highlight what they'll gain. Use bullets to keep it skimmable:</p>
+                  <p>
+                    People want results, not features. Highlight what they'll
+                    gain. Use bullets to keep it skimmable:
+                  </p>
                   <ul>
                     <li>✅ Make more money from your existing traffic</li>
                     <li>✅ Increase opt-in rates by 500%</li>
@@ -71,14 +90,24 @@ const LandingOptimization = () => {
                   </ul>
 
                   <figure className="guide-image-block">
-                    <img src="/assets/images/images/Landing-Page-Opt1.png" alt="Landing Page Benefits Example" className="guide-image" />
-                    <figcaption>Example of effective benefit presentation on a landing page.</figcaption>
+                    <img
+                      src="/assets/images/images/Landing-Page-Opt1.png"
+                      alt="Landing Page Benefits Example"
+                      className="guide-image"
+                    />
+                    <figcaption>
+                      Example of effective benefit presentation on a landing
+                      page.
+                    </figcaption>
                   </figure>
                 </div>
 
                 <div className="guide-section">
                   <h4>🔗 Lesson 3: Smart Text Links</h4>
-                  <p>Links should guide—not overwhelm—readers. Use relevant phrases and action-based links:</p>
+                  <p>
+                    Links should guide—not overwhelm—readers. Use relevant
+                    phrases and action-based links:
+                  </p>
                   <ul>
                     <li>Click to learn more</li>
                     <li>Sign up today</li>
@@ -89,24 +118,39 @@ const LandingOptimization = () => {
 
                 <div className="guide-section">
                   <h4>👆 Lesson 4: Solo Links</h4>
-                  <p>These are your most clickable elements. Place them mid-page or at the bottom using a bold font and clear CTA like:</p>
-                  <blockquote>Click Here and Learn How to Improve Your Golf Game by 7 Strokes</blockquote>
+                  <p>
+                    These are your most clickable elements. Place them mid-page
+                    or at the bottom using a bold font and clear CTA like:
+                  </p>
+                  <blockquote>
+                    Click Here and Learn How to Improve Your Golf Game by 7
+                    Strokes
+                  </blockquote>
                 </div>
 
                 <div className="guide-section">
                   <h4>👁️ Lesson 5: Readability</h4>
-                  <p>Clean design = better conversions. Keep your text legible and easy to scan:</p>
+                  <p>
+                    Clean design = better conversions. Keep your text legible
+                    and easy to scan:
+                  </p>
                   <ul>
                     <li>🧾 Black text on white background works best</li>
                     <li>❌ Avoid clashing text/background colors</li>
                     <li>🔤 Use consistent fonts (12pt Arial recommended)</li>
-                    <li>🎯 Skip decorative banners—lead with a strong headline</li>
+                    <li>
+                      🎯 Skip decorative banners—lead with a strong headline
+                    </li>
                   </ul>
                 </div>
 
                 <div className="guide-section">
                   <h4>✅ Wrap-Up</h4>
-                  <p>You don't need to apply every tactic—but implementing even a few will lift your performance. Focus on clarity, urgency, and value, and watch your conversions grow.</p>
+                  <p>
+                    You don't need to apply every tactic—but implementing even a
+                    few will lift your performance. Focus on clarity, urgency,
+                    and value, and watch your conversions grow.
+                  </p>
                 </div>
               </div>
             </div>
@@ -119,11 +163,17 @@ const LandingOptimization = () => {
             </div>
             <div className="section-content">
               <div className="related-guides">
-                <Link to="/training/guides/landing-components" className="related-guide-item">
+                <Link
+                  to="/training/guides/landing-components"
+                  className="related-guide-item"
+                >
                   <h4>Components of a Landing Page</h4>
                   <p>Landing pages are your digital pitchman...</p>
                 </Link>
-                <Link to="/training/guides/sales-copy" className="related-guide-item">
+                <Link
+                  to="/training/guides/sales-copy"
+                  className="related-guide-item"
+                >
                   <h4>Writing Effective Sales Copy</h4>
                   <p>Sales copy is what turns visits into money...</p>
                 </Link>
@@ -136,4 +186,4 @@ const LandingOptimization = () => {
   );
 };
 
-export default LandingOptimization; 
+export default LandingOptimization;

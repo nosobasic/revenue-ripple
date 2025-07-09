@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-import '../../../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../../../components/Navbar";
+import "../../../../public/css/pages.css";
 
 const BulletproofBranding = () => {
   return (
@@ -33,11 +32,14 @@ const BulletproofBranding = () => {
                   allowFullScreen
                 ></iframe>
               </div>
-              
+
               <div className="video-description">
                 <h3>About This Video</h3>
-                <p>Your brand is your reputation. Learn how to build one that hits hard and sticks with people long after they scroll past.</p>
-                
+                <p>
+                  Your brand is your reputation. Learn how to build one that
+                  hits hard and sticks with people long after they scroll past.
+                </p>
+
                 <h3>What You'll Learn</h3>
                 <ul>
                   <li>How to create a memorable brand identity</li>
@@ -47,7 +49,11 @@ const BulletproofBranding = () => {
                 </ul>
 
                 <h3>Expert Bio</h3>
-                <p>[Expert name] is a branding specialist with [X] years of experience helping companies and entrepreneurs build unforgettable brands.</p>
+                <p>
+                  [Expert name] is a branding specialist with [X] years of
+                  experience helping companies and entrepreneurs build
+                  unforgettable brands.
+                </p>
               </div>
             </div>
           </div>
@@ -60,13 +66,24 @@ const BulletproofBranding = () => {
             </div>
             <div className="section-content">
               <div className="related-videos">
-                <Link to="/training/videos/entrepreneurial" className="related-video-item">
+                <Link
+                  to="/training/videos/entrepreneurial"
+                  className="related-video-item"
+                >
                   <h4>Entrepreneurial Brainstorming</h4>
-                  <p>Get in the mind of real entrepreneurs and see how they come up with ideas...</p>
+                  <p>
+                    Get in the mind of real entrepreneurs and see how they come
+                    up with ideas...
+                  </p>
                 </Link>
-                <Link to="/training/videos/shoestring-startups" className="related-video-item">
+                <Link
+                  to="/training/videos/shoestring-startups"
+                  className="related-video-item"
+                >
                   <h4>Shoestring Startups</h4>
-                  <p>Launching on a tight budget? This guide walks you through...</p>
+                  <p>
+                    Launching on a tight budget? This guide walks you through...
+                  </p>
                 </Link>
               </div>
             </div>
@@ -77,4 +94,4 @@ const BulletproofBranding = () => {
   );
 };
 
-export default BulletproofBranding; 
+export default BulletproofBranding;

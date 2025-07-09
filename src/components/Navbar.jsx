@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import './Navbar.css';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import "../../public/css/Navbar.css";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -10,9 +10,9 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Failed to log out:', error);
+      console.error("Failed to log out:", error);
     }
   };
 
@@ -20,36 +20,56 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          <img 
-            src="/assets/icons/revenue_ripple_no_bg.png" 
-            alt="Revenue Ripple Logo" 
+          <img
+            src="/assets/icons/revenue_ripple_no_bg.png"
+            alt="Revenue Ripple Logo"
             className="navbar-logo"
           />
         </Link>
-        
+
         <div className="navbar-links">
           {user ? (
             <>
-              <Link to="/dashboard" className="navbar-link">Dashboard</Link>
-              <Link to="/courses" className="navbar-link">Video Courses</Link>
-              <Link to="/training" className="navbar-link">Training & Guides</Link>
-              <Link to="/affiliate-centre" className="navbar-link">Affiliates & Resellers</Link>
+              <Link to="/dashboard" className="navbar-link">
+                Dashboard
+              </Link>
+              <Link to="/courses" className="navbar-link">
+                Video Courses
+              </Link>
+              <Link to="/training" className="navbar-link">
+                Training & Guides
+              </Link>
+              <Link to="/affiliate-centre" className="navbar-link">
+                Affiliates & Resellers
+              </Link>
               <div className="navbar-profile">
                 <button className="navbar-button">
-                  {user.email?.split('@')[0]?.toUpperCase()}
+                  {user.email?.split("@")[0]?.toUpperCase()}
                 </button>
                 <div className="navbar-dropdown">
-                  <Link to="/profile" className="dropdown-link">Profile</Link>
-                  <Link to="/change-password" className="dropdown-link">Change Password</Link>
-                  <Link to="/training" className="dropdown-link">Training & Guides</Link>
-                  <button onClick={handleLogout} className="dropdown-link">Logout</button>
+                  <Link to="/profile" className="dropdown-link">
+                    Profile
+                  </Link>
+                  <Link to="/change-password" className="dropdown-link">
+                    Change Password
+                  </Link>
+                  <Link to="/training" className="dropdown-link">
+                    Training & Guides
+                  </Link>
+                  <button onClick={handleLogout} className="dropdown-link">
+                    Logout
+                  </button>
                 </div>
               </div>
             </>
           ) : (
             <>
-              <Link to="/login" className="navbar-link">Member Sign In</Link>
-              <Link to="/affiliate-login" className="navbar-link">Affiliates & Resellers</Link>
+              <Link to="/login" className="navbar-link">
+                Member Sign In
+              </Link>
+              <Link to="/affiliate-login" className="navbar-link">
+                Affiliates & Resellers
+              </Link>
             </>
           )}
         </div>
@@ -58,4 +78,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-import '../../../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../../../components/Navbar";
+import "../../../../public/css/pages.css";
 
 const BacklinksSocial = () => {
   return (
@@ -9,7 +8,9 @@ const BacklinksSocial = () => {
       <Navbar />
       <header className="dashboard-header">
         <div className="container">
-          <h1 className="dashboard-title">RELEVANT BACKLINKS - SOCIAL BOOKMARKING</h1>
+          <h1 className="dashboard-title">
+            RELEVANT BACKLINKS - SOCIAL BOOKMARKING
+          </h1>
           <div className="dashboard-welcome">Marketing Training & Guide</div>
         </div>
       </header>
@@ -23,7 +24,10 @@ const BacklinksSocial = () => {
               <div className="guide-content">
                 <div className="guide-intro">
                   <h3>Want backlinks and more exposure?</h3>
-                  <p>Drop your pages in the right directories and let users vote you up. This strategy boosts your rank and your reach.</p>
+                  <p>
+                    Drop your pages in the right directories and let users vote
+                    you up. This strategy boosts your rank and your reach.
+                  </p>
                 </div>
                 {/* Add more sections as needed */}
               </div>
@@ -37,11 +41,19 @@ const BacklinksSocial = () => {
             </div>
             <div className="section-content">
               <div className="related-guides">
-                <Link to="/training/guides/backlinks-article" className="related-guide-item">
+                <Link
+                  to="/training/guides/backlinks-article"
+                  className="related-guide-item"
+                >
                   <h4>Relevant Backlinks - Article Submission</h4>
-                  <p>Backlinks are the secret sauce for getting to page one...</p>
+                  <p>
+                    Backlinks are the secret sauce for getting to page one...
+                  </p>
                 </Link>
-                <Link to="/training/guides/seo-google" className="related-guide-item">
+                <Link
+                  to="/training/guides/seo-google"
+                  className="related-guide-item"
+                >
                   <h4>SEO - Slap Back @ Google</h4>
                   <p>SEO's a hustle. You can't control everything...</p>
                 </Link>
@@ -54,4 +66,4 @@ const BacklinksSocial = () => {
   );
 };
 
-export default BacklinksSocial; 
+export default BacklinksSocial;

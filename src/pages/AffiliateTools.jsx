@@ -1,29 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import AIAssistantWidget from '../components/AIAssistantWidget';
-import '../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import AIAssistantWidget from "../components/AIAssistantWidget";
+import "../../public/css/pages.css";
 
 const AffiliateTools = () => {
   const handleDownload = (materialId, format) => {
     // Find the material by ID
-    const material = marketingMaterials.find(m => m.id === materialId);
+    const material = marketingMaterials.find((m) => m.id === materialId);
     if (!material || !material.downloads[format]) {
-      console.error('Download not found for material:', materialId, 'format:', format);
+      console.error(
+        "Download not found for material:",
+        materialId,
+        "format:",
+        format
+      );
       return;
     }
 
     // Get the download URL from the material's downloads object
     const downloadUrl = material.downloads[format];
-    
+
     // Create a temporary link element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = downloadUrl;
-    
+
     // Set a meaningful filename for the download
-    const filename = `${material.title.toLowerCase().replace(/\s+/g, '-')}-${format.toLowerCase()}`;
-    link.setAttribute('download', filename);
-    
+    const filename = `${material.title
+      .toLowerCase()
+      .replace(/\s+/g, "-")}-${format.toLowerCase()}`;
+    link.setAttribute("download", filename);
+
     // Append to body, click, and remove
     document.body.appendChild(link);
     link.click();
@@ -31,19 +37,21 @@ const AffiliateTools = () => {
   };
 
   const handleDownloadAll = (materialId) => {
-    const material = marketingMaterials.find(m => m.id === materialId);
+    const material = marketingMaterials.find((m) => m.id === materialId);
     if (!material) {
-      console.error('Material not found:', materialId);
+      console.error("Material not found:", materialId);
       return;
     }
 
     // Download each format with a small delay to prevent browser blocking
     Object.entries(material.downloads).forEach(([format, url], index) => {
       setTimeout(() => {
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        const filename = `${material.title.toLowerCase().replace(/\s+/g, '-')}-${format.toLowerCase()}`;
-        link.setAttribute('download', filename);
+        const filename = `${material.title
+          .toLowerCase()
+          .replace(/\s+/g, "-")}-${format.toLowerCase()}`;
+        link.setAttribute("download", filename);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -54,61 +62,64 @@ const AffiliateTools = () => {
   const marketingMaterials = [
     {
       id: 1,
-      title: 'Membership Mastery',
-      description: "As an affiliate/reseller, you're probably aware of the importance of building an email list for your business. That's why the Membership Mastery book can be an excellent lead magnet to help you achieve this goal. This comprehensive guide teaches readers how to create a membership site from scratch and monetize it, making it a valuable resource that your subscribers will appreciate. By offering this book as a freebie to your email list, you're not only providing them with valuable information, but you're also establishing a stronger connection with them. This can lead to increased loyalty and engagement, which are both critical for becoming a top Reseller.",
-      formats: ['PDF'],
-      sizes: ['728x90', '300x250', '160x600'],
-      image: '/assets/images/images/Membership-Mastery.png',
+      title: "Membership Mastery",
+      description:
+        "As an affiliate/reseller, you're probably aware of the importance of building an email list for your business. That's why the Membership Mastery book can be an excellent lead magnet to help you achieve this goal. This comprehensive guide teaches readers how to create a membership site from scratch and monetize it, making it a valuable resource that your subscribers will appreciate. By offering this book as a freebie to your email list, you're not only providing them with valuable information, but you're also establishing a stronger connection with them. This can lead to increased loyalty and engagement, which are both critical for becoming a top Reseller.",
+      formats: ["PDF"],
+      sizes: ["728x90", "300x250", "160x600"],
+      image: "/assets/images/images/Membership-Mastery.png",
       downloads: {
-        PDF: '/assets/downloads/MembershipMastery.pdf',
-        ZIP: '/assets/downloads/MembershipMastery-LandingPageInfo.zip'
-      }
+        PDF: "/assets/downloads/MembershipMastery.pdf",
+        ZIP: "/assets/downloads/MembershipMastery-LandingPageInfo.zip",
+      },
     },
     {
       id: 2,
-      title: 'Unlock Your Marketing Potential',
-      description: "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
-      formats: ['ZIP'],
-      features: ['Mobile-friendly', 'A/B Tested'],
-      image: '/assets/images/images/Marketing-Potential-book.png',
+      title: "Unlock Your Marketing Potential",
+      description:
+        "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
+      formats: ["ZIP"],
+      features: ["Mobile-friendly", "A/B Tested"],
+      image: "/assets/images/images/Marketing-Potential-book.png",
       downloads: {
-        PDF: '/assets/downloads/Unlock-Your-Marketing-Potential.pdf'
-      }
+        PDF: "/assets/downloads/Unlock-Your-Marketing-Potential.pdf",
+      },
     },
     {
       id: 3,
-      title: 'Unleash the Power of Traffic',
-      description: "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
-      formats: ['PDF'],
-      platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
-      image: '/assets/images/images/Power-of-traffic-book.png',
+      title: "Unleash the Power of Traffic",
+      description:
+        "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
+      formats: ["PDF"],
+      platforms: ["Facebook", "Twitter", "LinkedIn", "Instagram"],
+      image: "/assets/images/images/Power-of-traffic-book.png",
       downloads: {
-        ZIP: '/assets/downloads/Unleash-the-Power-of-Traffic.zip'
-      }
+        ZIP: "/assets/downloads/Unleash-the-Power-of-Traffic.zip",
+      },
     },
     {
       id: 4,
-      title: 'Digital Marketing Domination Email Series',
-      description: 'Learn how to dominate the digital marketing game.',
-      formats: ['TXT', 'PDF'],
-      features: ['Responsive', 'Customizable'],
-      image: '/assets/images/images/DMD-book.png',
+      title: "Digital Marketing Domination Email Series",
+      description: "Learn how to dominate the digital marketing game.",
+      formats: ["TXT", "PDF"],
+      features: ["Responsive", "Customizable"],
+      image: "/assets/images/images/DMD-book.png",
       downloads: {
-        ZIP: '/assets/downloads/26-Lessons.zip'
-      }
+        ZIP: "/assets/downloads/26-Lessons.zip",
+      },
     },
     {
       id: 5,
-      title: 'Social Media Secrets',
-      description: 'Engaging social media content for all platforms',
-      formats: ['PNG', 'JPG'],
-      platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
-      image: '/assets/images/images/social-media-book.png',
+      title: "Social Media Secrets",
+      description: "Engaging social media content for all platforms",
+      formats: ["PNG", "JPG"],
+      platforms: ["Facebook", "Twitter", "LinkedIn", "Instagram"],
+      image: "/assets/images/images/social-media-book.png",
       downloads: {
-        PNG: '/assets/downloads/social-media-posts.zip',
-        JPG: '/assets/downloads/social-media-posts-jpg.zip'
-      }
-    }
+        PNG: "/assets/downloads/social-media-posts.zip",
+        JPG: "/assets/downloads/social-media-posts-jpg.zip",
+      },
+    },
   ];
 
   return (
@@ -118,7 +129,10 @@ const AffiliateTools = () => {
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Affiliate & Reseller Tools</h1>
-          <p className="dashboard-welcome">Lets get started. Download the following Revenue Ripple tools and resources below.</p>
+          <p className="dashboard-welcome">
+            Lets get started. Download the following Revenue Ripple tools and
+            resources below.
+          </p>
         </div>
       </header>
 
@@ -146,7 +160,9 @@ const AffiliateTools = () => {
                               <button
                                 key={format}
                                 className="format-button"
-                                onClick={() => handleDownload(material.id, format)}
+                                onClick={() =>
+                                  handleDownload(material.id, format)
+                                }
                               >
                                 {format}
                               </button>
@@ -156,29 +172,34 @@ const AffiliateTools = () => {
                         {material.sizes && (
                           <div className="detail-group">
                             <strong>Sizes:</strong>
-                            <span>{material.sizes.join(', ')}</span>
+                            <span>{material.sizes.join(", ")}</span>
                           </div>
                         )}
                         {material.platforms && (
                           <div className="detail-group">
                             <strong>Platforms:</strong>
-                            <span>{material.platforms.join(', ')}</span>
+                            <span>{material.platforms.join(", ")}</span>
                           </div>
                         )}
                         {material.features && (
                           <div className="detail-group">
                             <strong>Features:</strong>
-                            <span>{material.features.join(', ')}</span>
+                            <span>{material.features.join(", ")}</span>
                           </div>
                         )}
                       </div>
                       <div className="button-group">
-                        <button className="cta-button" onClick={() => handleDownloadAll(material.id)}>Download</button>
+                        <button
+                          className="cta-button"
+                          onClick={() => handleDownloadAll(material.id)}
+                        >
+                          Download
+                        </button>
                         {material.id === 1 && (
-                          <button 
-                            className="cta-button" 
-                            style={{ marginLeft: '1rem' }}
-                            onClick={() => handleDownload(material.id, 'ZIP')}
+                          <button
+                            className="cta-button"
+                            style={{ marginLeft: "1rem" }}
+                            onClick={() => handleDownload(material.id, "ZIP")}
                           >
                             Landing Page Info
                           </button>
@@ -201,15 +222,18 @@ const AffiliateTools = () => {
               <div className="course-item">
                 <h3>Create Custom Tracking Links</h3>
                 <div className="course-details">
-                  <p>Generate unique tracking links for different marketing channels and campaigns.</p>
+                  <p>
+                    Generate unique tracking links for different marketing
+                    channels and campaigns.
+                  </p>
                   <div className="link-generator">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Enter your destination URL"
                       className="form-input"
                     />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Campaign name (optional)"
                       className="form-input"
                     />
@@ -253,26 +277,26 @@ const AffiliateTools = () => {
               <h2>Navigation</h2>
             </div>
             <div className="section-content">
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li style={{ marginBottom: '1rem' }}>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre" className="cta-link">
                     <span className="item-icon">🏠</span>
                     Dashboard
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/training" className="cta-link">
                     <span className="item-icon">📚</span>
                     Training & Guides
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/payouts" className="cta-link">
                     <span className="item-icon">💰</span>
                     Earnings & Payouts
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/support" className="cta-link">
                     <span className="item-icon">💬</span>
                     Support & FAQ
@@ -294,20 +318,35 @@ const AffiliateTools = () => {
           <div className="section-content">
             <div className="opportunity-content">
               <p className="opportunity-intro">
-                Underneath the captivating offering of our 12-month digital marketing email course, we have an exciting opportunity for our affiliate partners.
+                Underneath the captivating offering of our 12-month digital
+                marketing email course, we have an exciting opportunity for our
+                affiliate partners.
               </p>
-              
+
               <p className="opportunity-description">
-                We understand that not all your subscribers will be ready to jump into the full membership immediately. That's why we've developed a unique affiliate link specifically for our "Digital Marketing Domination" book. Priced at an easy $7 (RRP $297), it's a fantastic opportunity for subscribers who want to dip their toes into the world of digital marketing before committing to the full course.
+                We understand that not all your subscribers will be ready to
+                jump into the full membership immediately. That's why we've
+                developed a unique affiliate link specifically for our "Digital
+                Marketing Domination" book. Priced at an easy $7 (RRP $297),
+                it's a fantastic opportunity for subscribers who want to dip
+                their toes into the world of digital marketing before committing
+                to the full course.
               </p>
 
               <p className="opportunity-benefit">
-                As an affiliate, you will earn a commission for every $7 book purchase made through your unique link. It's a win-win situation: you continue to earn, and your referrals get the chance to learn from our comprehensive guide to digital marketing at their own pace.
+                As an affiliate, you will earn a commission for every $7 book
+                purchase made through your unique link. It's a win-win
+                situation: you continue to earn, and your referrals get the
+                chance to learn from our comprehensive guide to digital
+                marketing at their own pace.
               </p>
 
               <div className="opportunity-cta">
                 <p className="cta-text">
-                  So why wait? Grab your unique affiliate link for the "Digital Marketing Domination" book and start increasing your earning potential today! (simply put your affiliate link into the emails where indicated)
+                  So why wait? Grab your unique affiliate link for the "Digital
+                  Marketing Domination" book and start increasing your earning
+                  potential today! (simply put your affiliate link into the
+                  emails where indicated)
                 </p>
                 <button className="cta-button">Get Your Affiliate Link</button>
               </div>
@@ -325,42 +364,90 @@ const AffiliateTools = () => {
           </div>
           <div className="section-content">
             <div className="guide-content">
-              <p className="guide-intro">Here's how to get the most out of the tools and materials we've put together for you.</p>
-              
+              <p className="guide-intro">
+                Here's how to get the most out of the tools and materials we've
+                put together for you.
+              </p>
+
               <div className="guide-steps">
                 <div className="guide-step">
                   <h3>1. Start with the Basics</h3>
-                  <p>Start by diving into "Unlock Your Marketing Potential" and then follow it up with "Unleash the Power of Traffic." These two guides are packed with actionable strategies that'll set you up to confidently dominate the digital marketing game.</p>
+                  <p>
+                    Start by diving into "Unlock Your Marketing Potential" and
+                    then follow it up with "Unleash the Power of Traffic." These
+                    two guides are packed with actionable strategies that'll set
+                    you up to confidently dominate the digital marketing game.
+                  </p>
                 </div>
 
                 <div className="guide-step">
                   <h3>2. Set Up Your Funnel</h3>
-                  <p>Next, set up your GetResponse account (or whichever autoresponder you prefer) and build a landing page designed to convert. Inside the Membership Mastery bundle, you'll find a proven lead magnet (covered in detail in the first book) that you can offer in exchange for email sign-ups. We'll also walk you through exactly what to include on your landing page so it hits the mark. Got your own lead magnet? Even better — feel free to run with that.</p>
+                  <p>
+                    Next, set up your GetResponse account (or whichever
+                    autoresponder you prefer) and build a landing page designed
+                    to convert. Inside the Membership Mastery bundle, you'll
+                    find a proven lead magnet (covered in detail in the first
+                    book) that you can offer in exchange for email sign-ups.
+                    We'll also walk you through exactly what to include on your
+                    landing page so it hits the mark. Got your own lead magnet?
+                    Even better — feel free to run with that.
+                  </p>
                 </div>
 
                 <div className="guide-step">
                   <h3>3. Scale Your Marketing</h3>
-                  <p>But don't stop there. You're not just creating a single funnel — you're building a marketing machine. Go ahead and set up a second landing page, this one dedicated to the Digital Marketing Domination (DMD) book. Why settle for one high-converting offer when you can launch two? You're here to scale, not stall.</p>
+                  <p>
+                    But don't stop there. You're not just creating a single
+                    funnel — you're building a marketing machine. Go ahead and
+                    set up a second landing page, this one dedicated to the
+                    Digital Marketing Domination (DMD) book. Why settle for one
+                    high-converting offer when you can launch two? You're here
+                    to scale, not stall.
+                  </p>
                 </div>
 
                 <div className="guide-step">
                   <h3>4. Access Advanced Tools</h3>
-                  <p>From there, head over to the DMD affiliate sign-up page — think of it like getting access to the backstage pass of this whole operation. Once inside, you'll grab your unique affiliate link and unlock a full set of ready-to-use marketing tools. It's your official ticket into the big leagues.</p>
+                  <p>
+                    From there, head over to the DMD affiliate sign-up page —
+                    think of it like getting access to the backstage pass of
+                    this whole operation. Once inside, you'll grab your unique
+                    affiliate link and unlock a full set of ready-to-use
+                    marketing tools. It's your official ticket into the big
+                    leagues.
+                  </p>
                 </div>
 
                 <div className="guide-step">
                   <h3>5. Automate Your Success</h3>
-                  <p>Now that you've got your funnels live, it's time to open up your autoresponder and load in your indoctrination sequence — yes, that's a real term. You're laying the foundation for building trust and long-term engagement with your audience. After that, plug in the 26 bi-weekly lessons from the Digital Domination series. These emails are designed to educate, engage, and convert — on autopilot.</p>
+                  <p>
+                    Now that you've got your funnels live, it's time to open up
+                    your autoresponder and load in your indoctrination sequence
+                    — yes, that's a real term. You're laying the foundation for
+                    building trust and long-term engagement with your audience.
+                    After that, plug in the 26 bi-weekly lessons from the
+                    Digital Domination series. These emails are designed to
+                    educate, engage, and convert — on autopilot.
+                  </p>
                 </div>
 
                 <div className="guide-step">
                   <h3>6. Drive Traffic</h3>
-                  <p>Finally, revisit "Unleash the Power of Traffic." This is where you'll put your foot on the gas and start driving quality traffic to your pages using the strategies laid out inside. Stick to the plan, and you'll see results.</p>
+                  <p>
+                    Finally, revisit "Unleash the Power of Traffic." This is
+                    where you'll put your foot on the gas and start driving
+                    quality traffic to your pages using the strategies laid out
+                    inside. Stick to the plan, and you'll see results.
+                  </p>
                 </div>
               </div>
 
               <div className="guide-closing">
-                <p>Appreciate you being part of the team — your energy and commitment are what keep this community strong. Keep pushing forward and let's build something amazing.</p>
+                <p>
+                  Appreciate you being part of the team — your energy and
+                  commitment are what keep this community strong. Keep pushing
+                  forward and let's build something amazing.
+                </p>
               </div>
             </div>
           </div>
@@ -377,29 +464,55 @@ const AffiliateTools = () => {
           <div className="section-content">
             <div className="reseller-pro-content">
               <p className="reseller-intro">
-                If you're already reselling this membership site, you're in a strong position — but Reseller PRO is how you really level up. This isn't just an upgrade; it's a strategic move for serious earners. And if you're still just an affiliate? <Link to="/reseller-checkout" className="inline-link">Click here to become a reseller</Link> first, then come back and take it up a notch.
+                If you're already reselling this membership site, you're in a
+                strong position — but Reseller PRO is how you really level up.
+                This isn't just an upgrade; it's a strategic move for serious
+                earners. And if you're still just an affiliate?{" "}
+                <Link to="/reseller-checkout" className="inline-link">
+                  Click here to become a reseller
+                </Link>{" "}
+                first, then come back and take it up a notch.
               </p>
 
               <div className="reseller-benefits">
                 <p className="benefit-highlight">
-                  Reseller PRO puts you in the driver's seat with 100% commissions on every membership *and* reseller program sale. No splits, no caps — just full control of your earning potential.
+                  Reseller PRO puts you in the driver's seat with 100%
+                  commissions on every membership *and* reseller program sale.
+                  No splits, no caps — just full control of your earning
+                  potential.
                 </p>
 
                 <p className="benefit-explanation">
-                  You might be asking, "Is the extra $97/month worth it?" Look at it like this — Reseller PRO turns you from a participant to a true partner. It's like stepping into the owner's suite of your own marketing business, backed by tools, assets, and a system built to scale. 
+                  You might be asking, "Is the extra $97/month worth it?" Look
+                  at it like this — Reseller PRO turns you from a participant to
+                  a true partner. It's like stepping into the owner's suite of
+                  your own marketing business, backed by tools, assets, and a
+                  system built to scale.
                 </p>
 
                 <p className="benefit-cta">
-                  So if you're ready to stop playing small and start stacking real commission checks, this is your next move. Upgrade now and make your traffic work smarter, not harder.
+                  So if you're ready to stop playing small and start stacking
+                  real commission checks, this is your next move. Upgrade now
+                  and make your traffic work smarter, not harder.
                 </p>
               </div>
 
               <div className="reseller-pro-cta">
-                <h3>Upgrade to Reseller PRO and take full control of your revenue.</h3>
+                <h3>
+                  Upgrade to Reseller PRO and take full control of your revenue.
+                </h3>
                 <div className="cta-box">
                   <h4>Make the Switch Today</h4>
-                  <p className="cta-highlight">Earn 100% Commissions Promoting the Membership and Reseller Program</p>
-                  <Link to="/reseller-checkout" className="cta-button pro-button">Upgrade to Reseller PRO</Link>
+                  <p className="cta-highlight">
+                    Earn 100% Commissions Promoting the Membership and Reseller
+                    Program
+                  </p>
+                  <Link
+                    to="/reseller-checkout"
+                    className="cta-button pro-button"
+                  >
+                    Upgrade to Reseller PRO
+                  </Link>
                 </div>
               </div>
             </div>
@@ -410,4 +523,4 @@ const AffiliateTools = () => {
   );
 };
 
-export default AffiliateTools; 
+export default AffiliateTools;

@@ -1,7 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-import '../../../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../../../components/Navbar";
+import "../../../../public/css/pages.css";
 
 const ShoestringStartups = () => {
   return (
@@ -33,11 +32,14 @@ const ShoestringStartups = () => {
                   allowFullScreen
                 ></iframe>
               </div>
-              
+
               <div className="video-description">
                 <h3>About This Video</h3>
-                <p>Launching on a tight budget? This guide walks you through how to get up and running with damn near nothing—and still win.</p>
-                
+                <p>
+                  Launching on a tight budget? This guide walks you through how
+                  to get up and running with damn near nothing—and still win.
+                </p>
+
                 <h3>What You'll Learn</h3>
                 <ul>
                   <li>How to start a business with minimal resources</li>
@@ -47,7 +49,11 @@ const ShoestringStartups = () => {
                 </ul>
 
                 <h3>Expert Bio</h3>
-                <p>[Expert name] is a startup founder who has built multiple businesses from the ground up with limited resources, proving you don't need a big budget to win.</p>
+                <p>
+                  [Expert name] is a startup founder who has built multiple
+                  businesses from the ground up with limited resources, proving
+                  you don't need a big budget to win.
+                </p>
               </div>
             </div>
           </div>
@@ -60,13 +66,25 @@ const ShoestringStartups = () => {
             </div>
             <div className="section-content">
               <div className="related-videos">
-                <Link to="/training/videos/entrepreneurial" className="related-video-item">
+                <Link
+                  to="/training/videos/entrepreneurial"
+                  className="related-video-item"
+                >
                   <h4>Entrepreneurial Brainstorming</h4>
-                  <p>Get in the mind of real entrepreneurs and see how they come up with ideas...</p>
+                  <p>
+                    Get in the mind of real entrepreneurs and see how they come
+                    up with ideas...
+                  </p>
                 </Link>
-                <Link to="/training/videos/bulletproof-branding" className="related-video-item">
+                <Link
+                  to="/training/videos/bulletproof-branding"
+                  className="related-video-item"
+                >
                   <h4>Bulletproof Branding</h4>
-                  <p>Your brand is your reputation. Learn how to build one that hits hard...</p>
+                  <p>
+                    Your brand is your reputation. Learn how to build one that
+                    hits hard...
+                  </p>
                 </Link>
               </div>
             </div>
@@ -77,4 +95,4 @@ const ShoestringStartups = () => {
   );
 };
 
-export default ShoestringStartups; 
+export default ShoestringStartups;

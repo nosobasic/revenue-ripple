@@ -1,56 +1,59 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import '../pages.css';
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import "../../public/css/pages.css";
 
 const AffiliateSupport = () => {
   const faqCategories = [
     {
       id: 1,
-      title: 'Getting Started',
+      title: "Getting Started",
       questions: [
         {
-          question: 'How do I become an affiliate?',
-          answer: 'To become an affiliate, simply sign up through our affiliate program page, complete your profile, and start promoting our products using your unique affiliate links.'
+          question: "How do I become an affiliate?",
+          answer:
+            "To become an affiliate, simply sign up through our affiliate program page, complete your profile, and start promoting our products using your unique affiliate links.",
         },
         {
-          question: 'What commission rates can I expect?',
-          answer: 'Commission rates vary by product and performance tier. Standard rates start at 20% and can increase up to 40% based on your sales volume and performance.'
-        }
-      ]
+          question: "What commission rates can I expect?",
+          answer:
+            "Commission rates vary by product and performance tier. Standard rates start at 20% and can increase up to 40% based on your sales volume and performance.",
+        },
+      ],
     },
     {
       id: 2,
-      title: 'Payments & Payouts',
+      title: "Payments & Payouts",
       questions: [
         {
-          question: 'When will I receive my payments?',
-          answer: 'Payments are processed on the 15th of each month for all cleared earnings from the previous month. Minimum payout threshold is $100.'
+          question: "When will I receive my payments?",
+          answer:
+            "Payments are processed on the 15th of each month for all cleared earnings from the previous month. Minimum payout threshold is $100.",
         },
         {
-          question: 'What payment methods are available?',
-          answer: 'We currently support PayPal, bank transfers, and cryptocurrency payments. You can set your preferred payment method in your account settings.'
-        }
-      ]
-    }
+          question: "What payment methods are available?",
+          answer:
+            "We currently support PayPal, bank transfers, and cryptocurrency payments. You can set your preferred payment method in your account settings.",
+        },
+      ],
+    },
   ];
 
   const supportResources = [
     {
-      title: 'Affiliate Handbook',
-      description: 'Complete guide to our affiliate program',
-      icon: '📚'
+      title: "Affiliate Handbook",
+      description: "Complete guide to our affiliate program",
+      icon: "📚",
     },
     {
-      title: 'Marketing Guidelines',
-      description: 'Best practices and compliance rules',
-      icon: '📋'
+      title: "Marketing Guidelines",
+      description: "Best practices and compliance rules",
+      icon: "📋",
     },
     {
-      title: 'Video Tutorials',
-      description: 'Step-by-step training videos',
-      icon: '🎥'
-    }
+      title: "Video Tutorials",
+      description: "Step-by-step training videos",
+      icon: "🎥",
+    },
   ];
 
   return (
@@ -116,7 +119,9 @@ const AffiliateSupport = () => {
                         placeholder="Please provide details about your issue..."
                       ></textarea>
                     </div>
-                    <button type="submit" className="cta-button">Submit Ticket</button>
+                    <button type="submit" className="cta-button">
+                      Submit Ticket
+                    </button>
                   </form>
                 </div>
               </div>
@@ -177,26 +182,26 @@ const AffiliateSupport = () => {
               <h2>Navigation</h2>
             </div>
             <div className="section-content">
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li style={{ marginBottom: '1rem' }}>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre" className="cta-link">
                     <span className="item-icon">🏠</span>
                     Dashboard
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/tools" className="cta-link">
                     <span className="item-icon">🛠️</span>
                     Marketing Tools
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/training" className="cta-link">
                     <span className="item-icon">📚</span>
                     Training & Guides
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/payouts" className="cta-link">
                     <span className="item-icon">💰</span>
                     Earnings & Payouts
@@ -211,4 +216,4 @@ const AffiliateSupport = () => {
   );
 };
 
-export default AffiliateSupport; 
+export default AffiliateSupport;
