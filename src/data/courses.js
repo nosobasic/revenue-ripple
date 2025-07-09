@@ -1189,9 +1189,9 @@ export const courses = [
       },
       {
         id: 7,
-        title: 'Real-World Case Studies',
-        description: 'Lessons from successful entrepreneurs and their journeys.',
-        video: { vimeoId: '823456789', duration: '10:00', thumbnail: '' }
+        title: 'Putting it all together',
+        description: 'Putting it all together',
+        video: { vimeoId: '1100079485', duration: '10:00', thumbnail: '' }
       }
     ]
   },

@@ -8,7 +8,7 @@ const course = courses.find(c => c.slug === 'entrepreneurial-brainstorming');
 const modules = course ? course.modules : [];
 
 const EntrepreneurialBrainstorming = () => {
-  const [modalIdx, setModalIdx] = React.useState(null);
+  const [selectedIdx, setSelectedIdx] = React.useState(null);
 
   return (
     <div className="dashboard">
@@ -19,12 +19,6 @@ const EntrepreneurialBrainstorming = () => {
         }
         .main-content, .side-content {
           padding-bottom: 2rem;
-        }
-        .modal-backdrop {
-          z-index: 2000 !important;
-        }
-        .modal-content {
-          z-index: 2100 !important;
         }
         .video-container {
           background: #fff;
@@ -159,16 +153,16 @@ const EntrepreneurialBrainstorming = () => {
                 {modules.map((mod, idx) => (
                   <button
                     key={mod.title}
-                    onClick={() => setModalIdx(idx)}
-                    className={modalIdx === idx ? 'selected' : ''}
+                    onClick={() => setSelectedIdx(idx)}
+                    className={selectedIdx === idx ? 'selected' : ''}
                     style={{
-                      fontWeight: modalIdx === idx ? 'bold' : '500',
+                      fontWeight: selectedIdx === idx ? 'bold' : '500',
                       marginRight: 8,
                       padding: '6px 12px',
                       borderRadius: 4,
-                      border: modalIdx === idx ? '2px solid #2563eb' : '1.5px solid #cbd5e1',
-                      background: modalIdx === idx ? '#2563eb' : '#f1f5f9',
-                      color: modalIdx === idx ? '#fff' : '#1e293b',
+                      border: selectedIdx === idx ? '2px solid #2563eb' : '1.5px solid #cbd5e1',
+                      background: selectedIdx === idx ? '#2563eb' : '#f1f5f9',
+                      color: selectedIdx === idx ? '#fff' : '#1e293b',
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
@@ -178,69 +172,22 @@ const EntrepreneurialBrainstorming = () => {
                 ))}
               </div>
 
-              {/* Modal for selected module */}
-              {modalIdx !== null && modules[modalIdx] && (
-                <div
-                  className="modal-backdrop"
-                  style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    background: 'rgba(0,0,0,0.6)',
-                    zIndex: 1000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onClick={() => setModalIdx(null)}
-                >
-                  <div
-                    className="modal-content"
-                    style={{
-                      background: '#fff',
-                      borderRadius: 8,
-                      padding: 24,
-                      maxWidth: 800,
-                      width: '95vw',
-                      position: 'relative',
-                      boxSizing: 'border-box',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <button
-                      onClick={() => setModalIdx(null)}
-                      style={{
-                        position: 'absolute',
-                        top: 12,
-                        right: 12,
-                        background: 'transparent',
-                        border: 'none',
-                        fontSize: 24,
-                        cursor: 'pointer',
-                      }}
-                      aria-label="Close"
-                    >
-                      ×
-                    </button>
-                    <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 8, overflow: 'hidden' }}>
+              {/* Inline video and description for selected module */}
+              {selectedIdx !== null && modules[selectedIdx] && (
+                <div className="video-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 12, overflow: 'hidden' }}>
                     <iframe
-                      src={`https://player.vimeo.com/video/${modules[modalIdx].video.vimeoId}`}
-                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                      src={`https://player.vimeo.com/video/${modules[selectedIdx].video.vimeoId}`}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                       frameBorder="0"
                       allow="autoplay; fullscreen; picture-in-picture"
                       allowFullScreen
-                      title={modules[modalIdx].title}
+                      title={modules[selectedIdx].title}
                     ></iframe>
-                    </div>
-                    <div className="video-description" style={{ marginTop: 16, width: '100%', maxWidth: 700 }}>
-                      <h3>{modules[modalIdx].title}</h3>
-                      <p>{modules[modalIdx].description}</p>
-                    </div>
+                  </div>
+                  <div className="video-description" style={{ marginTop: 16, width: '100%', maxWidth: 700 }}>
+                    <h3>{modules[selectedIdx].title}</h3>
+                    <p>{modules[selectedIdx].description}</p>
                   </div>
                 </div>
               )}
