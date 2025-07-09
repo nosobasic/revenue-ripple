@@ -71,14 +71,14 @@ const EntrepreneurialBrainstorming = () => {
               {course?.introVideo?.vimeoId && (
                 <div className="video-container" style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 12, overflow: 'hidden' }}>
-                    <iframe
-                      src={`https://player.vimeo.com/video/${course.introVideo.vimeoId}`}
+                  <iframe
+                    src={`https://player.vimeo.com/video/${course.introVideo.vimeoId}`}
                       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                      frameBorder="0"
-                      allow="autoplay; fullscreen; picture-in-picture"
-                      allowFullScreen
-                      title="Intro Video"
-                    ></iframe>
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title="Intro Video"
+                  ></iframe>
                   </div>
                   <div className="video-description" style={{ width: '100%', maxWidth: 700 }}>
                     <h3>Introduction</h3>
@@ -104,6 +104,54 @@ const EntrepreneurialBrainstorming = () => {
                 <p>
                   Jordan Reyes is a seasoned startup strategist and serial entrepreneur with over 15 years of experience in launching, scaling, and advising tech-focused businesses. Having raised over $40 million in venture funding and taken two companies through successful exits, Jordan is known for his no-fluff approach to validating business models and building lean, profitable ventures. He's mentored hundreds of founders globally through programs like Techstars and Y Combinator’s Startup School, and is a frequent speaker on innovation, hustle culture, and early-stage growth.
                 </p>
+              </div>
+
+              {/* Download Workbook Section */}
+              <div className="video-container" style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ 
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                  borderRadius: 12, 
+                  padding: '2rem', 
+                  width: '100%', 
+                  maxWidth: 700,
+                  color: 'white',
+                  textAlign: 'center'
+                }}>
+                  <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>📚 Download Your Workbook</h3>
+                  <p style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
+                    Get your hands on our comprehensive entrepreneurial brainstorming workbook. 
+                    This interactive guide includes worksheets, templates, and exercises to help you 
+                    apply what you learn from the videos.
+                  </p>
+                  <a 
+                    href="/assets/downloads/revenue_ripple_entrepreneurial_brainstorm.docx" 
+                    download
+                    style={{
+                      display: 'inline-block',
+                      background: 'rgba(255,255,255,0.2)',
+                      color: 'white',
+                      padding: '12px 24px',
+                      borderRadius: 8,
+                      textDecoration: 'none',
+                      fontWeight: 'bold',
+                      border: '2px solid rgba(255,255,255,0.3)',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.3)';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.background = 'rgba(255,255,255,0.2)';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    📥 Download Workbook (DOCX)
+                  </a>
+                  <p style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
+                    Free download • No registration required
+                  </p>
+                </div>
               </div>
 
               {/* Module Tabs/Buttons */}
@@ -180,14 +228,14 @@ const EntrepreneurialBrainstorming = () => {
                       ×
                     </button>
                     <div style={{ position: 'relative', width: '100%', maxWidth: 700, aspectRatio: '16/9', background: '#000', borderRadius: 8, overflow: 'hidden' }}>
-                      <iframe
-                        src={`https://player.vimeo.com/video/${modules[modalIdx].video.vimeoId}`}
+                    <iframe
+                      src={`https://player.vimeo.com/video/${modules[modalIdx].video.vimeoId}`}
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                        frameBorder="0"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        allowFullScreen
-                        title={modules[modalIdx].title}
-                      ></iframe>
+                      frameBorder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      title={modules[modalIdx].title}
+                    ></iframe>
                     </div>
                     <div className="video-description" style={{ marginTop: 16, width: '100%', maxWidth: 700 }}>
                       <h3>{modules[modalIdx].title}</h3>
