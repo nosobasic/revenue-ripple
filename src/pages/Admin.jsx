@@ -686,15 +686,6 @@ const Admin = () => {
     setGeneratingKeys(false);
   };
 
-  // Debug log to help trace admin access issues
-  useEffect(() => {
-    console.log("Admin.jsx: Current state:", {
-      user: user ? { id: user.id, role: user.role, email: user.email } : null,
-      authLoading,
-      dashboardLoading,
-    });
-  }, [user, authLoading, dashboardLoading]);
-
   useEffect(() => {
     // Only fetch dashboard data if user is loaded and is admin
     if (!authLoading && user && user.role === "admin") {

@@ -29,7 +29,6 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Loading component to prevent white screen
 const LoadingSpinner = ({ message = "Loading..." }) => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
     <div className="text-center">
@@ -44,48 +43,32 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
 
-  // Debug logging
-  console.log("ProtectedRoute:", {
-    user,
-    loading,
-    requireAdmin,
-    path: location.pathname,
-  });
-
-  // Show a loading spinner while auth state is loading
   if (loading) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 
-  // Redirect to login if not authenticated
   if (!token) {
-    console.log("No user found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has required role
   if (requireAdmin) {
-    console.log("Checking admin role:", {
-      userRole: user?.role,
-      isAdmin: user?.role === "admin",
-    });
-
     if (user?.role !== "admin") {
-      console.log("User is not admin, showing access denied");
       return (
-        <div style={{ 
-          color: "red", 
-          padding: 20, 
-          textAlign: "center",
-          minHeight: "50vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column"
-        }}>
+        <div
+          style={{
+            color: "red",
+            padding: 20,
+            textAlign: "center",
+            minHeight: "50vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
           <h2>Access Denied</h2>
           <p>You do not have admin privileges to access this page.</p>
-          <button 
+          <button
             onClick={() => window.history.back()}
             style={{
               marginTop: 16,
@@ -94,7 +77,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
               color: "white",
               border: "none",
               borderRadius: "4px",
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             Go Back

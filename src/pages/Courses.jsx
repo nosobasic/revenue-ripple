@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import { FaGraduationCap, FaPlay } from "react-icons/fa";
+import { coursesSecond } from "../constants/data/courses";
 import "../../public/css/pages.css";
 
 const Courses = () => {
@@ -16,163 +17,6 @@ const Courses = () => {
       setExpandedSection(section);
     }
   };
-
-  // Alphabetized list of all courses
-  const courses = [
-    {
-      id: "affiliate-marketing",
-      title: "Affiliate Marketing",
-      description:
-        "Learn how to successfully promote products and earn commissions through affiliate marketing.",
-    },
-    {
-      id: "affiliate-recruiting",
-      title: "Affiliate Recruiting",
-      description:
-        "Master the strategies for building and managing a successful affiliate network.",
-    },
-    {
-      id: "automation",
-      title: "Marketing Automation",
-      description:
-        "Automate your marketing tasks and scale your business. Learn advanced automation strategies and tools.",
-    },
-    {
-      id: "banner-ads",
-      title: "Banner Ads",
-      description:
-        "Learn how to create and optimize banner ads for maximum reach and conversions.",
-    },
-    {
-      id: "cold-calling",
-      title: "Cold Calling",
-      description:
-        "Master the art of effective cold calling and closing deals.",
-    },
-    {
-      id: "ecommerce",
-      title: "eCommerce",
-      description: "Learn how to build and run a successful online store.",
-    },
-    {
-      id: "email-marketing",
-      title: "Email Marketing",
-      description:
-        "Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation.",
-    },
-    {
-      id: "freelancing",
-      title: "Freelancing",
-      description: "Learn how to build a successful freelancing business.",
-    },
-    {
-      id: "funnel-building",
-      title: "Funnel Building",
-      description:
-        "Create high-converting sales funnels that turn visitors into customers.",
-    },
-    {
-      id: "geo-targeting",
-      title: "Geo Targeting",
-      description:
-        "Learn how to target specific geographic areas with your marketing campaigns.",
-    },
-    {
-      id: "lead-generation",
-      title: "Lead Generation",
-      description: "Master lead generation strategies to grow your business.",
-    },
-    {
-      id: "linkedin-ads",
-      title: "LinkedIn Ads",
-      description: "Create effective advertising campaigns on LinkedIn.",
-    },
-    {
-      id: "linkedin-marketing",
-      title: "LinkedIn Marketing (Organic)",
-      description:
-        "Learn how to use LinkedIn for organic growth and lead generation.",
-    },
-    {
-      id: "messenger-marketing",
-      title: "Messenger Marketing",
-      description: "Master Facebook Messenger for marketing and automation.",
-    },
-    {
-      id: "newsfeed-ads",
-      title: "Newsfeed Ads",
-      description: "Create effective ads for social media newsfeeds.",
-    },
-    {
-      id: "online-learning",
-      title: "Online Learning",
-      description: "Create and sell successful online courses.",
-    },
-    {
-      id: "outsourcing",
-      title: "Outsourcing",
-      description: "Learn how to effectively delegate and manage remote teams.",
-    },
-    {
-      id: "paid-traffic",
-      title: "Paid Traffic",
-      description: "Master paid advertising across multiple platforms.",
-    },
-    {
-      id: "pinterest-marketing",
-      title: "Pinterest Marketing",
-      description: "Learn how to use Pinterest to drive traffic and sales.",
-    },
-    {
-      id: "search-ads",
-      title: "Search Advertising",
-      description: "Master search engine advertising campaigns.",
-    },
-    {
-      id: "seo",
-      title: "SEO",
-      description: "Learn search engine optimization from the ground up.",
-    },
-    {
-      id: "social-marketing",
-      title: "Social Marketing",
-      description: "Master social media platforms for business growth.",
-    },
-    {
-      id: "split-testing",
-      title: "Split Testing",
-      description: "Learn how to optimize through effective A/B testing.",
-    },
-    {
-      id: "twitter-ads",
-      title: "Twitter Timeline Advertising",
-      description: "Create effective advertising campaigns on Twitter.",
-    },
-    {
-      id: "web-design",
-      title: "Web Design",
-      description:
-        "Learn to build professional, responsive websites from scratch.",
-    },
-    {
-      id: "ai-essentials",
-      title: "AI Essentials",
-      description:
-        "Master the fundamentals of artificial intelligence and its practical applications in business.",
-    },
-    {
-      id: "ai-agent-fundamentals",
-      title: "AI Agent Fundamentals",
-      description:
-        "Learn how to build and deploy AI agents for automation and enhanced productivity.",
-    },
-    {
-      id: "prompt-engineering",
-      title: "Prompt Engineering",
-      description:
-        "Master the art of crafting effective prompts for AI language models to get optimal results.",
-    },
-  ];
 
   return (
     <div className="dashboard">
@@ -200,7 +44,7 @@ const Courses = () => {
                 <h2>ALL COURSES</h2>
               </div>
               <div className="section-content">
-                {courses.map((course) => (
+                {coursesSecond.map((course) => (
                   <div
                     key={course.id}
                     className={`course-item ${

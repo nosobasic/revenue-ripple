@@ -13,14 +13,9 @@ const AdminSimple = () => {
   const [dataLoaded, setDataLoaded] = useState(false);
   const initializationRef = useRef(false);
 
-  console.log("AdminSimple: User:", user);
-  console.log("AdminSimple: AuthLoading:", authLoading);
-  console.log("AdminSimple: DataLoaded:", dataLoaded);
-
   useEffect(() => {
     // Only initialize once when we have a confirmed admin user
     if (!authLoading && user?.role === "admin" && !initializationRef.current) {
-      console.log("AdminSimple: Initializing data...");
       initializationRef.current = true;
       fetchDashboardData();
       fetchUsers();
@@ -30,12 +25,10 @@ const AdminSimple = () => {
   // Add a separate effect to handle user state changes
   useEffect(() => {
     if (authLoading) {
-      console.log("AdminSimple: Auth is loading...");
       return;
     }
 
     if (!user) {
-      console.log("AdminSimple: No user found, resetting state...");
       initializationRef.current = false;
       setDataLoaded(false);
       setStats([]);
@@ -44,20 +37,16 @@ const AdminSimple = () => {
     }
 
     if (user.role !== "admin") {
-      console.log("AdminSimple: User is not admin, resetting state...");
       initializationRef.current = false;
       setDataLoaded(false);
       return;
     }
-
-    console.log("AdminSimple: Valid admin user confirmed");
   }, [user, authLoading]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
-      console.log("AdminSimple: Fetching dashboard data...");
 
       // Fetch total users count
       const { count: totalUsers, error: usersError } = await supabase
@@ -107,7 +96,6 @@ const AdminSimple = () => {
       ]);
 
       setDataLoaded(true);
-      console.log("AdminSimple: Dashboard data loaded successfully");
     } catch (err) {
       setError(err.message);
       console.error("Error fetching dashboard data:", err);
@@ -118,7 +106,6 @@ const AdminSimple = () => {
 
   const fetchUsers = async () => {
     try {
-      console.log("AdminSimple: Fetching users...");
       const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -137,8 +124,6 @@ const AdminSimple = () => {
           role: user.role || "member",
         })) || []
       );
-
-      console.log("AdminSimple: Users loaded successfully");
     } catch (err) {
       console.error("Error fetching users:", err);
     }
@@ -146,7 +131,6 @@ const AdminSimple = () => {
 
   // Handle refresh data manually
   const handleRefreshData = () => {
-    console.log("AdminSimple: Manual refresh triggered");
     fetchDashboardData();
     fetchUsers();
   };
@@ -610,7 +594,6 @@ const AdminSimple = () => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  console.log("Testing webhook...");
                   alert("Check server logs for webhook test results");
                 }}
               >

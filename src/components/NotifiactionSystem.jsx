@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
+import { mockNotifications } from "../constants/data/mockNotifications";
 import {
   Bell,
   AlertTriangle,
@@ -31,79 +32,6 @@ export function NotificationSystem({ className }) {
   });
 
   useEffect(() => {
-    // Simulate real-time notifications from agents
-    const mockNotifications = [
-      {
-        id: "1",
-        type: "critical",
-        title: "Revenue Drop Alert",
-        message:
-          "Daily revenue down 15% from yesterday - immediate attention required",
-        timestamp: new Date(Date.now() - 5 * 60 * 1000),
-        agentId: 5,
-        agentName: "Revenue Ripple Tracker",
-        actionRequired: true,
-        acknowledged: false,
-        data: {
-          previousRevenue: 41850,
-          currentRevenue: 35604,
-          dropPercentage: 14.9,
-        },
-      },
-      {
-        id: "2",
-        type: "warning",
-        title: "KPI Threshold Exceeded",
-        message:
-          "User growth rate below target threshold (2.1% vs 3.0% target)",
-        timestamp: new Date(Date.now() - 15 * 60 * 1000),
-        agentId: 4,
-        agentName: "KPI Tracker",
-        actionRequired: true,
-        acknowledged: false,
-        data: { currentRate: 2.1, targetRate: 3.0 },
-      },
-      {
-        id: "3",
-        type: "critical",
-        title: "Funnel Conversion Drop",
-        message:
-          "Checkout conversion rate dropped to 1.8% (30% below baseline)",
-        timestamp: new Date(Date.now() - 25 * 60 * 1000),
-        agentId: 1,
-        agentName: "Funnel Tester",
-        actionRequired: true,
-        acknowledged: false,
-        data: { currentRate: 1.8, baselineRate: 2.6 },
-      },
-      {
-        id: "4",
-        type: "warning",
-        title: "Webhook Latency Issue",
-        message:
-          "Stripe webhook response time increased to 2.3s (above 1.5s threshold)",
-        timestamp: new Date(Date.now() - 35 * 60 * 1000),
-        agentId: 3,
-        agentName: "Webhook Validator",
-        actionRequired: false,
-        acknowledged: true,
-        data: { responseTime: 2.3, threshold: 1.5 },
-      },
-      {
-        id: "5",
-        type: "success",
-        title: "Traffic Surge Detected",
-        message:
-          "Daily active users increased 22% - scaling systems automatically",
-        timestamp: new Date(Date.now() - 45 * 60 * 1000),
-        agentId: 5,
-        agentName: "Revenue Ripple Tracker",
-        actionRequired: false,
-        acknowledged: true,
-        data: { increase: 22, currentDAU: 237 },
-      },
-    ];
-
     setNotifications(mockNotifications);
   }, []);
 

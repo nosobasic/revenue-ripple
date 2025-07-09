@@ -1,1342 +1,1547 @@
 export const courses = [
   {
-    slug: 'email-marketing',
-    title: 'Email Marketing',
-    description: 'Master the art of email marketing from list building to automation.',
-    estimatedTime: '2-3 hours',
+    slug: "email-marketing",
+    title: "Email Marketing",
+    description:
+      "Master the art of email marketing from list building to automation.",
+    estimatedTime: "2-3 hours",
     introVideo: {
-      vimeoId: '1087796068',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/1087796068.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Email Marketing Foundations', 
-        description: 'Learn how to build a high-quality email list from scratch and how to use email marketing to grow your business.',
-        video: {
-         vimeoId: '1087796011',
-          vimeoId: '1087796068',
-          duration: '15:30',
-          thumbnail: 'https://img.youtube.com/vi/APgMe8E7DB0/maxresdefault.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Mastering Email Newesletters', 
-        description: 'Master Email Newsletters and automation for better results.',
-        video: {
-         vimeoId: '1087796031',
-          duration: '12:45',
-          thumbnail: 'https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Conversion Optimization', 
-        description: 'Turn subscribers into paying customers.',
-        video: {
-          vimeoId: '1087796055',
-          duration: '18:20',
-          thumbnail: 'https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'geo-targeting',
-    title: 'Geo Targeting',
-    description: 'Learn how to target specific geographic locations for better marketing results.',
-    estimatedTime: '1-2 hours',
-    introVideo: {
-      vimeoId: '1088193607',
-      duration: '1:30',
-      thumbnail: 'https://vumbnail.com/000000001.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Introduction to Geo Targeting', 
-        description: 'Understand the basics and benefits of geo targeting.',
-        video: {
-          vimeoId: '1088193579',
-          duration: '10:15',
-          thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Mastering Geo Targeted Facebook Ads For Healthy Campaigns', 
-        description: 'How to set up geo-targeted campaigns.',
-        video: {
-          vimeoId: '1088193544',
-          duration: '14:30',
-          thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Reach Affluent Audiences With Geo Targeting', 
-        description: 'How to set up geo-targeted campaigns.',
-        video: {
-          vimeoId: '1088193520',
-          duration: '14:30',
-          thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'banner-ads',
-    title: 'Banner Ads',
-    description: 'Create and optimize banner ads for maximum impact.',
-    estimatedTime: '1-2 hours',
-    introVideo: {
-      vimeoId: '1088199468',
-      duration: '1:45',
-      thumbnail: 'https://vumbnail.com/000000002.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Banner Ad Design', 
-        description: 'Design effective banner ads for your campaigns.',
-        video: {
-          vimeoId: '1088199444',
-          duration: '12:20',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Choose the Right Campaign Goal', 
-        description: 'Where and how to place your ads for best results.',
-        video: {
-          vimeoId: '1088199421',
-          duration: '15:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Launching Your Campaign', 
-        description: 'Where and how to place your ads for best results.',
-        video: {
-          vimeoId: '1088199386',
-          duration: '15:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'ads',
-    title: 'Ads',
-    description: 'Master the fundamentals of online advertising.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '000000003',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000003.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Ad Fundamentals', 
-        description: 'Learn the basics of online advertising.',
-        video: {
-          vimeoId: '1087796011',
-          duration: '16:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Ad Platforms', 
-        description: 'Overview of major ad platforms.',
-        video: {
-          vimeoId: '1087796031',
-          duration: '18:15',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'lead-generation',
-    title: 'Lead Generation',
-    description: 'Learn effective strategies for generating high-quality leads.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088245091',
-      duration: '0:40',
-      thumbnail: 'https://vumbnail.com/000000004.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Lead Magnets', 
-        description: 'From PDFs to Premium Bundles',
-        video: {
-          vimeoId: '1088245085',
-          duration: '5:10',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Landing Pages', 
-        description: 'Build landing pages that convert.',
-        video: {
-          vimeoId: '1088245079',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Masterring Paid Traffic',
-        description: 'Facebook, Google, and more',
-        video: {
-          vimeoId: '1088245073',
-          duration: '4:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'linkedin-ads',
-    title: 'LinkedIn Advertising',
-    description: 'Master LinkedIn advertising to reach professionals and decision-makers.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088824025',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000005.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Your Ultimate Begginer Guide to LinkedIn', 
-        description: 'How to set up your first LinkedIn ad.',
-        video: {
-          vimeoId: '1088824115',
-          duration: '12:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Step-by-Step Guide to Creating a Business Page', 
-        description: 'How to create a business page on LinkedIn.',
-        video: {
-          vimeoId: '1088824003',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Master Your Profile & Groups',
-        description: 'How to optimize your profile and groups for better results.',
-        video: {
-          vimeoId: '1088823982',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'messenger-marketing',
-    title: 'Messenger Marketing',
-    description: 'Learn how to use Messenger for marketing and automation.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088833375',
-      duration: '1:55',
-      thumbnail: 'https://vumbnail.com/000000006.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Messenger Bots', 
-        description: 'Automate conversations with Messenger bots.',
-        video: {
-          vimeoId: '1088833391',
-          duration: '14:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'A Comprehensive Platform Overview', 
-        description: 'How to use the platform to its full potential.',
-        video: {
-          vimeoId: '1088833414',
-          duration: '16:40',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Your First Broadcast Setup',
-        description: 'How to create your first broadcast.',
-        video: {
-          vimeoId: '1088833436',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'newsfeed-ads',
-    title: 'Newsfeed Advertising',
-    description: 'Master newsfeed advertising across social platforms.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088848202',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000007.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Choose Wisely For Sucess', 
-        description: 'How to choose the right platform for your business.',
-        video: {
-          vimeoId: '1088848188',
-          duration: '13:25',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Mastering Audience Targeting and Ad Placement', 
-        description: 'How to target the right audience and place your ads for best results.',
-        video: {
-          vimeoId: '1088848176',
-          duration: '15:50',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Mastering Facebook Ads Budget',
-        description: 'How to budget and scale your campaigns.',
-        video: {
-          vimeoId: '1088848160',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 4,
-        title: 'From Carosel To Single Image',
-        description: 'How to create a newsfeed ad for your business.',
-        video: {
-          vimeoId: '1088848149',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'paid-traffic',
-    title: 'Paid Traffic',
-    description: 'Master paid traffic sources and campaign optimization.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088882669',
-      duration: '1:55',
-      thumbnail: 'https://vumbnail.com/000000008.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Facebook Ad Campaigns A Step By Step Guide', 
-        description: 'How to create a Facebook Ad Campaign.',
-        video: {
-          vimeoId: '1088882623',
-          duration: '14:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Google Search Ads A Step By Step Guide', 
-        description: 'How to create a Google Search Ad Campaign.',
-        video: {
-          vimeoId: '1088882591',
-          duration: '17:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'From Design to Google Display Campaign',
-        description: 'How to create a Google Display Campaign.',
-        video: {
-          vimeoId: '1088882539',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'pinterest-marketing',
-    title: 'Pinterest Marketing',
-    description: 'Learn Pinterest marketing strategies for business growth.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088887746',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000009.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Navigating Pinterest', 
-        description: 'How to navigate the platform and get started.',
-        video: {
-          vimeoId: '1088887758',
-          duration: '12:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Business SetUp to Analytics Insights', 
-        description: 'How to set up your Pinterest business account and get analytics insights.',
-        video: {
-          vimeoId: '1088887848',
-          duration: '15:40',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Essential Tools and Strategies',
-        description: 'How to use the platform to its full potential.',
-        video: {
-          vimeoId: '1088887884',
-          duration: '4:00',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'search-ads',
-    title: 'Search Advertising',
-    description: 'Master search advertising and keyword targeting.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089074820',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000010.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Choosing the Right Campaign Goals', 
-        description: 'How to choose the right campaign goals for your business.',
-        video: {
-          vimeoId: '1089074806',
-          duration: '4:20',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Campaign Setup Essentials', 
-        description: 'How to set up your campaign for success.',
-        video: {
-          vimeoId: '1089074777',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Creation to Performance Monitoring',
-        description: 'How to create a search ad and monitor its performance.',
-        video: {
-          vimeoId: '1089074757',
-          duration: '3:00',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'social-media-marketing',
-    title: 'Social Media Marketing',
-    description: 'Master social media marketing strategies for business growth.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089077296',
-      duration: '0:37',
-      thumbnail: 'https://vumbnail.com/000000011.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Organic Marketing with Facebook and Instagram', 
-        description: 'How to use organic marketing with Facebook and Instagram.',
-        video: {
-          vimeoId: '1089077270',
-          duration: '4:35',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Organic Marketing On Twitter and Youtube', 
-        description: 'How to use organic marketing on Twitter and Youtube.',
-        video: {
-          vimeoId: '1089077251',
-          duration: '4:00',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'LinkedIn and Pinterest Strategies',
-        description: 'How to use LinkedIn and Pinterest for your business.',
-        video: {
-          vimeoId: '1089077226',
-          duration: '16:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 4,
-        title: 'Viral Growth and Engagement',
-        description: 'How to use viral growth and engagement for your business.',
-        video: {
-          vimeoId: '1089077212',
-          duration: '4:05',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'twitter-ads',
-    title: 'X/Twitter Advertising',
-    description: 'Master Twitter advertising to reach your target audience.',
-    estimatedTime: '25-30 minutes',
-    introVideo: {
-      vimeoId: '1089091992',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000012.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Choosing the Right Campaign Objective', 
-        description: 'How to choose the right campaign objective for your business.',
-        video: {
-          vimeoId: '1089091972',
-          duration: '12:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Targeting Your Ideal Audience', 
-        description: 'How to target your ideal audience for your business.',
-        video: {
-          vimeoId: '1089091950',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'From Creation to Launch',
-        description: 'How to create your first campaign and launch it.',
-        video: {
-          vimeoId: '1089091937',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'automation',
-    title: 'Marketing Automation',
-    description: 'Learn how to automate your marketing tasks.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1088241575',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000013.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Unlocking the Power of Marketing Automation', 
-        description: 'Overview of marketing automation tools.',
-        video: {
-          vimeoId: '1088241557',
-          duration: '14:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Essential Workflows For Success', 
-        description: 'How to build automated marketing workflows.',
-        video: {
-          vimeoId: '1088241542',
-          duration: '16:40',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      {
-        id: 3,
-        title: 'Building a Workflow from Scratch',
-        description: 'How to build automated marketing workflows.',
-        video: {
-          vimeoId: '1088241528',
-          duration: '6:32',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'website-design',
-    title: 'Website Design',
-    description: 'Learn to build professional, responsive websites from scratch. Master HTML, CSS, and modern design principles.',
-    estimatedTime: '3-4 hours',
-    introVideo: {
-      vimeoId: '1089098390',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000014.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Essential Pages Every Business Website Needs', 
-        description: 'Learn the fundamentals of web design and modern development practices.',
-        video: {
-          vimeoId: '1089098371',
-          duration: '15:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Wordpress, Weebly, or Wix', 
-        description: 'How to choose the right platform for your business.',
-        video: {
-          vimeoId: '1089098340',
-          duration: '18:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Step By Step Guide To Building A Website with Wix', 
-        description: 'How to build a website from scratch.',
-        video: {
-          vimeoId: '1089098322',
-          duration: '20:15',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      },
-      
-    ]
-  },
-  {
-    slug: 'seo',
-    title: 'Search Engine Optimization',
-    description: 'Master the art of SEO to boost your website\'s visibility and ranking on search engines.',
-    estimatedTime: '3-4 hours',
-    introVideo: {
-      vimeoId: '1089388714',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000015.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'SEO Sucess with Keyword Research', 
-        description: 'How to find the right keywords for your business.',
-        video: {
-          vimeoId: '1089388695',
-          duration: '4:20',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Optimization Techniques', 
-        description: 'How to optimize your website for search engines.',
-        video: {
-          vimeoId: '1089388621',
-          duration: '7:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Essential Tools and Strategies', 
-        description: 'Optimize your website content for better search rankings.',
-        video: {
-          vimeoId: '1089388664',
-          duration: '18:30',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      },
-    ]
-  },
-  {
-    slug: 'funnel-building',
-    title: 'Funnel Building',
-    description: 'Create high-converting sales funnels that turn visitors into customers.',
-    estimatedTime: '15-20 minutes',
-    introVideo: {
-      vimeoId: '1089118712',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000016.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Choosing the Right Type with Click Funnels',  
-        description: 'How to choose the right type of funnel for your business.',
-        video: {
-          vimeoId: '1089118712',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Cfrafting Offers ans Splintering for Success', 
-        description: 'How to craft offers and split test for success.',
-        video: {
-          vimeoId: '1089118665',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Building Your Sales Funnel From Start to Finish', 
-        description: 'How to build your sales funnel from start to finish.',
-        video: {
-          vimeoId: '1089118646',
-          duration: '4:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'outsourcing',
-    title: 'Outsourcing',
-    description: 'Learn how to outsource your marketing tasks to freelancers.',
-    estimatedTime: '15-20 minutes',
-    introVideo: {
-      vimeoId: '1089120856',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000017.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Hiring Virtual Teams', 
-        description: 'How to hire a virtual team for your business.',
-        video: {
-          vimeoId: '1089120835',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Upwork vs Fiverr', 
-        description: 'How to choose the right platform for your business.',
-        video: {
-          vimeoId: '1089120811',
-          duration: '17:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Trello & Slack Essential for Team Management', 
-        description: 'How to use Trello and Slack to manage your team.',
-        video: {
-          vimeoId: '1089120794',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'landing-pages',
-    title: 'Landing Page Design',
-    description: 'Design landing pages that convert. Learn proven layouts, copywriting, and optimization techniques.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '000000018',
-      duration: '1:55',
-      thumbnail: 'https://vumbnail.com/000000018.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Landing Page Basics', 
-        description: 'Understand the fundamentals of effective landing pages.',
-        video: {
-          vimeoId: '1087796011',
-          duration: '12:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Copywriting for Conversions', 
-        description: 'Write compelling copy that drives action.',
-        video: {
-          vimeoId: '1087796031',
-          duration: '15:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Design & Optimization', 
-        description: 'Create visually appealing and high-converting landing pages.',
-        video: {
-          vimeoId: '1087796055',
-          duration: '16:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'affiliate-marketing',
-    title: 'Affiliate Marketing',
-    description: 'Learn how to successfully promote products and earn commissions through affiliate marketing.',
-    estimatedTime: '15-20 minutes',
-    introVideo: {
-      vimeoId: '1090438838',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000019.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Choosing the Right Products to Promote', 
-        description: 'How to choose the right products to promote as an affiliate.',
-        video: {
-          vimeoId: '1090438864',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Unleashing the Power of Email, SEO, and Youtube', 
-        description: 'How to use email, SEO, and Youtube to promote affiliate products.',
-        video: {
-          vimeoId: '1090438844',
-          duration: '5:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Your Path to Affiliate Success', 
-        description: 'How to be successful as an affiliate.',
-        video: {
-          vimeoId: '1090438817',
-          duration: '2:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'ecommerce',
-    title: 'eCommerce',
-    description: 'Learn how to build and run a successful online store.',
-    estimatedTime: '3-4 hours',
-    introVideo: {
-      vimeoId: '1089912578',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000020.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Ultimate Guide to Starting an Online Store', 
-        description: 'How to start an online store with Shopify.',
-        video: {
-          vimeoId: '1089912560',
-          duration: '6:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Shopify Store Customization Guide', 
-        description: 'How to customize your Shopify store to your brand.',
-        video: {
-          vimeoId: '1089912546',
-          duration: '5:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Stock Your Shopify Store', 
-        description: 'How to stock your Shopify store with products.',
-        video: {
-          vimeoId: '1089912515',
-          duration: '4:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      },
-      {
-        id: 4,
-        title: 'Final Steps to Go Live',
-        description: 'How to go live with your Shopify store.',
-        video: {
-          vimeoId: '1089912530',
-          duration: '4:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'freelancing',
-    title: 'Freelancing',
-    description: 'Learn how to build a successful freelancing business.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089909777',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000021.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Discover High Demand Services You Can Offer', 
-        description: 'How to find the right services to offer as a freelancer.',
-        video: {
-          vimeoId: '1089909743',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Elevate Your Service Delivery', 
-        description: 'How to deliver your services to your clients.',
-        video: {
-          vimeoId: '1089909766',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Your Guide to Freelancing Success', 
-        description: 'How to be successful as a freelancer.',
-        video: {
-          vimeoId: '1089909758',
-          duration: '3:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'split-testing',
-    title: 'Split Testing',
-    description: 'Learn how to run effective split (A/B) tests to optimize your marketing campaigns.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089391814',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000022.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Split Testing Basics', 
-        description: 'Understand the fundamentals of A/B testing.',
-        video: {
-          vimeoId: '1089391800',
-          duration: '2:45',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Step By Step Guide To Boost Your Conversions', 
-        description: 'How to boost your conversions with A/B testing.',
-        video: {
-          vimeoId: '1089391783',
-          duration: '2:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Decoding Results for Maximum Impact', 
-        description: 'How to decode test results and implement winning variations.',
-        video: {
-          vimeoId: '1089391773',
-          duration: '15:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'cold-calling',
-    title: 'Cold Calling',
-    description: 'Master the art of effective cold calling and closing deals.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089907504',
-      duration: '1:55',
-      thumbnail: 'https://vumbnail.com/000000023.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Preliminary Research for Effective Cold Calling', 
-        description: 'How to do preliminary research for effective cold calling.',
-        video: {
-          vimeoId: '1089907494',
-          duration: '3:15',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'From Gatekeeper to Decision Maker', 
-        description: 'How to get past the gatekeeper and get to the decision maker.',
-        video: {
-          vimeoId: '1089907480',
-          duration: '5:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Outsourcing Strategies for Success', 
-        description: 'How to outsource your cold calling to a virtual team.',
-        video: {
-          vimeoId: '1089907472',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'affiliate-recruiting',
-    title: 'Affiliate Recruiting',
-    description: 'Master the strategies for building and managing a successful affiliate network.',
-    estimatedTime: '15-20 minutes',
-    introVideo: {
-      vimeoId: '1090442328',
-      duration: '0:30',
-      thumbnail: 'https://vumbnail.com/000000024.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'Mastering High Converting JV Pages. Launch vs Evergreen', 
-        description: 'How to master high converting JV pages and launch vs evergreen.',
-        video: {
-          vimeoId: '1090442265',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Launch Visibility', 
-        description: 'How to get your affiliate products in front of the right people.',
-        video: {
-          vimeoId: '1090442284',
-          duration: '3:30',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'From Headhunters List to Launch Success', 
-        description: 'How to get your launch to the next level.',
-        video: {
-          vimeoId: '1090442313',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'online-learning',
-    title: 'Online Learning',
-    description: 'Learn how to create and sell online courses effectively.',
-    estimatedTime: '2-3 hours',
-    introVideo: {
-      vimeoId: '1089406361',
-      duration: '1:50',
-      thumbnail: 'https://vumbnail.com/000000025.jpg'
-    },
-    modules: [
-      { 
-        id: 1, 
-        title: 'From Slides to Screen Recordings', 
-        description: 'Learn how to create engaging online courses.',
-        video: {
-          vimeoId: '1089406316',
-          duration: '5:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
-      },
-      { 
-        id: 2, 
-        title: 'Guide to Building & Uploading Your Course', 
-        description: 'How to build and upload your online course.',
-        video: {
-          vimeoId: '1089406327',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
-      },
-      { 
-        id: 3, 
-        title: 'Marketing & Sales', 
-        description: 'Effectively market and sell your online courses.',
-        video: {
-          vimeoId: '1089406336',
-          duration: '6:20',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  },
-  {
-    slug: 'entrepreneurial-brainstorming',
-    title: 'Entrepreneurial Brainstorming',
-    description: 'Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This series breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.',
-    estimatedTime: '2 hours',
-    introVideo: {
-      vimeoId: '1094436546',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/999999999.jpg'
+      vimeoId: "1087796068",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/1087796068.jpg",
     },
     modules: [
       {
         id: 1,
-        title: 'Unlock Your Million Dollar Idea',
-        description: 'How to generate business ideas from real-life problems and markets.',
-        video: { vimeoId: '1095681148', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
+        title: "Email Marketing Foundations",
+        description:
+          "Learn how to build a high-quality email list from scratch and how to use email marketing to grow your business.",
+        video: {
+          vimeoId: "1087796011",
+          vimeoId: "1087796068",
+          duration: "15:30",
+          thumbnail: "https://img.youtube.com/vi/APgMe8E7DB0/maxresdefault.jpg",
+        },
       },
       {
         id: 2,
-        title: 'Module 2: Market Validation',
-        description: 'Fast, practical research techniques to validate demand.',
-        video: { vimeoId: '1095682845', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
+        title: "Mastering Email Newesletters",
+        description:
+          "Master Email Newsletters and automation for better results.",
+        video: {
+          vimeoId: "1087796031",
+          duration: "12:45",
+          thumbnail: "https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg",
+        },
       },
       {
         id: 3,
-        title: 'Module 3: Offer Testing',
-        description: 'How to test offers before building a full product.',
-        video: { vimeoId: '323456789', duration: '10:00', thumbnail: '' }
+        title: "Conversion Optimization",
+        description: "Turn subscribers into paying customers.",
+        video: {
+          vimeoId: "1087796055",
+          duration: "18:20",
+          thumbnail: "https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "geo-targeting",
+    title: "Geo Targeting",
+    description:
+      "Learn how to target specific geographic locations for better marketing results.",
+    estimatedTime: "1-2 hours",
+    introVideo: {
+      vimeoId: "1088193607",
+      duration: "1:30",
+      thumbnail: "https://vumbnail.com/000000001.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Introduction to Geo Targeting",
+        description: "Understand the basics and benefits of geo targeting.",
+        video: {
+          vimeoId: "1088193579",
+          duration: "10:15",
+          thumbnail: "https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Mastering Geo Targeted Facebook Ads For Healthy Campaigns",
+        description: "How to set up geo-targeted campaigns.",
+        video: {
+          vimeoId: "1088193544",
+          duration: "14:30",
+          thumbnail: "https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Reach Affluent Audiences With Geo Targeting",
+        description: "How to set up geo-targeted campaigns.",
+        video: {
+          vimeoId: "1088193520",
+          duration: "14:30",
+          thumbnail: "https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "banner-ads",
+    title: "Banner Ads",
+    description: "Create and optimize banner ads for maximum impact.",
+    estimatedTime: "1-2 hours",
+    introVideo: {
+      vimeoId: "1088199468",
+      duration: "1:45",
+      thumbnail: "https://vumbnail.com/000000002.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Banner Ad Design",
+        description: "Design effective banner ads for your campaigns.",
+        video: {
+          vimeoId: "1088199444",
+          duration: "12:20",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Choose the Right Campaign Goal",
+        description: "Where and how to place your ads for best results.",
+        video: {
+          vimeoId: "1088199421",
+          duration: "15:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Launching Your Campaign",
+        description: "Where and how to place your ads for best results.",
+        video: {
+          vimeoId: "1088199386",
+          duration: "15:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ads",
+    title: "Ads",
+    description: "Master the fundamentals of online advertising.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "000000003",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000003.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Ad Fundamentals",
+        description: "Learn the basics of online advertising.",
+        video: {
+          vimeoId: "1087796011",
+          duration: "16:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Ad Platforms",
+        description: "Overview of major ad platforms.",
+        video: {
+          vimeoId: "1087796031",
+          duration: "18:15",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "lead-generation",
+    title: "Lead Generation",
+    description:
+      "Learn effective strategies for generating high-quality leads.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088245091",
+      duration: "0:40",
+      thumbnail: "https://vumbnail.com/000000004.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Lead Magnets",
+        description: "From PDFs to Premium Bundles",
+        video: {
+          vimeoId: "1088245085",
+          duration: "5:10",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Landing Pages",
+        description: "Build landing pages that convert.",
+        video: {
+          vimeoId: "1088245079",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Masterring Paid Traffic",
+        description: "Facebook, Google, and more",
+        video: {
+          vimeoId: "1088245073",
+          duration: "4:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "linkedin-ads",
+    title: "LinkedIn Advertising",
+    description:
+      "Master LinkedIn advertising to reach professionals and decision-makers.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088824025",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000005.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Your Ultimate Begginer Guide to LinkedIn",
+        description: "How to set up your first LinkedIn ad.",
+        video: {
+          vimeoId: "1088824115",
+          duration: "12:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Step-by-Step Guide to Creating a Business Page",
+        description: "How to create a business page on LinkedIn.",
+        video: {
+          vimeoId: "1088824003",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Master Your Profile & Groups",
+        description:
+          "How to optimize your profile and groups for better results.",
+        video: {
+          vimeoId: "1088823982",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "messenger-marketing",
+    title: "Messenger Marketing",
+    description: "Learn how to use Messenger for marketing and automation.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088833375",
+      duration: "1:55",
+      thumbnail: "https://vumbnail.com/000000006.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Messenger Bots",
+        description: "Automate conversations with Messenger bots.",
+        video: {
+          vimeoId: "1088833391",
+          duration: "14:15",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "A Comprehensive Platform Overview",
+        description: "How to use the platform to its full potential.",
+        video: {
+          vimeoId: "1088833414",
+          duration: "16:40",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Your First Broadcast Setup",
+        description: "How to create your first broadcast.",
+        video: {
+          vimeoId: "1088833436",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "newsfeed-ads",
+    title: "Newsfeed Advertising",
+    description: "Master newsfeed advertising across social platforms.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088848202",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000007.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Choose Wisely For Sucess",
+        description: "How to choose the right platform for your business.",
+        video: {
+          vimeoId: "1088848188",
+          duration: "13:25",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Mastering Audience Targeting and Ad Placement",
+        description:
+          "How to target the right audience and place your ads for best results.",
+        video: {
+          vimeoId: "1088848176",
+          duration: "15:50",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Mastering Facebook Ads Budget",
+        description: "How to budget and scale your campaigns.",
+        video: {
+          vimeoId: "1088848160",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
       },
       {
         id: 4,
-        title: 'Module 4: MVP Building',
-        description: 'Steps for building a Minimum Viable Product (MVP).',
-        video: { vimeoId: '423456789', duration: '10:00', thumbnail: '' }
+        title: "From Carosel To Single Image",
+        description: "How to create a newsfeed ad for your business.",
+        video: {
+          vimeoId: "1088848149",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "paid-traffic",
+    title: "Paid Traffic",
+    description: "Master paid traffic sources and campaign optimization.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088882669",
+      duration: "1:55",
+      thumbnail: "https://vumbnail.com/000000008.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Facebook Ad Campaigns A Step By Step Guide",
+        description: "How to create a Facebook Ad Campaign.",
+        video: {
+          vimeoId: "1088882623",
+          duration: "14:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Google Search Ads A Step By Step Guide",
+        description: "How to create a Google Search Ad Campaign.",
+        video: {
+          vimeoId: "1088882591",
+          duration: "17:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "From Design to Google Display Campaign",
+        description: "How to create a Google Display Campaign.",
+        video: {
+          vimeoId: "1088882539",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "pinterest-marketing",
+    title: "Pinterest Marketing",
+    description: "Learn Pinterest marketing strategies for business growth.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088887746",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000009.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Navigating Pinterest",
+        description: "How to navigate the platform and get started.",
+        video: {
+          vimeoId: "1088887758",
+          duration: "12:15",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Business SetUp to Analytics Insights",
+        description:
+          "How to set up your Pinterest business account and get analytics insights.",
+        video: {
+          vimeoId: "1088887848",
+          duration: "15:40",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Essential Tools and Strategies",
+        description: "How to use the platform to its full potential.",
+        video: {
+          vimeoId: "1088887884",
+          duration: "4:00",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "search-ads",
+    title: "Search Advertising",
+    description: "Master search advertising and keyword targeting.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089074820",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000010.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Choosing the Right Campaign Goals",
+        description:
+          "How to choose the right campaign goals for your business.",
+        video: {
+          vimeoId: "1089074806",
+          duration: "4:20",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Campaign Setup Essentials",
+        description: "How to set up your campaign for success.",
+        video: {
+          vimeoId: "1089074777",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Creation to Performance Monitoring",
+        description: "How to create a search ad and monitor its performance.",
+        video: {
+          vimeoId: "1089074757",
+          duration: "3:00",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "social-media-marketing",
+    title: "Social Media Marketing",
+    description:
+      "Master social media marketing strategies for business growth.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089077296",
+      duration: "0:37",
+      thumbnail: "https://vumbnail.com/000000011.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Organic Marketing with Facebook and Instagram",
+        description:
+          "How to use organic marketing with Facebook and Instagram.",
+        video: {
+          vimeoId: "1089077270",
+          duration: "4:35",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Organic Marketing On Twitter and Youtube",
+        description: "How to use organic marketing on Twitter and Youtube.",
+        video: {
+          vimeoId: "1089077251",
+          duration: "4:00",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "LinkedIn and Pinterest Strategies",
+        description: "How to use LinkedIn and Pinterest for your business.",
+        video: {
+          vimeoId: "1089077226",
+          duration: "16:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 4,
+        title: "Viral Growth and Engagement",
+        description:
+          "How to use viral growth and engagement for your business.",
+        video: {
+          vimeoId: "1089077212",
+          duration: "4:05",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "twitter-ads",
+    title: "X/Twitter Advertising",
+    description: "Master Twitter advertising to reach your target audience.",
+    estimatedTime: "25-30 minutes",
+    introVideo: {
+      vimeoId: "1089091992",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000012.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Choosing the Right Campaign Objective",
+        description:
+          "How to choose the right campaign objective for your business.",
+        video: {
+          vimeoId: "1089091972",
+          duration: "12:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Targeting Your Ideal Audience",
+        description: "How to target your ideal audience for your business.",
+        video: {
+          vimeoId: "1089091950",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "From Creation to Launch",
+        description: "How to create your first campaign and launch it.",
+        video: {
+          vimeoId: "1089091937",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "automation",
+    title: "Marketing Automation",
+    description: "Learn how to automate your marketing tasks.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1088241575",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000013.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Unlocking the Power of Marketing Automation",
+        description: "Overview of marketing automation tools.",
+        video: {
+          vimeoId: "1088241557",
+          duration: "14:15",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Essential Workflows For Success",
+        description: "How to build automated marketing workflows.",
+        video: {
+          vimeoId: "1088241542",
+          duration: "16:40",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Building a Workflow from Scratch",
+        description: "How to build automated marketing workflows.",
+        video: {
+          vimeoId: "1088241528",
+          duration: "6:32",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "website-design",
+    title: "Website Design",
+    description:
+      "Learn to build professional, responsive websites from scratch. Master HTML, CSS, and modern design principles.",
+    estimatedTime: "3-4 hours",
+    introVideo: {
+      vimeoId: "1089098390",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000014.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Essential Pages Every Business Website Needs",
+        description:
+          "Learn the fundamentals of web design and modern development practices.",
+        video: {
+          vimeoId: "1089098371",
+          duration: "15:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Wordpress, Weebly, or Wix",
+        description: "How to choose the right platform for your business.",
+        video: {
+          vimeoId: "1089098340",
+          duration: "18:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Step By Step Guide To Building A Website with Wix",
+        description: "How to build a website from scratch.",
+        video: {
+          vimeoId: "1089098322",
+          duration: "20:15",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "seo",
+    title: "Search Engine Optimization",
+    description:
+      "Master the art of SEO to boost your website's visibility and ranking on search engines.",
+    estimatedTime: "3-4 hours",
+    introVideo: {
+      vimeoId: "1089388714",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000015.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "SEO Sucess with Keyword Research",
+        description: "How to find the right keywords for your business.",
+        video: {
+          vimeoId: "1089388695",
+          duration: "4:20",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Optimization Techniques",
+        description: "How to optimize your website for search engines.",
+        video: {
+          vimeoId: "1089388621",
+          duration: "7:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Essential Tools and Strategies",
+        description:
+          "Optimize your website content for better search rankings.",
+        video: {
+          vimeoId: "1089388664",
+          duration: "18:30",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "funnel-building",
+    title: "Funnel Building",
+    description:
+      "Create high-converting sales funnels that turn visitors into customers.",
+    estimatedTime: "15-20 minutes",
+    introVideo: {
+      vimeoId: "1089118712",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000016.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Choosing the Right Type with Click Funnels",
+        description:
+          "How to choose the right type of funnel for your business.",
+        video: {
+          vimeoId: "1089118712",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Cfrafting Offers ans Splintering for Success",
+        description: "How to craft offers and split test for success.",
+        video: {
+          vimeoId: "1089118665",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Building Your Sales Funnel From Start to Finish",
+        description: "How to build your sales funnel from start to finish.",
+        video: {
+          vimeoId: "1089118646",
+          duration: "4:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "outsourcing",
+    title: "Outsourcing",
+    description: "Learn how to outsource your marketing tasks to freelancers.",
+    estimatedTime: "15-20 minutes",
+    introVideo: {
+      vimeoId: "1089120856",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000017.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Hiring Virtual Teams",
+        description: "How to hire a virtual team for your business.",
+        video: {
+          vimeoId: "1089120835",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Upwork vs Fiverr",
+        description: "How to choose the right platform for your business.",
+        video: {
+          vimeoId: "1089120811",
+          duration: "17:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Trello & Slack Essential for Team Management",
+        description: "How to use Trello and Slack to manage your team.",
+        video: {
+          vimeoId: "1089120794",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "landing-pages",
+    title: "Landing Page Design",
+    description:
+      "Design landing pages that convert. Learn proven layouts, copywriting, and optimization techniques.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "000000018",
+      duration: "1:55",
+      thumbnail: "https://vumbnail.com/000000018.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Landing Page Basics",
+        description: "Understand the fundamentals of effective landing pages.",
+        video: {
+          vimeoId: "1087796011",
+          duration: "12:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Copywriting for Conversions",
+        description: "Write compelling copy that drives action.",
+        video: {
+          vimeoId: "1087796031",
+          duration: "15:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Design & Optimization",
+        description:
+          "Create visually appealing and high-converting landing pages.",
+        video: {
+          vimeoId: "1087796055",
+          duration: "16:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "affiliate-marketing",
+    title: "Affiliate Marketing",
+    description:
+      "Learn how to successfully promote products and earn commissions through affiliate marketing.",
+    estimatedTime: "15-20 minutes",
+    introVideo: {
+      vimeoId: "1090438838",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000019.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Choosing the Right Products to Promote",
+        description:
+          "How to choose the right products to promote as an affiliate.",
+        video: {
+          vimeoId: "1090438864",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Unleashing the Power of Email, SEO, and Youtube",
+        description:
+          "How to use email, SEO, and Youtube to promote affiliate products.",
+        video: {
+          vimeoId: "1090438844",
+          duration: "5:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Your Path to Affiliate Success",
+        description: "How to be successful as an affiliate.",
+        video: {
+          vimeoId: "1090438817",
+          duration: "2:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ecommerce",
+    title: "eCommerce",
+    description: "Learn how to build and run a successful online store.",
+    estimatedTime: "3-4 hours",
+    introVideo: {
+      vimeoId: "1089912578",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000020.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Ultimate Guide to Starting an Online Store",
+        description: "How to start an online store with Shopify.",
+        video: {
+          vimeoId: "1089912560",
+          duration: "6:15",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Shopify Store Customization Guide",
+        description: "How to customize your Shopify store to your brand.",
+        video: {
+          vimeoId: "1089912546",
+          duration: "5:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Stock Your Shopify Store",
+        description: "How to stock your Shopify store with products.",
+        video: {
+          vimeoId: "1089912515",
+          duration: "4:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+      {
+        id: 4,
+        title: "Final Steps to Go Live",
+        description: "How to go live with your Shopify store.",
+        video: {
+          vimeoId: "1089912530",
+          duration: "4:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "freelancing",
+    title: "Freelancing",
+    description: "Learn how to build a successful freelancing business.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089909777",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000021.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Discover High Demand Services You Can Offer",
+        description: "How to find the right services to offer as a freelancer.",
+        video: {
+          vimeoId: "1089909743",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Elevate Your Service Delivery",
+        description: "How to deliver your services to your clients.",
+        video: {
+          vimeoId: "1089909766",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Your Guide to Freelancing Success",
+        description: "How to be successful as a freelancer.",
+        video: {
+          vimeoId: "1089909758",
+          duration: "3:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "split-testing",
+    title: "Split Testing",
+    description:
+      "Learn how to run effective split (A/B) tests to optimize your marketing campaigns.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089391814",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000022.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Split Testing Basics",
+        description: "Understand the fundamentals of A/B testing.",
+        video: {
+          vimeoId: "1089391800",
+          duration: "2:45",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Step By Step Guide To Boost Your Conversions",
+        description: "How to boost your conversions with A/B testing.",
+        video: {
+          vimeoId: "1089391783",
+          duration: "2:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Decoding Results for Maximum Impact",
+        description:
+          "How to decode test results and implement winning variations.",
+        video: {
+          vimeoId: "1089391773",
+          duration: "15:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "cold-calling",
+    title: "Cold Calling",
+    description: "Master the art of effective cold calling and closing deals.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089907504",
+      duration: "1:55",
+      thumbnail: "https://vumbnail.com/000000023.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Preliminary Research for Effective Cold Calling",
+        description:
+          "How to do preliminary research for effective cold calling.",
+        video: {
+          vimeoId: "1089907494",
+          duration: "3:15",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "From Gatekeeper to Decision Maker",
+        description:
+          "How to get past the gatekeeper and get to the decision maker.",
+        video: {
+          vimeoId: "1089907480",
+          duration: "5:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Outsourcing Strategies for Success",
+        description: "How to outsource your cold calling to a virtual team.",
+        video: {
+          vimeoId: "1089907472",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "affiliate-recruiting",
+    title: "Affiliate Recruiting",
+    description:
+      "Master the strategies for building and managing a successful affiliate network.",
+    estimatedTime: "15-20 minutes",
+    introVideo: {
+      vimeoId: "1090442328",
+      duration: "0:30",
+      thumbnail: "https://vumbnail.com/000000024.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Mastering High Converting JV Pages. Launch vs Evergreen",
+        description:
+          "How to master high converting JV pages and launch vs evergreen.",
+        video: {
+          vimeoId: "1090442265",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Launch Visibility",
+        description:
+          "How to get your affiliate products in front of the right people.",
+        video: {
+          vimeoId: "1090442284",
+          duration: "3:30",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "From Headhunters List to Launch Success",
+        description: "How to get your launch to the next level.",
+        video: {
+          vimeoId: "1090442313",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "online-learning",
+    title: "Online Learning",
+    description: "Learn how to create and sell online courses effectively.",
+    estimatedTime: "2-3 hours",
+    introVideo: {
+      vimeoId: "1089406361",
+      duration: "1:50",
+      thumbnail: "https://vumbnail.com/000000025.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "From Slides to Screen Recordings",
+        description: "Learn how to create engaging online courses.",
+        video: {
+          vimeoId: "1089406316",
+          duration: "5:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Guide to Building & Uploading Your Course",
+        description: "How to build and upload your online course.",
+        video: {
+          vimeoId: "1089406327",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Marketing & Sales",
+        description: "Effectively market and sell your online courses.",
+        video: {
+          vimeoId: "1089406336",
+          duration: "6:20",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+  {
+    slug: "entrepreneurial-brainstorming",
+    title: "Entrepreneurial Brainstorming",
+    description:
+      "Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas. This series breaks down practical brainstorming systems, real-world validation techniques, and lean startup strategies to help you launch faster, smarter, and with more confidence.",
+    estimatedTime: "2 hours",
+    introVideo: {
+      vimeoId: "1094436546",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/999999999.jpg",
+    },
+    modules: [
+      {
+        id: 1,
+        title: "Unlock Your Million Dollar Idea",
+        description:
+          "How to generate business ideas from real-life problems and markets.",
+        video: {
+          vimeoId: "1095681148",
+          duration: "2:00",
+          thumbnail: "https://vumbnail.com/999999999.jpg",
+        },
+      },
+      {
+        id: 2,
+        title: "Module 2: Market Validation",
+        description: "Fast, practical research techniques to validate demand.",
+        video: {
+          vimeoId: "1095682845",
+          duration: "2:00",
+          thumbnail: "https://vumbnail.com/999999999.jpg",
+        },
+      },
+      {
+        id: 3,
+        title: "Module 3: Offer Testing",
+        description: "How to test offers before building a full product.",
+        video: { vimeoId: "323456789", duration: "10:00", thumbnail: "" },
+      },
+      {
+        id: 4,
+        title: "Module 4: MVP Building",
+        description: "Steps for building a Minimum Viable Product (MVP).",
+        video: { vimeoId: "423456789", duration: "10:00", thumbnail: "" },
       },
       {
         id: 5,
-        title: 'Module 5: Brand Positioning',
-        description: 'Brand positioning strategies for long-term growth.',
-        video: { vimeoId: '523456789', duration: '10:00', thumbnail: '' }
+        title: "Module 5: Brand Positioning",
+        description: "Brand positioning strategies for long-term growth.",
+        video: { vimeoId: "523456789", duration: "10:00", thumbnail: "" },
       },
       {
         id: 6,
-        title: 'Module 6: Funding & Launch',
-        description: 'How to fund and launch your startup.',
-        video: { vimeoId: '623456789', duration: '10:00', thumbnail: '' }
+        title: "Module 6: Funding & Launch",
+        description: "How to fund and launch your startup.",
+        video: { vimeoId: "623456789", duration: "10:00", thumbnail: "" },
       },
       {
         id: 7,
-        title: 'Module 7: Scaling Up',
-        description: 'Strategies for scaling your business after launch.',
-        video: { vimeoId: '723456789', duration: '10:00', thumbnail: '' }
+        title: "Module 7: Scaling Up",
+        description: "Strategies for scaling your business after launch.",
+        video: { vimeoId: "723456789", duration: "10:00", thumbnail: "" },
       },
       {
         id: 8,
-        title: 'Module 8: Real-World Case Studies',
-        description: 'Lessons from successful entrepreneurs and their journeys.',
-        video: { vimeoId: '823456789', duration: '10:00', thumbnail: '' }
-      }
-    ]
+        title: "Module 8: Real-World Case Studies",
+        description:
+          "Lessons from successful entrepreneurs and their journeys.",
+        video: { vimeoId: "823456789", duration: "10:00", thumbnail: "" },
+      },
+    ],
   },
   {
-    slug: 'ai-essentials',
-    title: 'AI Essentials',
-    description: 'Master the fundamentals of artificial intelligence and its practical applications in business.',
-    estimatedTime: '2-3 hours',
+    slug: "ai-essentials",
+    title: "AI Essentials",
+    description:
+      "Master the fundamentals of artificial intelligence and its practical applications in business.",
+    estimatedTime: "2-3 hours",
     introVideo: {
-      vimeoId: '1090695313',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000026.jpg'
+      vimeoId: "1090695313",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000026.jpg",
     },
     modules: [
-      { 
-        id: 1, 
-        title: 'Understanding AI Basics', 
-        description: 'Learn the core concepts and terminology of artificial intelligence.',
+      {
+        id: 1,
+        title: "Understanding AI Basics",
+        description:
+          "Learn the core concepts and terminology of artificial intelligence.",
         video: {
-          vimeoId: '1090695302',
-          duration: '5:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
+          vimeoId: "1090695302",
+          duration: "5:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
       },
-      { 
-        id: 2, 
-        title: 'Boost Productivity with Smart Interactions', 
-        description: 'Discover how AI is transforming various business operations.',
+      {
+        id: 2,
+        title: "Boost Productivity with Smart Interactions",
+        description:
+          "Discover how AI is transforming various business operations.",
         video: {
-          vimeoId: '1089912581',
-          duration: '2:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
+          vimeoId: "1089912581",
+          duration: "2:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
       },
-      { 
-        id: 3, 
-        title: 'The Art of Prompt Engineering', 
-        description: 'How to use AI to create effective prompts.',
+      {
+        id: 3,
+        title: "The Art of Prompt Engineering",
+        description: "How to use AI to create effective prompts.",
         video: {
-          vimeoId: '1090695280',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
+          vimeoId: "1090695280",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
       },
       {
         id: 4,
-        title: 'The Final Step to Step in Your Entrepreneurial Journey',
-        description: 'How to take the final step in your entrepreneurial journey.',
+        title: "The Final Step to Step in Your Entrepreneurial Journey",
+        description:
+          "How to take the final step in your entrepreneurial journey.",
         video: {
-          vimeoId: '1090695271',
-          duration: '2:45',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
+          vimeoId: "1090695271",
+          duration: "2:45",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
   },
   {
-    slug: 'ai-agent-fundamentals',
-    title: 'AI Agent Fundamentals',
-    description: 'Learn how to build and deploy AI agents for automation and enhanced productivity.',
-    estimatedTime: '2-3 hours',
+    slug: "ai-agent-fundamentals",
+    title: "AI Agent Fundamentals",
+    description:
+      "Learn how to build and deploy AI agents for automation and enhanced productivity.",
+    estimatedTime: "2-3 hours",
     introVideo: {
-      vimeoId: '1090892607',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000027.jpg'
+      vimeoId: "1090892607",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000027.jpg",
     },
     modules: [
-      { 
-        id: 1, 
-        title: 'Power of AI Agents', 
-        description: 'How to use AI agents to automate your business.',
+      {
+        id: 1,
+        title: "Power of AI Agents",
+        description: "How to use AI agents to automate your business.",
         video: {
-          vimeoId: '1090892582',
-          duration: '6:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
+          vimeoId: "1090892582",
+          duration: "6:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
       },
-      { 
-        id: 2, 
-        title: 'Understanding AI Agents Design Patterns', 
-        description: 'How to use AI agents to automate your business.',
+      {
+        id: 2,
+        title: "Understanding AI Agents Design Patterns",
+        description: "How to use AI agents to automate your business.",
         video: {
-          vimeoId: '1090892561',
-          duration: '3:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
+          vimeoId: "1090892561",
+          duration: "3:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
       },
-      { 
-        id: 3, 
-        title: 'From Design to Implementation', 
-        description: 'How to use AI agents to automate your business.',
+      {
+        id: 3,
+        title: "From Design to Implementation",
+        description: "How to use AI agents to automate your business.",
         video: {
-          vimeoId: '1090892500',
-          duration: '2:15',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
+          vimeoId: "1090892500",
+          duration: "2:15",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
   },
   {
-    slug: 'prompt-engineering',
-    title: 'Prompt Engineering',
-    description: 'Master the art of crafting effective prompts for AI language models to get optimal results.',
-    estimatedTime: '10-15 minutes',
+    slug: "prompt-engineering",
+    title: "Prompt Engineering",
+    description:
+      "Master the art of crafting effective prompts for AI language models to get optimal results.",
+    estimatedTime: "10-15 minutes",
     introVideo: {
-      vimeoId: '1092539509',
-      duration: '2:00',
-      thumbnail: 'https://vumbnail.com/000000028.jpg'
+      vimeoId: "1092539509",
+      duration: "2:00",
+      thumbnail: "https://vumbnail.com/000000028.jpg",
     },
     modules: [
-      { 
-        id: 1, 
-        title: 'Prompt Engineering Basics', 
-        description: 'Learn the fundamental principles of effective prompt design.',
+      {
+        id: 1,
+        title: "Prompt Engineering Basics",
+        description:
+          "Learn the fundamental principles of effective prompt design.",
         video: {
-          vimeoId: '1092539476',
-          duration: '1:30',
-          thumbnail: 'https://vumbnail.com/1087796011.jpg'
-        }
+          vimeoId: "1092539476",
+          duration: "1:30",
+          thumbnail: "https://vumbnail.com/1087796011.jpg",
+        },
       },
-      { 
-        id: 2, 
-        title: 'Real-World Applications of Prompt Engineering', 
-        description: 'How to use prompt engineering to automate your business.',
+      {
+        id: 2,
+        title: "Real-World Applications of Prompt Engineering",
+        description: "How to use prompt engineering to automate your business.",
         video: {
-          vimeoId: '1092539424',
-          duration: '2:45',
-          thumbnail: 'https://vumbnail.com/1087796031.jpg'
-        }
+          vimeoId: "1092539424",
+          duration: "2:45",
+          thumbnail: "https://vumbnail.com/1087796031.jpg",
+        },
       },
-      { 
-        id: 3, 
-        title: 'Advanced Prompt Techniques for AI Agents', 
-        description: 'Practical applications and case studies of prompt engineering.',
+      {
+        id: 3,
+        title: "Advanced Prompt Techniques for AI Agents",
+        description:
+          "Practical applications and case studies of prompt engineering.",
         video: {
-          vimeoId: '1092539377',
-          duration: '2:15',
-          thumbnail: 'https://vumbnail.com/1087796055.jpg'
-        }
-      }
-    ]
-  }
-]; 
+          vimeoId: "1092539377",
+          duration: "2:15",
+          thumbnail: "https://vumbnail.com/1087796055.jpg",
+        },
+      },
+    ],
+  },
+];
+
+export const coursesSecond = [
+  {
+    id: "affiliate-marketing",
+    title: "Affiliate Marketing",
+    description:
+      "Learn how to successfully promote products and earn commissions through affiliate marketing.",
+  },
+  {
+    id: "affiliate-recruiting",
+    title: "Affiliate Recruiting",
+    description:
+      "Master the strategies for building and managing a successful affiliate network.",
+  },
+  {
+    id: "automation",
+    title: "Marketing Automation",
+    description:
+      "Automate your marketing tasks and scale your business. Learn advanced automation strategies and tools.",
+  },
+  {
+    id: "banner-ads",
+    title: "Banner Ads",
+    description:
+      "Learn how to create and optimize banner ads for maximum reach and conversions.",
+  },
+  {
+    id: "cold-calling",
+    title: "Cold Calling",
+    description: "Master the art of effective cold calling and closing deals.",
+  },
+  {
+    id: "ecommerce",
+    title: "eCommerce",
+    description: "Learn how to build and run a successful online store.",
+  },
+  {
+    id: "email-marketing",
+    title: "Email Marketing",
+    description:
+      "Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation.",
+  },
+  {
+    id: "freelancing",
+    title: "Freelancing",
+    description: "Learn how to build a successful freelancing business.",
+  },
+  {
+    id: "funnel-building",
+    title: "Funnel Building",
+    description:
+      "Create high-converting sales funnels that turn visitors into customers.",
+  },
+  {
+    id: "geo-targeting",
+    title: "Geo Targeting",
+    description:
+      "Learn how to target specific geographic areas with your marketing campaigns.",
+  },
+  {
+    id: "lead-generation",
+    title: "Lead Generation",
+    description: "Master lead generation strategies to grow your business.",
+  },
+  {
+    id: "linkedin-ads",
+    title: "LinkedIn Ads",
+    description: "Create effective advertising campaigns on LinkedIn.",
+  },
+  {
+    id: "linkedin-marketing",
+    title: "LinkedIn Marketing (Organic)",
+    description:
+      "Learn how to use LinkedIn for organic growth and lead generation.",
+  },
+  {
+    id: "messenger-marketing",
+    title: "Messenger Marketing",
+    description: "Master Facebook Messenger for marketing and automation.",
+  },
+  {
+    id: "newsfeed-ads",
+    title: "Newsfeed Ads",
+    description: "Create effective ads for social media newsfeeds.",
+  },
+  {
+    id: "online-learning",
+    title: "Online Learning",
+    description: "Create and sell successful online courses.",
+  },
+  {
+    id: "outsourcing",
+    title: "Outsourcing",
+    description: "Learn how to effectively delegate and manage remote teams.",
+  },
+  {
+    id: "paid-traffic",
+    title: "Paid Traffic",
+    description: "Master paid advertising across multiple platforms.",
+  },
+  {
+    id: "pinterest-marketing",
+    title: "Pinterest Marketing",
+    description: "Learn how to use Pinterest to drive traffic and sales.",
+  },
+  {
+    id: "search-ads",
+    title: "Search Advertising",
+    description: "Master search engine advertising campaigns.",
+  },
+  {
+    id: "seo",
+    title: "SEO",
+    description: "Learn search engine optimization from the ground up.",
+  },
+  {
+    id: "social-marketing",
+    title: "Social Marketing",
+    description: "Master social media platforms for business growth.",
+  },
+  {
+    id: "split-testing",
+    title: "Split Testing",
+    description: "Learn how to optimize through effective A/B testing.",
+  },
+  {
+    id: "twitter-ads",
+    title: "Twitter Timeline Advertising",
+    description: "Create effective advertising campaigns on Twitter.",
+  },
+  {
+    id: "web-design",
+    title: "Web Design",
+    description:
+      "Learn to build professional, responsive websites from scratch.",
+  },
+  {
+    id: "ai-essentials",
+    title: "AI Essentials",
+    description:
+      "Master the fundamentals of artificial intelligence and its practical applications in business.",
+  },
+  {
+    id: "ai-agent-fundamentals",
+    title: "AI Agent Fundamentals",
+    description:
+      "Learn how to build and deploy AI agents for automation and enhanced productivity.",
+  },
+  {
+    id: "prompt-engineering",
+    title: "Prompt Engineering",
+    description:
+      "Master the art of crafting effective prompts for AI language models to get optimal results.",
+  },
+];

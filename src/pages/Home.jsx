@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import ReferralTracker from "../components/ReferralTracker.js";
 import {
@@ -23,15 +23,6 @@ export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const { user } = useAuth();
-
-  useEffect(() => {
-    // Debug environment variables
-    console.log("Environment Variables:", {
-      VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
-      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
-    });
-  }, []);
 
   return (
     <div className="home">

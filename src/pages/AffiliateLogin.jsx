@@ -21,7 +21,6 @@ export default function AffiliateLogin() {
 
     try {
       const response = await login(email, password);
-      console.log("response", response);
       // Check if user is an affiliate or reseller
       const { data: userData, error: userError } = await supabase
         .from("users")
