@@ -15,10 +15,6 @@ import { FaUserPlus, FaMoneyBillWave, FaClipboardCheck } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import "../../public/css/admin.css";
 
-// Import components for dashboard widgets (these may need to be created or imported from correct location)
-// import { DashboardIntegration, DashboardHeader, KPIWidget } from '../components/KPITrackerAgent';
-
-// Dashboard Overview Component
 const DashboardOverview = ({ stats, recentActivity }) => (
   <>
     <header className="admin-header">

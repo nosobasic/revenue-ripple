@@ -5,7 +5,6 @@ const AdminDebug = () => {
   const { user, loading: authLoading } = useAuth();
   const [error, setError] = useState(null);
 
-  // Show loading while auth is still loading
   if (authLoading) {
     return (
       <div

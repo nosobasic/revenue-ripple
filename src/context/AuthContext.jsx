@@ -63,8 +63,8 @@ export function AuthProvider({ children }) {
         // If user doesn't exist in users table, create basic user object
         setUser({
           ...authUser,
-          role: 'member', // default role
-          status: 'active'
+          role: "member", // default role
+          status: "active",
         });
         return;
       }
@@ -77,16 +77,16 @@ export function AuthProvider({ children }) {
       } else {
         setUser({
           ...authUser,
-          role: 'member',
-          status: 'active'
+          role: "member",
+          status: "active",
         });
       }
     } catch (error) {
       console.error("Error in fetchUserData:", error);
       setUser({
         ...authUser,
-        role: 'member',
-        status: 'active'
+        role: "member",
+        status: "active",
       });
     }
   };
@@ -94,7 +94,7 @@ export function AuthProvider({ children }) {
   async function signup(email, password, name) {
     try {
       setLoading(true);
-      
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -134,7 +134,7 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-      
+
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
           email,
@@ -159,10 +159,10 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("revenue-ripple-auth-token");
     try {
       setLoading(true);
-      
+
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      
+
       setUser(null);
       setSession(null);
     } catch (error) {

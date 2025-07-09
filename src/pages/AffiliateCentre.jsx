@@ -1,17 +1,16 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { supabase } from '../supabase/client';
-import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
-import AIAssistantWidget from '../components/AIAssistantWidget';
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "../supabase/client";
+import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/Navbar";
+import AIAssistantWidget from "../components/AIAssistantWidget";
 
 export default function AffiliateCentre() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState({
     totalEarnings: 0,
     totalSales: 0,
-    commissionRate: '50%'
+    commissionRate: "50%",
   });
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +21,7 @@ export default function AffiliateCentre() {
 
   const copyAffiliateLink = () => {
     navigator.clipboard.writeText(affiliateLink).then(() => {
-      alert('Affiliate link copied to clipboard!');
+      alert("Affiliate link copied to clipboard!");
     });
   };
 
@@ -36,28 +35,31 @@ export default function AffiliateCentre() {
 
         // Fetch user's role and commission rate
         const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('role, commission_rate')
-          .eq('id', user.id)
+          .from("users")
+          .select("role, commission_rate")
+          .eq("id", user.id)
           .single();
 
         if (userError) throw userError;
 
         // Fetch commissions
         const { data: commissions, error: commissionsError } = await supabase
-          .from('commissions')
-          .select('*')
-          .eq('referrer_username', user.id);
+          .from("commissions")
+          .select("*")
+          .eq("referrer_username", user.id);
 
         if (commissionsError) throw commissionsError;
 
-        const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
+        const totalEarnings = commissions.reduce(
+          (sum, row) => sum + row.commission,
+          0
+        );
         const totalSales = commissions.length;
 
         setStats({
           totalEarnings: `$${totalEarnings.toFixed(2)}`,
           totalSales,
-          commissionRate: `${userData.commission_rate || 50}%`
+          commissionRate: `${userData.commission_rate || 50}%`,
         });
 
         const recentActivity = commissions
@@ -65,13 +67,15 @@ export default function AffiliateCentre() {
           .slice(0, 5)
           .map((entry) => ({
             type: "commission",
-            message: `Commission earned: $${entry.commission.toFixed(2)} from ${entry.tier.toUpperCase()}`,
-            timestamp: new Date(entry.timestamp).toLocaleString()
+            message: `Commission earned: $${entry.commission.toFixed(
+              2
+            )} from ${entry.tier.toUpperCase()}`,
+            timestamp: new Date(entry.timestamp).toLocaleString(),
           }));
 
         setActivity(recentActivity);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -126,10 +130,23 @@ export default function AffiliateCentre() {
             </div>
             <div className="section-content">
               <div className="welcome-message">
-                <p>Thanks for being part of the team — whether you're crushing it as an affiliate or leveling up as a reseller, you're a key part of what we're building.</p>
-                <p>Below, you'll find a breakdown of your referrals, commissions, and sales activity.</p>
-                <p>Keep sharing the word and bringing people into the ecosystem — your effort doesn't go unnoticed.</p>
-                <p>With you on board, growth isn't just possible — it's inevitable.</p>
+                <p>
+                  Thanks for being part of the team — whether you're crushing it
+                  as an affiliate or leveling up as a reseller, you're a key
+                  part of what we're building.
+                </p>
+                <p>
+                  Below, you'll find a breakdown of your referrals, commissions,
+                  and sales activity.
+                </p>
+                <p>
+                  Keep sharing the word and bringing people into the ecosystem —
+                  your effort doesn't go unnoticed.
+                </p>
+                <p>
+                  With you on board, growth isn't just possible — it's
+                  inevitable.
+                </p>
                 <p>Let's keep scaling. 🚀</p>
               </div>
             </div>
@@ -170,22 +187,35 @@ export default function AffiliateCentre() {
                 <div className="course-item">
                   <h3>Generate Affiliate Link</h3>
                   <div className="course-details">
-                    <p>Create and copy your unique affiliate link to start promoting.</p>
-                    <button className="cta-button" onClick={copyAffiliateLink}>Copy Link</button>
+                    <p>
+                      Create and copy your unique affiliate link to start
+                      promoting.
+                    </p>
+                    <button className="cta-button" onClick={copyAffiliateLink}>
+                      Copy Link
+                    </button>
                   </div>
                 </div>
                 <div className="course-item">
                   <h3>View Marketing Materials</h3>
                   <div className="course-details">
-                    <p>Access banners, email templates, and promotional content.</p>
-                    <Link to="/affiliate-centre/tools" className="cta-button">View Materials</Link>
+                    <p>
+                      Access banners, email templates, and promotional content.
+                    </p>
+                    <Link to="/affiliate-centre/tools" className="cta-button">
+                      View Materials
+                    </Link>
                   </div>
                 </div>
                 <div className="course-item">
                   <h3>Track Performance</h3>
                   <div className="course-details">
-                    <p>Monitor clicks, conversions, and earnings in real-time.</p>
-                    <Link to="/affiliate-centre/payouts" className="cta-button">View Analytics</Link>
+                    <p>
+                      Monitor clicks, conversions, and earnings in real-time.
+                    </p>
+                    <Link to="/affiliate-centre/payouts" className="cta-button">
+                      View Analytics
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -201,26 +231,26 @@ export default function AffiliateCentre() {
               <h2>Navigation</h2>
             </div>
             <div className="section-content">
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li style={{ marginBottom: '1rem' }}>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/tools" className="cta-link">
                     <span className="item-icon">🛠️</span>
                     Marketing Tools
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/training" className="cta-link">
                     <span className="item-icon">📚</span>
                     Training & Guides
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/payouts" className="cta-link">
                     <span className="item-icon">💰</span>
                     Earnings & Payouts
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/support" className="cta-link">
                     <span className="item-icon">💬</span>
                     Support & FAQ
@@ -242,8 +272,9 @@ export default function AffiliateCentre() {
                   <div key={idx} className="activity-item">
                     <span className="activity-icon payment">💰</span>
                     <div>
-                      <span>{item.message}</span><br />
-                      <small style={{ color: '#888' }}>{item.timestamp}</small>
+                      <span>{item.message}</span>
+                      <br />
+                      <small style={{ color: "#888" }}>{item.timestamp}</small>
                     </div>
                   </div>
                 ))}

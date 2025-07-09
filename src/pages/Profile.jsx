@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaPhone, FaBuilding, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { FaUser, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    role: '',
-    bio: ''
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    role: "",
+    bio: "",
   });
 
   useEffect(() => {
     if (user) {
       setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        company: user.company || '',
-        role: user.role || '',
-        bio: user.bio || ''
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        company: user.company || "",
+        role: user.role || "",
+        bio: user.bio || "",
       });
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -43,7 +43,7 @@ const Profile = () => {
       await updateUserProfile(formData);
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -52,9 +52,11 @@ const Profile = () => {
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900">Please log in to view your profile</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Please log in to view your profile
+            </h2>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate("/login")}
               className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
             >
               Go to Login
@@ -80,7 +82,7 @@ const Profile = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-xl font-bold text-white">{user.name}</h3>
-                  <p className="text-blue-100">{user.role || 'Member'}</p>
+                  <p className="text-blue-100">{user.role || "Member"}</p>
                 </div>
               </div>
               <button
@@ -108,7 +110,9 @@ const Profile = () => {
               <div className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Name
+                  </label>
                   <div className="mt-1">
                     <input
                       type="text"
@@ -123,7 +127,9 @@ const Profile = () => {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
                   <div className="mt-1">
                     <input
                       type="email"
@@ -138,7 +144,9 @@ const Profile = () => {
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Phone
+                  </label>
                   <div className="mt-1">
                     <input
                       type="tel"
@@ -153,7 +161,9 @@ const Profile = () => {
 
                 {/* Company */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Company</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Company
+                  </label>
                   <div className="mt-1">
                     <input
                       type="text"
@@ -168,7 +178,9 @@ const Profile = () => {
 
                 {/* Role */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Role
+                  </label>
                   <div className="mt-1">
                     <input
                       type="text"
@@ -183,7 +195,9 @@ const Profile = () => {
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Bio</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Bio
+                  </label>
                   <div className="mt-1">
                     <textarea
                       name="bio"
@@ -217,4 +231,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;

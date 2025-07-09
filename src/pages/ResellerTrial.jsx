@@ -1,9 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Button } from "../components/Button";
+import { Card } from "../components/Card";
+import { useAuth } from "../context/AuthContext";
 
 export default function ResellerTrial() {
   const navigate = useNavigate();
@@ -11,11 +10,11 @@ export default function ResellerTrial() {
 
   const handleStartTrial = () => {
     // TODO: Implement trial signup logic
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const handleSkip = () => {
-    navigate('/affiliate-centre');
+    navigate("/affiliate-centre");
   };
 
   return (
@@ -40,27 +39,39 @@ export default function ResellerTrial() {
 
             <div className="space-y-8">
               <div className="bg-gray-700/50 p-6 rounded-lg">
-                <h2 className="text-2xl font-semibold mb-4 text-blue-400">What You'll Get During Your Trial:</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-blue-400">
+                  What You'll Get During Your Trial:
+                </h2>
                 <ul className="space-y-4">
                   <li className="flex items-start">
                     <span className="text-green-400 mr-2 mt-1">✓</span>
                     <div>
-                      <span className="font-semibold">Full Reseller Access</span>
-                      <p className="text-gray-400 text-sm">Experience all features and benefits of the Reseller Program</p>
+                      <span className="font-semibold">
+                        Full Reseller Access
+                      </span>
+                      <p className="text-gray-400 text-sm">
+                        Experience all features and benefits of the Reseller
+                        Program
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-400 mr-2 mt-1">✓</span>
                     <div>
                       <span className="font-semibold">Training & Support</span>
-                      <p className="text-gray-400 text-sm">Access to our complete training program and dedicated support</p>
+                      <p className="text-gray-400 text-sm">
+                        Access to our complete training program and dedicated
+                        support
+                      </p>
                     </div>
                   </li>
                   <li className="flex items-start">
                     <span className="text-green-400 mr-2 mt-1">✓</span>
                     <div>
                       <span className="font-semibold">Marketing Resources</span>
-                      <p className="text-gray-400 text-sm">Use our professional marketing materials and tools</p>
+                      <p className="text-gray-400 text-sm">
+                        Use our professional marketing materials and tools
+                      </p>
                     </div>
                   </li>
                 </ul>
@@ -68,7 +79,8 @@ export default function ResellerTrial() {
 
               <div className="text-center space-y-4">
                 <p className="text-gray-300">
-                  No credit card required. Start your 7-day trial today and see if the Reseller Program is right for you.
+                  No credit card required. Start your 7-day trial today and see
+                  if the Reseller Program is right for you.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
@@ -86,9 +98,11 @@ export default function ResellerTrial() {
                   </Button>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-700">
-                  <p className="text-gray-400 mb-4">Ready to start your affiliate journey?</p>
+                  <p className="text-gray-400 mb-4">
+                    Ready to start your affiliate journey?
+                  </p>
                   <Button
-                    onClick={() => navigate('/affiliate-centre')}
+                    onClick={() => navigate("/affiliate-centre")}
                     className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-lg font-semibold"
                   >
                     Go to Affiliate Centre
@@ -104,4 +118,4 @@ export default function ResellerTrial() {
       </div>
     </div>
   );
-} 
+}

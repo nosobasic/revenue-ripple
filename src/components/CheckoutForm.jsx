@@ -1,6 +1,10 @@
-import { useState } from 'react';
-import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import {
+  useStripe,
+  useElements,
+  PaymentElement,
+} from "@stripe/react-stripe-js";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckoutForm() {
   const stripe = useStripe();
@@ -29,7 +33,7 @@ export default function CheckoutForm() {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      navigate('/thank-you');
+      navigate("/thank-you");
     }
 
     setIsProcessing(false);
@@ -38,18 +42,16 @@ export default function CheckoutForm() {
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement />
-      <button 
-        disabled={isProcessing || !stripe || !elements} 
+      <button
+        disabled={isProcessing || !stripe || !elements}
         id="submit"
         className="payment-button"
       >
         <span id="button-text">
-          {isProcessing ? 'Processing...' : 'Pay now'}
+          {isProcessing ? "Processing..." : "Pay now"}
         </span>
       </button>
-      {errorMessage && (
-        <div className="payment-error">{errorMessage}</div>
-      )}
+      {errorMessage && <div className="payment-error">{errorMessage}</div>}
     </form>
   );
-} 
+}

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 import { FaGraduationCap, FaPlay } from "react-icons/fa";
 import { coursesSecond } from "../constants/data/courses";
 import "../../public/css/pages.css";
 
 const Courses = () => {
-  const { user } = useAuth();
   const [expandedSection, setExpandedSection] = useState(null);
 
   const toggleSection = (section) => {
