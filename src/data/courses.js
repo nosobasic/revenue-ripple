@@ -1147,54 +1147,49 @@ export const courses = [
     introVideo: {
       vimeoId: '1094436546',
       duration: '2:00',
-      thumbnail: 'https://vumbnail.com/999999999.jpg'
+      thumbnail: 'https://vumbnail.com/999999999.jpg',
+      title: 'Unlock Your Million Dollar Idea'
     },
     modules: [
       {
         id: 1,
-        title: 'Unlock Your Million Dollar Idea',
-        description: 'How to generate business ideas from real-life problems and markets.',
-        video: { vimeoId: '1095681148', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
-      },
-      {
-        id: 2,
-        title: 'Module 2: Market Validation',
+        title: 'Market Validation',
         description: 'Fast, practical research techniques to validate demand.',
         video: { vimeoId: '1095682845', duration: '2:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
       },
       {
-        id: 3,
-        title: 'Module 3: Offer Testing',
+        id: 2,
+        title: 'Offer Testing',
         description: 'How to test offers before building a full product.',
-        video: { vimeoId: '323456789', duration: '10:00', thumbnail: '' }
+        video: { vimeoId: '1099011849', duration: '10:00', thumbnail: '' }
+      },
+      {
+        id: 3,
+        title: 'MVP Building',
+        description: 'Steps for building a Minimum Viable Product (MVP).',
+        video: { vimeoId: '1099357103', duration: '10:00', thumbnail: '' }
       },
       {
         id: 4,
-        title: 'Module 4: MVP Building',
-        description: 'Steps for building a Minimum Viable Product (MVP).',
-        video: { vimeoId: '423456789', duration: '10:00', thumbnail: '' }
+        title: 'Brand Positioning',
+        description: 'Brand positioning strategies for long-term growth.',
+        video: { vimeoId: '1099413682', duration: '10:00', thumbnail: '' }
       },
       {
         id: 5,
-        title: 'Module 5: Brand Positioning',
-        description: 'Brand positioning strategies for long-term growth.',
-        video: { vimeoId: '523456789', duration: '10:00', thumbnail: '' }
+        title: 'Funding & Launch',
+        description: 'How to fund and launch your startup.',
+        video: { vimeoId: '1100023761', duration: '10:00', thumbnail: '' }
       },
       {
         id: 6,
-        title: 'Module 6: Funding & Launch',
-        description: 'How to fund and launch your startup.',
-        video: { vimeoId: '623456789', duration: '10:00', thumbnail: '' }
-      },
-      {
-        id: 7,
-        title: 'Module 7: Scaling Up',
+        title: 'Scaling Up',
         description: 'Strategies for scaling your business after launch.',
         video: { vimeoId: '723456789', duration: '10:00', thumbnail: '' }
       },
       {
-        id: 8,
-        title: 'Module 8: Real-World Case Studies',
+        id: 7,
+        title: 'Real-World Case Studies',
         description: 'Lessons from successful entrepreneurs and their journeys.',
         video: { vimeoId: '823456789', duration: '10:00', thumbnail: '' }
       }
