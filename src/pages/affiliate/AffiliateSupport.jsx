@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import "../../../styles/pages.css";
+
 import {
   faqCategories,
   supportResources,
-} from "../constants/data/affiliateSupport";
-import "../../public/css/pages.css";
+} from "../../constants/data/affiliateSupport";
+
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 
 const AffiliateSupport = () => {
   return (

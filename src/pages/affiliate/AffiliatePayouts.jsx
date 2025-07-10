@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import "../../../styles/pages.css";
+
 import {
   earningsData,
-  recentTransactions,
   performanceMetrics,
-} from "../constants/data/affiliatePayouts";
-import "../../public/css/pages.css";
+  recentTransactions,
+} from "../../constants/data/affiliatePayouts";
+
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 
 const AffiliatePayouts = () => {
   return (

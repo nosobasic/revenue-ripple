@@ -1,22 +1,20 @@
-import { useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import ClearCacheButton from "../components/ClearCacheButton";
-import Navbar from "../components/Navbar";
-import "../../public/css/pages.css";
+import "../../../styles/pages.css";
 
-export default function Login() {
+import { Link, useNavigate } from "react-router-dom";
+
+import Navbar from "../../components/Navbar";
+import { supabase } from "../../supabase/client";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+
+export default function AffiliateLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login, resetPassword } = useAuth();
-
-  // Get the intended redirect path, default to dashboard
-  const from = location.state?.from?.pathname || "/dashboard";
+  const { login, resetPassword, logout } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,11 +22,26 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate(from, { replace: true }); // Redirect to intended page
+      const response = await login(email, password);
+      // Check if user is an affiliate or reseller
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("role")
+        .eq("email", email)
+        .single();
+
+      if (userError) throw userError;
+
+      if (userData.role === "affiliate" || userData.role === "reseller") {
+        navigate("/affiliate-centre");
+      } else {
+        setError(
+          "This login is for affiliates and resellers only. Please use the regular login."
+        );
+        await logout();
+      }
     } catch (error) {
-      console.error("Login error:", error);
-      setError(error.message || "Failed to login. Please try again.");
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -58,12 +71,12 @@ export default function Login() {
           <h2 className="auth-title">
             {showForgotPassword
               ? "Reset your password"
-              : "Sign in to your account"}
+              : "Affiliate & Reseller Login"}
           </h2>
           <p className="auth-subtitle">
-            Or{" "}
-            <Link to="/register" className="auth-link">
-              create a new account
+            Not an affiliate yet?{" "}
+            <Link to="/affiliate/sign-up" className="auth-link">
+              Apply to become an affiliate
             </Link>
           </p>
         </div>
@@ -143,18 +156,6 @@ export default function Login() {
             <button type="submit" disabled={loading} className="auth-button">
               {loading ? "Signing in..." : "Sign in"}
             </button>
-
-            {/* Debug: Cache clear button for troubleshooting */}
-            <div
-              style={{
-                textAlign: "center",
-                marginTop: "16px",
-                fontSize: "12px",
-                color: "#666",
-              }}
-            >
-              Having issues? <ClearCacheButton />
-            </div>
           </form>
         )}
       </div>

@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import "../../../styles/pages.css";
+
 import {
-  trainingModules,
   successStories,
-} from "../constants/data/affiliateTraining";
-import "../../public/css/pages.css";
+  trainingModules,
+} from "../../constants/data/affiliateTraining";
+
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 
 const AffiliateTraining = () => {
   return (

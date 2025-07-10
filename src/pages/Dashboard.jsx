@@ -1,31 +1,33 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { supabase } from "../supabase/client.jsx";
-import Navbar from "../components/Navbar";
-import ReferralTracker from "../components/ReferralTracker.js";
-import AIAssistantWidget from "../components/AIAssistantWidget";
+import "../../styles/pages.css";
+
 import {
-  FaMoneyBillWave,
+  FaBell,
+  FaBook,
+  FaBriefcase,
   FaChartBar,
-  FaGraduationCap,
-  FaLightbulb,
+  FaChartLine,
+  FaFlask,
+  FaFunnelDollar,
   FaGlobe,
+  FaGraduationCap,
+  FaImage,
+  FaLightbulb,
+  FaMoneyBillWave,
+  FaRobot,
   FaShareAlt,
   FaShoppingCart,
-  FaUsers,
-  FaFunnelDollar,
-  FaBriefcase,
-  FaRobot,
   FaUserPlus,
-  FaFlask,
   FaUserTie,
-  FaImage,
-  FaBook,
-  FaChartLine,
-  FaBell,
+  FaUsers,
 } from "react-icons/fa";
-import "../../public/css/pages.css";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import AIAssistantWidget from "../components/AIAssistantWidget";
+import Navbar from "../components/Navbar";
+import ReferralTracker from "../components/ReferralTracker.jsx";
+import { supabase } from "../supabase/client.jsx";
+import { useAuth } from "../context/AuthContext";
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();

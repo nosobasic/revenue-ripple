@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { supabase } from "../supabase/client";
-import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
-import AIAssistantWidget from "../components/AIAssistantWidget";
+import { supabase } from "../../supabase/client";
+import { useAuth } from "../../context/AuthContext";
+import Navbar from "../../components/Navbar";
+import AIAssistantWidget from "../../components/AIAssistantWidget";
 
 export default function AffiliateCentre() {
   const { user } = useAuth();

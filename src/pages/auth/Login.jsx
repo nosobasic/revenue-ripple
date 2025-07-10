@@ -1,18 +1,24 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
-import { supabase } from "../supabase/client";
-import "../../public/css/pages.css";
+import "../../../styles/pages.css";
 
-export default function AffiliateLogin() {
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import ClearCacheButton from "../../components/ClearCacheButton";
+import Navbar from "../../components/Navbar";
+import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
-  const { login, resetPassword, logout } = useAuth();
+  const location = useLocation();
+  const { login, resetPassword } = useAuth();
+
+  // Get the intended redirect path, default to dashboard
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,26 +26,11 @@ export default function AffiliateLogin() {
     setLoading(true);
 
     try {
-      const response = await login(email, password);
-      // Check if user is an affiliate or reseller
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("role")
-        .eq("email", email)
-        .single();
-
-      if (userError) throw userError;
-
-      if (userData.role === "affiliate" || userData.role === "reseller") {
-        navigate("/affiliate-centre");
-      } else {
-        setError(
-          "This login is for affiliates and resellers only. Please use the regular login."
-        );
-        await logout();
-      }
+      await login(email, password);
+      navigate(from, { replace: true }); // Redirect to intended page
     } catch (error) {
-      setError(error.message);
+      console.error("Login error:", error);
+      setError(error.message || "Failed to login. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -69,12 +60,12 @@ export default function AffiliateLogin() {
           <h2 className="auth-title">
             {showForgotPassword
               ? "Reset your password"
-              : "Affiliate & Reseller Login"}
+              : "Sign in to your account"}
           </h2>
           <p className="auth-subtitle">
-            Not an affiliate yet?{" "}
-            <Link to="/affiliate/sign-up" className="auth-link">
-              Apply to become an affiliate
+            Or{" "}
+            <Link to="/register" className="auth-link">
+              create a new account
             </Link>
           </p>
         </div>
@@ -154,6 +145,18 @@ export default function AffiliateLogin() {
             <button type="submit" disabled={loading} className="auth-button">
               {loading ? "Signing in..." : "Sign in"}
             </button>
+
+            {/* Debug: Cache clear button for troubleshooting */}
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "16px",
+                fontSize: "12px",
+                color: "#666",
+              }}
+            >
+              Having issues? <ClearCacheButton />
+            </div>
           </form>
         )}
       </div>

@@ -1,7 +1,7 @@
 .navbar {
   background: #2563eb;
   padding: 1rem 0;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   left: 0;
   right: 0;
@@ -85,7 +85,7 @@
   top: 100%;
   background-color: white;
   min-width: 200px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   padding: 0.5rem 0;
   z-index: 1000;
@@ -117,14 +117,14 @@
   .navbar-container {
     padding: 0 1rem;
   }
-  
+
   .navbar-links {
     gap: 1rem;
     margin-left: 1rem;
   }
-  
+
   .nav-link {
     padding: 0.5rem;
     font-size: 1rem;
   }
-} 
+}

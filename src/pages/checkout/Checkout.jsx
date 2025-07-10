@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import "../../../styles/checkout.css";
+
+import { useEffect, useState } from "react";
+
+import CheckoutForm from "../../components/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
-import CheckoutForm from "../components/CheckoutForm";
-import PayPalButton from "../components/PayPalButton";
-import "../../public/css/checkout.css";
+import PayPalButton from "../../components/PayPalButton";
+import { loadStripe } from "@stripe/stripe-js";
 
 // Initialize Stripe
 const stripePromise = loadStripe(

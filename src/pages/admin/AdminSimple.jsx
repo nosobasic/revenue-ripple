@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "../context/AuthContext";
-import { supabase } from "../supabase/client";
-import "../../public/css/admin.css";
+import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../supabase/client";
+
+import "../../../styles/admin.css";
 
 const AdminSimple = () => {
   const { user, loading: authLoading } = useAuth();

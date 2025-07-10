@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { courses } from "../constants/data/courses";
-import VideoPlayer from "../components/VideoPlayer";
-import { useAuth } from "../context/AuthContext";
-import { supabase } from "../supabase/client";
-import "../../public/css/courses.css";
+import "../../../styles/courses.css";
+
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import VideoPlayer from "../../components/VideoPlayer";
+import { courses } from "../../constants/data/courses";
+import { supabase } from "../../supabase/client";
+import { useAuth } from "../../context/AuthContext";
 
 const CourseModule = () => {
   const { courseSlug, moduleId } = useParams();

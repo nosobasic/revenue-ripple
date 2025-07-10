@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import "../../../styles/pages.css";
+
 import { FaCheckCircle } from "react-icons/fa";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
 import { useLocation } from "react-router-dom";
-import "../../public/css/pages.css";
+import { useState } from "react";
 
 export default function Reseller() {
   const [showAllReviews, setShowAllReviews] = useState(false);

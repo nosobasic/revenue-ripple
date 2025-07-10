@@ -1,8 +1,10 @@
+import "../../../styles/pages.css";
+
+import { Link, useNavigate } from "react-router-dom";
+
+import Navbar from "../../components/Navbar";
+import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import Navbar from "../components/Navbar";
-import "../../public/css/pages.css";
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");

@@ -1,8 +1,9 @@
+import "../../../styles/pages.css";
+
+import AIAssistantWidget from "../../components/AIAssistantWidget";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import AIAssistantWidget from "../components/AIAssistantWidget";
-import { marketingMaterials } from "../constants/data/affiliateTools";
-import "../../public/css/pages.css";
+import Navbar from "../../components/Navbar";
+import { marketingMaterials } from "../../constants/data/affiliateTools";
 
 const AffiliateTools = () => {
   const handleDownload = (materialId, format) => {

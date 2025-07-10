@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Button } from "../components/Button";
-import { Card } from "../components/Card";
-import { useAuth } from "../context/AuthContext";
+import { Button } from "../../components/Button";
+import { Card } from "../../components/Card";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ResellerTrial() {
   const navigate = useNavigate();

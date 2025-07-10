@@ -1,4 +1,4 @@
-import "../../public/css/VideoPlayer.css";
+import "../../styles/VideoPlayer.css";
 
 const VideoPlayer = ({ video, title }) => {
   let embedUrl = "";

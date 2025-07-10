@@ -1,6 +1,7 @@
+import "../../../../styles/pages.css";
+
 import { Link } from "react-router-dom";
 import Navbar from "../../../components/Navbar";
-import "../../../../public/css/pages.css";
 
 const MarketResearch = () => {
   return (

@@ -1,8 +1,10 @@
+import "../../../styles/pages.css";
+
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
+
 import { FaCheckCircle } from "react-icons/fa";
+import Navbar from "../../components/Navbar";
 import { useEffect } from "react";
-import "../../public/css/pages.css";
 
 export default function ProResellerUpsell() {
   const navigate = useNavigate();

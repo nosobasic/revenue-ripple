@@ -1,5 +1,6 @@
+import "../../../styles/checkout.css";
+
 import { Link } from "react-router-dom";
-import "../../public/css/checkout.css";
 
 export default function ThankYou() {
   return (

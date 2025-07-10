@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import "../../../styles/pages.css";
+
 import { FaGraduationCap, FaPlay } from "react-icons/fa";
-import { coursesSecond } from "../constants/data/courses";
-import "../../public/css/pages.css";
+
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import { coursesSecond } from "../../constants/data/courses";
+import { useState } from "react";
 
 const Courses = () => {
   const [expandedSection, setExpandedSection] = useState(null);

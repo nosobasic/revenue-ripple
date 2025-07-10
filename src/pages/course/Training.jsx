@@ -1,8 +1,10 @@
-import { useState } from "react";
+import "../../../styles/pages.css";
+
+import { FaGraduationCap, FaVideo } from "react-icons/fa";
+
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { FaVideo, FaGraduationCap } from "react-icons/fa";
-import "../../public/css/pages.css";
+import Navbar from "../../components/Navbar";
+import { useState } from "react";
 
 const Training = () => {
   const [expandedSection, setExpandedSection] = useState(null);

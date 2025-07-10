@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, Routes, Route, Navigate } from "react-router-dom";
-import { supabase } from "../supabase/client";
+import "../../../styles/admin.css";
+
+import { FaClipboardCheck, FaMoneyBillWave, FaUserPlus } from "react-icons/fa";
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import {
-  RiDashboardLine,
-  RiUserLine,
-  RiMoneyDollarCircleLine,
-  RiFileTextLine,
   RiBarChartLine,
-  RiUserAddLine,
-  RiSearchLine,
+  RiDashboardLine,
+  RiFileTextLine,
   RiFilterLine,
+  RiMoneyDollarCircleLine,
+  RiSearchLine,
+  RiUserAddLine,
+  RiUserLine,
 } from "react-icons/ri";
-import { FaUserPlus, FaMoneyBillWave, FaClipboardCheck } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
-import "../../public/css/admin.css";
+import { useEffect, useState } from "react";
+
+import { supabase } from "../../supabase/client";
+import { useAuth } from "../../context/AuthContext";
 
 const DashboardOverview = ({ stats, recentActivity }) => (
   <>

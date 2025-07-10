@@ -1,23 +1,25 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
-import ReferralTracker from "../components/ReferralTracker.js";
+import "../../styles/Home.css";
+
 import {
-  FaRocket,
-  FaUsers,
-  FaHeadset,
+  FaBook,
+  FaBrain,
   FaCheckCircle,
+  FaCode,
   FaGraduationCap,
   FaHandshake,
-  FaBook,
+  FaHeadset,
   FaQuoteLeft,
   FaRobot,
-  FaBrain,
-  FaCode,
+  FaRocket,
+  FaUsers,
 } from "react-icons/fa";
+
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import ReferralTracker from "../components/ReferralTracker.jsx";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import "../../public/css/Home.css";
+import { useState } from "react";
 
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);

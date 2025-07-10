@@ -1,8 +1,9 @@
-import React from "react";
+import "../../../../styles/pages.css";
+
 import { Link } from "react-router-dom";
 import Navbar from "../../../components/Navbar";
+import React from "react";
 import { courses } from "../../../constants/data/courses";
-import "../../../../public/css/pages.css";
 
 const course = courses.find((c) => c.slug === "entrepreneurial-brainstorming");
 const modules = course ? course.modules : [];
