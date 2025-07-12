@@ -1161,7 +1161,7 @@ export const courses = [
         id: 2,
         title: 'Offer Testing',
         description: 'How to test offers before building a full product.',
-        video: { vimeoId: '1099011849', duration: '10:00', thumbnail: '' }
+        video: { vimeoId: '1099011849', duration: '10:00', thumbnail: 'https://vumbnail.com/999999999.jpg' }
       },
       {
         id: 3,
