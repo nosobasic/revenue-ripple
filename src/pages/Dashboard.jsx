@@ -231,7 +231,7 @@ const Dashboard = () => {
                   {expandedSection === 'digital-email' && (
                     <div className="course-details">
                       <p>Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation in one complete package.</p>
-                      <Link to="/courses/email-marketing" className="cta-link">
+                      <Link to="/assets/downloads/digital-marketing.pdf" className="cta-link" target="_blank" rel="noopener noreferrer" download>
                         <span><FaBook style={{ marginRight: '8px' }} /> Get Complete Guide →</span>
                       </Link>
                     </div>

@@ -3,10 +3,10 @@ export const courses = [
     slug: 'email-marketing',
     title: 'Email Marketing',
     description: 'Master the art of email marketing from list building to automation.',
-    estimatedTime: '2-3 hours',
+    estimatedTime: '10-15 minutes',
     introVideo: {
       vimeoId: '1087796068',
-      duration: '2:00',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/1087796068.jpg'
     },
     modules: [
@@ -16,7 +16,7 @@ export const courses = [
         description: 'Learn how to build a high-quality email list from scratch and how to use email marketing to grow your business.',
         video: {
          vimeoId: '1087796011',
-          duration: '15:30',
+          duration: '4:04',
           thumbnail: 'https://img.youtube.com/vi/APgMe8E7DB0/maxresdefault.jpg'
         }
       },
@@ -26,7 +26,7 @@ export const courses = [
         description: 'Master Email Newsletters and automation for better results.',
         video: {
          vimeoId: '1087796031',
-          duration: '12:45',
+          duration: '5:56',
           thumbnail: 'https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg'
         }
       },
@@ -36,7 +36,7 @@ export const courses = [
         description: 'Turn subscribers into paying customers.',
         video: {
           vimeoId: '1087796055',
-          duration: '18:20',
+          duration: '5:24',
           thumbnail: 'https://img.youtube.com/vi/B9eMiBHMhHw/maxresdefault.jpg'
         }
       }
@@ -49,7 +49,7 @@ export const courses = [
     estimatedTime: '1-2 hours',
     introVideo: {
       vimeoId: '1088193607',
-      duration: '1:30',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000001.jpg'
     },
     modules: [
@@ -59,7 +59,7 @@ export const courses = [
         description: 'Understand the basics and benefits of geo targeting.',
         video: {
           vimeoId: '1088193579',
-          duration: '10:15',
+          duration: '4:28',
           thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
         }
       },
@@ -69,7 +69,7 @@ export const courses = [
         description: 'How to set up geo-targeted campaigns.',
         video: {
           vimeoId: '1088193544',
-          duration: '14:30',
+          duration: '4:39',
           thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
         }
       },
@@ -79,7 +79,7 @@ export const courses = [
         description: 'How to set up geo-targeted campaigns.',
         video: {
           vimeoId: '1088193520',
-          duration: '14:30',
+          duration: '4:25',
           thumbnail: 'https://img.youtube.com/vi/9z8FcB8tBZQ/maxresdefault.jpg'
         }
       }
@@ -615,10 +615,10 @@ export const courses = [
     slug: 'website-design',
     title: 'Website Design',
     description: 'Learn to build professional, responsive websites from scratch. Master HTML, CSS, and modern design principles.',
-    estimatedTime: '3-4 hours',
+    estimatedTime: '10-15 minutes',
     introVideo: {
       vimeoId: '1089098390',
-      duration: '2:00',
+      duration: '0:30',
       thumbnail: 'https://vumbnail.com/000000014.jpg'
     },
     modules: [
@@ -628,7 +628,7 @@ export const courses = [
         description: 'Learn the fundamentals of web design and modern development practices.',
         video: {
           vimeoId: '1089098371',
-          duration: '15:30',
+          duration: '4:49',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }
       },
@@ -638,7 +638,7 @@ export const courses = [
         description: 'How to choose the right platform for your business.',
         video: {
           vimeoId: '1089098340',
-          duration: '18:45',
+          duration: '4:11',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
       },
@@ -648,7 +648,7 @@ export const courses = [
         description: 'How to build a website from scratch.',
         video: {
           vimeoId: '1089098322',
-          duration: '20:15',
+          duration: '5:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       },
@@ -721,7 +721,7 @@ export const courses = [
       },
       { 
         id: 2, 
-        title: 'Cfrafting Offers ans Splintering for Success', 
+        title: 'Crafting Offers and Splintering for Success', 
         description: 'How to craft offers and split test for success.',
         video: {
           vimeoId: '1089118665',
@@ -734,7 +734,7 @@ export const courses = [
         title: 'Building Your Sales Funnel From Start to Finish', 
         description: 'How to build your sales funnel from start to finish.',
         video: {
-          vimeoId: '1089118646',
+          vimeoId: '1089118638',
           duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
