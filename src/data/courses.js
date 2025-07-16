@@ -16,7 +16,6 @@ export const courses = [
         description: 'Learn how to build a high-quality email list from scratch and how to use email marketing to grow your business.',
         video: {
          vimeoId: '1087796011',
-          vimeoId: '1087796068',
           duration: '15:30',
           thumbnail: 'https://img.youtube.com/vi/APgMe8E7DB0/maxresdefault.jpg'
         }

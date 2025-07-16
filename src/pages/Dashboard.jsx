@@ -508,30 +508,7 @@ const Dashboard = () => {
                     )}
                   </div>
 
-                  <div
-                    className={`course-item ${expandedSection === 'building-landing' ? 'expanded' : ''}`}
-                    onClick={() => toggleSection('building-landing')}
-                    role="button"
-                    aria-expanded={expandedSection === 'building-landing'}
-                    tabIndex={0}
-                    onKeyPress={(e) => { if (e.key === 'Enter') toggleSection('building-landing'); }}
-                  >
-                    <h3>
-                      Landing Page Design
-                      <span className={`chevron ${expandedSection === 'building-landing' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'building-landing' ? 'rotate(180deg)' : 'none' }}>▼</span>
-                    </h3>
-                    <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '50%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
-                    </div>
-                    {expandedSection === 'building-landing' && (
-                      <div className="course-details">
-                        <p>Design landing pages that convert. Learn proven layouts, copywriting, and optimization techniques.</p>
-                        <Link to="/courses/landing-pages" className="cta-link">
-                          <span>Design Pages →</span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
+
                 </div>
                 <hr className="section-divider" />
               </div>
