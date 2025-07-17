@@ -190,35 +190,32 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       {/* Help Bubble */}
       {showHelpBubble && !open && (
         <div 
-          className="fixed bottom-16 right-6 z-40 bg-white rounded-lg shadow-lg border border-blue-100 p-3 max-w-xs cursor-pointer transform transition-all duration-300 hover:scale-105"
+          className="fixed bottom-12 right-3 z-40 bg-white rounded-md shadow-md border border-blue-100 p-2 max-w-xs cursor-pointer transform transition-all duration-300 hover:scale-105"
           onClick={openChatWithContext}
           style={{
             animation: 'slideInFromRight 0.3s ease-out',
-            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.15)'
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.1)'
           }}
         >
-          <div className="flex items-start space-x-3">
+          <div className="flex items-start space-x-2">
             <div className="flex-shrink-0">
               <img 
                 src="/assets/icons/revenue_ripple_icon_transparent.png" 
                 alt="Ripple" 
-                className="w-5 h-5"
+                className="w-3 h-3"
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-gray-700 font-medium">
-                {getContextualWelcome()}
+              <p className="text-xs text-gray-700 font-medium">
+                Need help? Chat with Ripple
               </p>
-              <button className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-1">
-                Chat with Ripple →
-              </button>
             </div>
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 setShowHelpBubble(false);
               }}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+              className="text-gray-400 hover:text-gray-600 text-sm leading-none"
             >
               ×
             </button>
@@ -233,136 +230,100 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         aria-label="Toggle AI Assistant"
       >
         <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-full shadow-md flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg">
             <img 
               src="/assets/icons/revenue_ripple_icon_transparent.png" 
               alt="Ripple AI" 
-              className="w-6 h-6"
+              className="w-4 h-4"
             />
           </div>
           {!open && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 border border-white rounded-full animate-pulse"></div>
           )}
         </div>
       </button>
 
       {/* Chat Interface */}
       {open && (
-        <div className="fixed bottom-20 right-6 z-50 w-80 h-[28rem] bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden transform transition-all duration-200">
+        <div className="fixed bottom-10 right-2 z-50 w-40 h-44 bg-white rounded-md shadow-md border border-gray-200 flex flex-col overflow-hidden transform transition-all duration-200">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <img 
-                  src="/assets/icons/revenue_ripple_icon_transparent.png" 
-                  alt="Ripple AI" 
-                  className="w-8 h-8 rounded-full bg-white p-1"
-                />
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold text-base">Ripple</h3>
-                <p className="text-blue-100 text-xs">AI Marketing Assistant</p>
-              </div>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-2 py-1 flex items-center justify-between">
+            <div className="flex items-center space-x-1">
+              <img 
+                src="/assets/icons/revenue_ripple_icon_transparent.png" 
+                alt="Ripple AI" 
+                className="w-4 h-4"
+              />
+              <span className="text-white font-medium text-xs">Ripple</span>
             </div>
             <button 
               onClick={() => setOpen(false)}
-              className="text-white hover:text-blue-200 text-2xl leading-none transition-colors"
+              className="text-white hover:text-blue-200 text-lg leading-none transition-colors"
             >
               ×
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4" style={{ scrollbarWidth: 'thin' }}>
+          <div className="flex-1 overflow-y-auto p-2 space-y-2 text-xs" style={{ scrollbarWidth: 'thin' }}>
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.from === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div className={`max-w-[85%] ${message.from === 'user' ? 'order-2' : 'order-1'}`}>
-                  {message.from === 'ai' && (
-                    <div className="flex items-center space-x-2 mb-1">
-                      <img 
-                        src="/assets/icons/revenue_ripple_icon_transparent.png" 
-                        alt="Ripple" 
-                        className="w-4 h-4"
-                      />
-                      <span className="text-xs text-gray-500 font-medium">Ripple</span>
-                    </div>
-                  )}
                   <div
-                    className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    className={`rounded-lg px-2 py-1 text-xs leading-snug ${
                       message.from === 'user'
                         ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
                         : 'bg-gray-100 text-gray-800 border border-gray-200'
                     }`}
                   >
+                    {message.from === 'ai' && <span className="font-medium text-blue-600">R: </span>}
                     {message.text}
-                  </div>
-                  <div className={`text-xs text-gray-400 mt-1 ${
-                    message.from === 'user' ? 'text-right' : 'text-left'
-                  }`}>
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
               </div>
             ))}
             
             {/* Typing Indicator */}
-                          {isTyping && (
-                <div className="flex justify-start">
-                  <div className="flex items-center space-x-2">
-                    <img 
-                      src="/assets/icons/revenue_ripple_icon_transparent.png" 
-                      alt="Ripple" 
-                      className="w-4 h-4"
-                    />
-                    <div className="bg-gray-100 rounded-2xl px-4 py-3 border border-gray-200">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                                                     {isTyping && (
+                 <div className="flex justify-start">
+                   <div className="bg-gray-100 rounded-lg px-2 py-1 border border-gray-200">
+                     <span className="font-medium text-blue-600 text-xs">R: </span>
+                     <div className="inline-flex space-x-1">
+                       <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce"></div>
+                       <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                       <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                     </div>
+                   </div>
+                 </div>
+               )}
             <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
-          <div className="border-t border-gray-200 p-3">
-            <div className="flex space-x-3">
-              <textarea
+          <div className="border-t border-gray-200 p-1">
+            <div className="flex space-x-1">
+              <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about marketing..."
+                placeholder="Ask me..."
                 disabled={loading}
-                className="flex-1 resize-none border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                rows="1"
-                style={{ 
-                  minHeight: '36px', 
-                  maxHeight: '100px',
-                  fontFamily: 'inherit'
-                }}
-                onInput={(e) => {
-                  e.target.style.height = 'auto';
-                  e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
-                }}
+                className="flex-1 border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
               />
               <button
                 onClick={sendMessage}
                 disabled={loading || !input.trim()}
-                className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center group"
+                className="flex-shrink-0 w-6 h-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center group"
               >
                 {loading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-2 h-2 border border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <svg 
-                    className="w-5 h-5 transition-transform group-hover:translate-x-0.5" 
+                    className="w-3 h-3" 
                     fill="none" 
                     viewBox="0 0 24 24" 
                     stroke="currentColor"
@@ -372,9 +333,6 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-400 mt-1 text-center">
-              Enter to send • Shift+Enter for new line
-            </p>
           </div>
         </div>
       )}
