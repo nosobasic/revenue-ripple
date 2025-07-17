@@ -112,7 +112,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       userMessage.text;
 
     try {
-      const response = await fetch('/api/ai-assistant', {
+      const response = await fetch('https://revenue-ripple.onrender.com/api/ai-assistant', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

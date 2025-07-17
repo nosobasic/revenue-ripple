@@ -118,7 +118,7 @@ def ai_assistant():
             top_p=0.9,  # Focus on more likely tokens for consistency
         )
         
-        ai_response = response.choices[0].message.content.strip()
+        ai_response = (response.choices[0].message.content or "").strip()
         
         # Log performance metrics
         end_time = time.time()
