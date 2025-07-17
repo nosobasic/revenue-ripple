@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaPhone, FaBuilding, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+import './pages.css';
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
@@ -49,16 +51,33 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900">Please log in to view your profile</h2>
-            <button
-              onClick={() => navigate('/login')}
-              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Go to Login
-            </button>
+      <div className="dashboard">
+        <Navbar />
+        <header className="dashboard-header">
+          <div className="container">
+            <h1 className="dashboard-title">Access Required</h1>
+            <p className="dashboard-welcome">Please log in to view your profile</p>
+          </div>
+        </header>
+        <div className="container dashboard-content">
+          <div className="section">
+            <div className="section-content">
+              <div className="course-item">
+                <div className="course-details">
+                  <p style={{ textAlign: 'center', marginBottom: '2rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    You need to be logged in to access your profile settings.
+                  </p>
+                  <div style={{ textAlign: 'center' }}>
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="cta-button"
+                    >
+                      Go to Login
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -66,151 +85,345 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          {/* Profile Header */}
-          <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-blue-600 to-blue-800">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="h-20 w-20 rounded-full bg-white p-1">
-                  <div className="h-full w-full rounded-full bg-gray-200 flex items-center justify-center">
-                    <FaUser className="h-10 w-10 text-gray-400" />
-                  </div>
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-xl font-bold text-white">{user.name}</h3>
-                  <p className="text-blue-100">{user.role || 'Member'}</p>
-                </div>
+    <div className="dashboard">
+      <Navbar />
+      
+      {/* Profile Header */}
+      <header className="dashboard-header">
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ 
+                width: '80px', 
+                height: '80px', 
+                borderRadius: '50%', 
+                background: 'rgba(255, 255, 255, 0.2)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginRight: '1.5rem',
+                border: '3px solid rgba(255, 255, 255, 0.3)'
+              }}>
+                <FaUser style={{ fontSize: '2rem', color: 'white' }} />
               </div>
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50"
-              >
-                {isEditing ? (
-                  <>
-                    <FaTimes className="mr-2" />
-                    Cancel
-                  </>
-                ) : (
-                  <>
-                    <FaEdit className="mr-2" />
-                    Edit Profile
-                  </>
-                )}
-              </button>
+              <div>
+                <h1 className="dashboard-title">{user.name || 'Your Profile'}</h1>
+                <p className="dashboard-welcome">
+                  {user.role ? `${user.role.charAt(0).toUpperCase() + user.role.slice(1)} Account` : 'Member Account'}
+                </p>
+              </div>
             </div>
+            <button
+              onClick={() => setIsEditing(!isEditing)}
+              className="cta-button"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.2)', 
+                border: '2px solid rgba(255, 255, 255, 0.3)',
+                backdropFilter: 'blur(10px)'
+              }}
+            >
+              {isEditing ? (
+                <>
+                  <FaTimes style={{ marginRight: '0.5rem' }} />
+                  Cancel
+                </>
+              ) : (
+                <>
+                  <FaEdit style={{ marginRight: '0.5rem' }} />
+                  Edit Profile
+                </>
+              )}
+            </button>
           </div>
+        </div>
+      </header>
 
-          {/* Profile Content */}
-          <div className="px-4 py-5 sm:p-6">
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-6">
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
+      {/* Profile Content */}
+      <div className="container dashboard-content">
+        <div className="main-content">
+          <section className="section">
+            <div className="section-header marketing">
+              <div className="section-icon">👤</div>
+              <h2>Personal Information</h2>
+            </div>
+            <div className="section-content">
+              <form onSubmit={handleSubmit}>
+                <div className="course-item">
+                  <div className="course-details">
+                    {/* Name */}
+                    <div className="form-group">
+                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        <FaUser style={{ marginRight: '0.5rem' }} />
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        style={{
+                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="form-group">
+                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        <FaEnvelope style={{ marginRight: '0.5rem' }} />
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        style={{
+                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="form-group">
+                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        <FaPhone style={{ marginRight: '0.5rem' }} />
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        placeholder="Enter your phone number"
+                        style={{
+                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Company */}
+                    <div className="form-group">
+                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        <FaBuilding style={{ marginRight: '0.5rem' }} />
+                        Company/Business Name
+                      </label>
+                      <input
+                        type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        placeholder="Enter your company name"
+                        style={{
+                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Bio */}
+                    <div className="form-group">
+                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        About You
+                      </label>
+                      <textarea
+                        name="bio"
+                        rows={4}
+                        value={formData.bio}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        placeholder="Tell us about yourself and your marketing goals..."
+                        style={{
+                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: 'white',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem',
+                          resize: 'vertical'
+                        }}
+                      />
+                    </div>
+
+                    {/* Save Button */}
+                    {isEditing && (
+                      <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                        <button
+                          type="submit"
+                          className="cta-button"
+                        >
+                          <FaSave style={{ marginRight: '0.5rem' }} />
+                          Save Changes
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
+              </form>
+            </div>
+          </section>
+        </div>
 
-                {/* Email */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <div className="mt-1">
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
+        {/* Side Content */}
+        <div className="side-content">
+          {/* Account Status */}
+          <section className="section">
+            <div className="section-header affiliate">
+              <div className="section-icon">⭐</div>
+              <h2>Account Status</h2>
+            </div>
+            <div className="section-content">
+              <div className="course-item">
+                <div className="course-details">
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                    <span style={{ 
+                      background: user.role === 'pro_reseller' ? '#10B981' : user.role === 'reseller' ? '#F59E0B' : '#3B82F6',
+                      color: 'white',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '20px',
+                      fontSize: '0.875rem',
+                      fontWeight: '600'
+                    }}>
+                      {user.role ? user.role.replace('_', ' ').toUpperCase() : 'MEMBER'}
+                    </span>
                   </div>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                    {user.role === 'pro_reseller' 
+                      ? 'You have access to all premium features and earn 100% commission on every sale.'
+                      : user.role === 'reseller'
+                      ? 'You can resell memberships and earn 100% commission on every other sale.'
+                      : user.role === 'affiliate'
+                      ? 'You can promote products and earn commissions on successful referrals.'
+                      : 'Access to all member training and resources.'
+                    }
+                  </p>
                 </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone</label>
-                  <div className="mt-1">
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
-                  </div>
-                </div>
-
-                {/* Company */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Company</label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
-                  </div>
-                </div>
-
-                {/* Role */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
-                  </div>
-                </div>
-
-                {/* Bio */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Bio</label>
-                  <div className="mt-1">
-                    <textarea
-                      name="bio"
-                      rows={4}
-                      value={formData.bio}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100"
-                    />
-                  </div>
-                </div>
-
-                {/* Save Button */}
-                {isEditing && (
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                    >
-                      <FaSave className="mr-2" />
-                      Save Changes
-                    </button>
-                  </div>
-                )}
               </div>
-            </form>
-          </div>
+            </div>
+          </section>
+
+          {/* Account Actions */}
+          <section className="section">
+            <div className="section-header digital">
+              <div className="section-icon">🚀</div>
+              <h2>Quick Actions</h2>
+            </div>
+            <div className="section-content">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {user.role !== 'pro_reseller' && (
+                  <button 
+                    onClick={() => navigate('/affiliate-centre/tools')}
+                    className="cta-link"
+                    style={{ textAlign: 'left', padding: '0.75rem' }}
+                  >
+                    <span className="item-icon">🛠️</span>
+                    Marketing Tools
+                  </button>
+                )}
+                <button 
+                  onClick={() => navigate('/affiliate-centre/training')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem' }}
+                >
+                  <span className="item-icon">📚</span>
+                  Training & Guides
+                </button>
+                <button 
+                  onClick={() => navigate('/affiliate-centre/payouts')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem' }}
+                >
+                  <span className="item-icon">💰</span>
+                  Earnings & Payouts
+                </button>
+                <button 
+                  onClick={() => navigate('/affiliate-centre/support')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem' }}
+                >
+                  <span className="item-icon">💬</span>
+                  Support & FAQ
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Upgrade Options */}
+          {user.role !== 'pro_reseller' && (
+            <section className="section">
+              <div className="section-header reseller">
+                <div className="section-icon">⬆️</div>
+                <h2>Upgrade Your Account</h2>
+              </div>
+              <div className="section-content">
+                <div className="course-item">
+                  <div className="course-details">
+                    {user.role === 'affiliate' && (
+                      <>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem' }}>
+                          Upgrade to Reseller and start earning 100% commission on every other membership sale.
+                        </p>
+                        <button 
+                          onClick={() => navigate('/special')}
+                          className="cta-button"
+                          style={{ width: '100%', marginBottom: '0.5rem' }}
+                        >
+                          Become a Reseller
+                        </button>
+                      </>
+                    )}
+                    {(user.role === 'affiliate' || user.role === 'reseller') && (
+                      <>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                          Pro Resellers earn 100% commission on EVERY sale and get exclusive marketing materials.
+                        </p>
+                        <button 
+                          onClick={() => navigate('/affiliate-centre/tools')}
+                          className="cta-button"
+                          style={{ width: '100%' }}
+                        >
+                          Upgrade to Pro Reseller
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
