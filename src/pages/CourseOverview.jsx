@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoModal from '../components/VideoModal';
 import VideoPlayer from '../components/VideoPlayer';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../styles/courses.css';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
@@ -118,6 +119,10 @@ const CourseOverview = () => {
 
   return (
     <div className="course-container">
+      <AIAssistantWidget 
+        showWelcomeBubble={true} 
+        pageContext={`Course: ${course.title} - ${course.description || 'Learn essential marketing skills'}`}
+      />
       <div className="course-header">
         <div className="course-breadcrumb">
           <Link to="/dashboard">Dashboard</Link>

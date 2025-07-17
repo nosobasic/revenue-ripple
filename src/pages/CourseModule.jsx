@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 import '../styles/courses.css';
@@ -132,6 +133,10 @@ const CourseModule = () => {
 
   return (
     <div className="course-container">
+      <AIAssistantWidget 
+        showWelcomeBubble={true} 
+        pageContext={`Module: ${module.title} in ${course.title} - ${module.description || 'Learning module content'}`}
+      />
       <div className="course-breadcrumb">
         <Link to="/dashboard">Dashboard</Link>
         <span>/</span>
