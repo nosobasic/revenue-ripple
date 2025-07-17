@@ -190,7 +190,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       {/* Help Bubble */}
       {showHelpBubble && !open && (
         <div 
-          className="fixed bottom-20 right-6 z-40 bg-white rounded-xl shadow-xl border border-blue-100 p-4 max-w-xs cursor-pointer transform transition-all duration-300 hover:scale-105"
+          className="fixed bottom-16 right-6 z-40 bg-white rounded-lg shadow-lg border border-blue-100 p-3 max-w-xs cursor-pointer transform transition-all duration-300 hover:scale-105"
           onClick={openChatWithContext}
           style={{
             animation: 'slideInFromRight 0.3s ease-out',
@@ -200,9 +200,9 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
               <img 
-                src="/assets/icons/revenue_ripple_no_bg.png" 
+                src="/assets/icons/revenue_ripple_icon_transparent.png" 
                 alt="Ripple" 
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 p-1"
+                className="w-5 h-5"
               />
             </div>
             <div className="flex-1 min-w-0">
@@ -233,36 +233,36 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         aria-label="Toggle AI Assistant"
       >
         <div className="relative">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl">
             <img 
-              src="/assets/icons/revenue_ripple_no_bg.png" 
+              src="/assets/icons/revenue_ripple_icon_transparent.png" 
               alt="Ripple AI" 
-              className="w-8 h-8"
+              className="w-6 h-6"
             />
           </div>
           {!open && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full animate-pulse"></div>
           )}
         </div>
       </button>
 
       {/* Chat Interface */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 h-[32rem] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden transform transition-all duration-200">
+        <div className="fixed bottom-20 right-6 z-50 w-80 h-[28rem] bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden transform transition-all duration-200">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <img 
-                  src="/assets/icons/revenue_ripple_no_bg.png" 
+                  src="/assets/icons/revenue_ripple_icon_transparent.png" 
                   alt="Ripple AI" 
-                  className="w-10 h-10 rounded-full bg-white p-1"
+                  className="w-8 h-8 rounded-full bg-white p-1"
                 />
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
               </div>
               <div>
-                <h3 className="text-white font-semibold text-lg">Ripple</h3>
-                <p className="text-blue-100 text-sm">AI Marketing Assistant</p>
+                <h3 className="text-white font-semibold text-base">Ripple</h3>
+                <p className="text-blue-100 text-xs">AI Marketing Assistant</p>
               </div>
             </div>
             <button 
@@ -284,9 +284,9 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                   {message.from === 'ai' && (
                     <div className="flex items-center space-x-2 mb-1">
                       <img 
-                        src="/assets/icons/revenue_ripple_no_bg.png" 
+                        src="/assets/icons/revenue_ripple_icon_transparent.png" 
                         alt="Ripple" 
-                        className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 p-1"
+                        className="w-4 h-4"
                       />
                       <span className="text-xs text-gray-500 font-medium">Ripple</span>
                     </div>
@@ -310,15 +310,15 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
             ))}
             
             {/* Typing Indicator */}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="flex items-center space-x-2">
-                  <img 
-                    src="/assets/icons/revenue_ripple_no_bg.png" 
-                    alt="Ripple" 
-                    className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 p-1"
-                  />
-                  <div className="bg-gray-100 rounded-2xl px-4 py-3 border border-gray-200">
+                          {isTyping && (
+                <div className="flex justify-start">
+                  <div className="flex items-center space-x-2">
+                    <img 
+                      src="/assets/icons/revenue_ripple_icon_transparent.png" 
+                      alt="Ripple" 
+                      className="w-4 h-4"
+                    />
+                    <div className="bg-gray-100 rounded-2xl px-4 py-3 border border-gray-200">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -332,7 +332,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           </div>
 
           {/* Input */}
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-gray-200 p-3">
             <div className="flex space-x-3">
               <textarea
                 ref={inputRef}
@@ -341,22 +341,22 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me anything about marketing..."
                 disabled={loading}
-                className="flex-1 resize-none border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="flex-1 resize-none border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 rows="1"
                 style={{ 
-                  minHeight: '44px', 
-                  maxHeight: '120px',
+                  minHeight: '36px', 
+                  maxHeight: '100px',
                   fontFamily: 'inherit'
                 }}
                 onInput={(e) => {
                   e.target.style.height = 'auto';
-                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                  e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
                 }}
               />
               <button
                 onClick={sendMessage}
                 disabled={loading || !input.trim()}
-                className="flex-shrink-0 w-11 h-11 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center group"
+                className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center group"
               >
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -372,8 +372,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                 )}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Press Enter to send • Shift+Enter for new line
+            <p className="text-xs text-gray-400 mt-1 text-center">
+              Enter to send • Shift+Enter for new line
             </p>
           </div>
         </div>
