@@ -200,9 +200,9 @@ const AffiliateSupport = () => {
                   <h3>{category.title}</h3>
                   <div className="course-details">
                     {category.questions.map((faq, index) => (
-                      <div key={index} className="faq-item" style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                        <h4 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: '600' }}>{faq.question}</h4>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.9)', lineHeight: '1.6', margin: 0 }}>{faq.answer}</p>
+                      <div key={index} className="faq-item">
+                        <h4>{faq.question}</h4>
+                        <p>{faq.answer}</p>
                       </div>
                     ))}
                   </div>
@@ -224,10 +224,10 @@ const AffiliateSupport = () => {
                     Can't find what you're looking for? Our support team is here to help you succeed. 
                     Please provide as much detail as possible so we can assist you quickly.
                   </p>
-                  <form className="support-form" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                    <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                      <label htmlFor="subject" style={{ color: '#fff', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>Subject</label>
-                      <select id="subject" className="form-input" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', padding: '0.75rem', borderRadius: '6px', width: '100%' }}>
+                  <form className="support-form">
+                    <div className="form-group">
+                      <label htmlFor="subject">Subject</label>
+                      <select id="subject" className="form-input">
                         <option value="">Select a topic...</option>
                         <option value="account">Account & Login Issues</option>
                         <option value="payments">Payments & Commissions</option>
@@ -237,25 +237,24 @@ const AffiliateSupport = () => {
                         <option value="other">Other</option>
                       </select>
                     </div>
-                    <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                      <label htmlFor="priority" style={{ color: '#fff', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>Priority Level</label>
-                      <select id="priority" className="form-input" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', padding: '0.75rem', borderRadius: '6px', width: '100%' }}>
+                    <div className="form-group">
+                      <label htmlFor="priority">Priority Level</label>
+                      <select id="priority" className="form-input">
                         <option value="normal">Normal</option>
                         <option value="high">High</option>
                         <option value="urgent">Urgent</option>
                       </select>
                     </div>
-                    <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                      <label htmlFor="message" style={{ color: '#fff', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>Message</label>
+                    <div className="form-group">
+                      <label htmlFor="message">Message</label>
                       <textarea
                         id="message"
                         className="form-input"
                         rows="6"
                         placeholder="Please describe your issue in detail. Include any error messages, steps you've taken, and what you were trying to accomplish..."
-                        style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', color: '#fff', padding: '0.75rem', borderRadius: '6px', width: '100%', resize: 'vertical' }}
                       ></textarea>
                     </div>
-                    <button type="submit" className="cta-button" style={{ width: '100%' }}>Submit Support Ticket</button>
+                    <button type="submit" className="cta-button">Submit Support Ticket</button>
                   </form>
                 </div>
               </div>
@@ -273,11 +272,11 @@ const AffiliateSupport = () => {
             <div className="section-content">
               <div className="resources-list">
                 {supportResources.map((resource, index) => (
-                  <div key={index} className="resource-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                    <span className="resource-icon" style={{ fontSize: '1.5rem', marginRight: '1rem' }}>{resource.icon}</span>
+                  <div key={index} className="resource-item">
+                    <span className="resource-icon">{resource.icon}</span>
                     <div className="resource-info">
-                      <h4 style={{ color: '#fff', marginBottom: '0.5rem', fontSize: '1rem' }}>{resource.title}</h4>
-                      <p style={{ color: 'rgba(255, 255, 255, 0.8)', margin: 0, fontSize: '0.9rem' }}>{resource.description}</p>
+                      <h4>{resource.title}</h4>
+                      <p>{resource.description}</p>
                     </div>
                   </div>
                 ))}
@@ -293,21 +292,21 @@ const AffiliateSupport = () => {
             </div>
             <div className="section-content">
               <div className="contact-info">
-                <div className="contact-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <span className="contact-icon" style={{ fontSize: '1.2rem', marginRight: '0.75rem' }}>📧</span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>support@revenue-ripple.com</span>
+                <div className="contact-item">
+                  <span className="contact-icon">📧</span>
+                  <span>support@revenue-ripple.com</span>
                 </div>
-                <div className="contact-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <span className="contact-icon" style={{ fontSize: '1.2rem', marginRight: '0.75rem' }}>⏰</span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Response within 24 hours</span>
+                <div className="contact-item">
+                  <span className="contact-icon">⏰</span>
+                  <span>Response within 24 hours</span>
                 </div>
-                <div className="contact-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <span className="contact-icon" style={{ fontSize: '1.2rem', marginRight: '0.75rem' }}>💬</span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Priority support for Pro Resellers</span>
+                <div className="contact-item">
+                  <span className="contact-icon">💬</span>
+                  <span>Priority support for Pro Resellers</span>
                 </div>
-                <div className="contact-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                  <span className="contact-icon" style={{ fontSize: '1.2rem', marginRight: '0.75rem' }}>🎯</span>
-                  <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Success coaching available</span>
+                <div className="contact-item">
+                  <span className="contact-icon">🎯</span>
+                  <span>Success coaching available</span>
                 </div>
               </div>
             </div>
@@ -320,22 +319,22 @@ const AffiliateSupport = () => {
               <h2>Common Quick Fixes</h2>
             </div>
             <div className="section-content">
-              <div className="course-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem' }}>Link Not Tracking?</h3>
+              <div className="course-item">
+                <h3>Link Not Tracking?</h3>
                 <div className="course-details">
-                  <p style={{ color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>Clear browser cache, test in incognito mode, ensure cookies are enabled.</p>
+                  <p>Clear browser cache, test in incognito mode, ensure cookies are enabled.</p>
                 </div>
               </div>
-              <div className="course-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem' }}>Missing Commission?</h3>
+              <div className="course-item">
+                <h3>Missing Commission?</h3>
                 <div className="course-details">
-                  <p style={{ color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>Check if customer used correct link, allow 24-48 hours for tracking updates.</p>
+                  <p>Check if customer used correct link, allow 24-48 hours for tracking updates.</p>
                 </div>
               </div>
-              <div className="course-item" style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.1rem' }}>Login Issues?</h3>
+              <div className="course-item">
+                <h3>Login Issues?</h3>
                 <div className="course-details">
-                  <p style={{ color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>Use password reset, check spam folder, ensure correct email address.</p>
+                  <p>Use password reset, check spam folder, ensure correct email address.</p>
                 </div>
               </div>
             </div>
