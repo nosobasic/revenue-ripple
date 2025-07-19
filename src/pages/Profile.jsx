@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaPhone, FaBuilding, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
-import './pages.css';
+import '../pages.css';
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
