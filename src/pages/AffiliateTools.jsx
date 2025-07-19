@@ -51,6 +51,27 @@ const AffiliateTools = () => {
     });
   };
 
+  const handleProResellerUpgrade = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          referrer_username: localStorage.getItem("ref_id") || "none" 
+        })
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Error creating checkout session.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error connecting to server.');
+    }
+  };
+
   const marketingMaterials = [
     {
       id: 1,
@@ -399,7 +420,13 @@ const AffiliateTools = () => {
                 <div className="cta-box">
                   <h4>Make the Switch Today</h4>
                   <p className="cta-highlight">Earn 100% Commissions Promoting the Membership and Reseller Program</p>
-                  <Link to="/reseller-checkout" className="cta-button pro-button">Upgrade to Reseller PRO</Link>
+                  <button 
+                    onClick={handleProResellerUpgrade}
+                    className="cta-button pro-button"
+                    style={{ border: 'none', cursor: 'pointer' }}
+                  >
+                    Upgrade to Reseller PRO - $97/month
+                  </button>
                 </div>
               </div>
             </div>
