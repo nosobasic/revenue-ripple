@@ -187,107 +187,42 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
   return (
     <>
-      {/* Help Bubble */}
-      {showHelpBubble && !open && (
-        <div 
-          className="fixed bottom-16 right-6 z-40 bg-white rounded-lg shadow-lg border border-blue-100 p-3 max-w-xs cursor-pointer transform transition-all duration-300 hover:scale-105"
-          onClick={openChatWithContext}
-          style={{
-            animation: 'slideInFromRight 0.3s ease-out',
-            boxShadow: '0 10px 25px rgba(59, 130, 246, 0.15)'
-          }}
-        >
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <img 
-                src="/assets/icons/revenue_ripple_icon_transparent.png" 
-                alt="Ripple" 
-                className="w-5 h-5"
-                style={{ width: '20px', height: '20px' }}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-gray-700 font-medium">
-                {getContextualWelcome()}
-              </p>
-              <button className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-1">
-                Chat with Ripple →
-              </button>
-            </div>
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowHelpBubble(false);
-              }}
-              className="text-gray-400 hover:text-gray-600 text-lg leading-none"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Floating Action Button */}
-      <button
-        className="fixed bottom-6 right-6 z-50 group"
-        onClick={() => setOpen(!open)}
-        aria-label="Toggle AI Assistant"
-        style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 50 }}
+      {/* Side Suggestion Tab */}
+      <div 
+        className={`fixed right-0 top-1/2 transform -translate-y-1/2 z-40 transition-all duration-300 ease-in-out ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{
+          position: 'fixed',
+          right: 0,
+          top: '50%',
+          transform: open ? 'translateY(-50%)' : 'translate(100%, -50%)',
+          zIndex: 40,
+          transition: 'all 0.3s ease-in-out'
+        }}
       >
-        <div className="relative">
-          <div 
-            className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl"
-            style={{ width: '48px', height: '48px' }}
-          >
-            <img 
-              src="/assets/icons/revenue_ripple_icon_transparent.png" 
-              alt="Ripple AI" 
-              style={{ width: '24px', height: '24px' }}
-            />
-          </div>
-          {!open && (
-            <div 
-              className="absolute bg-green-500 border-2 border-white rounded-full animate-pulse"
-              style={{ 
-                top: '-4px', 
-                right: '-4px', 
-                width: '12px', 
-                height: '12px' 
-              }}
-            ></div>
-          )}
-        </div>
-      </button>
-
-      {/* Chat Interface */}
-      {open && (
+        {/* Main Chat Panel */}
         <div 
-          className="fixed bottom-20 right-6 z-50 bg-white rounded-xl shadow-xl border border-gray-200 flex flex-col overflow-hidden transform transition-all duration-200"
-          style={{ 
-            width: '320px', 
-            height: '448px', 
-            bottom: '80px', 
-            right: '24px', 
-            zIndex: 50,
-            position: 'fixed',
+          className="bg-white shadow-2xl border-l border-gray-200 flex flex-col"
+          style={{
+            width: '380px',
+            height: '500px',
             backgroundColor: 'white',
-            borderRadius: '12px',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            border: '1px solid #e5e7eb',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            borderLeft: '1px solid #e5e7eb',
             display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden'
+            flexDirection: 'column'
           }}
         >
           {/* Header */}
           <div 
-            className="bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between"
-            style={{ 
-              padding: '12px 16px',
+            className="bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between p-4"
+            style={{
               background: 'linear-gradient(to right, #2563eb, #1d4ed8)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              padding: '16px'
             }}
           >
             <div className="flex items-center space-x-3">
@@ -323,7 +258,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                     margin: 0
                   }}
                 >
-                  Ripple
+                  Ripple Assistant
                 </h3>
                 <p 
                   className="text-blue-100"
@@ -333,7 +268,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                     margin: 0
                   }}
                 >
-                  AI Marketing Assistant
+                  AI Marketing Help
                 </p>
               </div>
             </div>
@@ -356,7 +291,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
           {/* Messages */}
           <div 
-            className="flex-1 overflow-y-auto space-y-4"
+            className="flex-1 overflow-y-auto p-4 space-y-4"
             style={{ 
               flex: 1,
               overflowY: 'auto',
@@ -512,10 +447,10 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
           {/* Input */}
           <div 
-            className="border-t border-gray-200 p-3"
+            className="border-t border-gray-200 p-4"
             style={{
               borderTop: '1px solid #e5e7eb',
-              padding: '12px'
+              padding: '16px'
             }}
           >
             <div 
@@ -612,6 +547,179 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Tab Trigger Button */}
+      <button
+        className={`fixed right-0 top-1/2 transform -translate-y-1/2 z-30 transition-all duration-300 ease-in-out ${
+          open ? 'translate-x-0' : 'translate-x-0'
+        }`}
+        onClick={() => setOpen(!open)}
+        aria-label="Toggle AI Assistant"
+        style={{
+          position: 'fixed',
+          right: open ? '380px' : '0',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 30,
+          transition: 'all 0.3s ease-in-out',
+          background: 'linear-gradient(to right, #2563eb, #1d4ed8)',
+          border: 'none',
+          borderRadius: '8px 0 0 8px',
+          padding: '16px 12px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+      >
+        <img 
+          src="/assets/icons/revenue_ripple_icon_transparent.png" 
+          alt="Ripple AI" 
+          style={{ 
+            width: '24px', 
+            height: '24px',
+            filter: 'brightness(0) invert(1)'
+          }}
+        />
+        <span 
+          className="text-white text-xs font-medium"
+          style={{
+            color: 'white',
+            fontSize: '12px',
+            fontWeight: '500',
+            writingMode: 'vertical-rl',
+            textOrientation: 'mixed',
+            transform: 'rotate(180deg)'
+          }}
+        >
+          AI Help
+        </span>
+        {!open && (
+          <div 
+            className="bg-green-500 border-2 border-white rounded-full animate-pulse"
+            style={{ 
+              width: '8px', 
+              height: '8px',
+              animation: 'pulse 2s infinite'
+            }}
+          ></div>
+        )}
+      </button>
+
+      {/* Contextual Thought Bubble - Appears next to the tab */}
+      {showHelpBubble && !open && (
+        <div 
+          onClick={openChatWithContext}
+          style={{
+            position: 'fixed',
+            right: '50px', // Position next to the tab (tab is ~40px wide)
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 40,
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            border: '1px solid #e5e7eb',
+            padding: '16px',
+            maxWidth: '280px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            // Remove conflicting animation for now
+            opacity: 1
+          }}
+        >
+          {/* Thought bubble tail */}
+          <div 
+            style={{
+              position: 'absolute',
+              right: '-8px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 0,
+              height: 0,
+              borderTop: '8px solid transparent',
+              borderBottom: '8px solid transparent',
+              borderLeft: '8px solid #e5e7eb',
+              zIndex: 1
+            }}
+          ></div>
+          <div 
+            style={{
+              position: 'absolute',
+              right: '-7px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 0,
+              height: 0,
+              borderTop: '8px solid transparent',
+              borderBottom: '8px solid transparent',
+              borderLeft: '8px solid white',
+              zIndex: 2
+            }}
+          ></div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <img 
+                src="/assets/icons/revenue_ripple_icon_transparent.png" 
+                alt="Ripple" 
+                style={{ width: '20px', height: '20px' }}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p 
+                className="text-sm text-gray-700 font-medium"
+                style={{
+                  fontSize: '14px',
+                  color: '#374151',
+                  fontWeight: '500',
+                  margin: 0,
+                  lineHeight: '1.4'
+                }}
+              >
+                {getContextualWelcome()}
+              </p>
+              <button 
+                className="text-xs text-blue-600 hover:text-blue-800 font-medium mt-2"
+                style={{
+                  fontSize: '12px',
+                  color: '#2563eb',
+                  fontWeight: '500',
+                  marginTop: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  textDecoration: 'underline'
+                }}
+              >
+                Chat with Ripple →
+              </button>
+            </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowHelpBubble(false);
+              }}
+              className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+              style={{
+                color: '#9ca3af',
+                fontSize: '18px',
+                lineHeight: 1,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                marginLeft: '8px'
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
       )}
 
       <style jsx>{`
@@ -641,6 +749,15 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           }
           to {
             transform: rotate(360deg);
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
           }
         }
       `}</style>

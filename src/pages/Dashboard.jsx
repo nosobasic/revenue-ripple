@@ -5,6 +5,8 @@ import { supabase } from '../supabase/client.jsx';
 import Navbar from '../components/Navbar';
 import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
+import OnboardingModal from '../components/OnboardingModal';
+import TestimonialCarousel from '../components/TestimonialCarousel';
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -24,7 +26,8 @@ import {
   FaImage, 
   FaBook, 
   FaChartLine, 
-  FaBell 
+  FaBell,
+  FaRocket
 } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -34,6 +37,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [userIntent, setUserIntent] = useState(null);
   const [stats, setStats] = useState({
     totalRevenue: 0,
     totalOrders: 0,
@@ -44,6 +49,31 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
+
+  // Check for first-time user onboarding
+  useEffect(() => {
+    const hasOnboarded = localStorage.getItem('hasOnboarded');
+    const savedUserIntent = localStorage.getItem('userIntent');
+    
+    if (!hasOnboarded) {
+      // Small delay to let the page load before showing modal
+      setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1500);
+    } else {
+      setUserIntent(savedUserIntent);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    const savedUserIntent = localStorage.getItem('userIntent');
+    setUserIntent(savedUserIntent);
+  };
+
+  const handleOnboardingSkip = () => {
+    setShowOnboarding(false);
+  };
 
   const toggleSection = (section) => {
     if (expandedSection === section) {
@@ -82,9 +112,7 @@ const Dashboard = () => {
       setCourseProgress(progressMap);
     };
     fetchAllProgress();
-    // Optionally, refetch on location change to dashboard
-    // eslint-disable-next-line
-  }, [user, location.pathname]);
+  }, [user]);
 
   const handleSignOut = async () => {
     try {
@@ -107,7 +135,67 @@ const Dashboard = () => {
           { to: '/support', label: 'Support', icon: <FaUserTie /> }
         ]}
       />
+      <TestimonialCarousel />
       <AIAssistantWidget />
+
+      {/* User Intent Welcome Message */}
+      {userIntent && !showOnboarding && (
+        <div style={{
+          background: 'linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%)',
+          margin: '1rem 2rem',
+          padding: '1rem',
+          borderRadius: '12px',
+          border: '1px solid #bfdbfe',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem'
+        }}>
+          <div style={{
+            backgroundColor: '#2563eb',
+            borderRadius: '50%',
+            padding: '0.5rem',
+            color: 'white',
+            fontSize: '1.2rem'
+          }}>
+            {userIntent === 'learn' ? <FaGraduationCap /> : userIntent === 'earn' ? <FaMoneyBillWave /> : <FaRocket />}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ margin: 0, color: '#1e40af', fontSize: '1.1rem', fontWeight: '600' }}>
+              {userIntent === 'learn' && "Welcome to your learning journey! 🎓"}
+              {userIntent === 'earn' && "Ready to start earning? 💰"}
+              {userIntent === 'both' && "Let's learn and earn together! 🚀"}
+            </h4>
+            <p style={{ margin: '0.25rem 0 0 0', color: '#3730a3', fontSize: '0.95rem' }}>
+              {userIntent === 'learn' && "Check out our recommended courses below to get started"}
+              {userIntent === 'earn' && "Explore the affiliate centre to start building your income"}
+              {userIntent === 'both' && "Master marketing skills while building multiple income streams"}
+            </p>
+          </div>
+          <Link 
+            to={userIntent === 'learn' ? '/courses' : userIntent === 'earn' ? '/affiliate-centre' : '/courses'}
+            style={{
+              background: '#2563eb',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = '#1d4ed8';
+              e.target.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = '#2563eb';
+              e.target.style.transform = 'translateY(0)';
+            }}
+          >
+            Get Started
+          </Link>
+        </div>
+      )}
       {loading ? (
         <div className="spinner" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           Loading...
@@ -921,6 +1009,12 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      )}
+      {showOnboarding && (
+        <OnboardingModal
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
       )}
     </div>
   );
