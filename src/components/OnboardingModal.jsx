@@ -67,20 +67,22 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 10000,
-      animation: 'fadeIn 0.3s ease-out'
+      animation: 'fadeIn 0.3s ease-out',
+      padding: '1rem'
     }}>
       <div style={{
         backgroundColor: 'white',
         borderRadius: '16px',
-        padding: '2rem',
+        padding: 'min(2rem, 1.5rem)',
         maxWidth: '500px',
-        width: '90%',
-        maxHeight: '80vh',
+        width: '100%',
+        maxHeight: '90vh',
         position: 'relative',
         boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
-        animation: 'slideUp 0.3s ease-out'
+        animation: 'slideUp 0.3s ease-out',
+        overflowY: 'auto'
       }}>
-        {/* Close Button */}
+        {/* Close Button - Mobile Optimized */}
         <button
           onClick={handleSkip}
           style={{
@@ -93,8 +95,8 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
             color: '#6b7280',
             cursor: 'pointer',
             borderRadius: '50%',
-            width: '40px',
-            height: '40px',
+            width: '48px',
+            height: '48px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -114,41 +116,44 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
 
         {/* Step 1: Welcome */}
         {currentStep === 1 && (
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
             <div style={{
               backgroundColor: '#dbeafe',
               borderRadius: '50%',
-              width: '80px',
-              height: '80px',
+              width: 'min(80px, 15vw)',
+              height: 'min(80px, 15vw)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 1.5rem',
-              fontSize: '2rem',
+              fontSize: 'min(2rem, 8vw)',
               color: '#2563eb'
             }}>
               <FaRocket />
             </div>
             
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: 'clamp(1.5rem, 5vw, 2rem)',
               fontWeight: 'bold',
               color: '#1f2937',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              lineHeight: '1.2'
             }}>
               Welcome to Revenue Ripple! 🎉
             </h2>
             
             <p style={{
-              fontSize: '1.1rem',
+              fontSize: 'clamp(1rem, 3.5vw, 1.1rem)',
               color: '#6b7280',
               marginBottom: '2rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              paddingLeft: '0.5rem',
+              paddingRight: '0.5rem'
             }}>
               Let's get you started on your marketing journey. What's your main goal today?
             </p>
 
-            {/* Goal Options */}
+            {/* Goal Options - Mobile Optimized */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <button
                 onClick={() => handleGoalSelect('learn')}
@@ -156,14 +161,16 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '1rem',
-                  padding: '1rem',
+                  padding: '1.25rem 1rem',
                   border: '2px solid #e5e7eb',
                   borderRadius: '12px',
                   backgroundColor: 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  fontSize: '1rem',
-                  fontWeight: '500'
+                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
+                  fontWeight: '500',
+                  minHeight: '72px',
+                  width: '100%'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#2563eb';
@@ -181,17 +188,22 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                 <div style={{
                   backgroundColor: '#dbeafe',
                   borderRadius: '8px',
-                  padding: '0.75rem',
+                  padding: '0.875rem',
                   color: '#2563eb',
-                  fontSize: '1.2rem'
+                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
+                  minWidth: '48px',
+                  minHeight: '48px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
                   <FaGraduationCap />
                 </div>
                 <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937' }}>Learn Marketing Skills</div>
-                  <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Master digital marketing through our courses</div>
+                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Learn Marketing Skills</div>
+                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Master digital marketing through our courses</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af' }} />
+                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
               </button>
 
               <button
@@ -200,14 +212,16 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '1rem',
-                  padding: '1rem',
+                  padding: '1.25rem 1rem',
                   border: '2px solid #e5e7eb',
                   borderRadius: '12px',
                   backgroundColor: 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  fontSize: '1rem',
-                  fontWeight: '500'
+                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
+                  fontWeight: '500',
+                  minHeight: '72px',
+                  width: '100%'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#059669';
@@ -225,17 +239,22 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                 <div style={{
                   backgroundColor: '#d1fae5',
                   borderRadius: '8px',
-                  padding: '0.75rem',
+                  padding: '0.875rem',
                   color: '#059669',
-                  fontSize: '1.2rem'
+                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
+                  minWidth: '48px',
+                  minHeight: '48px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
                   <FaDollarSign />
                 </div>
                 <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937' }}>Earn with Affiliates</div>
-                  <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Start earning commissions as an affiliate</div>
+                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Earn with Affiliates</div>
+                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Start earning commissions as an affiliate</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af' }} />
+                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
               </button>
 
               <button
@@ -244,14 +263,16 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '1rem',
-                  padding: '1rem',
+                  padding: '1.25rem 1rem',
                   border: '2px solid #e5e7eb',
                   borderRadius: '12px',
                   backgroundColor: 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  fontSize: '1rem',
-                  fontWeight: '500'
+                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
+                  fontWeight: '500',
+                  minHeight: '72px',
+                  width: '100%'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#7c3aed';
@@ -269,17 +290,22 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                 <div style={{
                   backgroundColor: '#ede9fe',
                   borderRadius: '8px',
-                  padding: '0.75rem',
+                  padding: '0.875rem',
                   color: '#7c3aed',
-                  fontSize: '1.2rem'
+                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
+                  minWidth: '48px',
+                  minHeight: '48px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}>
                   <FaRocket />
                 </div>
                 <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937' }}>Both - Learn & Earn</div>
-                  <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>Master marketing while building income</div>
+                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Both - Learn & Earn</div>
+                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Master marketing while building income</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af' }} />
+                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
               </button>
             </div>
 
@@ -290,9 +316,10 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                 color: '#6b7280',
                 background: 'none',
                 border: 'none',
-                fontSize: '0.9rem',
+                fontSize: 'clamp(0.85rem, 3vw, 0.9rem)',
                 cursor: 'pointer',
-                textDecoration: 'underline'
+                textDecoration: 'underline',
+                padding: '0.75rem 1rem'
               }}
             >
               Skip for now
@@ -302,64 +329,77 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
 
         {/* Step 2: Confirmation & Next Steps */}
         {currentStep === 2 && (
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
             <div style={{
               backgroundColor: '#dcfce7',
               borderRadius: '50%',
-              width: '80px',
-              height: '80px',
+              width: 'min(80px, 15vw)',
+              height: 'min(80px, 15vw)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 1.5rem',
-              fontSize: '2rem'
+              fontSize: 'min(2rem, 8vw)'
             }}>
               ✅
             </div>
             
             <h2 style={{
-              fontSize: '1.8rem',
+              fontSize: 'clamp(1.4rem, 4.5vw, 1.8rem)',
               fontWeight: 'bold',
               color: '#1f2937',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              lineHeight: '1.2'
             }}>
               Perfect! Let's get started
             </h2>
             
             <p style={{
-              fontSize: '1.1rem',
+              fontSize: 'clamp(1rem, 3.5vw, 1.1rem)',
               color: '#6b7280',
               marginBottom: '1.5rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              paddingLeft: '0.5rem',
+              paddingRight: '0.5rem'
             }}>
               You selected: <strong style={{ color: '#2563eb' }}>{getGoalDisplay(selectedGoal)}</strong>
             </p>
 
             <p style={{
-              fontSize: '1rem',
+              fontSize: 'clamp(0.95rem, 3vw, 1rem)',
               color: '#6b7280',
               marginBottom: '2rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              paddingLeft: '0.5rem',
+              paddingRight: '0.5rem'
             }}>
               We'll take you to the perfect starting point for your journey. You can always explore other sections later!
             </p>
 
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: '0.75rem', 
+              justifyContent: 'center',
+              flexDirection: window.innerWidth < 400 ? 'column' : 'row'
+            }}>
               <button
                 onClick={() => setCurrentStep(1)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '0.5rem',
-                  padding: '0.75rem 1.5rem',
+                  padding: '0.875rem 1.5rem',
                   border: '2px solid #e5e7eb',
                   borderRadius: '8px',
                   backgroundColor: 'white',
                   color: '#6b7280',
-                  fontSize: '1rem',
+                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
                   fontWeight: '500',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  minHeight: '48px',
+                  flex: window.innerWidth < 400 ? '1' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#d1d5db';
@@ -379,16 +419,19 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '0.5rem',
-                  padding: '0.75rem 2rem',
+                  padding: '0.875rem 2rem',
                   border: 'none',
                   borderRadius: '8px',
                   backgroundColor: '#2563eb',
                   color: 'white',
-                  fontSize: '1rem',
+                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  minHeight: '48px',
+                  flex: window.innerWidth < 400 ? '1' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = '#1d4ed8';
@@ -424,6 +467,19 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
             to { 
               opacity: 1;
               transform: translateY(0) scale(1);
+            }
+          }
+
+          /* Mobile-specific optimizations */
+          @media (max-width: 480px) {
+            /* Ensure touch targets are accessible */
+            button {
+              min-height: 48px;
+            }
+            
+            /* Improve readability on small screens */
+            div[style*="textAlign: center"] p {
+              line-height: 1.7 !important;
             }
           }
         `}
