@@ -1,12 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
+import AIAssistantWidget from '../../../components/AIAssistantWidget';
 import '../../../pages.css';
 
 const KeywordResearch = () => {
   return (
     <div className="dashboard">
       <Navbar />
+      <AIAssistantWidget 
+        showWelcomeBubble={true} 
+        pageContext="Keyword Research Training - Learn how to master keyword research for better marketing results"
+      />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">HOW TO MASTER KEYWORD RESEARCH</h1>

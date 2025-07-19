@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 import {
   FaVideo,
@@ -29,6 +30,10 @@ const Training = () => {
   return (
     <div className="dashboard">
       <Navbar />
+      <AIAssistantWidget 
+        showWelcomeBubble={true} 
+        pageContext="Training Center - Marketing guides and educational content"
+      />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">MARKETING</h1>
