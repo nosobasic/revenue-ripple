@@ -212,15 +212,20 @@
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 1rem;
+    height: 60px;
   }
   
   .navbar-links {
     gap: 0.25rem;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   
   .navbar-link {
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
+    min-width: 48px;
+    justify-content: center;
   }
   
   .navbar-link span {
@@ -231,17 +236,57 @@
     font-size: 1.2rem;
   }
   
+  .navbar-profile-button {
+    padding: 0.5rem 0.75rem;
+    min-width: 48px;
+    justify-content: center;
+  }
+  
   .navbar-profile-button span {
     display: none;
+  }
+  
+  .navbar-logo {
+    height: 32px;
   }
 }
 
 @media (max-width: 480px) {
   .navbar-container {
-    padding: 0 0.5rem;
+    padding: 0 0.75rem;
   }
   
   .navbar-link {
     padding: 0.5rem;
+    min-width: 44px;
+  }
+  
+  .navbar-profile-button {
+    padding: 0.5rem;
+    min-width: 44px;
+  }
+  
+  .navbar-links {
+    gap: 0.2rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .navbar-container {
+    padding: 0 0.5rem;
+  }
+  
+  .navbar-link {
+    padding: 0.4rem;
+    min-width: 40px;
+  }
+  
+  .navbar-profile-button {
+    padding: 0.4rem;
+    min-width: 40px;
+  }
+  
+  .nav-icon {
+    font-size: 1.1rem;
   }
 } 

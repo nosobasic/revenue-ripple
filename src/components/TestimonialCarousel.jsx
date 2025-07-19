@@ -81,7 +81,7 @@ const TestimonialCarousel = () => {
       style={{
         background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
         borderBottom: '1px solid #e2e8f0',
-        padding: '1rem 0',
+        padding: '0.5rem 0',
         position: 'relative',
         overflow: 'hidden'
       }}
@@ -103,15 +103,15 @@ const TestimonialCarousel = () => {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 2rem',
+        padding: '0 1.5rem',
         position: 'relative'
       }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '1rem',
-          minHeight: '80px'
+          gap: '0.75rem',
+          minHeight: '60px'
         }}>
           {/* Previous Button */}
           <button
@@ -120,15 +120,16 @@ const TestimonialCarousel = () => {
               background: 'white',
               border: '1px solid #e2e8f0',
               borderRadius: '50%',
-              width: '40px',
-              height: '40px',
+              width: '32px',
+              height: '32px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              color: '#64748b'
+              color: '#64748b',
+              flexShrink: 0
             }}
             onMouseEnter={(e) => {
               e.target.style.backgroundColor = '#2563eb';
@@ -143,24 +144,24 @@ const TestimonialCarousel = () => {
               e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
             }}
           >
-            <FaChevronLeft />
+            <FaChevronLeft style={{ fontSize: '0.8rem' }} />
           </button>
 
           {/* Testimonial Content */}
           <div style={{
             flex: 1,
             textAlign: 'center',
-            padding: '0 2rem',
+            padding: '0 1rem',
             position: 'relative'
           }}>
             {/* Success/Testimonial Badge */}
             <div style={{
               display: 'inline-block',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '20px',
-              fontSize: '0.75rem',
+              padding: '0.2rem 0.6rem',
+              borderRadius: '16px',
+              fontSize: '0.7rem',
               fontWeight: '600',
-              marginBottom: '0.75rem',
+              marginBottom: '0.5rem',
               background: currentTestimonial.type === 'success' 
                 ? 'linear-gradient(135deg, #dcfce7, #bbf7d0)' 
                 : 'linear-gradient(135deg, #dbeafe, #bfdbfe)',
@@ -172,22 +173,22 @@ const TestimonialCarousel = () => {
 
             {/* Quote Icon */}
             <FaQuoteLeft style={{
-              fontSize: '1.5rem',
+              fontSize: '1.2rem',
               color: '#2563eb',
               opacity: 0.3,
-              marginBottom: '0.5rem'
+              marginBottom: '0.3rem'
             }} />
 
             {/* Testimonial Text */}
             <p style={{
-              fontSize: '1.1rem',
+              fontSize: '0.95rem',
               fontWeight: '500',
               color: '#1e293b',
-              lineHeight: '1.6',
-              marginBottom: '1rem',
+              lineHeight: '1.5',
+              marginBottom: '0.75rem',
               fontStyle: 'italic',
-              maxWidth: '800px',
-              margin: '0 auto 1rem'
+              maxWidth: '700px',
+              margin: '0 auto 0.75rem'
             }}>
               "{currentTestimonial.text}"
             </p>
@@ -197,18 +198,18 @@ const TestimonialCarousel = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '1rem'
+              gap: '0.75rem'
             }}>
               <div>
                 <div style={{
                   fontWeight: '600',
                   color: '#1e293b',
-                  fontSize: '1rem'
+                  fontSize: '0.9rem'
                 }}>
                   {currentTestimonial.author}
                 </div>
                 <div style={{
-                  fontSize: '0.9rem',
+                  fontSize: '0.8rem',
                   color: '#64748b'
                 }}>
                   {currentTestimonial.role}
@@ -216,13 +217,13 @@ const TestimonialCarousel = () => {
               </div>
 
               {/* Star Rating */}
-              <div style={{ display: 'flex', gap: '0.25rem' }}>
+              <div style={{ display: 'flex', gap: '0.2rem' }}>
                 {[...Array(currentTestimonial.rating)].map((_, i) => (
                   <FaStar 
                     key={i} 
                     style={{ 
                       color: '#fbbf24', 
-                      fontSize: '1rem' 
+                      fontSize: '0.9rem' 
                     }} 
                   />
                 ))}
@@ -237,15 +238,16 @@ const TestimonialCarousel = () => {
               background: 'white',
               border: '1px solid #e2e8f0',
               borderRadius: '50%',
-              width: '40px',
-              height: '40px',
+              width: '32px',
+              height: '32px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              color: '#64748b'
+              color: '#64748b',
+              flexShrink: 0
             }}
             onMouseEnter={(e) => {
               e.target.style.backgroundColor = '#2563eb';
@@ -260,7 +262,7 @@ const TestimonialCarousel = () => {
               e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
             }}
           >
-            <FaChevronRight />
+            <FaChevronRight style={{ fontSize: '0.8rem' }} />
           </button>
         </div>
 
@@ -269,7 +271,7 @@ const TestimonialCarousel = () => {
           display: 'flex',
           justifyContent: 'center',
           gap: '0.5rem',
-          marginTop: '1rem'
+          marginTop: '0.5rem'
         }}>
           {testimonials.map((_, index) => (
             <button
@@ -283,22 +285,88 @@ const TestimonialCarousel = () => {
                 background: index === currentIndex ? '#2563eb' : '#cbd5e1',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                transform: index === currentIndex ? 'scale(1.2)' : 'scale(1)'
+                padding: 0
               }}
               onMouseEnter={(e) => {
                 if (index !== currentIndex) {
-                  e.target.style.backgroundColor = '#64748b';
+                  e.target.style.background = '#94a3b8';
+                  e.target.style.transform = 'scale(1.2)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (index !== currentIndex) {
-                  e.target.style.backgroundColor = '#cbd5e1';
+                  e.target.style.background = '#cbd5e1';
+                  e.target.style.transform = 'scale(1)';
                 }
               }}
             />
           ))}
         </div>
       </div>
+
+      {/* Mobile Responsive Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .testimonial-container {
+            padding: 0.25rem 0 !important;
+          }
+          
+          .testimonial-content {
+            padding: 0 0.5rem !important;
+            min-height: 50px !important;
+          }
+          
+          .testimonial-text {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+            margin-bottom: 0.5rem !important;
+          }
+          
+          .testimonial-badge {
+            font-size: 0.65rem !important;
+            padding: 0.15rem 0.5rem !important;
+            margin-bottom: 0.3rem !important;
+          }
+          
+          .author-name {
+            font-size: 0.8rem !important;
+          }
+          
+          .author-role {
+            font-size: 0.7rem !important;
+          }
+          
+          .star-rating {
+            font-size: 0.8rem !important;
+          }
+          
+          .nav-button {
+            width: 28px !important;
+            height: 28px !important;
+          }
+          
+          .quote-icon {
+            font-size: 1rem !important;
+            margin-bottom: 0.2rem !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .testimonial-text {
+            font-size: 0.8rem !important;
+            max-width: 280px !important;
+          }
+          
+          .testimonial-content {
+            padding: 0 0.25rem !important;
+          }
+          
+          .nav-button {
+            width: 24px !important;
+            height: 24px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };
