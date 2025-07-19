@@ -30,8 +30,7 @@ import {
   FaHandshake,
   FaHeadset,
   FaClock,
-  FaCertificate,
-  FaBook
+  FaCertificate
 } from 'react-icons/fa';
 
 // Dashboard Router - redirects to appropriate role-based dashboard

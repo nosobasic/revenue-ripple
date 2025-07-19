@@ -20,7 +20,7 @@ import {
   FaCalendarAlt,
   FaClipboard,
   FaEye,
-  FaTrendingUp,
+  FaChartLine,
   FaAward,
   FaGem,
   FaFire,
@@ -225,7 +225,7 @@ export const ProDashboard = () => {
         <div className="dashboard-grid">
           <div className="dashboard-section">
             <h2>
-              <FaTrendingUp /> Performance Metrics
+              <FaChartLine /> Performance Metrics
             </h2>
             <div className="stats-grid pro-stats">
               <div className="stat-card highlight pro-earnings">
@@ -387,7 +387,7 @@ export const ProDashboard = () => {
           {/* Pro Earning Potential */}
           <div className="dashboard-section">
             <h2>
-              <FaTrendingUp /> Pro Earning Potential
+              <FaChartLine /> Pro Earning Potential
             </h2>
             <div className="earning-calculator pro-calculator">
               <div className="calc-header">
