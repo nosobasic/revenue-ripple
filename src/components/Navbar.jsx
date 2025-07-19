@@ -1,11 +1,14 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -14,6 +17,23 @@ const Navbar = () => {
     } catch (error) {
       console.error('Failed to log out:', error);
     }
+  };
+
+  const isActive = (path) => {
+    if (path === '/learn') {
+      return location.pathname.includes('/courses') || location.pathname.includes('/training');
+    }
+    if (path === '/progress') {
+      return location.pathname === '/dashboard';
+    }
+    if (path === '/earn') {
+      return location.pathname.includes('/affiliate');
+    }
+    return location.pathname === path;
+  };
+
+  const getNavLinkClass = (path) => {
+    return `navbar-link ${isActive(path) ? 'active' : ''}`;
   };
 
   return (
@@ -30,20 +50,49 @@ const Navbar = () => {
         <div className="navbar-links">
           {user ? (
             <>
-              <Link to="/dashboard" className="navbar-link">Dashboard</Link>
-              <Link to="/courses" className="navbar-link">Video Courses</Link>
-              <Link to="/training" className="navbar-link">Training & Guides</Link>
-              <Link to="/affiliate-centre" className="navbar-link">Affiliates & Resellers</Link>
+              {/* Simplified SLC Navigation */}
+              <Link to="/courses" className={getNavLinkClass('/learn')}>
+                <FaGraduationCap className="nav-icon" />
+                <span>Learn</span>
+              </Link>
+              
+              <Link to="/dashboard" className={getNavLinkClass('/progress')}>
+                <FaChartLine className="nav-icon" />
+                <span>Progress</span>
+              </Link>
+              
+              <Link to="/affiliate-centre" className={getNavLinkClass('/earn')}>
+                <FaDollarSign className="nav-icon" />
+                <span>Earn</span>
+              </Link>
+              
+              <Link to="/training" className={getNavLinkClass('/support')}>
+                <FaQuestionCircle className="nav-icon" />
+                <span>Support</span>
+              </Link>
+
+              {/* Profile Dropdown */}
               <div className="navbar-profile">
-                <button className="navbar-button">
-                  {user.email?.split('@')[0]?.toUpperCase()}
+                <button 
+                  className="navbar-profile-button"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  <FaUser className="nav-icon" />
+                  <span>{user.email?.split('@')[0]?.toUpperCase()}</span>
+                  <FaChevronDown className={`dropdown-arrow ${dropdownOpen ? 'open' : ''}`} />
                 </button>
-                <div className="navbar-dropdown">
-                  <Link to="/profile" className="dropdown-link">Profile</Link>
-                  <Link to="/change-password" className="dropdown-link">Change Password</Link>
-                  <Link to="/training" className="dropdown-link">Training & Guides</Link>
-                  <button onClick={handleLogout} className="dropdown-link">Logout</button>
-                </div>
+                
+                {dropdownOpen && (
+                  <div className="navbar-dropdown">
+                    <Link to="/profile" className="dropdown-link" onClick={() => setDropdownOpen(false)}>
+                      <FaUser className="dropdown-icon" />
+                      Profile Settings
+                    </Link>
+                    <button onClick={handleLogout} className="dropdown-link logout-btn">
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           ) : (
