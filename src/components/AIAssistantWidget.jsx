@@ -217,7 +217,16 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         flexDirection: 'column',
         zIndex: 50,
         transform: open ? 'translateX(0)' : 'translateX(100%)',
-        transition: 'all 0.3s ease-in-out'
+        transition: 'all 0.3s ease-in-out',
+        // Ensure it's above keyboard
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        // Use viewport units to handle keyboard
+        height: '100vh',
+        width: '100vw'
       };
     }
     
@@ -411,7 +420,10 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
             flex: 1,
             overflowY: 'auto',
             padding: isMobile ? '20px' : '16px',
-            scrollbarWidth: 'thin'
+            scrollbarWidth: 'thin',
+            // Ensure messages are visible above keyboard
+            maxHeight: isMobile ? 'calc(100vh - 200px)' : 'auto',
+            minHeight: isMobile ? '200px' : 'auto'
           }}
         >
           {messages.map((message) => (
