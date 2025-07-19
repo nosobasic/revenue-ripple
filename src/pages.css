@@ -215,7 +215,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.75), rgba(124, 58, 237, 0.75), rgba(37, 99, 235, 0.75)), url('/images/skyline.png');
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.75), rgba(124, 58, 237, 0.75), rgba(37, 99, 235, 0.75)), url('/assets/images/images/skyline.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
