@@ -98,7 +98,7 @@ const EntrepreneurialBrainstorming = () => {
                 </button>
                 {expandedSections.workbook && (
                   <div className="video-tab-content">
-                    <div className="video-container" style={{ 
+                    <div style={{ 
                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
                       borderRadius: 12, 
                       padding: '2rem', 
