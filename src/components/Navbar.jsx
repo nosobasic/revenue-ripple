@@ -80,29 +80,11 @@ const Navbar = () => {
                 <span>Support</span>
               </Link>
 
-              {/* Profile Dropdown */}
-              <div className="navbar-profile">
-                <button 
-                  className="navbar-profile-button"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                >
-                  <FaUser className="nav-icon" />
-                  <span>{user.email?.split('@')[0]?.toUpperCase()}</span>
-                  <FaChevronDown className={`dropdown-arrow ${dropdownOpen ? 'open' : ''}`} />
-                </button>
-                
-                {dropdownOpen && (
-                  <div className="navbar-dropdown">
-                    <Link to="/profile" className="dropdown-link" onClick={() => setDropdownOpen(false)}>
-                      <FaUser className="dropdown-icon" />
-                      Profile Settings
-                    </Link>
-                    <button onClick={handleLogout} className="dropdown-link logout-btn">
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
+              {/* Profile Link */}
+              <Link to="/profile" className="navbar-link" onClick={closeMobileMenu}>
+                <FaUser className="nav-icon" />
+                <span>Profile</span>
+              </Link>
             </>
           ) : (
             <>
