@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './pages/Dashboard';
+import Dashboard, { MemberDashboard } from './pages/Dashboard';
+import { ResellerDashboard } from './pages/ResellerDashboard';
+import { ProDashboard } from './pages/ProDashboard';
 import Training from './pages/Training';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -98,7 +100,13 @@ const App = () => {
         <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        {/* Dashboard Routes - Role-based */}
+        <Route path="/dashboard" element={<ProtectedRoute redirectToDashboard><Dashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/member" element={<ProtectedRoute allowedRoles={['member']}><MemberDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/reseller" element={<ProtectedRoute allowedRoles={['reseller', 'affiliate']}><ResellerDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/pro" element={<ProtectedRoute allowedRoles={['pro_reseller']}><ProDashboard /></ProtectedRoute>} />
+        
+        {/* Other Protected Routes */}
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />

@@ -39,7 +39,29 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
   </div>
 );
 
-export default function ProtectedRoute({ children, requireAdmin = false }) {
+// Role-based redirect logic
+const getRoleBasedDashboard = (role) => {
+  switch (role) {
+    case 'admin':
+      return '/admin';
+    case 'member':
+      return '/dashboard/member';
+    case 'reseller':
+    case 'affiliate':
+      return '/dashboard/reseller';
+    case 'pro_reseller':
+      return '/dashboard/pro';
+    default:
+      return '/dashboard/member';
+  }
+};
+
+export default function ProtectedRoute({ 
+  children, 
+  requireAdmin = false, 
+  allowedRoles = null,
+  redirectToDashboard = false 
+}) {
   const { user, loading } = useAuth();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
@@ -49,6 +71,8 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
     user,
     loading,
     requireAdmin,
+    allowedRoles,
+    redirectToDashboard,
     path: location.pathname,
   });
 
@@ -58,12 +82,19 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   }
 
   // Redirect to login if not authenticated
-  if (!token) {
+  if (!token || !user) {
     console.log("No user found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has required role
+  // Role-based dashboard redirect (for /dashboard route)
+  if (redirectToDashboard && location.pathname === '/dashboard') {
+    const roleDashboard = getRoleBasedDashboard(user.role);
+    console.log(`Redirecting ${user.role} user to ${roleDashboard}`);
+    return <Navigate to={roleDashboard} replace />;
+  }
+
+  // Check if user has required admin role
   if (requireAdmin) {
     console.log("Checking admin role:", {
       userRole: user?.role,
@@ -85,6 +116,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
         }}>
           <h2>Access Denied</h2>
           <p>You do not have admin privileges to access this page.</p>
+          <p>Current role: {user.role}</p>
           <button 
             onClick={() => window.history.back()}
             style={{
@@ -102,6 +134,18 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
         </div>
       );
     }
+  }
+
+  // Check allowed roles if specified
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    console.log("User role not allowed:", {
+      userRole: user.role,
+      allowedRoles
+    });
+    
+    // Redirect to appropriate dashboard instead of showing error
+    const roleDashboard = getRoleBasedDashboard(user.role);
+    return <Navigate to={roleDashboard} replace />;
   }
 
   // Wrap children in error boundary for safety
