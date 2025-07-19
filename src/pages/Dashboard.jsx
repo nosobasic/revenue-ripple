@@ -6,7 +6,6 @@ import Navbar from '../components/Navbar';
 import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
-import TestimonialCarousel from '../components/TestimonialCarousel';
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
