@@ -13,10 +13,22 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
+    // Check if Supabase is properly configured
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn('Supabase not configured. Running in demo mode.');
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem("revenue-ripple-auth-token");
 
     if (!token) {
-      supabase.auth.signOut().finally(() => {
+      supabase.auth.signOut().catch(() => {
+        // Ignore errors if Supabase isn't configured
+      }).finally(() => {
         setUser(null);
         setSession(null);
         setLoading(false);
@@ -31,6 +43,9 @@ export function AuthProvider({ children }) {
       } else {
         setLoading(false);
       }
+    }).catch((error) => {
+      console.error('Error getting session:', error);
+      setLoading(false);
     });
 
     const {
