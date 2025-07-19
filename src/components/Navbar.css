@@ -110,6 +110,17 @@
   display: none;
 }
 
+/* Force hamburger menu on smaller screens */
+@media (max-width: 1024px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-nav {
+    display: block !important;
+  }
+}
+
 .hamburger-button {
   background: none;
   border: none;
@@ -275,11 +286,11 @@
   }
   
   .desktop-nav {
-    display: none;
+    display: none !important;
   }
   
   .mobile-nav {
-    display: block;
+    display: block !important;
   }
   
   .navbar-logo {
@@ -290,6 +301,14 @@
 @media (max-width: 480px) {
   .navbar-container {
     padding: 0 0.75rem;
+  }
+  
+  .desktop-nav {
+    display: none !important;
+  }
+  
+  .mobile-nav {
+    display: block !important;
   }
   
   .mobile-menu-content {
