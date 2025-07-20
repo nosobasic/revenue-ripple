@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "../lib/supabaseClient";
 import { AuthService } from "../services/authService";
-import { UserService } from "../services/userService";
 
 const AuthContext = createContext();
 
@@ -17,51 +15,16 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const token = localStorage.getItem("revenue-ripple-auth-token");
-
-        if (!token) {
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
+        const currentUser = await AuthService.getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+          setSession({ user: currentUser });
         }
-
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          setUser(null);
-          setSession(null);
-          setLoading(false);
-          return;
-        }
-
-        setSession(session);
-        if (session?.user) {
-          await fetchUserData(session.user);
-        } else {
-          setLoading(false);
-        }
-
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange((event, session) => {
-          console.log('Auth state changed:', event, session?.user?.email);
-          setSession(session);
-          if (session?.user) {
-            fetchUserData(session.user);
-          } else {
-            setUser(null);
-          }
-          setLoading(false);
-        });
-
-        return () => subscription.unsubscribe();
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        console.error('Auth initialization error:', error);
         setUser(null);
         setSession(null);
+      } finally {
         setLoading(false);
       }
     };
@@ -71,8 +34,16 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
-      const userData = await AuthService.fetchUserData(authUser);
-      setUser(userData);
+      const userData = await AuthService.getUserById(authUser.id);
+      if (userData) {
+        setUser(userData);
+      } else {
+        setUser({
+          ...authUser,
+          role: 'member',
+          status: 'active'
+        });
+      }
     } catch (error) {
       console.error("Error in fetchUserData:", error);
       setUser({
@@ -83,13 +54,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  async function signup(email, password, firstName, lastName) {
+  async function signup(email, password, name) {
     try {
       setLoading(true);
-      const authData = await AuthService.signup(email, password, firstName, lastName);
-      return authData;
+      const user = await AuthService.signup(email, password, name);
+      return user;
     } catch (error) {
-      console.error('Signup error:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -99,9 +69,10 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-      const authData = await AuthService.login(email, password);
-      await fetchUserData(authData);
-      return authData;
+      const user = await AuthService.login(email, password);
+      setUser(user);
+      setSession({ user });
+      return user;
     } catch (error) {
       console.error("login: error", error);
       throw error;
@@ -127,16 +98,8 @@ export function AuthProvider({ children }) {
   async function updateUserProfile(profileData) {
     try {
       if (!user) throw new Error("No user logged in");
-
-      await UserService.updateProfile(user.id, profileData);
-
-      // Update the local user state
-      setUser((prev) => ({
-        ...prev,
-        ...profileData,
-        updated_at: new Date().toISOString(),
-      }));
-
+      const updatedUser = await AuthService.updateProfile(user.id, profileData);
+      setUser(updatedUser);
       return true;
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -146,17 +109,7 @@ export function AuthProvider({ children }) {
 
   async function resetPassword(email) {
     try {
-      const data = await AuthService.resetPassword(email);
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async function updatePassword(newPassword) {
-    try {
-      await AuthService.updatePassword(newPassword);
-      return true;
+      return await AuthService.resetPassword(email);
     } catch (error) {
       throw error;
     }
@@ -171,7 +124,6 @@ export function AuthProvider({ children }) {
     logout,
     updateUserProfile,
     resetPassword,
-    updatePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

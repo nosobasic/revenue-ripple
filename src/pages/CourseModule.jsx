@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
 import AIAssistantWidget from '../components/AIAssistantWidget';
+import ConfettiAnimation from '../components/ConfettiAnimation';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 import '../styles/courses.css';
@@ -15,6 +16,7 @@ const CourseModule = () => {
   const [error, setError] = useState(null);
   const [completed, setCompleted] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const course = courses.find(c => c.slug === courseSlug);
   const moduleNumber = parseInt(moduleId.split('-')[1]);
@@ -49,6 +51,7 @@ const CourseModule = () => {
   const markModuleComplete = async () => {
     if (!user) return;
     setButtonLoading(true);
+    
     // Upsert completion
     await supabase
       .from('user_module_completion')
@@ -61,9 +64,13 @@ const CourseModule = () => {
           completed_at: new Date().toISOString(),
         }
       ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+    
     setCompleted(true);
     await recalculateProgress();
     setButtonLoading(false);
+    
+    // Trigger confetti animation
+    setShowConfetti(true);
   };
 
   // Recalculate course progress for this user
@@ -93,39 +100,31 @@ const CourseModule = () => {
       ], { onConflict: ['user_id', 'course_id'] });
   };
 
-  if (error) {
+  const handleConfettiComplete = () => {
+    setShowConfetti(false);
+  };
+
+  if (isLoading) {
     return (
       <div className="course-container">
-        <div className="course-breadcrumb">
-          <Link to="/dashboard">Dashboard</Link>
-          <span>/</span>
-          <Link to={`/courses/${courseSlug}`}>{course?.title || 'Course'}</Link>
-        </div>
-        <div className="error-container">
-          <h2 className="error-title">Error</h2>
-          <p className="error-message">{error}</p>
-          <button 
-            onClick={() => navigate(`/courses/${courseSlug}`)}
-            className="nav-button primary"
-          >
-            Back to Course Overview
-          </button>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <div style={{ fontSize: '1.2rem', color: '#666' }}>Loading module...</div>
         </div>
       </div>
     );
   }
 
-  if (isLoading) {
+  if (error || !course || !module) {
     return (
       <div className="course-container">
-        <div className="course-breadcrumb">
-          <Link to="/dashboard">Dashboard</Link>
-          <span>/</span>
-          <Link to={`/courses/${courseSlug}`}>{course?.title || 'Course'}</Link>
-        </div>
-        <div className="loading-container">
-          <div className="loading-spinner" />
-          <p>Loading video content...</p>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2 style={{ color: '#ef4444', marginBottom: '1rem' }}>Module Not Found</h2>
+          <p style={{ color: '#666', marginBottom: '2rem' }}>
+            The module you're looking for doesn't exist or has been moved.
+          </p>
+          <Link to="/courses" className="nav-button primary">
+            Back to Courses
+          </Link>
         </div>
       </div>
     );
@@ -137,6 +136,13 @@ const CourseModule = () => {
         showWelcomeBubble={true} 
         pageContext={`Module: ${module.title} in ${course.title} - ${module.description || 'Learning module content'}`}
       />
+      
+      {/* Confetti Animation */}
+      <ConfettiAnimation 
+        isActive={showConfetti} 
+        onComplete={handleConfettiComplete}
+      />
+      
       <div className="course-breadcrumb">
         <Link to="/dashboard">Dashboard</Link>
         <span>/</span>

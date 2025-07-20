@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
-import { ResellerDashboard } from './pages/ResellerDashboard';
-import { ProDashboard } from './pages/ProDashboard';
 import Training from './pages/Training';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -12,9 +10,7 @@ import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
 import AffiliateSign from './pages/AffiliateSign';
-import AffiliateSignupFixed from './pages/AffiliateSignupFixed';
 import AffiliateLogin from './pages/AffiliateLogin';
-import ResetPassword from './pages/ResetPassword';
 import AffiliateCentre from './pages/AffiliateCentre';
 import AffiliateTools from './pages/AffiliateTools';
 import AffiliateTraining from './pages/AffiliateTraining';
@@ -33,6 +29,8 @@ import DMDLanding from './pages/DMDLanding';
 import SpecialInvite from './pages/SpecialInvite';
 import ResellerCheckout from './pages/ResellerCheckout';
 import ResellerTrial from './pages/ResellerTrial';
+import ResetPassword from './pages/ResetPassword';
+import AffiliateSignupFixed from './pages/AffiliateSignupFixed';
 import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
 import BulletproofBranding from './pages/training/videos/BulletproofBranding';
 import ShoestringStartups from './pages/training/videos/ShoestringStartups';
@@ -58,9 +56,8 @@ import WritingAdCopy from './pages/training/guides/WritingAdCopy';
 import SalesCopy from './pages/training/guides/SalesCopy';
 
 const UnprotectedRoute = ({ children }) => {
-  // Don't check authentication here - let the auth context handle it
-  // This prevents conflicts with Supabase session management
-  return children;
+  const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 
 const App = () => {
@@ -88,13 +85,13 @@ const App = () => {
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
-        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
+        <Route path="/reset-password" element={<UnprotectedRoute><ResetPassword /></UnprotectedRoute>} />
+        <Route path="/affiliate/sign-up-fixed" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
 
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
-        <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
-        <Route path="/affiliate/sign-up-old" element={<UnprotectedRoute><AffiliateSign /></UnprotectedRoute>} />
+        <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSign /></UnprotectedRoute>} />
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
@@ -105,13 +102,7 @@ const App = () => {
         <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
 
-        {/* Dashboard Routes - Role-based */}
-        <Route path="/dashboard" element={<ProtectedRoute redirectToDashboard><Dashboard /></ProtectedRoute>} />
-        <Route path="/dashboard/member" element={<ProtectedRoute allowedRoles={['member']}><Dashboard /></ProtectedRoute>} />
-        <Route path="/dashboard/reseller" element={<ProtectedRoute allowedRoles={['reseller', 'affiliate']}><ResellerDashboard /></ProtectedRoute>} />
-        <Route path="/dashboard/pro" element={<ProtectedRoute allowedRoles={['pro_reseller']}><ProDashboard /></ProtectedRoute>} />
-        
-        {/* Other Protected Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />

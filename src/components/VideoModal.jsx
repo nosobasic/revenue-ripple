@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ConfettiAnimation from './ConfettiAnimation';
 
 const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, buttonLoading }) => {
+  const [showConfetti, setShowConfetti] = useState(false);
+
   if (!isOpen) return null;
 
   let embedUrl = '';
@@ -9,6 +12,18 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
   } else if (video?.url) {
     embedUrl = video.url;
   }
+
+  const handleMarkComplete = async () => {
+    if (onMarkComplete) {
+      await onMarkComplete();
+      // Trigger confetti animation
+      setShowConfetti(true);
+    }
+  };
+
+  const handleConfettiComplete = () => {
+    setShowConfetti(false);
+  };
 
   return (
     <div style={{
@@ -23,6 +38,12 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
       justifyContent: 'center',
       zIndex: 1000
     }}>
+      {/* Confetti Animation */}
+      <ConfettiAnimation 
+        isActive={showConfetti} 
+        onComplete={handleConfettiComplete}
+      />
+      
       <div style={{
         backgroundColor: 'white',
         padding: '2rem',
@@ -69,7 +90,7 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
         </div>
         <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
           <button
-            onClick={onMarkComplete}
+            onClick={handleMarkComplete}
             disabled={completed || buttonLoading}
             style={{
               background: completed ? '#ccc' : '#2563eb',

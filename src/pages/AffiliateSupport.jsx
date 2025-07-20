@@ -15,7 +15,7 @@ const AffiliateSupport = () => {
         },
         {
           question: 'What commission rates can I expect?',
-          answer: 'Commission rates vary by product and performance tier. Standard affiliate rates start at 20% and can increase up to 40% based on your sales volume and performance. Resellers earn 100% commission on every other sale, while Pro Resellers earn 100% on every sale.'
+          answer: 'Affiliates earn 50% commission on every member they refer. Resellers earn 100% commission on every member they refer. Pro Resellers ($97/month) earn commission on every reseller and member they refer, plus get advanced marketing assets and exclusive materials.'
         },
         {
           question: 'How do I get my unique affiliate links?',
@@ -23,7 +23,7 @@ const AffiliateSupport = () => {
         },
         {
           question: 'What\'s the difference between Affiliate, Reseller, and Pro Reseller?',
-          answer: 'Affiliates earn commissions on product sales. Resellers get additional marketing materials and earn 100% commission on every other membership sale. Pro Resellers ($97/month) earn 100% commission on ALL sales and get advanced marketing assets.'
+          answer: 'Affiliates earn 50% commission on every member they refer. Resellers earn 100% commission on every member they refer and get additional marketing materials. Pro Resellers ($97/month) earn commission on every reseller and member they refer, plus get advanced marketing assets and exclusive materials.'
         }
       ]
     },
@@ -111,11 +111,11 @@ const AffiliateSupport = () => {
         },
         {
           question: 'How is the Reseller Program different from regular membership?',
-          answer: 'Resellers get everything in the membership PLUS the right to resell the membership for 100% commission on every other sale, advanced marketing materials, reseller training, and higher-tier support.'
+          answer: 'Resellers get everything in the membership PLUS the right to resell the membership for 100% commission on every member they refer, advanced marketing materials, reseller training, and higher-tier support.'
         },
         {
           question: 'What makes the Pro Reseller worth the upgrade?',
-          answer: 'Pro Resellers earn 100% commission on EVERY sale (not every other), get exclusive premium marketing materials, advanced training modules, priority support, and can promote both membership and reseller programs.'
+          answer: 'Pro Resellers earn commission on every reseller and member they refer, get exclusive premium marketing materials, advanced training modules, priority support, and can promote both membership and reseller programs.'
         }
       ]
     },

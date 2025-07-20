@@ -11,22 +11,12 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const { login, resetPassword } = useAuth();
 
   // Get the intended redirect path, default to dashboard
   const from = location.state?.from?.pathname || '/dashboard';
-  
-  // Check for success message from password reset
-  useEffect(() => {
-    if (location.state?.message) {
-      setSuccessMessage(location.state.message);
-      // Clear message after 5 seconds
-      setTimeout(() => setSuccessMessage(''), 5000);
-    }
-  }, [location.state]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,18 +39,17 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    if (!email.trim()) {
-      setError('Please enter your email address');
-      setLoading(false);
-      return;
-    }
-
     try {
       await resetPassword(email);
-      setSuccessMessage('Password reset instructions have been sent to your email address');
-      setShowForgotPassword(false);
+      // Redirect to reset password page instead of showing alert
+      navigate('/reset-password', { 
+        state: { 
+          message: 'Check your email for password reset instructions',
+          email: email 
+        } 
+      });
     } catch (error) {
-      setError(error.message || 'Failed to send password reset email. Please try again.');
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -124,18 +113,6 @@ export default function Login() {
           </form>
         ) : (
           <form className="auth-form" onSubmit={handleLogin}>
-            {successMessage && (
-              <div className="success-message" style={{ 
-                backgroundColor: '#d4edda', 
-                color: '#155724', 
-                padding: '0.75rem', 
-                borderRadius: '4px', 
-                marginBottom: '1rem',
-                border: '1px solid #c3e6cb'
-              }}>
-                {successMessage}
-              </div>
-            )}
             {error && (
               <div className="error-message">
                 {error}
