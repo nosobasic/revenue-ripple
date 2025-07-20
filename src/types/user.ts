@@ -6,11 +6,29 @@ export interface User {
   status: 'active' | 'inactive' | 'suspended';
   plan?: string;
   username?: string;
-  commission_rate?: number;
+  commission_rate?: number; // 0.5 = 50%, stored as decimal
   phone?: string;
   company?: string;
   bio?: string;
   created_at?: string;
+}
+
+export interface UserProgress {
+  id?: string;
+  user_id: string;
+  course_id: string;
+  percent_done: number;
+  status?: string;
+  last_updated?: string;
+}
+
+export interface UserModuleCompletion {
+  id?: string;
+  user_id: string;
+  course_id: string;
+  module_id: string;
+  completed: boolean;
+  completed_at?: string;
 }
 
 export interface Commission {

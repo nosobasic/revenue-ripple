@@ -96,7 +96,7 @@ export class UserService {
           role: userData.role || 'member',
           status: userData.status || 'active',
           plan: userData.role || 'member',
-          commission_rate: userData.role === 'affiliate' ? 50 : userData.role === 'reseller' ? 100 : userData.role === 'pro_reseller' ? 100 : 0
+          commission_rate: userData.role === 'affiliate' ? 0.5 : userData.role === 'reseller' ? 1.0 : userData.role === 'pro_reseller' ? 1.0 : 0
         })
         .select()
         .single();
@@ -117,7 +117,7 @@ export class UserService {
       const updateData: any = {
         role,
         plan: role,
-        commission_rate: role === 'affiliate' ? 50 : role === 'reseller' ? 100 : role === 'pro_reseller' ? 100 : 0
+        commission_rate: role === 'affiliate' ? 0.5 : role === 'reseller' ? 1.0 : role === 'pro_reseller' ? 1.0 : 0
       };
 
       if (status) {

@@ -88,16 +88,32 @@ export class AffiliateUtils {
   }
 
   /**
-   * Get commission rate based on user role
+   * Get commission rate based on user role (returns as percentage for display)
    */
   static getCommissionRate(userRole: string): number {
     switch (userRole) {
       case 'affiliate':
-        return 50;
+        return 50; // 50%
       case 'reseller':
-        return 100;
+        return 100; // 100%
       case 'pro_reseller':
-        return 100; // Plus additional benefits
+        return 100; // 100% plus additional benefits
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * Get commission rate as decimal for database storage
+   */
+  static getCommissionRateDecimal(userRole: string): number {
+    switch (userRole) {
+      case 'affiliate':
+        return 0.5; // 50%
+      case 'reseller':
+        return 1.0; // 100%
+      case 'pro_reseller':
+        return 1.0; // 100%
       default:
         return 0;
     }

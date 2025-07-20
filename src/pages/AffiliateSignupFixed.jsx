@@ -59,7 +59,7 @@ export default function AffiliateSignupFixed() {
           plan: 'affiliate',
           contact_email: formData.contactEmail,
           paypal_email: formData.paypal,
-          commission_rate: 50, // Default commission rate for affiliates
+          commission_rate: 0.5, // Default commission rate for affiliates (50%)
           updated_at: new Date().toISOString()
         })
         .eq('id', authUser.id);

@@ -1,22 +1,22 @@
 import { supabase } from '../lib/supabaseClient';
-import { CourseProgress } from '../types/user';
+import { UserProgress, UserModuleCompletion } from '../types/user';
 
 export class CourseService {
   /**
    * Get user's course progress
    */
-  static async getUserProgress(userId: string, courseSlug?: string): Promise<CourseProgress[]> {
+  static async getUserProgress(userId: string, courseId?: string): Promise<UserProgress[]> {
     try {
       let query = supabase
-        .from('course_progress')
+        .from('user_progress')
         .select('*')
         .eq('user_id', userId);
 
-      if (courseSlug) {
-        query = query.eq('course_slug', courseSlug);
+      if (courseId) {
+        query = query.eq('course_id', courseId);
       }
 
-      const { data, error } = await query.order('last_accessed', { ascending: false });
+      const { data, error } = await query.order('last_updated', { ascending: false });
 
       if (error) throw error;
       return data || [];
@@ -27,48 +27,96 @@ export class CourseService {
   }
 
   /**
-   * Update course progress
+   * Update module completion
    */
-  static async updateProgress(
+  static async updateModuleCompletion(
     userId: string,
-    courseSlug: string,
+    courseId: string,
     moduleId: string,
-    completed: boolean = false
+    completed: boolean = true
   ): Promise<void> {
     try {
-      // Get existing progress
-      const { data: existingProgress } = await supabase
-        .from('course_progress')
+      // Check if module completion record exists
+      const { data: existingCompletion } = await supabase
+        .from('user_module_completion')
         .select('*')
         .eq('user_id', userId)
-        .eq('course_slug', courseSlug)
+        .eq('course_id', courseId)
+        .eq('module_id', moduleId)
         .single();
 
-      let completedModules: string[] = existingProgress?.completed_modules || [];
-      
-      if (completed && !completedModules.includes(moduleId)) {
-        completedModules.push(moduleId);
-      } else if (!completed && completedModules.includes(moduleId)) {
-        completedModules = completedModules.filter(id => id !== moduleId);
+      if (existingCompletion) {
+        // Update existing completion
+        const { error } = await supabase
+          .from('user_module_completion')
+          .update({
+            completed,
+            completed_at: completed ? new Date().toISOString() : null
+          })
+          .eq('id', existingCompletion.id);
+
+        if (error) throw error;
+      } else if (completed) {
+        // Create new completion record
+        const { error } = await supabase
+          .from('user_module_completion')
+          .insert({
+            user_id: userId,
+            course_id: courseId,
+            module_id: moduleId,
+            completed: true,
+            completed_at: new Date().toISOString()
+          });
+
+        if (error) throw error;
       }
 
-      // Calculate progress percentage (you may need to adjust this based on total modules)
-      const progressPercentage = (completedModules.length / 10) * 100; // Assuming 10 modules per course
+      // Update overall course progress
+      await this.updateCourseProgress(userId, courseId);
+    } catch (error) {
+      console.error('Error updating module completion:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update overall course progress
+   */
+  static async updateCourseProgress(userId: string, courseId: string): Promise<void> {
+    try {
+      // Get all completed modules for this course
+      const { data: completedModules } = await supabase
+        .from('user_module_completion')
+        .select('module_id')
+        .eq('user_id', userId)
+        .eq('course_id', courseId)
+        .eq('completed', true);
+
+      // For now, assume 10 modules per course - you can adjust this
+      const totalModules = 10;
+      const completedCount = completedModules?.length || 0;
+      const percentDone = Math.min((completedCount / totalModules) * 100, 100);
+
+      // Check if progress record exists
+      const { data: existingProgress } = await supabase
+        .from('user_progress')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('course_id', courseId)
+        .single();
 
       const progressData = {
         user_id: userId,
-        course_slug: courseSlug,
-        module_id: moduleId,
-        completed_modules: completedModules,
-        progress_percentage: Math.min(progressPercentage, 100),
-        last_accessed: new Date().toISOString(),
-        completed_at: progressPercentage >= 100 ? new Date().toISOString() : null
+        course_id: courseId,
+        percent_done: Math.round(percentDone),
+        status: percentDone >= 100 ? 'completed' : 'in_progress',
+        last_updated: new Date().toISOString()
       };
 
       if (existingProgress) {
         // Update existing progress
         const { error } = await supabase
-          .from('course_progress')
+          .from('user_progress')
           .update(progressData)
           .eq('id', existingProgress.id);
 
@@ -76,7 +124,7 @@ export class CourseService {
       } else {
         // Create new progress record
         const { error } = await supabase
-          .from('course_progress')
+          .from('user_progress')
           .insert(progressData);
 
         if (error) throw error;
@@ -90,31 +138,35 @@ export class CourseService {
   /**
    * Get course completion status
    */
-  static async getCourseCompletion(userId: string, courseSlug: string): Promise<{
+  static async getCourseCompletion(userId: string, courseId: string): Promise<{
     isCompleted: boolean;
     progressPercentage: number;
     completedModules: string[];
   }> {
     try {
-      const { data } = await supabase
-        .from('course_progress')
+      // Get overall progress
+      const { data: progressData } = await supabase
+        .from('user_progress')
         .select('*')
         .eq('user_id', userId)
-        .eq('course_slug', courseSlug)
+        .eq('course_id', courseId)
         .single();
 
-      if (!data) {
-        return {
-          isCompleted: false,
-          progressPercentage: 0,
-          completedModules: []
-        };
-      }
+      // Get completed modules
+      const { data: completedModules } = await supabase
+        .from('user_module_completion')
+        .select('module_id')
+        .eq('user_id', userId)
+        .eq('course_id', courseId)
+        .eq('completed', true);
+
+      const progressPercentage = progressData?.percent_done || 0;
+      const moduleIds = completedModules?.map(m => m.module_id) || [];
 
       return {
-        isCompleted: data.progress_percentage >= 100,
-        progressPercentage: data.progress_percentage || 0,
-        completedModules: data.completed_modules || []
+        isCompleted: progressPercentage >= 100,
+        progressPercentage,
+        completedModules: moduleIds
       };
     } catch (error) {
       console.error('Error getting course completion:', error);
@@ -129,12 +181,33 @@ export class CourseService {
   /**
    * Mark module as accessed (for tracking)
    */
-  static async markModuleAccessed(userId: string, courseSlug: string, moduleId: string): Promise<void> {
+  static async markModuleAccessed(userId: string, courseId: string, moduleId: string): Promise<void> {
     try {
-      // Update last accessed time and ensure progress record exists
-      await this.updateProgress(userId, courseSlug, moduleId, false);
+      // Update last accessed time by updating course progress
+      await this.updateCourseProgress(userId, courseId);
     } catch (error) {
       console.error('Error marking module as accessed:', error);
+    }
+  }
+
+  /**
+   * Get user's completed modules for a course
+   */
+  static async getCompletedModules(userId: string, courseId: string): Promise<UserModuleCompletion[]> {
+    try {
+      const { data, error } = await supabase
+        .from('user_module_completion')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('course_id', courseId)
+        .eq('completed', true)
+        .order('completed_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching completed modules:', error);
+      return [];
     }
   }
 }
