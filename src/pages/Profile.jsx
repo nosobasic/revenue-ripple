@@ -9,12 +9,16 @@ const Profile = () => {
   const { user, updateUserProfile } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     company: '',
-    role: '',
     bio: ''
   });
 
@@ -22,10 +26,11 @@ const Profile = () => {
     if (user) {
       setFormData({
         name: user.name || '',
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
         email: user.email || '',
         phone: user.phone || '',
         company: user.company || '',
-        role: user.role || '',
         bio: user.bio || ''
       });
     }
@@ -41,11 +46,22 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    
     try {
       await updateUserProfile(formData);
       setIsEditing(false);
+      setSuccess('Profile updated successfully!');
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error updating profile:', error);
+      setError(error.message || 'Failed to update profile. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,10 +163,27 @@ const Profile = () => {
               <h2>Personal Information</h2>
             </div>
             <div className="section-content">
+              {error && (
+                <div className="error-message" style={{ marginBottom: '1rem' }}>
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="success-message" style={{ 
+                  backgroundColor: '#d4edda', 
+                  color: '#155724', 
+                  padding: '0.75rem', 
+                  borderRadius: '4px', 
+                  marginBottom: '1rem',
+                  border: '1px solid #c3e6cb'
+                }}>
+                  {success}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="course-item">
                   <div className="course-details">
-                    {/* Name */}
+                    {/* Full Name */}
                     <div className="form-group">
                       <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         <FaUser style={{ marginRight: '0.5rem' }} />
@@ -160,6 +193,54 @@ const Profile = () => {
                         type="text"
                         name="name"
                         value={formData.name}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        style={{
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* First Name */}
+                    <div className="form-group">
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-input"
+                        style={{
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
+                          padding: '0.75rem',
+                          borderRadius: '6px',
+                          width: '100%',
+                          marginBottom: '1rem'
+                        }}
+                      />
+                    </div>
+
+                    {/* Last Name */}
+                    <div className="form-group">
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        name="last_name"
+                        value={formData.last_name}
                         onChange={handleChange}
                         disabled={!isEditing}
                         className="form-input"
