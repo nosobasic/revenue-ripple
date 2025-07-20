@@ -154,39 +154,173 @@ def stripe_webhook():
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
+        print(f"❌ Webhook signature verification failed: {e}")
+        return abort(400)
+    except Exception as e:
+        print(f"❌ Webhook error: {e}")
         return abort(400)
 
+    # Log webhook event
+    log_webhook_event(event)
+
     if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        referrer_username = session['metadata'].get('referrer_username')
-        customer_email = session['customer_details']['email']
-        amount_total = session['amount_total'] / 100
+        try:
+            session = event['data']['object']
+            referrer_username = session['metadata'].get('referrer_username', 'none')
+            customer_email = session['customer_details']['email']
+            amount_total = session['amount_total'] / 100
+            product = session['metadata'].get('product')
 
-        product = session['metadata'].get('product')
+            print(f"✅ Processing payment: {product} by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
 
-        if product == "digital_marketing_domination_book":
-            print(f"Tripwire bought by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
-            log_tripwire_purchase_to_supabase(customer_email, amount_total, referrer_username)
-            add_contact_to_getresponse(customer_email, "tripwire")
-            if referrer_username and referrer_username != 'none':
-                log_commission(referrer_username, customer_email, "tripwire", amount_total)
+            if product == "digital_marketing_domination_book":
+                process_tripwire_purchase(customer_email, amount_total, referrer_username)
+                
+            elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
+                process_subscription_purchase(customer_email, amount_total, referrer_username, product)
+            
+            else:
+                print(f"⚠️ Unknown product type: {product}")
 
-        elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
-            tier = product.replace("_subscription", "")
-            print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
-            log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
-            add_contact_to_getresponse(customer_email, tier)
-            if referrer_username and referrer_username != 'none':
-                log_commission(referrer_username, customer_email, tier, amount_total)
-            if product == "membership_subscription":
-                set_user_role(customer_email, "member")
-            elif product == "reseller_subscription":
-                set_user_role(customer_email, "reseller")
-            elif product == "pro_reseller_subscription":
-                set_user_role(customer_email, "pro_reseller")
+        except Exception as e:
+            print(f"❌ Error processing webhook: {e}")
+            # Don't return error to Stripe - we've received the webhook
+            # Log the error for manual review
+            log_webhook_error(event, str(e))
+
+    elif event['type'] == 'invoice.payment_succeeded':
+        # Handle recurring subscription payments
+        try:
+            invoice = event['data']['object']
+            customer_email = invoice['customer_email']
+            amount_total = invoice['amount_paid'] / 100
+            print(f"✅ Recurring payment successful: {customer_email} — Amount: ${amount_total}")
+            
+            # Update subscription status if needed
+            update_subscription_status(customer_email, 'active')
+            
+        except Exception as e:
+            print(f"❌ Error processing recurring payment: {e}")
+            log_webhook_error(event, str(e))
+
+    elif event['type'] == 'invoice.payment_failed':
+        # Handle failed payments
+        try:
+            invoice = event['data']['object']
+            customer_email = invoice['customer_email']
+            print(f"⚠️ Payment failed for: {customer_email}")
+            
+            # Update subscription status
+            update_subscription_status(customer_email, 'past_due')
+            
+        except Exception as e:
+            print(f"❌ Error processing failed payment: {e}")
+            log_webhook_error(event, str(e))
 
     return jsonify({'status': 'success'})
+
+# Helper functions for webhook processing
+def log_webhook_event(event):
+    """Log webhook event to database for debugging"""
+    try:
+        supabase.table("webhook_logs").insert({
+            "source": "stripe",
+            "event_type": event['type'],
+            "event_data": event,
+            "processed": False,
+            "created_at": "now()"
+        }).execute()
+    except Exception as e:
+        print(f"❌ Failed to log webhook event: {e}")
+
+def log_webhook_error(event, error_message):
+    """Log webhook processing errors"""
+    try:
+        supabase.table("webhook_logs").insert({
+            "source": "stripe",
+            "event_type": event['type'],
+            "event_data": event,
+            "processed": False,
+            "error_message": error_message,
+            "created_at": "now()"
+        }).execute()
+    except Exception as e:
+        print(f"❌ Failed to log webhook error: {e}")
+
+def process_tripwire_purchase(customer_email, amount_total, referrer_username):
+    """Process tripwire purchase with better error handling"""
+    try:
+        print(f"Tripwire bought by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+        
+        # Log purchase
+        log_tripwire_purchase_to_supabase(customer_email, amount_total, referrer_username)
+        
+        # Add to email list
+        add_contact_to_getresponse(customer_email, "tripwire")
+        
+        # Log commission if there's a referrer
+        if referrer_username and referrer_username != 'none':
+            log_commission(referrer_username, customer_email, "tripwire", amount_total)
+            
+        # Mark webhook as processed
+        update_webhook_processed(customer_email, "tripwire_purchase")
+        
+    except Exception as e:
+        print(f"❌ Error processing tripwire purchase: {e}")
+        raise e
+
+def process_subscription_purchase(customer_email, amount_total, referrer_username, product):
+    """Process subscription purchase with role updates and error handling"""
+    try:
+        tier = product.replace("_subscription", "")
+        print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+        
+        # Log subscription
+        log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
+        
+        # Add to email list
+        add_contact_to_getresponse(customer_email, tier)
+        
+        # Log commission if there's a referrer
+        if referrer_username and referrer_username != 'none':
+            log_commission(referrer_username, customer_email, tier, amount_total)
+        
+        # Update user role based on subscription type
+        if product == "membership_subscription":
+            set_user_role(customer_email, "member")
+        elif product == "reseller_subscription":
+            set_user_role(customer_email, "reseller")
+        elif product == "pro_reseller_subscription":
+            set_user_role(customer_email, "pro_reseller")
+            
+        # Mark webhook as processed
+        update_webhook_processed(customer_email, f"{tier}_subscription")
+        
+    except Exception as e:
+        print(f"❌ Error processing subscription purchase: {e}")
+        raise e
+
+def update_subscription_status(customer_email, status):
+    """Update subscription status in database"""
+    try:
+        supabase.table("subscriptions").update({
+            "status": status,
+            "updated_at": "now()"
+        }).eq("email", customer_email).execute()
+        print(f"✅ Updated subscription status for {customer_email}: {status}")
+    except Exception as e:
+        print(f"❌ Failed to update subscription status: {e}")
+
+def update_webhook_processed(customer_email, event_type):
+    """Mark webhook as successfully processed"""
+    try:
+        supabase.table("webhook_logs").update({
+            "processed": True,
+            "processed_at": "now()"
+        }).eq("event_data->customer_details->email", customer_email).eq("event_type", "checkout.session.completed").execute()
+    except Exception as e:
+        print(f"❌ Failed to mark webhook as processed: {e}")
 
 def add_contact_to_getresponse(email, tag):
     api_key = os.getenv("GETRESPONSE_API_KEY")

@@ -10,7 +10,9 @@ import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
 import AffiliateSign from './pages/AffiliateSign';
+import AffiliateSignupFixed from './pages/AffiliateSignupFixed';
 import AffiliateLogin from './pages/AffiliateLogin';
+import ResetPassword from './pages/ResetPassword';
 import AffiliateCentre from './pages/AffiliateCentre';
 import AffiliateTools from './pages/AffiliateTools';
 import AffiliateTraining from './pages/AffiliateTraining';
@@ -83,11 +85,13 @@ const App = () => {
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
 
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
-        <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSign /></UnprotectedRoute>} />
+        <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
+        <Route path="/affiliate/sign-up-old" element={<UnprotectedRoute><AffiliateSign /></UnprotectedRoute>} />
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
