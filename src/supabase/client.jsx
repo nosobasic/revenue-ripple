@@ -3,14 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Provide fallback values for development
+const fallbackUrl = 'https://your-project.supabase.co';
+const fallbackKey = 'your-anon-key';
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables:', {
-    VITE_SUPABASE_URL: supabaseUrl,
-    VITE_SUPABASE_ANON_KEY: supabaseAnonKey ? '***' : undefined
-  });
+  console.warn('Missing Supabase environment variables. Using fallback values for development.');
+  console.warn('Please create a .env.local file with your actual Supabase credentials.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl || fallbackUrl, supabaseAnonKey || fallbackKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,

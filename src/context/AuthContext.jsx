@@ -13,39 +13,58 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("revenue-ripple-auth-token");
+    const initializeAuth = async () => {
+      try {
+        const token = localStorage.getItem("revenue-ripple-auth-token");
 
-    if (!token) {
-      supabase.auth.signOut().finally(() => {
+        if (!token) {
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+          return;
+        }
+
+        setSession(session);
+        if (session?.user) {
+          await fetchUserData(session.user);
+        } else {
+          setLoading(false);
+        }
+
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange((event, session) => {
+          console.log('Auth state changed:', event, session?.user?.email);
+          setSession(session);
+          if (session?.user) {
+            fetchUserData(session.user);
+          } else {
+            setUser(null);
+          }
+          setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Error initializing auth:', error);
         setUser(null);
         setSession(null);
         setLoading(false);
-      });
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserData(session.user);
-      } else {
-        setLoading(false);
       }
-    });
+    };
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserData(session.user);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    initializeAuth();
   }, []);
 
   const fetchUserData = async (authUser) => {
