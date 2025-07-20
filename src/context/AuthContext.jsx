@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "../supabase/client";
+import { supabase } from "../lib/supabaseClient";
+import { AuthService } from "../services/authService";
+import { UserService } from "../services/userService";
 
 const AuthContext = createContext();
 
@@ -69,37 +71,8 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate"
-        )
-        .eq("id", authUser.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user data:", error);
-        // If user doesn't exist in users table, create basic user object
-        setUser({
-          ...authUser,
-          role: 'member', // default role
-          status: 'active'
-        });
-        return;
-      }
-
-      if (userData) {
-        setUser({
-          ...authUser,
-          ...userData,
-        });
-      } else {
-        setUser({
-          ...authUser,
-          role: 'member',
-          status: 'active'
-        });
-      }
+      const userData = await AuthService.fetchUserData(authUser);
+      setUser(userData);
     } catch (error) {
       console.error("Error in fetchUserData:", error);
       setUser({
@@ -110,40 +83,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  async function signup(email, password, name) {
+  async function signup(email, password, firstName, lastName) {
     try {
       setLoading(true);
-      
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (authError) throw authError;
-
-      // Create a user document in Supabase
-      if (authData.user) {
-        const { error: userError } = await supabase.from("users").insert([
-          {
-            id: authData.user.id,
-            name,
-            email,
-            role: "member",
-            status: "active",
-            created_at: new Date().toISOString(),
-            phone: "",
-            company: "",
-            bio: "",
-          },
-        ]);
-
-        if (userError) {
-          console.error("Error creating user record:", userError);
-        }
-      }
-
-      return authData.user;
+      const authData = await AuthService.signup(email, password, firstName, lastName);
+      return authData;
     } catch (error) {
+      console.error('Signup error:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -153,19 +99,9 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-      
-      const { data: authData, error: authError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-      if (authError) throw authError;
-      if (!authData.user)
-        throw new Error("No user returned from signInWithPassword");
-
-      await fetchUserData(authData.user);
-      return authData.user;
+      const authData = await AuthService.login(email, password);
+      await fetchUserData(authData);
+      return authData;
     } catch (error) {
       console.error("login: error", error);
       throw error;
@@ -175,13 +111,9 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
-    localStorage.removeItem("revenue-ripple-auth-token");
     try {
       setLoading(true);
-      
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
+      await AuthService.logout();
       setUser(null);
       setSession(null);
     } catch (error) {
@@ -196,26 +128,13 @@ export function AuthProvider({ children }) {
     try {
       if (!user) throw new Error("No user logged in");
 
-      // Update the user's data in Supabase
-      const { error } = await supabase
-        .from("users")
-        .update({
-          name: profileData.name,
-          email: profileData.email,
-          phone: profileData.phone,
-          company: profileData.company,
-          role: profileData.role,
-          bio: profileData.bio,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", user.id);
-
-      if (error) throw error;
+      await UserService.updateProfile(user.id, profileData);
 
       // Update the local user state
       setUser((prev) => ({
         ...prev,
         ...profileData,
+        updated_at: new Date().toISOString(),
       }));
 
       return true;
@@ -227,11 +146,17 @@ export function AuthProvider({ children }) {
 
   async function resetPassword(email) {
     try {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login`,
-      });
-      if (error) throw error;
+      const data = await AuthService.resetPassword(email);
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function updatePassword(newPassword) {
+    try {
+      await AuthService.updatePassword(newPassword);
+      return true;
     } catch (error) {
       throw error;
     }
@@ -246,6 +171,7 @@ export function AuthProvider({ children }) {
     logout,
     updateUserProfile,
     resetPassword,
+    updatePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
