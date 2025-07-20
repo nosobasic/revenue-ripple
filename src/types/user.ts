@@ -6,7 +6,7 @@ export interface User {
   status: 'active' | 'inactive' | 'suspended';
   plan?: string;
   username?: string;
-  commision_rate?: number; // Note: matches your DB column name (missing 's')
+  commission_rate?: number;
   phone?: string;
   company?: string;
   bio?: string;

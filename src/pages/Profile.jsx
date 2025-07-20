@@ -204,53 +204,7 @@ const Profile = () => {
                       />
                     </div>
 
-                    {/* First Name */}
-                    <div className="form-group">
-                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
-                        First Name
-                      </label>
-                      <input
-                        type="text"
-                        name="first_name"
-                        value={formData.first_name}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        style={{
-                          background: isEditing ? '#ffffff' : '#f9fafb',
-                          border: '1px solid #d1d5db',
-                          color: '#1f2937',
-                          padding: '0.75rem',
-                          borderRadius: '6px',
-                          width: '100%',
-                          marginBottom: '1rem'
-                        }}
-                      />
-                    </div>
 
-                    {/* Last Name */}
-                    <div className="form-group">
-                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
-                        Last Name
-                      </label>
-                      <input
-                        type="text"
-                        name="last_name"
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        style={{
-                          background: isEditing ? '#ffffff' : '#f9fafb',
-                          border: '1px solid #d1d5db',
-                          color: '#1f2937',
-                          padding: '0.75rem',
-                          borderRadius: '6px',
-                          width: '100%',
-                          marginBottom: '1rem'
-                        }}
-                      />
-                    </div>
 
                     {/* Email */}
                     <div className="form-group">

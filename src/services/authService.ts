@@ -24,7 +24,7 @@ export class AuthService {
             role: "member",
             status: "active",
             plan: "member",
-            commision_rate: 50, // Default commission rate
+            commission_rate: 50, // Default commission rate
             phone: "",
             company: "",
             bio: "",

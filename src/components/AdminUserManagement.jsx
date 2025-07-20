@@ -13,8 +13,6 @@ const AdminUserManagement = () => {
     email: '',
     password: '',
     name: '',
-    first_name: '',
-    last_name: '',
     role: 'member',
     status: 'active'
   });
@@ -49,8 +47,6 @@ const AdminUserManagement = () => {
       email: '',
       password: '',
       name: '',
-      first_name: '',
-      last_name: '',
       role: 'member',
       status: 'active'
     });
@@ -69,15 +65,10 @@ const AdminUserManagement = () => {
         throw new Error('Email and password are required');
       }
 
-      // Create full name from first/last name if provided
-      const fullName = formData.first_name && formData.last_name 
-        ? `${formData.first_name} ${formData.last_name}`
-        : formData.name;
-
       const newUser = await UserService.createUser({
         email: formData.email,
         password: formData.password,
-        name: fullName,
+        name: formData.name,
         role: formData.role,
         status: formData.status
       });
@@ -207,35 +198,8 @@ const AdminUserManagement = () => {
           }}>
             <h3>Add New User</h3>
             <form onSubmit={handleAddUser}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div className="form-group">
-                  <label htmlFor="first_name">First Name</label>
-                  <input
-                    type="text"
-                    id="first_name"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    placeholder="First Name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="last_name">Last Name</label>
-                  <input
-                    type="text"
-                    id="last_name"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    placeholder="Last Name"
-                  />
-                </div>
-              </div>
-
               <div className="form-group">
-                <label htmlFor="name">Full Name (alternative)</label>
+                <label htmlFor="name">Full Name</label>
                 <input
                   type="text"
                   id="name"
@@ -243,7 +207,7 @@ const AdminUserManagement = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   className="form-input"
-                  placeholder="Full Name (if not using first/last name)"
+                  placeholder="Full Name"
                 />
               </div>
 
@@ -348,7 +312,7 @@ const AdminUserManagement = () => {
             {users.map((user) => (
               <tr key={user.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                 <td style={{ padding: '0.75rem' }}>
-                  {user.name || `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'N/A'}
+                  {user.name || 'N/A'}
                 </td>
                 <td style={{ padding: '0.75rem' }}>{user.email}</td>
                 <td style={{ padding: '0.75rem' }}>
