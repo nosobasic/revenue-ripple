@@ -2,20 +2,15 @@ export interface User {
   id: string;
   email: string;
   name?: string;
-  first_name?: string;
-  last_name?: string;
   role: 'admin' | 'member' | 'affiliate' | 'reseller' | 'pro_reseller';
   status: 'active' | 'inactive' | 'suspended';
   plan?: string;
   username?: string;
-  commission_rate?: number;
+  commision_rate?: number; // Note: matches your DB column name (missing 's')
   phone?: string;
   company?: string;
   bio?: string;
-  contact_email?: string;
-  paypal_email?: string;
   created_at?: string;
-  updated_at?: string;
 }
 
 export interface Commission {

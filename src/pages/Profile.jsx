@@ -14,8 +14,6 @@ const Profile = () => {
   const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     name: '',
-    first_name: '',
-    last_name: '',
     email: '',
     phone: '',
     company: '',
@@ -26,8 +24,6 @@ const Profile = () => {
     if (user) {
       setFormData({
         name: user.name || '',
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
         email: user.email || '',
         phone: user.phone || '',
         company: user.company || '',

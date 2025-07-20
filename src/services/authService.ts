@@ -20,12 +20,11 @@ export class AuthService {
           {
             id: authData.user.id,
             name: firstName && lastName ? `${firstName} ${lastName}` : firstName || '',
-            first_name: firstName || '',
-            last_name: lastName || '',
             email,
             role: "member",
             status: "active",
-            created_at: new Date().toISOString(),
+            plan: "member",
+            commision_rate: 50, // Default commission rate
             phone: "",
             company: "",
             bio: "",

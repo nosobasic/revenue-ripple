@@ -11,13 +11,10 @@ export class UserService {
         .from("users")
         .update({
           name: profileData.name,
-          first_name: profileData.first_name,
-          last_name: profileData.last_name,
           email: profileData.email,
           phone: profileData.phone,
           company: profileData.company,
           bio: profileData.bio,
-          updated_at: new Date().toISOString(),
         })
         .eq("id", userId);
 
@@ -98,7 +95,8 @@ export class UserService {
           name: userData.name || '',
           role: userData.role || 'member',
           status: userData.status || 'active',
-          created_at: new Date().toISOString()
+          plan: userData.role || 'member',
+          commision_rate: userData.role === 'affiliate' ? 50 : userData.role === 'reseller' ? 100 : userData.role === 'pro_reseller' ? 100 : 0
         })
         .select()
         .single();
@@ -119,7 +117,7 @@ export class UserService {
       const updateData: any = {
         role,
         plan: role,
-        updated_at: new Date().toISOString()
+        commision_rate: role === 'affiliate' ? 50 : role === 'reseller' ? 100 : role === 'pro_reseller' ? 100 : 0
       };
 
       if (status) {
