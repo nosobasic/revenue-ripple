@@ -85,7 +85,7 @@ const App = () => {
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
-        <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
+        <Route path="/affiliate-login" element={<AffiliateLogin />} />
         <Route path="/reset-password" element={<UnprotectedRoute><ResetPassword /></UnprotectedRoute>} />
         <Route path="/affiliate/sign-up-fixed" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
 

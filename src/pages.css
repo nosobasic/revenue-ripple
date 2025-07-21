@@ -2130,3 +2130,12 @@ button:hover {
     padding: 1rem;
   }
 }
+
+/* Chevron rotation for dashboard sections */
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
+}
