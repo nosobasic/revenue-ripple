@@ -91,7 +91,7 @@ const App = () => {
 
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
-        <Route path="/affiliate/sign-up" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
+        <Route path="/affiliate/sign-up" element={<AffiliateSignupFixed />} />
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
