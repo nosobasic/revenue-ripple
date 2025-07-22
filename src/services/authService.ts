@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabaseClient';
 import { User } from '../types/user';
-import { UserService } from './userService';
 
 export class AuthService {
   /**
@@ -138,17 +137,6 @@ export class AuthService {
   }
 
   /**
-   * Get the current authenticated user with full profile
-   */
-  static async getCurrentUser() {
-    // Get the current session/user from Supabase Auth
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data?.user) return null;
-    // Fetch the full user profile from the users table
-    return await UserService.getUserById(data.user.id);
-  }
-
-  /**
    * Fetch user data from users table
    */
   static async fetchUserData(authUser: any): Promise<User | null> {
@@ -189,14 +177,5 @@ export class AuthService {
         status: 'active' as const
       };
     }
-  }
-
-  /**
-   * Update user profile
-   */
-  static async updateProfile(userId: string, profileData: Partial<User>): Promise<any> {
-    await UserService.updateProfile(userId, profileData);
-    // Fetch and return the updated user
-    return await UserService.getUserById(userId);
   }
 }
