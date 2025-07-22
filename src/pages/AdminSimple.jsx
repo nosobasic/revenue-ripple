@@ -12,6 +12,11 @@ const AdminSimple = () => {
   const [error, setError] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
   const initializationRef = useRef(false);
+  const [editUserId, setEditUserId] = useState(null);
+  const [editRole, setEditRole] = useState('member');
+  const [editStatus, setEditStatus] = useState('active');
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
 
   console.log('AdminSimple: User:', user);
   console.log('AdminSimple: AuthLoading:', authLoading);
@@ -149,6 +154,32 @@ const AdminSimple = () => {
     console.log('AdminSimple: Manual refresh triggered');
     fetchDashboardData();
     fetchUsers();
+  };
+
+  // Edit user role/status
+  const handleEditUser = (user) => {
+    setEditUserId(user.id);
+    setEditRole(user.role);
+    setEditStatus(user.status);
+    setEditError('');
+    setEditSuccess('');
+  };
+
+  const handleSaveEdit = async () => {
+    setEditError('');
+    setEditSuccess('');
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({ role: editRole, status: editStatus })
+        .eq('id', editUserId);
+      if (error) throw error;
+      setEditSuccess('User updated successfully!');
+      setEditUserId(null);
+      await fetchUsers();
+    } catch (err) {
+      setEditError(err.message || 'Failed to update user');
+    }
   };
 
   // Show loading while auth is still loading or if we don't have user data
@@ -428,6 +459,7 @@ const AdminSimple = () => {
                       <th>Role</th>
                       <th>Status</th>
                       <th>Member Since</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -438,6 +470,9 @@ const AdminSimple = () => {
                         <td>{user.role}</td>
                         <td>{user.status}</td>
                         <td>{user.memberSince}</td>
+                        <td>
+                          <button onClick={() => handleEditUser(user)} style={{ padding: '4px 8px', fontSize: '12px' }}>Edit</button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -448,6 +483,41 @@ const AdminSimple = () => {
                 </div>
               )}
             </div>
+            {/* Edit Modal */}
+            {editUserId && (
+              <div style={{
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+              }}>
+                <div style={{ background: 'white', padding: 24, borderRadius: 8, minWidth: 300 }}>
+                  <h3>Edit User Role/Status</h3>
+                  <div style={{ marginBottom: 12 }}>
+                    <label>Role: </label>
+                    <select value={editRole} onChange={e => setEditRole(e.target.value)}>
+                      <option value="member">Member</option>
+                      <option value="affiliate">Affiliate</option>
+                      <option value="reseller">Reseller</option>
+                      <option value="pro_reseller">Pro Reseller</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label>Status: </label>
+                    <select value={editStatus} onChange={e => setEditStatus(e.target.value)}>
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                      <option value="suspended">Suspended</option>
+                    </select>
+                  </div>
+                  {editError && <div style={{ color: 'red', marginBottom: 8 }}>{editError}</div>}
+                  {editSuccess && <div style={{ color: 'green', marginBottom: 8 }}>{editSuccess}</div>}
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={handleSaveEdit} style={{ background: '#10b981', color: 'white', padding: '6px 12px', border: 'none', borderRadius: 4 }}>Save</button>
+                    <button onClick={() => setEditUserId(null)} style={{ background: '#ef4444', color: 'white', padding: '6px 12px', border: 'none', borderRadius: 4 }}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
 
