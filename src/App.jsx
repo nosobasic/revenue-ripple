@@ -6,7 +6,7 @@ import Training from './pages/Training';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
-import Admin from './pages/Admin';
+import AdminSimple from './pages/AdminSimple';
 import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
 import AffiliateSign from './pages/AffiliateSign';
@@ -105,7 +105,7 @@ const App = () => {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
-        <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+        <Route path="/admin/*" element={<ProtectedRoute requireAdmin><AdminSimple /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />

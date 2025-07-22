@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabase/client';
 import { UserProgress, UserModuleCompletion } from '../types/user';
 
 export class CourseService {

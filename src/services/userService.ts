@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabase/client';
 import { User } from '../types/user';
 
 export class UserService {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabase/client';
 import { AuthService } from '../services/authService';
 import { AffiliateUtils } from '../utils/affiliateUtils';
 import Navbar from '../components/Navbar';

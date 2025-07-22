@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "../lib/supabaseClient";
-import { AuthService } from "../services/authService";
-import { UserService } from "../services/userService";
+import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
 
@@ -52,8 +50,35 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
-      const userData = await AuthService.fetchUserData(authUser);
-      setUser(userData);
+      const { data: userData, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", authUser.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        // If user doesn't exist, create a basic user object
+        setUser({
+          ...authUser,
+          role: 'member',
+          status: 'active'
+        });
+        return;
+      }
+
+      if (userData) {
+        setUser({
+          ...authUser,
+          ...userData,
+        });
+      } else {
+        setUser({
+          ...authUser,
+          role: 'member',
+          status: 'active'
+        });
+      }
     } catch (error) {
       console.error("Error in fetchUserData:", error);
       setUser({
@@ -67,7 +92,36 @@ export function AuthProvider({ children }) {
   async function signup(email, password, firstName, lastName) {
     try {
       setLoading(true);
-      const authData = await AuthService.signup(email, password, firstName, lastName);
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+
+      // Create a user document in Supabase
+      if (authData.user) {
+        const { error: userError } = await supabase.from("users").insert([
+          {
+            id: authData.user.id,
+            name: firstName && lastName ? `${firstName} ${lastName}` : firstName || '',
+            email,
+            role: "member",
+            status: "active",
+            plan: "member",
+            commission_rate: 0.5, // Default commission rate (50%)
+            phone: "",
+            company: "",
+            bio: "",
+          },
+        ]);
+
+        if (userError) {
+          console.error("Error creating user record:", userError);
+          throw userError;
+        }
+      }
+
       return authData;
     } catch (error) {
       console.error('Signup error:', error);
@@ -80,11 +134,17 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-      const authData = await AuthService.login(email, password);
-      await fetchUserData(authData);
-      return authData;
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("No user returned from signInWithPassword");
+
+      return authData.user;
     } catch (error) {
-      console.error("login: error", error);
+      console.error("Login error:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -94,7 +154,8 @@ export function AuthProvider({ children }) {
   async function logout() {
     try {
       setLoading(true);
-      await AuthService.logout();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       setUser(null);
       setSession(null);
     } catch (error) {
@@ -109,13 +170,23 @@ export function AuthProvider({ children }) {
     try {
       if (!user) throw new Error("No user logged in");
 
-      await UserService.updateProfile(user.id, profileData);
+      const { error } = await supabase
+        .from("users")
+        .update({
+          name: profileData.name,
+          email: profileData.email,
+          phone: profileData.phone,
+          company: profileData.company,
+          bio: profileData.bio,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
 
       // Update the local user state
       setUser((prev) => ({
         ...prev,
         ...profileData,
-        updated_at: new Date().toISOString(),
       }));
 
       return true;
@@ -127,8 +198,11 @@ export function AuthProvider({ children }) {
 
   async function resetPassword(email) {
     try {
-      const data = await AuthService.resetPassword(email);
-      return data;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      if (error) throw error;
+      return true;
     } catch (error) {
       throw error;
     }
@@ -136,7 +210,8 @@ export function AuthProvider({ children }) {
 
   async function updatePassword(newPassword) {
     try {
-      await AuthService.updatePassword(newPassword);
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
       return true;
     } catch (error) {
       throw error;

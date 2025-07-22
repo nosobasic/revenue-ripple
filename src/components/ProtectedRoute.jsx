@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { NavigationUtils } from '../utils/navigationUtils';
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
@@ -27,11 +26,13 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check if user has access to this route
-  if (!NavigationUtils.hasRouteAccess(user, location.pathname, requireAdmin)) {
+  // Check admin requirement
+  if (requireAdmin && user.role !== 'admin') {
     // Redirect to appropriate dashboard based on role
-    const redirectPath = NavigationUtils.getDashboardRoute(user);
-    return <Navigate to={redirectPath} replace />;
+    const dashboardRoute = user.role === 'affiliate' || user.role === 'reseller' || user.role === 'pro_reseller' 
+      ? '/affiliate-centre' 
+      : '/dashboard';
+    return <Navigate to={dashboardRoute} replace />;
   }
 
   // User is authenticated and has access
