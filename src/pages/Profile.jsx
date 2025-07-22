@@ -17,6 +17,8 @@ const Profile = () => {
     role: '',
     bio: ''
   });
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -41,10 +43,14 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccessMessage('');
+    setErrorMessage('');
     try {
       await updateUserProfile(formData);
       setIsEditing(false);
+      setSuccessMessage('Profile updated successfully!');
     } catch (error) {
+      setErrorMessage('Error updating profile. Please try again.');
       console.error('Error updating profile:', error);
     }
   };
@@ -148,6 +154,13 @@ const Profile = () => {
             </div>
             <div className="section-content">
               <form onSubmit={handleSubmit}>
+                {/* Feedback Messages */}
+                {successMessage && (
+                  <div style={{ color: 'green', marginBottom: '1rem', textAlign: 'center' }}>{successMessage}</div>
+                )}
+                {errorMessage && (
+                  <div style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>{errorMessage}</div>
+                )}
                 <div className="course-item">
                   <div className="course-details">
                     {/* Name */}

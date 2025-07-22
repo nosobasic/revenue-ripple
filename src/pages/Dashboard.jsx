@@ -50,6 +50,13 @@ const Dashboard = () => {
   });
   const [courseProgress, setCourseProgress] = useState({});
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   // Check for first-time user onboarding
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('hasOnboarded');
