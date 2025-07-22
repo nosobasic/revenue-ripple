@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../supabase/client';
 import { User } from '../types/user';
 
 export class AuthService {
@@ -37,7 +37,7 @@ export class AuthService {
         }
       }
 
-      return authData.user;
+      return authData; // Return authData, not authData.user directly
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
@@ -49,17 +49,14 @@ export class AuthService {
    */
   static async login(email: string, password: string): Promise<any> {
     try {
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("No user returned from signInWithPassword");
-
-      return authData.user;
+      if (error) throw error;
+      return data;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Login error:', error);
       throw error;
     }
   }
@@ -68,12 +65,11 @@ export class AuthService {
    * Sign out user
    */
   static async logout(): Promise<void> {
-    localStorage.removeItem("revenue-ripple-auth-token");
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
       throw error;
     }
   }
@@ -81,25 +77,10 @@ export class AuthService {
   /**
    * Reset password
    */
-  static async resetPassword(email: string): Promise<any> {
+  static async resetPassword(email: string): Promise<void> {
     try {
-      // Check if user exists first
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('email')
-        .eq('email', email)
-        .single();
-
-      if (userError || !userData) {
-        throw new Error('No account found with that email address. Please check your email or create a new account.');
-      }
-
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
       if (error) throw error;
-      return data;
     } catch (error) {
       console.error('Reset password error:', error);
       throw error;
@@ -114,7 +95,6 @@ export class AuthService {
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
-      
       if (error) throw error;
     } catch (error) {
       console.error('Update password error:', error);
@@ -127,11 +107,22 @@ export class AuthService {
    */
   static async getSession(): Promise<any> {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
-      return session;
+      return data;
     } catch (error) {
       console.error('Get session error:', error);
+      throw error;
+    }
+  }
+
+  static async getCurrentUser(): Promise<any> {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return data.user;
+    } catch (error) {
+      console.error('Get current user error:', error);
       throw error;
     }
   }
@@ -139,43 +130,19 @@ export class AuthService {
   /**
    * Fetch user data from users table
    */
-  static async fetchUserData(authUser: any): Promise<User | null> {
+  static async fetchUserData(userId: string): Promise<User | null> {
     try {
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", authUser.id)
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
         .single();
-
-      if (error) {
-        console.error("Error fetching user data:", error);
-        // If user doesn't exist in users table, create basic user object
-        return {
-          ...authUser,
-          role: 'member' as const,
-          status: 'active' as const
-        };
-      }
-
-      if (userData) {
-        return {
-          ...authUser,
-          ...userData,
-        };
-      } else {
-        return {
-          ...authUser,
-          role: 'member' as const,
-          status: 'active' as const
-        };
-      }
+      
+      if (error) throw error;
+      return data;
     } catch (error) {
-      console.error("Error in fetchUserData:", error);
-      return {
-        ...authUser,
-        role: 'member' as const,
-        status: 'active' as const
-      };
+      console.error('Fetch user data error:', error);
+      return null;
     }
   }
 }
