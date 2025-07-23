@@ -18,6 +18,16 @@ import {
 const Training = () => {
   const { user } = useAuth();
   const [expandedSection, setExpandedSection] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingData, setBookingData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    preferredDate: '',
+    preferredTime: '',
+    topic: '',
+    urgency: 'normal'
+  });
 
   const toggleSection = (section) => {
     if (expandedSection === section) {
@@ -25,6 +35,28 @@ const Training = () => {
     } else {
       setExpandedSection(section);
     }
+  };
+
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    // Here you would integrate with your booking system (Calendly, Acuity, etc.)
+    const mailtoLink = `mailto:book@revenue-ripple.com?subject=Training Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a training call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
+    window.open(mailtoLink, '_blank');
+    setShowBookingForm(false);
+    setBookingData({
+      name: '',
+      email: '',
+      phone: '',
+      preferredDate: '',
+      preferredTime: '',
+      topic: '',
+      urgency: 'normal'
+    });
+  };
+
+  const handleEmailSupport = (topic) => {
+    const mailtoLink = `mailto:support@revenue-ripple.com?subject=Training Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with training content: ${topic}%0D%0A%0D%0APlease provide details about your training question or issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
+    window.open(mailtoLink, '_blank');
   };
 
   return (
@@ -416,8 +448,141 @@ const Training = () => {
           </div>
         </div>
 
-        {/* Side Content - Message from owner */}
+        {/* Side Content - Enhanced Support & Resources */}
         <div className="side-content">
+          {/* Book a Training Call Section */}
+          <div className="section">
+            <div className="section-header" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+              <div className="section-icon">📞</div>
+              <h2>Need Training Help?</h2>
+            </div>
+            <div className="section-content">
+              <div style={{ 
+                background: 'rgba(255, 255, 255, 0.1)', 
+                padding: '1.5rem', 
+                borderRadius: '12px', 
+                marginBottom: '1.5rem',
+                border: '2px solid rgba(255, 255, 255, 0.2)'
+              }}>
+                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.3rem' }}>
+                  🎯 Get 1-on-1 Training Support
+                </h3>
+                <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem', lineHeight: '1.6', fontSize: '0.9rem' }}>
+                  Stuck on a concept? Need clarification on any training material? Book a direct call with the Revenue Ripple owner for personalized guidance.
+                </p>
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <h4 style={{ color: '#fff', marginBottom: '0.5rem', fontSize: '1rem' }}>📚 Training Topics We Cover:</h4>
+                  <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                    <li>• Adwords & PPC strategy</li>
+                    <li>• SEO implementation</li>
+                    <li>• Content marketing tactics</li>
+                    <li>• Landing page optimization</li>
+                    <li>• Email marketing campaigns</li>
+                    <li>• Any training material clarification</li>
+                  </ul>
+                </div>
+                <button 
+                  onClick={() => setShowBookingForm(true)}
+                  className="cta-button"
+                  style={{ 
+                    fontSize: '1rem', 
+                    padding: '0.75rem 1.5rem',
+                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    width: '100%'
+                  }}
+                >
+                  📞 Book Training Call
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Training Support */}
+          <div className="section">
+            <div className="section-header">
+              <div className="section-icon">💬</div>
+              <h2>Quick Training Support</h2>
+            </div>
+            <div className="section-content">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <button 
+                  onClick={() => handleEmailSupport('Video Training Issues')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  🎥 Video Training Issues
+                </button>
+                <button 
+                  onClick={() => handleEmailSupport('Guide Content Questions')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  📖 Guide Content Questions
+                </button>
+                <button 
+                  onClick={() => handleEmailSupport('Implementation Help')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  🔧 Implementation Help
+                </button>
+                <button 
+                  onClick={() => handleEmailSupport('Strategy Clarification')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  🎯 Strategy Clarification
+                </button>
+                <button 
+                  onClick={() => handleEmailSupport('Technical Training Issues')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  💻 Technical Training Issues
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Training Resources */}
+          <div className="section">
+            <div className="section-header">
+              <div className="section-icon">📚</div>
+              <h2>Training Resources</h2>
+            </div>
+            <div className="section-content">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Link to="/affiliate-centre/training" className="cta-link">
+                  <span className="item-icon">🎓</span>
+                  Affiliate Training
+                </Link>
+                <Link to="/affiliate-centre/tools" className="cta-link">
+                  <span className="item-icon">🛠️</span>
+                  Marketing Tools
+                </Link>
+                <Link to="/affiliate-centre/support" className="cta-link">
+                  <span className="item-icon">💬</span>
+                  Full Support Center
+                </Link>
+                <button 
+                  onClick={() => handleEmailSupport('Request New Training Topic')}
+                  className="cta-link"
+                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                >
+                  💡 Request New Training Topic
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Message from the owner */}
           <div className="section">
             <div className="section-header">
               <h2>Message from the owner:</h2>
@@ -431,6 +596,256 @@ const Training = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Form Modal */}
+      {showBookingForm && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: '#1a1a1a',
+            borderRadius: '12px',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            border: '2px solid rgba(255, 255, 255, 0.2)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ color: '#fff', margin: 0 }}>📞 Book Training Call</h3>
+              <button 
+                onClick={() => setShowBookingForm(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleBookingSubmit}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={bookingData.name}
+                  onChange={(e) => setBookingData({...bookingData, name: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={bookingData.email}
+                  onChange={(e) => setBookingData({...bookingData, email: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={bookingData.phone}
+                  onChange={(e) => setBookingData({...bookingData, phone: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Preferred Date *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={bookingData.preferredDate}
+                  onChange={(e) => setBookingData({...bookingData, preferredDate: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Preferred Time *
+                </label>
+                <select
+                  required
+                  value={bookingData.preferredTime}
+                  onChange={(e) => setBookingData({...bookingData, preferredTime: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                >
+                  <option value="">Select a time...</option>
+                  <option value="9:00 AM - 10:00 AM">9:00 AM - 10:00 AM</option>
+                  <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                  <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                  <option value="1:00 PM - 2:00 PM">1:00 PM - 2:00 PM</option>
+                  <option value="2:00 PM - 3:00 PM">2:00 PM - 3:00 PM</option>
+                  <option value="3:00 PM - 4:00 PM">3:00 PM - 4:00 PM</option>
+                  <option value="4:00 PM - 5:00 PM">4:00 PM - 5:00 PM</option>
+                  <option value="Flexible">Flexible - I'll work around your schedule</option>
+                </select>
+              </div>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Training Topic to Discuss *
+                </label>
+                <select
+                  required
+                  value={bookingData.topic}
+                  onChange={(e) => setBookingData({...bookingData, topic: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                >
+                  <option value="">Select a training topic...</option>
+                  <option value="Adwords & PPC Strategy">Adwords & PPC Strategy</option>
+                  <option value="SEO Implementation">SEO Implementation</option>
+                  <option value="Content Marketing Tactics">Content Marketing Tactics</option>
+                  <option value="Landing Page Optimization">Landing Page Optimization</option>
+                  <option value="Email Marketing Campaigns">Email Marketing Campaigns</option>
+                  <option value="Video Training Clarification">Video Training Clarification</option>
+                  <option value="Guide Content Questions">Guide Content Questions</option>
+                  <option value="Implementation Help">Implementation Help</option>
+                  <option value="Strategy Review">Strategy Review</option>
+                  <option value="Other Training Topic">Other Training Topic</option>
+                </select>
+              </div>
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                  Urgency Level
+                </label>
+                <select
+                  value={bookingData.urgency}
+                  onChange={(e) => setBookingData({...bookingData, urgency: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: '#fff',
+                    fontSize: '1rem'
+                  }}
+                >
+                  <option value="normal">Normal - Within a few days</option>
+                  <option value="high">High - Within 24-48 hours</option>
+                  <option value="urgent">Urgent - Same day if possible</option>
+                </select>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowBookingForm(false)}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    background: 'transparent',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontSize: '1rem',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  📞 Book Training Call
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
