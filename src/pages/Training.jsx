@@ -459,20 +459,42 @@ const Training = () => {
             <div className="section-content">
               <div style={{ 
                 background: '#f8f9fa', 
-                padding: '1.5rem', 
+                padding: window.innerWidth <= 768 ? '1rem' : '1.5rem', 
                 borderRadius: '12px', 
                 marginBottom: '1.5rem',
                 border: '2px solid #e9ecef'
               }}>
-                <h3 style={{ color: '#333', marginBottom: '1rem', fontSize: '1.3rem' }}>
+                <h3 style={{ 
+                  color: '#333', 
+                  marginBottom: '1rem', 
+                  fontSize: window.innerWidth <= 768 ? '1.1rem' : '1.3rem',
+                  textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                }}>
                   🎯 Get 1-on-1 Training Support
                 </h3>
-                <p style={{ color: '#555', marginBottom: '1.5rem', lineHeight: '1.6', fontSize: '0.9rem' }}>
+                <p style={{ 
+                  color: '#555', 
+                  marginBottom: '1.5rem', 
+                  lineHeight: '1.6', 
+                  fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                  textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                }}>
                   Stuck on a concept? Need clarification on any training material? Book a direct call with the Revenue Ripple owner for personalized guidance.
                 </p>
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <h4 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>📚 Training Topics We Cover:</h4>
-                  <ul style={{ color: '#666', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                  <h4 style={{ 
+                    color: '#333', 
+                    marginBottom: '0.5rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                  }}>📚 Training Topics We Cover:</h4>
+                  <ul style={{ 
+                    color: '#666', 
+                    fontSize: window.innerWidth <= 768 ? '0.75rem' : '0.85rem', 
+                    lineHeight: '1.5',
+                    paddingLeft: window.innerWidth <= 768 ? '1rem' : '1.5rem',
+                    textAlign: window.innerWidth <= 768 ? 'left' : 'left'
+                  }}>
                     <li>• Adwords & PPC strategy</li>
                     <li>• SEO implementation</li>
                     <li>• Content marketing tactics</li>
@@ -485,8 +507,8 @@ const Training = () => {
                   onClick={() => setShowBookingForm(true)}
                   className="cta-button"
                   style={{ 
-                    fontSize: '1rem', 
-                    padding: '0.75rem 1.5rem',
+                    fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem', 
+                    padding: window.innerWidth <= 768 ? '0.5rem 1rem' : '0.75rem 1.5rem',
                     background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
                     border: 'none',
                     borderRadius: '8px',
@@ -511,39 +533,64 @@ const Training = () => {
               <h2>Quick Training Support</h2>
             </div>
             <div className="section-content">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: window.innerWidth <= 768 ? '0.5rem' : '0.75rem' }}>
                 <button 
                   onClick={() => handleEmailSupport('Video Training Issues')}
                   className="cta-link"
-                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                  style={{ 
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                    padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                    width: '100%'
+                  }}
                 >
                   🎥 Video Training Issues
                 </button>
                 <button 
                   onClick={() => handleEmailSupport('Guide Content Questions')}
                   className="cta-link"
-                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                  style={{ 
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                    padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                    width: '100%'
+                  }}
                 >
                   📖 Guide Content Questions
                 </button>
                 <button 
                   onClick={() => handleEmailSupport('Implementation Help')}
                   className="cta-link"
-                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                  style={{ 
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                    padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                    width: '100%'
+                  }}
                 >
                   🔧 Implementation Help
                 </button>
                 <button 
                   onClick={() => handleEmailSupport('Strategy Clarification')}
                   className="cta-link"
-                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                  style={{ 
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                    padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                    width: '100%'
+                  }}
                 >
                   🎯 Strategy Clarification
                 </button>
                 <button 
                   onClick={() => handleEmailSupport('Technical Training Issues')}
                   className="cta-link"
-                  style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                  style={{ 
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                    padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                    fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                    width: '100%'
+                  }}
                 >
                   💻 Technical Training Issues
                 </button>

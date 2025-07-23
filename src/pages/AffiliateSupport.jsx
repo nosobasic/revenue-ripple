@@ -232,22 +232,51 @@ const AffiliateSupport = () => {
                 <div className="course-details">
                   <div style={{ 
                     background: '#f8f9fa', 
-                    padding: '2rem', 
+                    padding: window.innerWidth <= 768 ? '1rem' : '2rem', 
                     borderRadius: '12px', 
                     marginBottom: '2rem',
                     border: '2px solid #e9ecef'
                   }}>
-                    <h3 style={{ color: '#333', marginBottom: '1rem', fontSize: '1.5rem' }}>
+                    <h3 style={{ 
+                      color: '#333', 
+                      marginBottom: '1rem', 
+                      fontSize: window.innerWidth <= 768 ? '1.2rem' : '1.5rem',
+                      textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                    }}>
                       🚀 Get Direct Access to Expert Guidance
                     </h3>
-                    <p style={{ color: '#555', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                    <p style={{ 
+                      color: '#555', 
+                      marginBottom: '1.5rem', 
+                      lineHeight: '1.6',
+                      fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                      textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                    }}>
                       Feeling stuck? Need personalized strategy advice? Book a direct call with the Revenue Ripple owner. 
                       Get answers to your specific questions, strategy review, or troubleshooting help that's tailored to your situation.
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                      <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #e9ecef' }}>
-                        <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>🎯 What We'll Cover:</h4>
-                        <ul style={{ color: '#666', fontSize: '0.9rem' }}>
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))', 
+                      gap: window.innerWidth <= 768 ? '0.75rem' : '1rem', 
+                      marginBottom: '2rem' 
+                    }}>
+                      <div style={{ 
+                        background: '#ffffff', 
+                        padding: window.innerWidth <= 768 ? '0.75rem' : '1rem', 
+                        borderRadius: '8px', 
+                        border: '1px solid #e9ecef' 
+                      }}>
+                        <h4 style={{ 
+                          color: '#333', 
+                          marginBottom: '0.5rem',
+                          fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem'
+                        }}>🎯 What We'll Cover:</h4>
+                        <ul style={{ 
+                          color: '#666', 
+                          fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                          paddingLeft: window.innerWidth <= 768 ? '1rem' : '1.5rem'
+                        }}>
                           <li>Strategy review & optimization</li>
                           <li>Technical troubleshooting</li>
                           <li>Marketing campaign analysis</li>
@@ -255,9 +284,22 @@ const AffiliateSupport = () => {
                           <li>Product-specific guidance</li>
                         </ul>
                       </div>
-                      <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #e9ecef' }}>
-                        <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>⏰ Call Details:</h4>
-                        <ul style={{ color: '#666', fontSize: '0.9rem' }}>
+                      <div style={{ 
+                        background: '#ffffff', 
+                        padding: window.innerWidth <= 768 ? '0.75rem' : '1rem', 
+                        borderRadius: '8px', 
+                        border: '1px solid #e9ecef' 
+                      }}>
+                        <h4 style={{ 
+                          color: '#333', 
+                          marginBottom: '0.5rem',
+                          fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem'
+                        }}>⏰ Call Details:</h4>
+                        <ul style={{ 
+                          color: '#666', 
+                          fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                          paddingLeft: window.innerWidth <= 768 ? '1rem' : '1.5rem'
+                        }}>
                           <li>15-30 minute sessions</li>
                           <li>Flexible scheduling</li>
                           <li>Video or phone calls</li>
@@ -270,8 +312,8 @@ const AffiliateSupport = () => {
                       onClick={() => setShowBookingForm(true)}
                       className="cta-button"
                       style={{ 
-                        fontSize: '1.1rem', 
-                        padding: '1rem 2rem',
+                        fontSize: window.innerWidth <= 768 ? '1rem' : '1.1rem', 
+                        padding: window.innerWidth <= 768 ? '0.75rem 1.5rem' : '1rem 2rem',
                         background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
                         border: 'none',
                         borderRadius: '8px',
@@ -279,7 +321,8 @@ const AffiliateSupport = () => {
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         textTransform: 'uppercase',
-                        letterSpacing: '1px'
+                        letterSpacing: '1px',
+                        width: '100%'
                       }}
                     >
                       📞 Book Your Call Now
@@ -299,55 +342,102 @@ const AffiliateSupport = () => {
             <div className="section-content">
               <div className="course-item">
                 <div className="course-details">
-                  <p style={{ marginBottom: '1.5rem', color: '#555' }}>
+                  <p style={{ 
+                    marginBottom: '1.5rem', 
+                    color: '#555',
+                    fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                    textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                  }}>
                     Choose the best way to get help based on your needs. We're here to support your success!
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: window.innerWidth <= 768 ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))', 
+                    gap: window.innerWidth <= 768 ? '1rem' : '1.5rem' 
+                  }}>
                     <div style={{ 
                       background: '#f8f9fa', 
-                      padding: '1.5rem', 
+                      padding: window.innerWidth <= 768 ? '1rem' : '1.5rem', 
                       borderRadius: '12px',
                       border: '2px solid #e9ecef'
                     }}>
-                      <h4 style={{ color: '#333', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h4 style={{ 
+                        color: '#333', 
+                        marginBottom: '1rem', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                        justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
+                      }}>
                         📧 Email Support
                       </h4>
-                      <p style={{ color: '#666', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <p style={{ 
+                        color: '#666', 
+                        marginBottom: '1rem', 
+                        fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                        textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                      }}>
                         Send us a detailed email for non-urgent issues, general questions, or when you need written documentation.
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <button 
                           onClick={() => handleEmailSupport('Account & Login Issues')}
                           className="cta-link"
-                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                          style={{ 
+                            textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                            width: '100%'
+                          }}
                         >
                           🔐 Account & Login Issues
                         </button>
                         <button 
                           onClick={() => handleEmailSupport('Payments & Commissions')}
                           className="cta-link"
-                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                          style={{ 
+                            textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                            width: '100%'
+                          }}
                         >
                           💰 Payments & Commissions
                         </button>
                         <button 
                           onClick={() => handleEmailSupport('Marketing & Promotion')}
                           className="cta-link"
-                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                          style={{ 
+                            textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                            width: '100%'
+                          }}
                         >
                           📈 Marketing & Promotion
                         </button>
                         <button 
                           onClick={() => handleEmailSupport('Technical Support')}
                           className="cta-link"
-                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                          style={{ 
+                            textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                            width: '100%'
+                          }}
                         >
                           🔧 Technical Support
                         </button>
                         <button 
                           onClick={() => handleEmailSupport('Product Questions')}
                           className="cta-link"
-                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                          style={{ 
+                            textAlign: window.innerWidth <= 768 ? 'center' : 'left', 
+                            padding: window.innerWidth <= 768 ? '0.5rem' : '0.75rem', 
+                            fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                            width: '100%'
+                          }}
                         >
                           📚 Product Questions
                         </button>
@@ -355,14 +445,27 @@ const AffiliateSupport = () => {
                     </div>
                     <div style={{ 
                       background: '#f8f9fa', 
-                      padding: '1.5rem', 
+                      padding: window.innerWidth <= 768 ? '1rem' : '1.5rem', 
                       borderRadius: '12px',
                       border: '2px solid #e9ecef'
                     }}>
-                      <h4 style={{ color: '#333', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h4 style={{ 
+                        color: '#333', 
+                        marginBottom: '1rem', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
+                        justifyContent: window.innerWidth <= 768 ? 'center' : 'flex-start'
+                      }}>
                         🚨 Urgent Issues
                       </h4>
-                      <p style={{ color: '#666', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <p style={{ 
+                        color: '#666', 
+                        marginBottom: '1rem', 
+                        fontSize: window.innerWidth <= 768 ? '0.8rem' : '0.9rem',
+                        textAlign: window.innerWidth <= 768 ? 'center' : 'left'
+                      }}>
                         For urgent matters that need immediate attention, use these priority contact methods.
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
