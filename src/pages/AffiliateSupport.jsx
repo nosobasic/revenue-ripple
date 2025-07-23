@@ -451,7 +451,7 @@ const AffiliateSupport = () => {
             <div className="section-content">
               <div className="course-item">
                 <div className="course-details">
-                  <p style={{ marginBottom: '1.5rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <p style={{ marginBottom: '1.5rem', color: '#555' }}>
                     For complex issues that require detailed documentation, use this form to submit a comprehensive support ticket.
                   </p>
                   <form className="support-form">
@@ -770,59 +770,59 @@ const AffiliateSupport = () => {
             <div className="section-content">
               <div className="contact-info">
                 <div className="contact-item" style={{ 
-                  background: 'rgba(255, 255, 255, 0.1)', 
+                  background: '#f8f9fa', 
                   padding: '1rem', 
                   borderRadius: '8px', 
                   marginBottom: '1rem',
-                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                  border: '2px solid #e9ecef'
                 }}>
                   <span className="contact-icon">📧</span>
                   <div>
-                    <strong style={{ color: '#fff' }}>Email Support</strong>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>support@revenue-ripple.com</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Response within 24 hours</div>
+                    <strong style={{ color: '#333' }}>Email Support</strong>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>support@revenue-ripple.com</div>
+                    <div style={{ color: '#888', fontSize: '0.8rem' }}>Response within 24 hours</div>
                   </div>
                 </div>
                 <div className="contact-item" style={{ 
-                  background: 'rgba(255, 255, 255, 0.1)', 
+                  background: '#f8f9fa', 
                   padding: '1rem', 
                   borderRadius: '8px', 
                   marginBottom: '1rem',
-                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                  border: '2px solid #e9ecef'
                 }}>
                   <span className="contact-icon">📞</span>
                   <div>
-                    <strong style={{ color: '#fff' }}>Book a Call</strong>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>1-on-1 with the owner</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>15-30 minute sessions</div>
+                    <strong style={{ color: '#333' }}>Book a Call</strong>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>1-on-1 with the owner</div>
+                    <div style={{ color: '#888', fontSize: '0.8rem' }}>15-30 minute sessions</div>
                   </div>
                 </div>
                 <div className="contact-item" style={{ 
-                  background: 'rgba(255, 255, 255, 0.1)', 
+                  background: '#f8f9fa', 
                   padding: '1rem', 
                   borderRadius: '8px', 
                   marginBottom: '1rem',
-                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                  border: '2px solid #e9ecef'
                 }}>
                   <span className="contact-icon">⭐</span>
                   <div>
-                    <strong style={{ color: '#fff' }}>Pro Reseller Priority</strong>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>Faster response times</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Direct access to owner</div>
+                    <strong style={{ color: '#333' }}>Pro Reseller Priority</strong>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>Faster response times</div>
+                    <div style={{ color: '#888', fontSize: '0.8rem' }}>Direct access to owner</div>
                   </div>
                 </div>
                 <div className="contact-item" style={{ 
-                  background: 'rgba(255, 255, 255, 0.1)', 
+                  background: '#f8f9fa', 
                   padding: '1rem', 
                   borderRadius: '8px', 
                   marginBottom: '1rem',
-                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                  border: '2px solid #e9ecef'
                 }}>
                   <span className="contact-icon">🎯</span>
                   <div>
-                    <strong style={{ color: '#fff' }}>Success Coaching</strong>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>Strategy & optimization</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Personalized guidance</div>
+                    <strong style={{ color: '#333' }}>Success Coaching</strong>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>Strategy & optimization</div>
+                    <div style={{ color: '#888', fontSize: '0.8rem' }}>Personalized guidance</div>
                   </div>
                 </div>
               </div>
@@ -837,30 +837,30 @@ const AffiliateSupport = () => {
             </div>
             <div className="section-content">
               <div style={{ 
-                background: 'rgba(255, 255, 255, 0.1)', 
+                background: '#f8f9fa', 
                 padding: '1.5rem', 
                 borderRadius: '12px',
-                border: '2px solid rgba(255, 255, 255, 0.2)',
+                border: '2px solid #e9ecef',
                 marginBottom: '1.5rem'
               }}>
-                <h4 style={{ color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>
+                <h4 style={{ color: '#333', marginBottom: '1rem', textAlign: 'center' }}>
                   💎 Premium Support Experience
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👨‍💼</div>
-                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Direct Access</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>Talk directly to the owner</div>
+                    <div style={{ color: '#333', fontWeight: 'bold', marginBottom: '0.25rem' }}>Direct Access</div>
+                    <div style={{ color: '#666', fontSize: '0.8rem' }}>Talk directly to the owner</div>
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⚡</div>
-                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Fast Response</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>24-hour turnaround</div>
+                    <div style={{ color: '#333', fontWeight: 'bold', marginBottom: '0.25rem' }}>Fast Response</div>
+                    <div style={{ color: '#666', fontSize: '0.8rem' }}>24-hour turnaround</div>
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
-                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Personalized</div>
-                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>Tailored solutions</div>
+                    <div style={{ color: '#333', fontWeight: 'bold', marginBottom: '0.25rem' }}>Personalized</div>
+                    <div style={{ color: '#666', fontSize: '0.8rem' }}>Tailored solutions</div>
                   </div>
                 </div>
               </div>

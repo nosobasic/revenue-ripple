@@ -458,21 +458,21 @@ const Training = () => {
             </div>
             <div className="section-content">
               <div style={{ 
-                background: 'rgba(255, 255, 255, 0.1)', 
+                background: '#f8f9fa', 
                 padding: '1.5rem', 
                 borderRadius: '12px', 
                 marginBottom: '1.5rem',
-                border: '2px solid rgba(255, 255, 255, 0.2)'
+                border: '2px solid #e9ecef'
               }}>
-                <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.3rem' }}>
+                <h3 style={{ color: '#333', marginBottom: '1rem', fontSize: '1.3rem' }}>
                   🎯 Get 1-on-1 Training Support
                 </h3>
-                <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem', lineHeight: '1.6', fontSize: '0.9rem' }}>
+                <p style={{ color: '#555', marginBottom: '1.5rem', lineHeight: '1.6', fontSize: '0.9rem' }}>
                   Stuck on a concept? Need clarification on any training material? Book a direct call with the Revenue Ripple owner for personalized guidance.
                 </p>
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <h4 style={{ color: '#fff', marginBottom: '0.5rem', fontSize: '1rem' }}>📚 Training Topics We Cover:</h4>
-                  <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                  <h4 style={{ color: '#333', marginBottom: '0.5rem', fontSize: '1rem' }}>📚 Training Topics We Cover:</h4>
+                  <ul style={{ color: '#666', fontSize: '0.85rem', lineHeight: '1.5' }}>
                     <li>• Adwords & PPC strategy</li>
                     <li>• SEO implementation</li>
                     <li>• Content marketing tactics</li>
