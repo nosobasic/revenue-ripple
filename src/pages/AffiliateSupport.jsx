@@ -231,23 +231,23 @@ const AffiliateSupport = () => {
               <div className="course-item">
                 <div className="course-details">
                   <div style={{ 
-                    background: 'rgba(255, 255, 255, 0.1)', 
+                    background: '#f8f9fa', 
                     padding: '2rem', 
                     borderRadius: '12px', 
                     marginBottom: '2rem',
-                    border: '2px solid rgba(255, 255, 255, 0.2)'
+                    border: '2px solid #e9ecef'
                   }}>
-                    <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.5rem' }}>
+                    <h3 style={{ color: '#333', marginBottom: '1rem', fontSize: '1.5rem' }}>
                       🚀 Get Direct Access to Expert Guidance
                     </h3>
-                    <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                    <p style={{ color: '#555', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                       Feeling stuck? Need personalized strategy advice? Book a direct call with the Revenue Ripple owner. 
                       Get answers to your specific questions, strategy review, or troubleshooting help that's tailored to your situation.
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-                      <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1rem', borderRadius: '8px' }}>
-                        <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>🎯 What We'll Cover:</h4>
-                        <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                      <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #e9ecef' }}>
+                        <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>🎯 What We'll Cover:</h4>
+                        <ul style={{ color: '#666', fontSize: '0.9rem' }}>
                           <li>Strategy review & optimization</li>
                           <li>Technical troubleshooting</li>
                           <li>Marketing campaign analysis</li>
@@ -255,9 +255,9 @@ const AffiliateSupport = () => {
                           <li>Product-specific guidance</li>
                         </ul>
                       </div>
-                      <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1rem', borderRadius: '8px' }}>
-                        <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>⏰ Call Details:</h4>
-                        <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                      <div style={{ background: '#ffffff', padding: '1rem', borderRadius: '8px', border: '1px solid #e9ecef' }}>
+                        <h4 style={{ color: '#333', marginBottom: '0.5rem' }}>⏰ Call Details:</h4>
+                        <ul style={{ color: '#666', fontSize: '0.9rem' }}>
                           <li>15-30 minute sessions</li>
                           <li>Flexible scheduling</li>
                           <li>Video or phone calls</li>
@@ -299,20 +299,20 @@ const AffiliateSupport = () => {
             <div className="section-content">
               <div className="course-item">
                 <div className="course-details">
-                  <p style={{ marginBottom: '1.5rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <p style={{ marginBottom: '1.5rem', color: '#555' }}>
                     Choose the best way to get help based on your needs. We're here to support your success!
                   </p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                     <div style={{ 
-                      background: 'rgba(255, 255, 255, 0.1)', 
+                      background: '#f8f9fa', 
                       padding: '1.5rem', 
                       borderRadius: '12px',
-                      border: '2px solid rgba(255, 255, 255, 0.2)'
+                      border: '2px solid #e9ecef'
                     }}>
-                      <h4 style={{ color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h4 style={{ color: '#333', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         📧 Email Support
                       </h4>
-                      <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <p style={{ color: '#666', marginBottom: '1rem', fontSize: '0.9rem' }}>
                         Send us a detailed email for non-urgent issues, general questions, or when you need written documentation.
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -354,15 +354,15 @@ const AffiliateSupport = () => {
                       </div>
                     </div>
                     <div style={{ 
-                      background: 'rgba(255, 255, 255, 0.1)', 
+                      background: '#f8f9fa', 
                       padding: '1.5rem', 
                       borderRadius: '12px',
-                      border: '2px solid rgba(255, 255, 255, 0.2)'
+                      border: '2px solid #e9ecef'
                     }}>
-                      <h4 style={{ color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <h4 style={{ color: '#333', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         🚨 Urgent Issues
                       </h4>
-                      <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                      <p style={{ color: '#666', marginBottom: '1rem', fontSize: '0.9rem' }}>
                         For urgent matters that need immediate attention, use these priority contact methods.
                       </p>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
