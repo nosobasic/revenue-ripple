@@ -1,9 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../pages.css';
 
 const AffiliateSupport = () => {
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingData, setBookingData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    preferredDate: '',
+    preferredTime: '',
+    topic: '',
+    urgency: 'normal'
+  });
+
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    // Here you would integrate with your booking system (Calendly, Acuity, etc.)
+    const mailtoLink = `mailto:book@revenue-ripple.com?subject=Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
+    window.open(mailtoLink, '_blank');
+    setShowBookingForm(false);
+    setBookingData({
+      name: '',
+      email: '',
+      phone: '',
+      preferredDate: '',
+      preferredTime: '',
+      topic: '',
+      urgency: 'normal'
+    });
+  };
+
+  const handleEmailSupport = (topic) => {
+    const mailtoLink = `mailto:support@revenue-ripple.com?subject=Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with: ${topic}%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
+    window.open(mailtoLink, '_blank');
+  };
+
   const faqCategories = [
     {
       id: 1,
@@ -188,6 +221,204 @@ const AffiliateSupport = () => {
 
       <div className="container dashboard-content">
         <div className="main-content">
+          {/* Book a Call Section - NEW */}
+          <section className="section">
+            <div className="section-header reseller" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+              <div className="section-icon">📞</div>
+              <h2>Book a 1-on-1 Call with the Owner</h2>
+            </div>
+            <div className="section-content">
+              <div className="course-item">
+                <div className="course-details">
+                  <div style={{ 
+                    background: 'rgba(255, 255, 255, 0.1)', 
+                    padding: '2rem', 
+                    borderRadius: '12px', 
+                    marginBottom: '2rem',
+                    border: '2px solid rgba(255, 255, 255, 0.2)'
+                  }}>
+                    <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.5rem' }}>
+                      🚀 Get Direct Access to Expert Guidance
+                    </h3>
+                    <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                      Feeling stuck? Need personalized strategy advice? Book a direct call with the Revenue Ripple owner. 
+                      Get answers to your specific questions, strategy review, or troubleshooting help that's tailored to your situation.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                      <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1rem', borderRadius: '8px' }}>
+                        <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>🎯 What We'll Cover:</h4>
+                        <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                          <li>Strategy review & optimization</li>
+                          <li>Technical troubleshooting</li>
+                          <li>Marketing campaign analysis</li>
+                          <li>Scaling your affiliate business</li>
+                          <li>Product-specific guidance</li>
+                        </ul>
+                      </div>
+                      <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1rem', borderRadius: '8px' }}>
+                        <h4 style={{ color: '#fff', marginBottom: '0.5rem' }}>⏰ Call Details:</h4>
+                        <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                          <li>15-30 minute sessions</li>
+                          <li>Flexible scheduling</li>
+                          <li>Video or phone calls</li>
+                          <li>Follow-up resources</li>
+                          <li>Priority for Pro Resellers</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setShowBookingForm(true)}
+                      className="cta-button"
+                      style={{ 
+                        fontSize: '1.1rem', 
+                        padding: '1rem 2rem',
+                        background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                        border: 'none',
+                        borderRadius: '8px',
+                        color: 'white',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}
+                    >
+                      📞 Book Your Call Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Quick Contact Options - NEW */}
+          <section className="section">
+            <div className="section-header affiliate">
+              <div className="section-icon">💬</div>
+              <h2>Quick Contact Options</h2>
+            </div>
+            <div className="section-content">
+              <div className="course-item">
+                <div className="course-details">
+                  <p style={{ marginBottom: '1.5rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    Choose the best way to get help based on your needs. We're here to support your success!
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                    <div style={{ 
+                      background: 'rgba(255, 255, 255, 0.1)', 
+                      padding: '1.5rem', 
+                      borderRadius: '12px',
+                      border: '2px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      <h4 style={{ color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        📧 Email Support
+                      </h4>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                        Send us a detailed email for non-urgent issues, general questions, or when you need written documentation.
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => handleEmailSupport('Account & Login Issues')}
+                          className="cta-link"
+                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                        >
+                          🔐 Account & Login Issues
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('Payments & Commissions')}
+                          className="cta-link"
+                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                        >
+                          💰 Payments & Commissions
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('Marketing & Promotion')}
+                          className="cta-link"
+                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                        >
+                          📈 Marketing & Promotion
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('Technical Support')}
+                          className="cta-link"
+                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                        >
+                          🔧 Technical Support
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('Product Questions')}
+                          className="cta-link"
+                          style={{ textAlign: 'left', padding: '0.75rem', fontSize: '0.9rem' }}
+                        >
+                          📚 Product Questions
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ 
+                      background: 'rgba(255, 255, 255, 0.1)', 
+                      padding: '1.5rem', 
+                      borderRadius: '12px',
+                      border: '2px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      <h4 style={{ color: '#fff', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        🚨 Urgent Issues
+                      </h4>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                        For urgent matters that need immediate attention, use these priority contact methods.
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => handleEmailSupport('URGENT - Payment Issue')}
+                          className="cta-link"
+                          style={{ 
+                            textAlign: 'left', 
+                            padding: '0.75rem', 
+                            fontSize: '0.9rem',
+                            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px'
+                          }}
+                        >
+                          🚨 URGENT - Payment Issue
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('URGENT - Account Access')}
+                          className="cta-link"
+                          style={{ 
+                            textAlign: 'left', 
+                            padding: '0.75rem', 
+                            fontSize: '0.9rem',
+                            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px'
+                          }}
+                        >
+                          🚨 URGENT - Account Access
+                        </button>
+                        <button 
+                          onClick={() => handleEmailSupport('URGENT - Technical Problem')}
+                          className="cta-link"
+                          style={{ 
+                            textAlign: 'left', 
+                            padding: '0.75rem', 
+                            fontSize: '0.9rem',
+                            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px'
+                          }}
+                        >
+                          🚨 URGENT - Technical Problem
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* FAQ Section */}
           <section className="section">
             <div className="section-header marketing">
@@ -215,14 +446,13 @@ const AffiliateSupport = () => {
           <section className="section">
             <div className="section-header affiliate">
               <div className="section-icon">✉️</div>
-              <h2>Contact Support</h2>
+              <h2>Detailed Support Ticket</h2>
             </div>
             <div className="section-content">
               <div className="course-item">
                 <div className="course-details">
                   <p style={{ marginBottom: '1.5rem', color: 'rgba(255, 255, 255, 0.9)' }}>
-                    Can't find what you're looking for? Our support team is here to help you succeed. 
-                    Please provide as much detail as possible so we can assist you quickly.
+                    For complex issues that require detailed documentation, use this form to submit a comprehensive support ticket.
                   </p>
                   <form className="support-form">
                     <div className="form-group">
@@ -262,6 +492,253 @@ const AffiliateSupport = () => {
           </section>
         </div>
 
+        {/* Booking Form Modal */}
+        {showBookingForm && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}>
+            <div style={{
+              background: '#1a1a1a',
+              borderRadius: '12px',
+              padding: '2rem',
+              maxWidth: '500px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              border: '2px solid rgba(255, 255, 255, 0.2)'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h3 style={{ color: '#fff', margin: 0 }}>📞 Book Your Call</h3>
+                <button 
+                  onClick={() => setShowBookingForm(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '1.5rem',
+                    cursor: 'pointer',
+                    padding: '0.5rem'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <form onSubmit={handleBookingSubmit}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={bookingData.name}
+                    onChange={(e) => setBookingData({...bookingData, name: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={bookingData.email}
+                    onChange={(e) => setBookingData({...bookingData, email: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={bookingData.phone}
+                    onChange={(e) => setBookingData({...bookingData, phone: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Preferred Date *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={bookingData.preferredDate}
+                    onChange={(e) => setBookingData({...bookingData, preferredDate: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Preferred Time *
+                  </label>
+                  <select
+                    required
+                    value={bookingData.preferredTime}
+                    onChange={(e) => setBookingData({...bookingData, preferredTime: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    <option value="">Select a time...</option>
+                    <option value="9:00 AM - 10:00 AM">9:00 AM - 10:00 AM</option>
+                    <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                    <option value="1:00 PM - 2:00 PM">1:00 PM - 2:00 PM</option>
+                    <option value="2:00 PM - 3:00 PM">2:00 PM - 3:00 PM</option>
+                    <option value="3:00 PM - 4:00 PM">3:00 PM - 4:00 PM</option>
+                    <option value="4:00 PM - 5:00 PM">4:00 PM - 5:00 PM</option>
+                    <option value="Flexible">Flexible - I'll work around your schedule</option>
+                  </select>
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    What would you like to discuss? *
+                  </label>
+                  <select
+                    required
+                    value={bookingData.topic}
+                    onChange={(e) => setBookingData({...bookingData, topic: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    <option value="">Select a topic...</option>
+                    <option value="Strategy Review & Optimization">Strategy Review & Optimization</option>
+                    <option value="Technical Troubleshooting">Technical Troubleshooting</option>
+                    <option value="Marketing Campaign Analysis">Marketing Campaign Analysis</option>
+                    <option value="Scaling Your Affiliate Business">Scaling Your Affiliate Business</option>
+                    <option value="Product-Specific Guidance">Product-Specific Guidance</option>
+                    <option value="General Q&A">General Q&A</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label style={{ color: '#fff', display: 'block', marginBottom: '0.5rem' }}>
+                    Urgency Level
+                  </label>
+                  <select
+                    value={bookingData.urgency}
+                    onChange={(e) => setBookingData({...bookingData, urgency: e.target.value})}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: '#fff',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    <option value="normal">Normal - Within a few days</option>
+                    <option value="high">High - Within 24-48 hours</option>
+                    <option value="urgent">Urgent - Same day if possible</option>
+                  </select>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowBookingForm(false)}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      background: 'transparent',
+                      color: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                      color: '#fff',
+                      cursor: 'pointer',
+                      fontSize: '1rem',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    📞 Book Call
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
         <div className="side-content">
           {/* Support Resources */}
           <section className="section">
@@ -284,29 +761,107 @@ const AffiliateSupport = () => {
             </div>
           </section>
 
-          {/* Quick Contact */}
+          {/* Enhanced Quick Contact */}
           <section className="section">
             <div className="section-header reseller">
               <div className="section-icon">💬</div>
-              <h2>Quick Contact</h2>
+              <h2>Contact Information</h2>
             </div>
             <div className="section-content">
               <div className="contact-info">
-                <div className="contact-item">
+                <div className="contact-item" style={{ 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  padding: '1rem', 
+                  borderRadius: '8px', 
+                  marginBottom: '1rem',
+                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                }}>
                   <span className="contact-icon">📧</span>
-                  <span>support@revenue-ripple.com</span>
+                  <div>
+                    <strong style={{ color: '#fff' }}>Email Support</strong>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>support@revenue-ripple.com</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Response within 24 hours</div>
+                  </div>
                 </div>
-                <div className="contact-item">
-                  <span className="contact-icon">⏰</span>
-                  <span>Response within 24 hours</span>
+                <div className="contact-item" style={{ 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  padding: '1rem', 
+                  borderRadius: '8px', 
+                  marginBottom: '1rem',
+                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                }}>
+                  <span className="contact-icon">📞</span>
+                  <div>
+                    <strong style={{ color: '#fff' }}>Book a Call</strong>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>1-on-1 with the owner</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>15-30 minute sessions</div>
+                  </div>
                 </div>
-                <div className="contact-item">
-                  <span className="contact-icon">💬</span>
-                  <span>Priority support for Pro Resellers</span>
+                <div className="contact-item" style={{ 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  padding: '1rem', 
+                  borderRadius: '8px', 
+                  marginBottom: '1rem',
+                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                }}>
+                  <span className="contact-icon">⭐</span>
+                  <div>
+                    <strong style={{ color: '#fff' }}>Pro Reseller Priority</strong>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>Faster response times</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Direct access to owner</div>
+                  </div>
                 </div>
-                <div className="contact-item">
+                <div className="contact-item" style={{ 
+                  background: 'rgba(255, 255, 255, 0.1)', 
+                  padding: '1rem', 
+                  borderRadius: '8px', 
+                  marginBottom: '1rem',
+                  border: '2px solid rgba(255, 255, 255, 0.2)'
+                }}>
                   <span className="contact-icon">🎯</span>
-                  <span>Success coaching available</span>
+                  <div>
+                    <strong style={{ color: '#fff' }}>Success Coaching</strong>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>Strategy & optimization</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Personalized guidance</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Support Value Proposition */}
+          <section className="section">
+            <div className="section-header digital" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+              <div className="section-icon">🚀</div>
+              <h2>Why Our Support is Different</h2>
+            </div>
+            <div className="section-content">
+              <div style={{ 
+                background: 'rgba(255, 255, 255, 0.1)', 
+                padding: '1.5rem', 
+                borderRadius: '12px',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                marginBottom: '1.5rem'
+              }}>
+                <h4 style={{ color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>
+                  💎 Premium Support Experience
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>👨‍💼</div>
+                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Direct Access</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>Talk directly to the owner</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⚡</div>
+                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Fast Response</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>24-hour turnaround</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎯</div>
+                    <div style={{ color: '#fff', fontWeight: 'bold', marginBottom: '0.25rem' }}>Personalized</div>
+                    <div style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.8rem' }}>Tailored solutions</div>
+                  </div>
                 </div>
               </div>
             </div>
