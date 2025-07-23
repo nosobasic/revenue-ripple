@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 
 const AffiliateTraining = () => {
@@ -28,8 +29,8 @@ const AffiliateTraining = () => {
         <ul>
           <li><strong>Digital Marketing Domination Book ($7):</strong> Perfect entry-level offer that teaches lead magnets, landing pages, and copywriting fundamentals</li>
           <li><strong>Monthly Membership ($47):</strong> Comprehensive training covering 25+ marketing topics with ongoing updates</li>
-          <li><strong>Reseller Program ($47):</strong> Allows members to resell the membership for 100% commission on every other sale</li>
-          <li><strong>Pro Reseller ($97):</strong> Premium tier earning 100% commission on EVERY sale plus exclusive materials</li>
+          <li><strong>Reseller Program ($47):</strong> Allows members to resell the membership for 100% commission on every member they refer</li>
+          <li><strong>Pro Reseller ($97):</strong> Premium tier earning commission on every reseller and member they refer plus exclusive materials</li>
         </ul>
         
         <h5>Step 2: Set Up Your Foundation</h5>
@@ -322,6 +323,7 @@ const AffiliateTraining = () => {
   return (
     <div className="dashboard">
       <Navbar />
+      <AIAssistantWidget />
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Affiliate Training & Guides</h1>
@@ -340,14 +342,14 @@ const AffiliateTraining = () => {
             <div className="section-content">
               <div className="course-item">
                 <div className="course-details">
-                  <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
+                  <p style={{ color: '#1f2937', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
                     This training is designed to take you from complete beginner to successful affiliate marketer. 
                     Work through each section in order, implement what you learn, and use the Ripple AI assistant 
                     if you have questions along the way.
                   </p>
-                  <div style={{ background: 'rgba(255, 255, 255, 0.1)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem' }}>
+                  <div style={{ background: '#f3f4f6', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e5e7eb' }}>
                     <h4 style={{ color: '#4F46E5', marginBottom: '0.5rem' }}>💡 Pro Tip</h4>
-                    <p style={{ color: 'rgba(255, 255, 255, 0.8)', margin: 0 }}>
+                    <p style={{ color: '#4b5563', margin: 0 }}>
                       Don't just read - implement! Success comes from taking action on what you learn. 
                       Start with the basics and build momentum.
                     </p>
@@ -374,13 +376,13 @@ const AffiliateTraining = () => {
                     <h3>{guide.title}</h3>
                     {expandedSection === guide.id && (
                       <div className="course-details">
-                        <p style={{ marginBottom: '1.5rem', fontStyle: 'italic' }}>{guide.description}</p>
+                        <p style={{ marginBottom: '1.5rem', fontStyle: 'italic', color: '#6b7280' }}>{guide.description}</p>
                         <div 
-                          style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                          style={{ color: '#1f2937' }}
                           dangerouslySetInnerHTML={{ __html: guide.content }} 
                         />
                         <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                          <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                          <p style={{ color: '#6b7280', fontSize: '0.9rem', fontStyle: 'italic' }}>
                             💬 Need help with anything in this guide? Ask the Ripple AI assistant for personalized advice!
                           </p>
                         </div>
@@ -402,7 +404,7 @@ const AffiliateTraining = () => {
               <h2>Quick Start Checklist</h2>
             </div>
             <div className="section-content">
-              <p style={{ color: 'rgba(255, 255, 255, 0.8)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+              <p style={{ color: '#4b5563', marginBottom: '1rem', fontSize: '0.9rem' }}>
                 Complete these tasks to get up and running quickly:
               </p>
               {quickStartChecklist.map((item, index) => (
@@ -418,7 +420,7 @@ const AffiliateTraining = () => {
                     {item.completed ? '✅' : '⭕'}
                   </span>
                   <span style={{ 
-                    color: item.completed ? '#10B981' : 'rgba(255, 255, 255, 0.8)',
+                    color: item.completed ? '#10B981' : '#4b5563',
                     fontSize: '0.9rem'
                   }}>
                     {item.task}
@@ -438,7 +440,7 @@ const AffiliateTraining = () => {
               <div className="course-item">
                 <h3>Top Performer Secrets</h3>
                 <div className="course-details">
-                  <ul style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                  <ul style={{ color: '#4b5563', fontSize: '0.9rem' }}>
                     <li>Focus on building relationships, not just making sales</li>
                     <li>Provide value first, promote second</li>
                     <li>Consistency beats perfection every time</li>

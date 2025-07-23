@@ -152,7 +152,7 @@ const Profile = () => {
                   <div className="course-details">
                     {/* Name */}
                     <div className="form-group">
-                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         <FaUser style={{ marginRight: '0.5rem' }} />
                         Full Name
                       </label>
@@ -164,9 +164,9 @@ const Profile = () => {
                         disabled={!isEditing}
                         className="form-input"
                         style={{
-                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white',
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
                           padding: '0.75rem',
                           borderRadius: '6px',
                           width: '100%',
@@ -177,7 +177,7 @@ const Profile = () => {
 
                     {/* Email */}
                     <div className="form-group">
-                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         <FaEnvelope style={{ marginRight: '0.5rem' }} />
                         Email Address
                       </label>
@@ -189,9 +189,9 @@ const Profile = () => {
                         disabled={!isEditing}
                         className="form-input"
                         style={{
-                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white',
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
                           padding: '0.75rem',
                           borderRadius: '6px',
                           width: '100%',
@@ -202,7 +202,7 @@ const Profile = () => {
 
                     {/* Phone */}
                     <div className="form-group">
-                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         <FaPhone style={{ marginRight: '0.5rem' }} />
                         Phone Number
                       </label>
@@ -215,9 +215,9 @@ const Profile = () => {
                         className="form-input"
                         placeholder="Enter your phone number"
                         style={{
-                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white',
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
                           padding: '0.75rem',
                           borderRadius: '6px',
                           width: '100%',
@@ -228,7 +228,7 @@ const Profile = () => {
 
                     {/* Company */}
                     <div className="form-group">
-                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         <FaBuilding style={{ marginRight: '0.5rem' }} />
                         Company/Business Name
                       </label>
@@ -241,9 +241,9 @@ const Profile = () => {
                         className="form-input"
                         placeholder="Enter your company name"
                         style={{
-                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white',
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
                           padding: '0.75rem',
                           borderRadius: '6px',
                           width: '100%',
@@ -254,7 +254,7 @@ const Profile = () => {
 
                     {/* Bio */}
                     <div className="form-group">
-                      <label style={{ color: 'white', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
+                      <label style={{ color: '#374151', fontWeight: '600', marginBottom: '0.5rem', display: 'block' }}>
                         About You
                       </label>
                       <textarea
@@ -266,9 +266,9 @@ const Profile = () => {
                         className="form-input"
                         placeholder="Tell us about yourself and your marketing goals..."
                         style={{
-                          background: isEditing ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
-                          color: 'white',
+                          background: isEditing ? '#ffffff' : '#f9fafb',
+                          border: '1px solid #d1d5db',
+                          color: '#1f2937',
                           padding: '0.75rem',
                           borderRadius: '6px',
                           width: '100%',
@@ -320,7 +320,7 @@ const Profile = () => {
                       {user.role ? user.role.replace('_', ' ').toUpperCase() : 'MEMBER'}
                     </span>
                   </div>
-                  <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                  <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>
                     {user.role === 'pro_reseller' 
                       ? 'You have access to all premium features and earn 100% commission on every sale.'
                       : user.role === 'reseller'
@@ -393,7 +393,7 @@ const Profile = () => {
                   <div className="course-details">
                     {user.role === 'affiliate' && (
                       <>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem' }}>
+                        <p style={{ color: '#374151', marginBottom: '1rem' }}>
                           Upgrade to Reseller and start earning 100% commission on every other membership sale.
                         </p>
                         <button 
@@ -407,7 +407,7 @@ const Profile = () => {
                     )}
                     {(user.role === 'affiliate' || user.role === 'reseller') && (
                       <>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                        <p style={{ color: '#374151', marginBottom: '1rem', fontSize: '0.9rem' }}>
                           Pro Resellers earn 100% commission on EVERY sale and get exclusive marketing materials.
                         </p>
                         <button 
