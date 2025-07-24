@@ -235,14 +235,46 @@ const Dashboard = () => {
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
-                      <p>To join, just <Link to="/affiliate/sign-up" style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}>click here</Link>.</p>
+                      <p>To join, just <Link 
+                        to="/affiliate/sign-up" 
+                        style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >click here</Link>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
                       <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-                        <Link to="/affiliate/sign-up" className="cta-link">
+                        <Link 
+                          to="/affiliate/sign-up" 
+                          className="cta-link"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            background: '#2563eb',
+                            color: 'white',
+                            padding: '0.75rem 1.5rem',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            transition: 'all 0.2s ease',
+                            boxShadow: '0 2px 4px rgba(37, 99, 235, 0.2)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.background = '#1d4ed8';
+                            e.target.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.background = '#2563eb';
+                            e.target.style.transform = 'translateY(0)';
+                          }}
+                        >
                           <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
                         </Link>
-                        <Link to="/affiliate-centre/tools" className="cta-link">
+                        <Link 
+                          to="/affiliate-centre/tools" 
+                          className="cta-link"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <span><FaShareAlt style={{ marginRight: '8px' }} /> Go to the Affiliate tools page</span>
                         </Link>
                       </div>
@@ -287,7 +319,11 @@ const Dashboard = () => {
                         So if you're ready to take your earning potential to the next level, then click below to check it out. 
                         Trust me, this is a deal you don't want to miss.
                       </p>
-                      <Link to="/special" className="cta-link">
+                      <Link 
+                        to="/special" 
+                        className="cta-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <span><FaShoppingCart style={{ marginRight: '8px' }} /> Join Reseller Program →</span>
                       </Link>
                     </div>
@@ -319,7 +355,14 @@ const Dashboard = () => {
                   {expandedSection === 'digital-email' && (
                     <div className="course-details">
                       <p>Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation in one complete package.</p>
-                      <Link to="/assets/downloads/digital-marketing.pdf" className="cta-link" target="_blank" rel="noopener noreferrer" download>
+                      <Link 
+                        to="/assets/downloads/digital-marketing.pdf" 
+                        className="cta-link" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        download
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <span><FaBook style={{ marginRight: '8px' }} /> Get Complete Guide →</span>
                       </Link>
                     </div>
