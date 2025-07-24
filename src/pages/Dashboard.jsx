@@ -7,9 +7,7 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
-import SmartLearningDashboard from '../components/SmartLearningDashboard';
-import GamificationDashboard from '../components/GamificationDashboard';
-import useGamificationIntegration from '../hooks/useGamificationIntegration';
+
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -30,16 +28,12 @@ import {
   FaBook, 
   FaChartLine, 
   FaBell,
-  FaRocket,
-  FaTrophy,
-  FaBrain,
-  FaFire
+  FaRocket
 } from 'react-icons/fa';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const [expandedSection, setExpandedSection] = useState(null);
-  const [activeView, setActiveView] = useState('overview'); // New state for switching views
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -56,9 +50,6 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
-  
-  // Initialize gamification integration
-  const gamification = useGamificationIntegration();
 
   // Check for first-time user onboarding
   useEffect(() => {
@@ -223,35 +214,7 @@ const Dashboard = () => {
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
-            
-            {/* Dashboard View Switcher */}
-            <div className="mb-6">
-              <div className="flex space-x-4 border-b border-gray-200">
-                {[
-                  { id: 'overview', label: 'Core Training', icon: FaChartBar },
-                  { id: 'ai-learning', label: 'AI Learning Path', icon: FaBrain },
-                  { id: 'achievements', label: 'Achievements', icon: FaTrophy }
-                ].map((view) => (
-                  <button
-                    key={view.id}
-                    onClick={() => setActiveView(view.id)}
-                    className={`flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                      activeView === view.id
-                        ? 'border-blue-500 text-blue-600 bg-blue-50'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    <view.icon className="mr-2" />
-                    {view.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Conditional View Rendering */}
-            {activeView === 'overview' && (
-              <>
-                <h2 className="section-overview-title mb-4 mt-2">Your Core Training & Earnings Center</h2>
+            <h2 className="section-overview-title mb-4 mt-2">Your Core Training & Earnings Center</h2>
             {/* Affiliate Program Section */}
             <div className="section mb-8">
               <div className="section-header affiliate">
@@ -1086,19 +1049,6 @@ const Dashboard = () => {
                 </div>
                 <hr className="section-divider" />
               </div>
-              </>
-            )}
-
-            {/* AI Learning View */}
-            {activeView === 'ai-learning' && (
-              <SmartLearningDashboard />
-            )}
-
-            {/* Achievements View */}
-            {activeView === 'achievements' && (
-              <GamificationDashboard />
-            )}
-
             </div>
           </div>
         </div>
