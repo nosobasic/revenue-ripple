@@ -12,15 +12,32 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Initialize Supabase client only if credentials are provided
+supabase = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print("✅ Supabase client initialized successfully")
+    except Exception as e:
+        print(f"⚠️ Failed to initialize Supabase client: {e}")
+        supabase = None
+else:
+    print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
 CORS(app)
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+if not stripe.api_key:
+    print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
+    stripe.api_key = "sk_test_dummy_key_for_development"
 
 app.register_blueprint(ai_assistant_bp)
+
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
 
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():

@@ -1220,7 +1220,7 @@ export const courses = [
         title: 'Boost Productivity with Smart Interactions', 
         description: 'Discover how AI is transforming various business operations.',
         video: {
-          vimeoId: '1089912581',
+          vimeoId: '1090695297',
           duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }

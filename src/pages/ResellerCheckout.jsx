@@ -13,12 +13,22 @@ export default function ResellerCheckout() {
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
-      // TODO: Implement actual checkout logic with your payment processor
-      // For now, we'll just simulate a successful checkout
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      navigate('/dashboard');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-reseller-session`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          referrer_username: localStorage.getItem("ref_id") || "none" 
+        })
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Error creating checkout session.');
+      }
     } catch (error) {
-      console.error('Checkout failed:', error);
+      console.error('Error:', error);
+      alert('Error connecting to server.');
     } finally {
       setIsProcessing(false);
     }
