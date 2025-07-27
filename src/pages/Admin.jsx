@@ -235,7 +235,7 @@ const DevOpsIntegration = () => {
       const { data: userData } = await supabase.auth.getUser();
       const apiUrl = process.env.NODE_ENV === 'development' 
         ? '/devops/keys' 
-        : 'https://revenue-ripple-api.onrender.com/devops/keys';
+        : 'https://revenue-ripple.onrender.com/devops/keys';
         
       const response = await fetch(apiUrl, {
         headers: {
@@ -260,7 +260,7 @@ const DevOpsIntegration = () => {
       
       const apiUrl = process.env.NODE_ENV === 'development' 
         ? '/devops/generate-key' 
-        : 'https://revenue-ripple-api.onrender.com/devops/generate-key';
+        : 'https://revenue-ripple.onrender.com/devops/generate-key';
       
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -328,7 +328,7 @@ const DevOpsIntegration = () => {
       
       const baseUrl = process.env.NODE_ENV === 'development' 
         ? '' 
-        : 'https://revenue-ripple-api.onrender.com';
+        : 'https://revenue-ripple.onrender.com';
         
       // Sync user data
       const userResponse = await fetch(`${baseUrl}/devops/sync/users`, {
@@ -591,7 +591,7 @@ const Admin = () => {
       // Use production API URL when not in development
       const apiUrl = process.env.NODE_ENV === 'development' 
         ? '/devops/generate-api-key' 
-        : 'https://revenue-ripple-api.onrender.com/devops/generate-api-key';
+        : 'https://revenue-ripple.onrender.com/devops/generate-api-key';
         
       const res = await fetch(apiUrl, {
         method: 'POST',

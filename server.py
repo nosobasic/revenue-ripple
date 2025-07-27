@@ -25,7 +25,13 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[
+    "http://localhost:5173",
+    "http://localhost:3000", 
+    "https://revenueripple.org",
+    "https://www.revenueripple.org",
+    "https://revenue-ripple.onrender.com"
+])
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -38,6 +44,13 @@ app.register_blueprint(ai_assistant_bp)
 @app.route('/', methods=['GET'])
 def health_check():
     return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():
