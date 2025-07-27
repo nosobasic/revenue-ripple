@@ -355,12 +355,18 @@ def generate_devops_api_key():
         api_key = str(uuid4())
         webhook_secret = str(uuid4())
 
-        # Save the keys to Supabase
-        supabase.table("devops_config").upsert({
-            "id": 1,
-            "api_key": api_key,
-            "webhook_secret": webhook_secret
-        }).execute()
+        # Save the keys to Supabase if available
+        if supabase:
+            try:
+                supabase.table("devops_config").upsert({
+                    "id": 1,
+                    "api_key": api_key,
+                    "webhook_secret": webhook_secret
+                }).execute()
+            except Exception as db_error:
+                print(f"Warning: Could not save to database: {db_error}")
+        else:
+            print("Warning: Supabase not configured - keys not saved to database")
 
         return jsonify({
             "api_key": api_key,
@@ -372,9 +378,17 @@ def generate_devops_api_key():
 @app.route('/devops/keys', methods=['GET'])
 def get_devops_keys():
     try:
-        # Get API keys from Supabase
-        response = supabase.table("devops_config").select("*").execute()
-        keys = response.data if response.data else []
+        # Get API keys from Supabase if available
+        if supabase:
+            try:
+                response = supabase.table("devops_config").select("*").execute()
+                keys = response.data if response.data else []
+            except Exception as db_error:
+                print(f"Warning: Could not fetch from database: {db_error}")
+                keys = []
+        else:
+            print("Warning: Supabase not configured - returning empty keys list")
+            keys = []
         
         return jsonify({
             "keys": keys
@@ -392,14 +406,20 @@ def generate_new_api_key():
         
         api_key = str(uuid4())
         
-        # Save the new key to Supabase
-        supabase.table("devops_api_keys").insert({
-            "user_id": user_id,
-            "name": name,
-            "api_key": api_key,
-            "is_active": True,
-            "created_at": "now()"
-        }).execute()
+        # Save the new key to Supabase if available
+        if supabase:
+            try:
+                supabase.table("devops_api_keys").insert({
+                    "user_id": user_id,
+                    "name": name,
+                    "api_key": api_key,
+                    "is_active": True,
+                    "created_at": "now()"
+                }).execute()
+            except Exception as db_error:
+                print(f"Warning: Could not save to database: {db_error}")
+        else:
+            print("Warning: Supabase not configured - key not saved to database")
 
         return jsonify({
             "api_key": api_key,
@@ -411,9 +431,17 @@ def generate_new_api_key():
 @app.route('/devops/sync/users', methods=['POST'])
 def sync_users_to_devops():
     try:
-        # Get all users from Supabase
-        response = supabase.table("users").select("*").execute()
-        users = response.data if response.data else []
+        # Get all users from Supabase if available
+        if supabase:
+            try:
+                response = supabase.table("users").select("*").execute()
+                users = response.data if response.data else []
+            except Exception as db_error:
+                print(f"Warning: Could not fetch users from database: {db_error}")
+                users = []
+        else:
+            print("Warning: Supabase not configured - no users to sync")
+            users = []
         
         # Here you would send the data to your DevOps system
         # For now, we'll just return success
@@ -427,9 +455,17 @@ def sync_users_to_devops():
 @app.route('/devops/sync/revenue', methods=['POST'])
 def sync_revenue_to_devops():
     try:
-        # Get revenue data from Supabase
-        response = supabase.table("payments").select("*").execute()
-        payments = response.data if response.data else []
+        # Get revenue data from Supabase if available
+        if supabase:
+            try:
+                response = supabase.table("payments").select("*").execute()
+                payments = response.data if response.data else []
+            except Exception as db_error:
+                print(f"Warning: Could not fetch payments from database: {db_error}")
+                payments = []
+        else:
+            print("Warning: Supabase not configured - no revenue data to sync")
+            payments = []
         
         total_revenue = sum([p.get('amount', 0) for p in payments])
         
@@ -444,9 +480,17 @@ def sync_revenue_to_devops():
 @app.route('/devops/sync/commissions', methods=['POST'])
 def sync_commissions_to_devops():
     try:
-        # Get commission data from Supabase
-        response = supabase.table("commissions").select("*").execute()
-        commissions = response.data if response.data else []
+        # Get commission data from Supabase if available
+        if supabase:
+            try:
+                response = supabase.table("commissions").select("*").execute()
+                commissions = response.data if response.data else []
+            except Exception as db_error:
+                print(f"Warning: Could not fetch commissions from database: {db_error}")
+                commissions = []
+        else:
+            print("Warning: Supabase not configured - no commission data to sync")
+            commissions = []
         
         total_commissions = sum([c.get('amount', 0) for c in commissions])
         
