@@ -40,7 +40,7 @@ const Training = () => {
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     // Here you would integrate with your booking system (Calendly, Acuity, etc.)
-    const mailtoLink = `mailto:book@revenue-ripple.com?subject=Training Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a training call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:hello@revenueripple.org?subject=Training Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a training call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
     setShowBookingForm(false);
     setBookingData({
@@ -55,7 +55,7 @@ const Training = () => {
   };
 
   const handleEmailSupport = (topic) => {
-    const mailtoLink = `mailto:support@revenue-ripple.com?subject=Training Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with training content: ${topic}%0D%0A%0D%0APlease provide details about your training question or issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:hello@revenueripple.org?subject=Training Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with training content: ${topic}%0D%0A%0D%0APlease provide details about your training question or issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
   };
 
