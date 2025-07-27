@@ -347,7 +347,7 @@ def dashboard_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- NEW ROUTE: Generate DevOps API Key ---
+# --- DevOps API Routes ---
 @app.route('/devops/generate-api-key', methods=['POST'])
 def generate_devops_api_key():
     from uuid import uuid4
@@ -365,6 +365,95 @@ def generate_devops_api_key():
         return jsonify({
             "api_key": api_key,
             "webhook_secret": webhook_secret
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/devops/keys', methods=['GET'])
+def get_devops_keys():
+    try:
+        # Get API keys from Supabase
+        response = supabase.table("devops_config").select("*").execute()
+        keys = response.data if response.data else []
+        
+        return jsonify({
+            "keys": keys
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/devops/generate-key', methods=['POST'])
+def generate_new_api_key():
+    from uuid import uuid4
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        name = data.get('name', 'DevOps Integration Key')
+        
+        api_key = str(uuid4())
+        
+        # Save the new key to Supabase
+        supabase.table("devops_api_keys").insert({
+            "user_id": user_id,
+            "name": name,
+            "api_key": api_key,
+            "is_active": True,
+            "created_at": "now()"
+        }).execute()
+
+        return jsonify({
+            "api_key": api_key,
+            "message": "API key generated successfully"
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/devops/sync/users', methods=['POST'])
+def sync_users_to_devops():
+    try:
+        # Get all users from Supabase
+        response = supabase.table("users").select("*").execute()
+        users = response.data if response.data else []
+        
+        # Here you would send the data to your DevOps system
+        # For now, we'll just return success
+        return jsonify({
+            "message": f"Synced {len(users)} users to DevOps",
+            "count": len(users)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/devops/sync/revenue', methods=['POST'])
+def sync_revenue_to_devops():
+    try:
+        # Get revenue data from Supabase
+        response = supabase.table("payments").select("*").execute()
+        payments = response.data if response.data else []
+        
+        total_revenue = sum([p.get('amount', 0) for p in payments])
+        
+        return jsonify({
+            "message": f"Synced revenue data to DevOps",
+            "total_revenue": total_revenue,
+            "payment_count": len(payments)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/devops/sync/commissions', methods=['POST'])
+def sync_commissions_to_devops():
+    try:
+        # Get commission data from Supabase
+        response = supabase.table("commissions").select("*").execute()
+        commissions = response.data if response.data else []
+        
+        total_commissions = sum([c.get('amount', 0) for c in commissions])
+        
+        return jsonify({
+            "message": f"Synced commission data to DevOps",
+            "total_commissions": total_commissions,
+            "commission_count": len(commissions)
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500

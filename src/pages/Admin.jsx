@@ -233,7 +233,7 @@ const DevOpsIntegration = () => {
   const fetchApiKeys = async () => {
     try {
       const { data: userData } = await supabase.auth.getUser();
-      const response = await fetch('/api/devops/keys', {
+      const response = await fetch('/devops/keys', {
         headers: {
           'x-user-id': userData.user.id
         }
@@ -241,6 +241,8 @@ const DevOpsIntegration = () => {
       const result = await response.json();
       if (response.ok) {
         setApiKeys(result.keys || []);
+      } else {
+        console.error('Error fetching API keys:', result.error);
       }
     } catch (error) {
       console.error('Error fetching API keys:', error);
@@ -252,7 +254,7 @@ const DevOpsIntegration = () => {
       setLoading(true);
       const { data: userData } = await supabase.auth.getUser();
       
-      const response = await fetch('/api/devops/generate-key', {
+      const response = await fetch('/devops/generate-key', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -317,17 +319,17 @@ const DevOpsIntegration = () => {
       setSyncStatus('syncing');
       
       // Sync user data
-      const userResponse = await fetch('/api/devops/sync/users', {
+      const userResponse = await fetch('/devops/sync/users', {
         headers: { 'x-api-key': 'your-api-key-here' } // Would use actual key
       });
       
       // Sync revenue data
-      const revenueResponse = await fetch('/api/devops/sync/revenue', {
+      const revenueResponse = await fetch('/devops/sync/revenue', {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
       // Sync commission data
-      const commissionResponse = await fetch('/api/devops/sync/commissions', {
+      const commissionResponse = await fetch('/devops/sync/commissions', {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
@@ -574,15 +576,22 @@ const Admin = () => {
   const generateDevOpsKeys = async () => {
     setGeneratingKeys(true);
     try {
-      const res = await fetch('http://localhost:5001/devops/generate-api-key', {
+      const res = await fetch('/devops/generate-api-key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await res.json();
-      setApiKey(data.api_key);
-      setWebhookSecret(data.webhook_secret);
+      
+      if (res.ok) {
+        setApiKey(data.api_key);
+        setWebhookSecret(data.webhook_secret);
+        alert('DevOps API keys generated successfully!\n\nAPI Key: ' + data.api_key + '\nWebhook Secret: ' + data.webhook_secret + '\n\nSave these keys securely - they won\'t be shown again!');
+      } else {
+        alert('Error generating API keys: ' + (data.error || 'Unknown error'));
+      }
     } catch (error) {
       console.error('Error generating DevOps API keys:', error);
+      alert('Error connecting to server. Make sure the server is running on port 5001.');
     }
     setGeneratingKeys(false);
   };
