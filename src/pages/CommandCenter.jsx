@@ -19,7 +19,7 @@ import {
   FaHeadset,
   FaFire,
   FaCrown,
-  FaZap,
+  FaBolt,
   FaEye,
   FaChartLine,
   FaExclamationTriangle
@@ -138,7 +138,7 @@ const CommandCenter = () => {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-16">
             <div className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full text-lg font-bold mb-6">
-              <FaZap className="inline mr-2" />
+              <FaBolt className="inline mr-2" />
               POWERFUL FEATURES
             </div>
             <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">

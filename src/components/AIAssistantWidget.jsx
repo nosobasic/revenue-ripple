@@ -207,8 +207,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         left: 0,
         right: 0,
         bottom: 0,
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
         maxWidth: '100%',
         maxHeight: '100%',
         backgroundColor: 'white',
@@ -217,16 +217,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         flexDirection: 'column',
         zIndex: 50,
         transform: open ? 'translateX(0)' : 'translateX(100%)',
-        transition: 'all 0.3s ease-in-out',
-        // Ensure it's above keyboard
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        // Use viewport units to handle keyboard
-        height: '100vh',
-        width: '100vw'
+        transition: 'all 0.3s ease-in-out'
       };
     }
     
