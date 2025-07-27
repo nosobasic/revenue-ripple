@@ -233,7 +233,11 @@ const DevOpsIntegration = () => {
   const fetchApiKeys = async () => {
     try {
       const { data: userData } = await supabase.auth.getUser();
-      const response = await fetch('/devops/keys', {
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? '/devops/keys' 
+        : 'https://revenue-ripple-api.onrender.com/devops/keys';
+        
+      const response = await fetch(apiUrl, {
         headers: {
           'x-user-id': userData.user.id
         }
@@ -254,7 +258,11 @@ const DevOpsIntegration = () => {
       setLoading(true);
       const { data: userData } = await supabase.auth.getUser();
       
-      const response = await fetch('/devops/generate-key', {
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? '/devops/generate-key' 
+        : 'https://revenue-ripple-api.onrender.com/devops/generate-key';
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -318,18 +326,22 @@ const DevOpsIntegration = () => {
     try {
       setSyncStatus('syncing');
       
+      const baseUrl = process.env.NODE_ENV === 'development' 
+        ? '' 
+        : 'https://revenue-ripple-api.onrender.com';
+        
       // Sync user data
-      const userResponse = await fetch('/devops/sync/users', {
+      const userResponse = await fetch(`${baseUrl}/devops/sync/users`, {
         headers: { 'x-api-key': 'your-api-key-here' } // Would use actual key
       });
       
       // Sync revenue data
-      const revenueResponse = await fetch('/devops/sync/revenue', {
+      const revenueResponse = await fetch(`${baseUrl}/devops/sync/revenue`, {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
       // Sync commission data
-      const commissionResponse = await fetch('/devops/sync/commissions', {
+      const commissionResponse = await fetch(`${baseUrl}/devops/sync/commissions`, {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
@@ -576,7 +588,12 @@ const Admin = () => {
   const generateDevOpsKeys = async () => {
     setGeneratingKeys(true);
     try {
-      const res = await fetch('/devops/generate-api-key', {
+      // Use production API URL when not in development
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? '/devops/generate-api-key' 
+        : 'https://revenue-ripple-api.onrender.com/devops/generate-api-key';
+        
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -591,7 +608,7 @@ const Admin = () => {
       }
     } catch (error) {
       console.error('Error generating DevOps API keys:', error);
-      alert('Error connecting to server. Make sure the server is running on port 5001.');
+      alert('Error connecting to server. Please try again later.');
     }
     setGeneratingKeys(false);
   };
