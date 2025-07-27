@@ -235,16 +235,16 @@ const Dashboard = () => {
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
-                      <p>To join, just <Link 
-                        to="/affiliate/sign-up" 
-                        style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}
-                        onClick={(e) => e.stopPropagation()}
-                      >click here</Link>.</p>
+                                              <p>To join, just <a 
+                          href="/affiliate/sign-up" 
+                          style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}
+                          onClick={(e) => e.stopPropagation()}
+                        >click here</a>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
                       <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-                        <Link 
-                          to="/affiliate/sign-up" 
+                        <a 
+                          href="/affiliate/sign-up"
                           className="cta-link"
                           onClick={(e) => e.stopPropagation()}
                           style={{
@@ -269,7 +269,7 @@ const Dashboard = () => {
                           }}
                         >
                           <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
-                        </Link>
+                        </a>
                         <Link 
                           to="/affiliate-centre/tools" 
                           className="cta-link"
@@ -699,30 +699,7 @@ const Dashboard = () => {
                       </div>
                     )}
                   </div>
-                  <div
-                    className={`course-item ${expandedSection === 'marketing-ads' ? 'expanded' : ''}`}
-                    onClick={() => toggleSection('marketing-ads')}
-                    role="button"
-                    aria-expanded={expandedSection === 'marketing-ads'}
-                    tabIndex={0}
-                    onKeyPress={(e) => { if (e.key === 'Enter') toggleSection('marketing-ads'); }}
-                  >
-                    <h3>
-                      Ads
-                      <span className={`chevron ${expandedSection === 'marketing-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
-                    </h3>
-                    <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '15%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
-                    </div>
-                    {expandedSection === 'marketing-ads' && (
-                      <div className="course-details">
-                        <p>Master the fundamentals of online advertising across platforms.</p>
-                        <Link to="/courses/ads" className="cta-link">
-                          <span>Start Ads Course →</span>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
+
                   <div
                     className={`course-item ${expandedSection === 'marketing-email' ? 'expanded' : ''}`}
                     onClick={() => toggleSection('marketing-email')}

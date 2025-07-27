@@ -177,26 +177,34 @@ export function AuthProvider({ children }) {
     try {
       if (!user) throw new Error("No user logged in");
 
+      // Only update fields that exist in the database
+      const updateData = {};
+      if (profileData.name !== undefined) updateData.name = profileData.name;
+      if (profileData.email !== undefined) updateData.email = profileData.email;
+      if (profileData.phone !== undefined) updateData.phone = profileData.phone;
+      if (profileData.company !== undefined) updateData.company = profileData.company;
+      if (profileData.bio !== undefined) updateData.bio = profileData.bio;
+      
+      // Add updated_at timestamp
+      updateData.updated_at = new Date().toISOString();
+
+      console.log('Updating user profile with data:', updateData);
+
       // Update the user's data in Supabase
       const { error } = await supabase
         .from("users")
-        .update({
-          name: profileData.name,
-          email: profileData.email,
-          phone: profileData.phone,
-          company: profileData.company,
-          role: profileData.role,
-          bio: profileData.bio,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq("id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase update error:", error);
+        throw error;
+      }
 
       // Update the local user state
       setUser((prev) => ({
         ...prev,
-        ...profileData,
+        ...updateData,
       }));
 
       return true;

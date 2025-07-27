@@ -33,6 +33,7 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log('Form field changed:', name, value);
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -42,10 +43,13 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Submitting profile data:', formData);
       await updateUserProfile(formData);
       setIsEditing(false);
+      alert('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
+      alert('Error updating profile: ' + error.message);
     }
   };
 
@@ -284,6 +288,7 @@ const Profile = () => {
                         <button
                           type="submit"
                           className="cta-button"
+                          style={{ cursor: 'pointer' }}
                         >
                           <FaSave style={{ marginRight: '0.5rem' }} />
                           Save Changes
