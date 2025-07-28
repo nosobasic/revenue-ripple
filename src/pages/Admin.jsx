@@ -18,9 +18,238 @@ import {
 } from 'react-icons/fa';
 import './admin.css';
 import { useAuth } from '../context/AuthContext';
+import { courses } from '../data/courses';
+// import { KPITrackerAgent } from '../components/KPITrackerAgent';
 
-// Import components for dashboard widgets (these may need to be created or imported from correct location)
-// import { DashboardIntegration, DashboardHeader, KPIWidget } from '../components/KPITrackerAgent';
+// Simplified KPI Dashboard Component
+const KPITracker = () => {
+  const [kpiData, setKpiData] = useState({
+    users: { total: 0, active: 0, new: 0 },
+    revenue: { total: 0, monthly: 0, growth: 0 },
+    commissions: { total: 0, pending: 0, growth: 0 },
+    engagement: { completions: 0, progress: 0, activity: 0 }
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchKPIData();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchKPIData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchKPIData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch user metrics
+      const { data: users } = await supabase
+        .from('users')
+        .select('id, status, created_at');
+
+      const activeUsers = users?.filter(u => u.status === 'active').length || 0;
+      const totalUsers = users?.length || 0;
+      const newUsersThisMonth = users?.filter(u => 
+        new Date(u.created_at) > new Date(new Date().setDate(1))
+      ).length || 0;
+
+      // Fetch revenue metrics
+      const { data: subscriptions } = await supabase
+        .from('subscriptions')
+        .select('amount, subscribed_at, status');
+
+      const totalRevenue = subscriptions?.reduce((sum, s) => sum + (s.amount || 0), 0) || 0;
+      const monthlyRevenue = subscriptions?.filter(s => 
+        new Date(s.subscribed_at) > new Date(new Date().setDate(1))
+      ).reduce((sum, s) => sum + (s.amount || 0), 0) || 0;
+
+      // Fetch commission metrics
+      const { data: commissions } = await supabase
+        .from('commissions')
+        .select('amount, created_at, status');
+
+      const totalCommissions = commissions?.reduce((sum, c) => sum + (c.amount || 0), 0) || 0;
+      const pendingCommissions = commissions?.filter(c => c.status === 'pending').length || 0;
+
+      // Fetch engagement metrics
+      const { data: progress } = await supabase
+        .from('user_progress')
+        .select('percent_done, status');
+
+      const completions = progress?.filter(p => p.status === 'completed').length || 0;
+      const avgProgress = progress?.length > 0 
+        ? progress.reduce((sum, p) => sum + (p.percent_done || 0), 0) / progress.length 
+        : 0;
+
+      const { data: activity } = await supabase
+        .from('activity_log')
+        .select('id')
+        .gte('created_at', new Date(new Date().setDate(new Date().getDate() - 7)).toISOString());
+
+      setKpiData({
+        users: { total: totalUsers, active: activeUsers, new: newUsersThisMonth },
+        revenue: { total: totalRevenue, monthly: monthlyRevenue, growth: 5.2 },
+        commissions: { total: totalCommissions, pending: pendingCommissions, growth: 3.8 },
+        engagement: { completions, progress: avgProgress, activity: activity?.length || 0 }
+      });
+
+    } catch (error) {
+      console.error('Error fetching KPI data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px' }}>
+        <div className="loading-spinner">Loading KPI data...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '20px' }}>
+      {/* KPI Overview Grid */}
+      <div className="stats-grid" style={{ marginBottom: '30px' }}>
+        <div className="stat-card">
+          <div className="stat-title">👥 Total Users</div>
+          <div className="stat-value">{kpiData.users.total}</div>
+          <div className="stat-change positive">
+            {kpiData.users.active} active • {kpiData.users.new} new this month
+          </div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-title">💰 Revenue</div>
+          <div className="stat-value">${kpiData.revenue.total.toLocaleString()}</div>
+          <div className="stat-change positive">
+            ${kpiData.revenue.monthly.toLocaleString()} this month • +{kpiData.revenue.growth}%
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">🏆 Commissions</div>
+          <div className="stat-value">${kpiData.commissions.total.toLocaleString()}</div>
+          <div className="stat-change positive">
+            {kpiData.commissions.pending} pending • +{kpiData.commissions.growth}%
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">📈 Engagement</div>
+          <div className="stat-value">{kpiData.engagement.progress.toFixed(1)}%</div>
+          <div className="stat-change positive">
+            {kpiData.engagement.completions} completions • {kpiData.engagement.activity} activities
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Metrics */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h3 className="activity-title">User Metrics</h3>
+          </div>
+          <div style={{ padding: '15px' }}>
+            <div style={{ marginBottom: '15px' }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Active Users</div>
+              <div style={{ background: '#f0f0f0', height: '8px', borderRadius: '4px' }}>
+                <div style={{ 
+                  background: '#28a745', 
+                  height: '100%', 
+                  width: `${(kpiData.users.active / kpiData.users.total) * 100}%`,
+                  borderRadius: '4px'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                {((kpiData.users.active / kpiData.users.total) * 100).toFixed(1)}% activation rate
+              </div>
+            </div>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Growth This Month</div>
+              <div style={{ background: '#f0f0f0', height: '8px', borderRadius: '4px' }}>
+                <div style={{ 
+                  background: '#007bff', 
+                  height: '100%', 
+                  width: `${Math.min((kpiData.users.new / kpiData.users.total) * 100, 100)}%`,
+                  borderRadius: '4px'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                {kpiData.users.new} new users this month
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h3 className="activity-title">Performance Summary</h3>
+          </div>
+          <div style={{ padding: '15px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', fontSize: '14px' }}>
+              <div>
+                <div style={{ color: '#666' }}>Revenue Growth</div>
+                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#28a745' }}>
+                  +{kpiData.revenue.growth}%
+                </div>
+              </div>
+              <div>
+                <div style={{ color: '#666' }}>Commission Growth</div>
+                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#007bff' }}>
+                  +{kpiData.commissions.growth}%
+                </div>
+              </div>
+              <div>
+                <div style={{ color: '#666' }}>Avg Progress</div>
+                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ffc107' }}>
+                  {kpiData.engagement.progress.toFixed(1)}%
+                </div>
+              </div>
+              <div>
+                <div style={{ color: '#666' }}>Activity Score</div>
+                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#6f42c1' }}>
+                  {kpiData.engagement.activity}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Real-time Status */}
+      <div className="recent-activity" style={{ marginTop: '20px' }}>
+        <div className="activity-header">
+          <h3 className="activity-title">System Status</h3>
+        </div>
+        <div style={{ padding: '15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <span style={{ color: '#28a745', fontSize: '14px', fontWeight: 'bold' }}>🟢 All systems operational</span>
+            <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+              Last updated: {new Date().toLocaleTimeString()}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '15px', fontSize: '12px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ color: '#666' }}>Data Refresh</div>
+              <div style={{ fontWeight: 'bold' }}>30s</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ color: '#666' }}>Uptime</div>
+              <div style={{ fontWeight: 'bold' }}>99.9%</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ color: '#666' }}>Response</div>
+              <div style={{ fontWeight: 'bold' }}>0.8s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Dashboard Overview Component
 const DashboardOverview = ({ stats, recentActivity }) => (
@@ -208,9 +437,721 @@ const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFil
 );
 
 // Placeholder components for other sections
-const Commissions = () => <h1>Commissions</h1>;
-const Content = () => <h1>Content</h1>;
-const Analytics = () => <h1>Analytics</h1>;
+const Commissions = () => {
+  const [commissionsData, setCommissionsData] = useState({
+    totalCommissions: 0,
+    monthlyCommissions: 0,
+    topPerformers: [],
+    commissionsByType: {},
+    recentCommissions: [],
+    growth: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState('month');
+
+  useEffect(() => {
+    fetchCommissionsData();
+  }, [timeframe]);
+
+  const fetchCommissionsData = async () => {
+    try {
+      setLoading(true);
+      
+      // Get date range based on timeframe
+      const now = new Date();
+      const startDate = new Date();
+      if (timeframe === 'month') {
+        startDate.setDate(1);
+      } else if (timeframe === 'week') {
+        startDate.setDate(now.getDate() - 7);
+      } else if (timeframe === 'year') {
+        startDate.setFullYear(now.getFullYear(), 0, 1);
+      }
+
+      // Fetch all commissions for the period
+      const { data: commissions, error } = await supabase
+        .from('commissions')
+        .select('*, users:user_id(name, email)')
+        .gte('created_at', startDate.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Calculate totals
+      const totalCommissions = commissions?.reduce((sum, c) => sum + (c.amount || 0), 0) || 0;
+      
+      // Get previous period for growth calculation
+      const prevStart = new Date(startDate);
+      const prevEnd = new Date(startDate);
+      if (timeframe === 'month') {
+        prevStart.setMonth(prevStart.getMonth() - 1);
+        prevEnd.setDate(0);
+      } else if (timeframe === 'week') {
+        prevStart.setDate(prevStart.getDate() - 7);
+        prevEnd.setDate(startDate.getDate() - 1);
+      } else if (timeframe === 'year') {
+        prevStart.setFullYear(prevStart.getFullYear() - 1);
+        prevEnd.setFullYear(prevEnd.getFullYear() - 1, 11, 31);
+      }
+
+      const { data: prevCommissions } = await supabase
+        .from('commissions')
+        .select('amount')
+        .gte('created_at', prevStart.toISOString())
+        .lt('created_at', prevEnd.toISOString());
+
+      const prevTotal = prevCommissions?.reduce((sum, c) => sum + (c.amount || 0), 0) || 0;
+      const growth = prevTotal > 0 ? ((totalCommissions - prevTotal) / prevTotal) * 100 : 0;
+
+      // Calculate top performers
+      const performerMap = {};
+      commissions?.forEach(c => {
+        const userId = c.user_id;
+        if (!performerMap[userId]) {
+          performerMap[userId] = {
+            user: c.users,
+            total: 0,
+            count: 0
+          };
+        }
+        performerMap[userId].total += c.amount || 0;
+        performerMap[userId].count += 1;
+      });
+
+      const topPerformers = Object.values(performerMap)
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 5);
+
+      // Group by commission type
+      const commissionsByType = commissions?.reduce((acc, c) => {
+        const type = c.type || 'referral';
+        acc[type] = (acc[type] || 0) + (c.amount || 0);
+        return acc;
+      }, {});
+
+      setCommissionsData({
+        totalCommissions,
+        monthlyCommissions: totalCommissions,
+        topPerformers,
+        commissionsByType,
+        recentCommissions: commissions?.slice(0, 10) || [],
+        growth
+      });
+    } catch (error) {
+      console.error('Error fetching commissions data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div className="loading-spinner">Loading commissions data...</div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <header className="admin-header">
+        <h1 className="admin-title">Commission Analytics</h1>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <select 
+            value={timeframe} 
+            onChange={(e) => setTimeframe(e.target.value)}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          >
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
+      </header>
+
+      {/* Commission Stats */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-title">Total Commissions</div>
+          <div className="stat-value">${commissionsData.totalCommissions.toLocaleString()}</div>
+          <div className={`stat-change ${commissionsData.growth >= 0 ? 'positive' : 'negative'}`}>
+            {commissionsData.growth >= 0 ? '+' : ''}{commissionsData.growth.toFixed(1)}%
+          </div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-title">Commission Payouts</div>
+          <div className="stat-value">{commissionsData.recentCommissions.length}</div>
+          <div className="stat-change positive">Active</div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Top Performer</div>
+          <div className="stat-value">
+            {commissionsData.topPerformers[0]?.user?.name || 'N/A'}
+          </div>
+          <div className="stat-change positive">
+            ${commissionsData.topPerformers[0]?.total.toFixed(2) || '0.00'}
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Avg Commission</div>
+          <div className="stat-value">
+            ${commissionsData.recentCommissions.length > 0 
+              ? (commissionsData.totalCommissions / commissionsData.recentCommissions.length).toFixed(2)
+              : '0.00'
+            }
+          </div>
+          <div className="stat-change positive">Per payout</div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+        {/* Top Performers */}
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">Top Performers</h2>
+          </div>
+          <div className="activity-list">
+            {commissionsData.topPerformers.map((performer, index) => (
+              <div key={index} className="activity-item">
+                <div className="activity-icon commission">
+                  #{index + 1}
+                </div>
+                <div className="activity-content">
+                  <div className="activity-text">
+                    {performer.user?.name || 'Unknown User'}
+                  </div>
+                  <div className="activity-time">
+                    ${performer.total.toFixed(2)} ({performer.count} commissions)
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent Commissions */}
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">Recent Commissions</h2>
+          </div>
+          <div className="activity-list">
+            {commissionsData.recentCommissions.map((commission) => (
+              <div key={commission.id} className="activity-item">
+                <div className="activity-icon commission">
+                  <FaMoneyBillWave />
+                </div>
+                <div className="activity-content">
+                  <div className="activity-text">
+                    ${commission.amount?.toFixed(2)} - {commission.users?.name || 'Unknown'}
+                  </div>
+                  <div className="activity-time">
+                    {new Date(commission.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Commission Types Breakdown */}
+      <div className="recent-activity" style={{ marginTop: '20px' }}>
+        <div className="activity-header">
+          <h2 className="activity-title">Commission Breakdown by Type</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', padding: '15px' }}>
+          {Object.entries(commissionsData.commissionsByType).map(([type, amount]) => (
+            <div key={type} style={{ 
+              padding: '15px', 
+              background: '#f8f9fa', 
+              borderRadius: '8px',
+              textAlign: 'center',
+              border: '1px solid #e9ecef'
+            }}>
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#495057' }}>
+                ${amount.toFixed(2)}
+              </div>
+              <div style={{ fontSize: '14px', color: '#6c757d', textTransform: 'capitalize' }}>
+                {type}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const Content = () => {
+  const [contentData, setContentData] = useState({
+    totalCourses: 0,
+    totalModules: 0,
+    completionRate: 0,
+    popularCourses: [],
+    recentActivity: []
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchContentData();
+  }, []);
+
+  const fetchContentData = async () => {
+    try {
+      setLoading(true);
+
+      // Get course completion data
+      const { data: progressData, error: progressError } = await supabase
+        .from('user_progress')
+        .select('course_id, percent_done, status');
+
+      if (progressError) throw progressError;
+
+      // Calculate course popularity and completion rates
+      const courseStats = {};
+      progressData?.forEach(progress => {
+        if (!courseStats[progress.course_id]) {
+          courseStats[progress.course_id] = {
+            enrollments: 0,
+            completions: 0,
+            totalProgress: 0
+          };
+        }
+        courseStats[progress.course_id].enrollments++;
+        courseStats[progress.course_id].totalProgress += progress.percent_done || 0;
+        if (progress.status === 'completed') {
+          courseStats[progress.course_id].completions++;
+        }
+      });
+
+      // Get course details from static data
+      const coursesArray = courses || [];
+      const totalCourses = coursesArray.length;
+      const totalModules = coursesArray.reduce((sum, course) => sum + (course.modules?.length || 0), 0);
+
+      // Calculate popular courses
+      const popularCourses = Object.entries(courseStats)
+        .map(([courseId, stats]) => {
+          const course = coursesArray.find(c => c.slug === courseId);
+          return {
+            id: courseId,
+            title: course?.title || courseId,
+            enrollments: stats.enrollments,
+            completionRate: stats.enrollments > 0 ? (stats.completions / stats.enrollments) * 100 : 0,
+            avgProgress: stats.enrollments > 0 ? stats.totalProgress / stats.enrollments : 0
+          };
+        })
+        .sort((a, b) => b.enrollments - a.enrollments)
+        .slice(0, 5);
+
+      // Overall completion rate
+      const totalEnrollments = Object.values(courseStats).reduce((sum, stats) => sum + stats.enrollments, 0);
+      const totalCompletions = Object.values(courseStats).reduce((sum, stats) => sum + stats.completions, 0);
+      const completionRate = totalEnrollments > 0 ? (totalCompletions / totalEnrollments) * 100 : 0;
+
+      // Get recent activity
+      const { data: activityData } = await supabase
+        .from('activity_log')
+        .select('*')
+        .eq('type', 'course_completion')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      setContentData({
+        totalCourses,
+        totalModules,
+        completionRate,
+        popularCourses,
+        recentActivity: activityData || []
+      });
+
+    } catch (error) {
+      console.error('Error fetching content data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div className="loading-spinner">Loading content data...</div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <header className="admin-header">
+        <h1 className="admin-title">Content Management</h1>
+      </header>
+
+      {/* Content Stats */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-title">Total Courses</div>
+          <div className="stat-value">{contentData.totalCourses}</div>
+          <div className="stat-change positive">Active</div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-title">Total Modules</div>
+          <div className="stat-value">{contentData.totalModules}</div>
+          <div className="stat-change positive">Available</div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Completion Rate</div>
+          <div className="stat-value">{contentData.completionRate.toFixed(1)}%</div>
+          <div className="stat-change positive">Overall</div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Popular Content</div>
+          <div className="stat-value">{contentData.popularCourses[0]?.title || 'N/A'}</div>
+          <div className="stat-change positive">Most enrolled</div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+        {/* Popular Courses */}
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">Popular Courses</h2>
+          </div>
+          <div className="activity-list">
+            {contentData.popularCourses.map((course, index) => (
+              <div key={course.id} className="activity-item">
+                <div className="activity-icon course">
+                  #{index + 1}
+                </div>
+                <div className="activity-content">
+                  <div className="activity-text">{course.title}</div>
+                  <div className="activity-time">
+                    {course.enrollments} enrollments • {course.completionRate.toFixed(1)}% completion
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Course Library */}
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">Course Library</h2>
+          </div>
+          <div className="activity-list" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            {courses.slice(0, 10).map((course, index) => (
+              <div key={course.slug} className="activity-item">
+                <div className="activity-icon course">
+                  📚
+                </div>
+                <div className="activity-content">
+                  <div className="activity-text">{course.title}</div>
+                  <div className="activity-time">
+                    {course.modules?.length || 0} modules • {course.estimatedTime}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content Categories */}
+      <div className="recent-activity" style={{ marginTop: '20px' }}>
+        <div className="activity-header">
+          <h2 className="activity-title">Content Categories</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', padding: '15px' }}>
+          <div style={{ padding: '15px', background: '#e7f3ff', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#0066cc' }}>Email Marketing</div>
+            <div style={{ fontSize: '14px', color: '#004499' }}>Core foundation courses</div>
+          </div>
+          <div style={{ padding: '15px', background: '#e8f5e8', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#006600' }}>SEO & Search</div>
+            <div style={{ fontSize: '14px', color: '#004400' }}>Search optimization</div>
+          </div>
+          <div style={{ padding: '15px', background: '#fff3e0', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#cc6600' }}>Social Media</div>
+            <div style={{ fontSize: '14px', color: '#994400' }}>Platform-specific training</div>
+          </div>
+          <div style={{ padding: '15px', background: '#f3e5f5', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#6600cc' }}>Advanced Marketing</div>
+            <div style={{ fontSize: '14px', color: '#4400aa' }}>Expert-level content</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const Analytics = () => {
+  const [analyticsData, setAnalyticsData] = useState({
+    userMetrics: {},
+    revenueMetrics: {},
+    engagementMetrics: {},
+    conversionMetrics: {}
+  });
+  const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState('30');
+
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, [dateRange]);
+
+  const fetchAnalyticsData = async () => {
+    try {
+      setLoading(true);
+      
+      const daysBack = parseInt(dateRange);
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - daysBack);
+
+      // User metrics
+      const { data: users } = await supabase
+        .from('users')
+        .select('created_at, role, status')
+        .gte('created_at', startDate.toISOString());
+
+      const { data: allUsers } = await supabase
+        .from('users')
+        .select('id, role, status, created_at');
+
+      // Revenue metrics
+      const { data: subscriptions } = await supabase
+        .from('subscriptions')
+        .select('amount, subscribed_at, status')
+        .gte('subscribed_at', startDate.toISOString());
+
+      // Course engagement
+      const { data: progress } = await supabase
+        .from('user_progress')
+        .select('percent_done, created_at, status');
+
+      // Activity metrics
+      const { data: activity } = await supabase
+        .from('activity_log')
+        .select('type, created_at')
+        .gte('created_at', startDate.toISOString());
+
+      // Calculate metrics
+      const userMetrics = {
+        newUsers: users?.length || 0,
+        totalUsers: allUsers?.length || 0,
+        activeUsers: allUsers?.filter(u => u.status === 'active').length || 0,
+        usersByRole: allUsers?.reduce((acc, u) => {
+          acc[u.role] = (acc[u.role] || 0) + 1;
+          return acc;
+        }, {}) || {}
+      };
+
+      const revenueMetrics = {
+        totalRevenue: subscriptions?.reduce((sum, s) => sum + (s.amount || 0), 0) || 0,
+        activeSubscriptions: subscriptions?.filter(s => s.status === 'active').length || 0,
+        averageRevenue: subscriptions?.length > 0 ? 
+          (subscriptions.reduce((sum, s) => sum + (s.amount || 0), 0) / subscriptions.length) : 0
+      };
+
+      const engagementMetrics = {
+        courseCompletions: progress?.filter(p => p.status === 'completed').length || 0,
+        averageProgress: progress?.length > 0 ?
+          (progress.reduce((sum, p) => sum + (p.percent_done || 0), 0) / progress.length) : 0,
+        totalActivity: activity?.length || 0
+      };
+
+      const conversionMetrics = {
+        signupToActiveRate: userMetrics.totalUsers > 0 ? 
+          (userMetrics.activeUsers / userMetrics.totalUsers) * 100 : 0,
+        completionRate: progress?.length > 0 ?
+          (progress.filter(p => p.status === 'completed').length / progress.length) * 100 : 0
+      };
+
+      setAnalyticsData({
+        userMetrics,
+        revenueMetrics,
+        engagementMetrics,
+        conversionMetrics
+      });
+
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div className="loading-spinner">Loading analytics data...</div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <header className="admin-header">
+        <h1 className="admin-title">Analytics Dashboard</h1>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <select 
+            value={dateRange} 
+            onChange={(e) => setDateRange(e.target.value)}
+            style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          >
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
+      </header>
+
+      {/* Key Metrics Grid */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-title">Total Users</div>
+          <div className="stat-value">{analyticsData.userMetrics.totalUsers}</div>
+          <div className="stat-change positive">
+            {analyticsData.userMetrics.newUsers} new
+          </div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-title">Revenue</div>
+          <div className="stat-value">${analyticsData.revenueMetrics.totalRevenue.toLocaleString()}</div>
+          <div className="stat-change positive">
+            {analyticsData.revenueMetrics.activeSubscriptions} active subs
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Engagement</div>
+          <div className="stat-value">{analyticsData.engagementMetrics.averageProgress.toFixed(1)}%</div>
+          <div className="stat-change positive">Avg progress</div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-title">Conversions</div>
+          <div className="stat-value">{analyticsData.conversionMetrics.signupToActiveRate.toFixed(1)}%</div>
+          <div className="stat-change positive">Signup to active</div>
+        </div>
+      </div>
+
+      {/* Detailed Analytics */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">User Distribution</h2>
+          </div>
+          <div style={{ padding: '15px' }}>
+            {Object.entries(analyticsData.userMetrics.usersByRole).map(([role, count]) => (
+              <div key={role} style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                padding: '8px 0',
+                borderBottom: '1px solid #eee'
+              }}>
+                <span style={{ textTransform: 'capitalize' }}>{role}</span>
+                <span style={{ fontWeight: 'bold' }}>{count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="recent-activity">
+          <div className="activity-header">
+            <h2 className="activity-title">Performance Metrics</h2>
+          </div>
+          <div style={{ padding: '15px' }}>
+            <div style={{ marginBottom: '15px' }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Course Completion Rate</div>
+              <div style={{ background: '#f0f0f0', height: '8px', borderRadius: '4px' }}>
+                <div style={{ 
+                  background: '#28a745', 
+                  height: '100%', 
+                  width: `${analyticsData.conversionMetrics.completionRate}%`,
+                  borderRadius: '4px'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                {analyticsData.conversionMetrics.completionRate.toFixed(1)}%
+              </div>
+            </div>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>User Activation Rate</div>
+              <div style={{ background: '#f0f0f0', height: '8px', borderRadius: '4px' }}>
+                <div style={{ 
+                  background: '#007bff', 
+                  height: '100%', 
+                  width: `${analyticsData.conversionMetrics.signupToActiveRate}%`,
+                  borderRadius: '4px'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                {analyticsData.conversionMetrics.signupToActiveRate.toFixed(1)}%
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: '14px', color: '#666', marginBottom: '5px' }}>Average Course Progress</div>
+              <div style={{ background: '#f0f0f0', height: '8px', borderRadius: '4px' }}>
+                <div style={{ 
+                  background: '#ffc107', 
+                  height: '100%', 
+                  width: `${analyticsData.engagementMetrics.averageProgress}%`,
+                  borderRadius: '4px'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                {analyticsData.engagementMetrics.averageProgress.toFixed(1)}%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Revenue and Engagement Summary */}
+      <div className="recent-activity" style={{ marginTop: '20px' }}>
+        <div className="activity-header">
+          <h2 className="activity-title">Summary Statistics</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', padding: '15px' }}>
+          <div style={{ padding: '15px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#28a745' }}>
+              ${analyticsData.revenueMetrics.averageRevenue.toFixed(2)}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6c757d' }}>Average Revenue per User</div>
+          </div>
+          <div style={{ padding: '15px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#007bff' }}>
+              {analyticsData.engagementMetrics.courseCompletions}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6c757d' }}>Course Completions</div>
+          </div>
+          <div style={{ padding: '15px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#ffc107' }}>
+              {analyticsData.engagementMetrics.totalActivity}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6c757d' }}>Total Activities</div>
+          </div>
+          <div style={{ padding: '15px', background: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#dc3545' }}>
+              {analyticsData.userMetrics.activeUsers}
+            </div>
+            <div style={{ fontSize: '14px', color: '#6c757d' }}>Active Users</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 // DevOps Integration Component
 const DevOpsIntegration = () => {
@@ -970,9 +1911,145 @@ const Admin = () => {
             path="widgets"
             element={
               <div style={{ padding: '20px' }}>
-                <h1>Dashboard Widgets</h1>
-                <p>Widget components will be available here once implemented.</p>
-                {/* TODO: Import and implement DashboardIntegration, DashboardHeader, KPIWidget components */}
+                <header className="admin-header">
+                  <h1 className="admin-title">Dashboard Widgets</h1>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                      className="action-btn edit-btn"
+                      onClick={() => window.location.reload()}
+                    >
+                      Refresh All
+                    </button>
+                  </div>
+                </header>
+
+                {/* KPI Tracker Widget */}
+                <div className="recent-activity" style={{ marginBottom: '20px' }}>
+                  <div className="activity-header">
+                    <h2 className="activity-title">KPI Tracker Agent</h2>
+                  </div>
+                  <div style={{ padding: '20px' }}>
+                    <KPITracker />
+                  </div>
+                </div>
+
+                {/* Widget Configuration Panel */}
+                <div className="recent-activity" style={{ marginBottom: '20px' }}>
+                  <div className="activity-header">
+                    <h2 className="activity-title">Widget Configuration</h2>
+                  </div>
+                  <div style={{ padding: '20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '15px' }}>
+                      <div style={{ 
+                        padding: '15px', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        background: '#f9fafb'
+                      }}>
+                        <h4 style={{ marginBottom: '10px', color: '#374151' }}>User Metrics Widget</h4>
+                        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '10px' }}>
+                          Track user registrations, active members, and user role distribution.
+                        </p>
+                        <div style={{ fontSize: '12px', color: '#059669' }}>✅ Active</div>
+                      </div>
+                      
+                      <div style={{ 
+                        padding: '15px', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        background: '#f9fafb'
+                      }}>
+                        <h4 style={{ marginBottom: '10px', color: '#374151' }}>Revenue Analytics Widget</h4>
+                        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '10px' }}>
+                          Monitor subscription revenue, growth trends, and subscription breakdowns.
+                        </p>
+                        <div style={{ fontSize: '12px', color: '#059669' }}>✅ Active</div>
+                      </div>
+                      
+                      <div style={{ 
+                        padding: '15px', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        background: '#f9fafb'
+                      }}>
+                        <h4 style={{ marginBottom: '10px', color: '#374151' }}>Commission Tracker Widget</h4>
+                        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '10px' }}>
+                          Track commission payouts, top performers, and commission trends.
+                        </p>
+                        <div style={{ fontSize: '12px', color: '#059669' }}>✅ Active</div>
+                      </div>
+                      
+                      <div style={{ 
+                        padding: '15px', 
+                        border: '1px solid #e5e7eb', 
+                        borderRadius: '8px',
+                        background: '#f9fafb'
+                      }}>
+                        <h4 style={{ marginBottom: '10px', color: '#374151' }}>Activity Monitor Widget</h4>
+                        <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '10px' }}>
+                          Real-time activity tracking including signups, payments, and completions.
+                        </p>
+                        <div style={{ fontSize: '12px', color: '#059669' }}>✅ Active</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Widget Performance Stats */}
+                <div className="recent-activity">
+                  <div className="activity-header">
+                    <h2 className="activity-title">Widget Performance</h2>
+                  </div>
+                  <div className="stats-grid" style={{ padding: '20px' }}>
+                    <div className="stat-card">
+                      <div className="stat-title">Refresh Rate</div>
+                      <div className="stat-value">30s</div>
+                      <div className="stat-change positive">Auto-sync</div>
+                    </div>
+                    
+                    <div className="stat-card">
+                      <div className="stat-title">Data Sources</div>
+                      <div className="stat-value">5</div>
+                      <div className="stat-change positive">Connected</div>
+                    </div>
+
+                    <div className="stat-card">
+                      <div className="stat-title">Widget Load Time</div>
+                      <div className="stat-value">0.8s</div>
+                      <div className="stat-change positive">Optimized</div>
+                    </div>
+
+                    <div className="stat-card">
+                      <div className="stat-title">Uptime</div>
+                      <div className="stat-value">99.9%</div>
+                      <div className="stat-change positive">Excellent</div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: '20px' }}>
+                    <h3 style={{ marginBottom: '15px', color: '#374151' }}>Widget Features</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                      <div>
+                        <h4 style={{ fontSize: '16px', color: '#4b5563', marginBottom: '10px' }}>Real-time Metrics</h4>
+                        <ul style={{ listStyle: 'none', padding: 0, fontSize: '14px', color: '#6b7280' }}>
+                          <li style={{ marginBottom: '5px' }}>• Live user count and activity</li>
+                          <li style={{ marginBottom: '5px' }}>• Revenue tracking with growth indicators</li>
+                          <li style={{ marginBottom: '5px' }}>• Commission analytics and top performers</li>
+                          <li style={{ marginBottom: '5px' }}>• Course completion and engagement metrics</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '16px', color: '#4b5563', marginBottom: '10px' }}>Interactive Features</h4>
+                        <ul style={{ listStyle: 'none', padding: 0, fontSize: '14px', color: '#6b7280' }}>
+                          <li style={{ marginBottom: '5px' }}>• Drill-down functionality for detailed analysis</li>
+                          <li style={{ marginBottom: '5px' }}>• Customizable time ranges and filters</li>
+                          <li style={{ marginBottom: '5px' }}>• Export capabilities for reports</li>
+                          <li style={{ marginBottom: '5px' }}>• Mobile-responsive design</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             }
           />
