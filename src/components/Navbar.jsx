@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaEye, FaTools } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -75,6 +75,17 @@ const Navbar = () => {
                 <span>Earn</span>
               </Link>
               
+              {/* New Product Links */}
+              <Link to="/ai-visibility-tracker" className="navbar-link" onClick={closeMobileMenu}>
+                <FaEye className="nav-icon" />
+                <span>AI Tracker</span>
+              </Link>
+              
+              <Link to="/command-center" className="navbar-link" onClick={closeMobileMenu}>
+                <FaTools className="nav-icon" />
+                <span>Command Center</span>
+              </Link>
+              
               <Link to="/training" className={getNavLinkClass('/support')} onClick={closeMobileMenu}>
                 <FaQuestionCircle className="nav-icon" />
                 <span>Support</span>
@@ -137,6 +148,16 @@ const Navbar = () => {
                   <Link to="/affiliate-centre" className={`mobile-nav-link ${getNavLinkClass('/earn')}`} onClick={closeMobileMenu}>
                     <FaDollarSign className="mobile-nav-icon" />
                     <span>Earn</span>
+                  </Link>
+                  
+                  <Link to="/ai-visibility-tracker" className="mobile-nav-link" onClick={closeMobileMenu}>
+                    <FaEye className="mobile-nav-icon" />
+                    <span>AI Tracker</span>
+                  </Link>
+                  
+                  <Link to="/command-center" className="mobile-nav-link" onClick={closeMobileMenu}>
+                    <FaTools className="mobile-nav-icon" />
+                    <span>Command Center</span>
                   </Link>
                   
                   <Link to="/training" className={`mobile-nav-link ${getNavLinkClass('/support')}`} onClick={closeMobileMenu}>

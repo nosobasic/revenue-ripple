@@ -27,7 +27,8 @@ import {
   FaBook, 
   FaChartLine, 
   FaBell,
-  FaRocket
+  FaRocket,
+  FaArrowRight
 } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -137,6 +138,42 @@ const Dashboard = () => {
       />
       <TestimonialCarousel />
       <AIAssistantWidget />
+
+      {/* Smart Notification Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+        color: 'white',
+        padding: '1rem 2rem',
+        textAlign: 'center',
+        margin: '0 2rem 1rem',
+        borderRadius: '8px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          opacity: 0.3
+        }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <strong>🎯 Pro Tip:</strong> Users with AI Visibility Tracking report 73% more referrals. 
+          <Link 
+            to="/ai-visibility-tracker" 
+            style={{ 
+              color: 'white', 
+              textDecoration: 'underline', 
+              fontWeight: 600,
+              marginLeft: '0.5rem'
+            }}
+          >
+            Check your AI visibility now →
+          </Link>
+        </div>
+      </div>
 
       {/* User Intent Welcome Message */}
       {userIntent && !showOnboarding && (
@@ -555,6 +592,111 @@ const Dashboard = () => {
 
           {/* Side Content - Right Side */}
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
+            {/* Smart Upsell Banner */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <FaRocket style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                🚀 Boost Your Visibility
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Are you invisible to AI? Track your business across ChatGPT, Perplexity & more
+              </p>
+              <Link
+                to="/ai-visibility-tracker"
+                style={{
+                  background: 'white',
+                  color: '#667eea',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                Start Free Trial <FaArrowRight />
+              </Link>
+            </div>
+
+            {/* Command Center Promo */}
+            <div style={{
+              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <MdDashboard style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                ⚡ Business Command Center
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Monitor all your business systems and catch issues before they cost you money
+              </p>
+              <Link
+                to="/command-center"
+                style={{
+                  background: 'white',
+                  color: '#059669',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                View Demo <FaArrowRight />
+              </Link>
+            </div>
+
+            {/* Affiliate Earnings Promo */}
+            <div style={{
+              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <FaMoneyBillWave style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                💰 Start Earning Monthly
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Get $47/month for every referral with our 100% commission affiliate program
+              </p>
+              <Link
+                to="/special"
+                style={{
+                  background: 'white',
+                  color: '#dc2626',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                Start Earning <FaArrowRight />
+              </Link>
+            </div>
+            
             <h2 className="section-overview-title mb-4 mt-2">Additional Tools & Advanced Training</h2>
             <div className="grid-layout">
               {/* Building Section */}

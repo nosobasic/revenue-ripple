@@ -53,6 +53,8 @@ import UnderstandingRelevance from './pages/training/guides/UnderstandingRelevan
 import WritingAdCopy from './pages/training/guides/WritingAdCopy';
 import SalesCopy from './pages/training/guides/SalesCopy';
 import CommandCenter from './pages/CommandCenter';
+import AIVisibilityTracker from './pages/AIVisibilityTracker';
+import ProductComparison from './pages/ProductComparison';
 
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
@@ -141,6 +143,8 @@ const App = () => {
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/command-center" element={<CommandCenter />} />
+        <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
+        <Route path="/compare" element={<ProductComparison />} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
