@@ -30,6 +30,7 @@ import {
   FaRocket,
   FaArrowRight
 } from 'react-icons/fa';
+import { MdDashboard } from 'react-icons/md';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
