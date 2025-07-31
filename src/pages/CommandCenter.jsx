@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../pages.css';
 import './CommandCenter.css';
@@ -30,6 +30,7 @@ const CommandCenter = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [spotsLeft, setSpotsLeft] = useState(100);
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsVisible(true);
@@ -42,8 +43,8 @@ const CommandCenter = () => {
   }, []);
 
   const handleJoinNow = () => {
-    // TODO: Implement checkout logic
-    alert('Command Center checkout coming soon!');
+    // Navigate to checkout with Command Center context
+    navigate('/checkout?product=command-center');
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
@@ -11,20 +11,21 @@ import {
   FaCheckCircle, 
   FaBrain, 
   FaLightbulb,
-  FaShield,
+  FaShieldAlt,
   FaCrown,
   FaFire,
-  FaTarget,
+  FaBullseye,
   FaStar
 } from 'react-icons/fa';
 import '../pages.css';
 
 export default function AIVisibilityTracker() {
   const [showDemo, setShowDemo] = useState(false);
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // TODO: Implement checkout/trial logic for AI Visibility Tracker
-    alert('AI Visibility Tracker checkout coming soon!');
+    // Navigate to checkout with AI Visibility Tracker context
+    navigate('/checkout?product=ai-tracker');
   };
 
   const features = [
@@ -44,12 +45,12 @@ export default function AIVisibilityTracker() {
       description: "Get personalized recommendations for improving your AI discoverability"
     },
     {
-      icon: FaTarget,
+      icon: FaBullseye,
       title: "Keyword Optimization",
       description: "Optimize your content for AI search algorithms with data-driven insights"
     },
     {
-      icon: FaShield,
+      icon: FaShieldAlt,
       title: "Brand Protection",
       description: "Monitor mentions and ensure accurate representation across AI platforms"
     },
@@ -425,7 +426,6 @@ export default function AIVisibilityTracker() {
                     borderRadius: '8px',
                     fontWeight: 600,
                     fontSize: '1rem',
-                    border: 'none',
                     cursor: 'pointer',
                     background: tier.popular ? '#2563eb' : 'transparent',
                     color: tier.popular ? 'white' : '#2563eb',

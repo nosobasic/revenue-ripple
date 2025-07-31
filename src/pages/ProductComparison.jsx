@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
@@ -16,10 +16,10 @@ import {
   FaCrown,
   FaStar,
   FaArrowRight,
-  FaShield,
+  FaShieldAlt,
   FaBrain,
   FaSearch,
-  FaTarget,
+  FaBullseye,
   FaLightbulb
 } from 'react-icons/fa';
 import '../pages.css';
@@ -27,6 +27,7 @@ import '../pages.css';
 export default function ProductComparison() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFAQ, setShowFAQ] = useState(false);
+  const navigate = useNavigate();
 
   const products = [
     {
@@ -444,7 +445,6 @@ export default function ProductComparison() {
                     borderRadius: '8px',
                     fontWeight: 600,
                     fontSize: '1rem',
-                    border: 'none',
                     cursor: 'pointer',
                     textDecoration: 'none',
                     display: 'inline-block',
@@ -616,13 +616,12 @@ export default function ProductComparison() {
                     borderRadius: '8px',
                     fontWeight: 600,
                     fontSize: '1rem',
-                    border: 'none',
                     cursor: 'pointer',
                     background: bundle.popular ? '#2563eb' : 'transparent',
                     color: bundle.popular ? 'white' : '#2563eb',
                     border: bundle.popular ? 'none' : '2px solid #2563eb'
                   }}
-                  onClick={() => alert('Bundle checkout coming soon!')}
+                  onClick={() => navigate('/checkout?product=bundle&bundle=' + bundle.name.toLowerCase().replace(/\s+/g, '-'))}
                 >
                   Get Bundle
                 </button>
