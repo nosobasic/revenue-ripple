@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
@@ -21,10 +21,11 @@ import '../pages.css';
 
 export default function AIVisibilityTracker() {
   const [showDemo, setShowDemo] = useState(false);
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    // TODO: Implement checkout/trial logic for AI Visibility Tracker
-    alert('AI Visibility Tracker checkout coming soon!');
+    // Navigate to checkout with AI tracker product context
+    navigate('/checkout?product=ai-visibility-tracker');
   };
 
   const features = [

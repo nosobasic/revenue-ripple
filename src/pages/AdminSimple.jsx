@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 import './admin.css';
 
 const AdminSimple = () => {
   const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState([]);
@@ -287,7 +289,7 @@ const AdminSimple = () => {
           }}>
             <div style={{ marginBottom: '10px', color: '#94a3b8' }}>Navigation Test:</div>
             <button 
-              onClick={() => window.location.href = '/dashboard'}
+              onClick={() => navigate('/dashboard')}
               className="admin-nav-item"
               style={{ 
                 background: 'none', 
@@ -301,7 +303,7 @@ const AdminSimple = () => {
               → Dashboard
             </button>
             <button 
-              onClick={() => window.location.href = '/admin'}
+              onClick={() => navigate('/admin')}
               className="admin-nav-item"
               style={{ 
                 background: 'none', 

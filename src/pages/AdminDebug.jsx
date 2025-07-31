@@ -61,7 +61,7 @@ const AdminDebug = () => {
         <h2 style={{ color: 'red' }}>No User Found</h2>
         <p>Please log in to access the admin panel.</p>
         <button 
-          onClick={() => window.location.href = '/login'}
+          onClick={() => navigate('/login')}
           style={{
             marginTop: '16px',
             padding: '8px 16px',

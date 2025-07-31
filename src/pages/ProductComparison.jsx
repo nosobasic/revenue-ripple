@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
@@ -27,6 +27,7 @@ import '../pages.css';
 export default function ProductComparison() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFAQ, setShowFAQ] = useState(false);
+  const navigate = useNavigate();
 
   const products = [
     {
@@ -622,7 +623,7 @@ export default function ProductComparison() {
                     color: bundle.popular ? 'white' : '#2563eb',
                     border: bundle.popular ? 'none' : '2px solid #2563eb'
                   }}
-                  onClick={() => alert('Bundle checkout coming soon!')}
+                  onClick={() => navigate('/checkout?product=bundle&bundle=' + bundle.name.toLowerCase().replace(/ /g, '-'))}
                 >
                   Get Bundle
                 </button>
