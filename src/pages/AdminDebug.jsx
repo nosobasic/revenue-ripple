@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const AdminDebug = () => {
@@ -185,33 +186,37 @@ const AdminDebug = () => {
               Test Connection
             </button>
             
-            <button 
+            <Link 
+              to="/admin"
               style={{
                 padding: '8px 16px',
                 background: '#3b82f6',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textDecoration: 'none',
+                display: 'inline-block'
               }}
-              onClick={() => window.location.href = '/admin'}
             >
               Go to Full Admin
-            </button>
+            </Link>
             
-            <button 
+            <Link 
+              to="/dashboard"
               style={{
                 padding: '8px 16px',
                 background: '#6b7280',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textDecoration: 'none',
+                display: 'inline-block'
               }}
-              onClick={() => window.location.href = '/dashboard'}
             >
               Back to Dashboard
-            </button>
+            </Link>
           </div>
         </div>
       </div>
