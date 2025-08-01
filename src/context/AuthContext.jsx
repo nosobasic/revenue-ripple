@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio"
         )
         .eq("id", authUser.id)
         .single();
@@ -115,6 +115,7 @@ export function AuthProvider({ children }) {
             phone: "",
             company: "",
             bio: "",
+            plan: "member"
           },
         ]);
 
@@ -140,6 +141,8 @@ export function AuthProvider({ children }) {
           email,
           password,
         });
+
+
 
       if (authError) throw authError;
       if (!authData.user)
@@ -174,57 +177,91 @@ export function AuthProvider({ children }) {
   }
 
   async function updateUserProfile(profileData) {
-    try {
-      if (!user) throw new Error("No user logged in");
+  try {
+    if (!user) throw new Error("No user logged in");
 
-      // Only update fields that exist in the database
-      const updateData = {};
-      if (profileData.name !== undefined) updateData.name = profileData.name;
-      if (profileData.email !== undefined) updateData.email = profileData.email;
-      if (profileData.phone !== undefined) updateData.phone = profileData.phone;
-      if (profileData.company !== undefined) updateData.company = profileData.company;
-      if (profileData.bio !== undefined) updateData.bio = profileData.bio;
-      
-      // Add updated_at timestamp
-      updateData.updated_at = new Date().toISOString();
+    // Prepare data for the users table
+    const updateData = {};
+    if (profileData.name !== undefined) updateData.name = profileData.name;
+    if (profileData.phone !== undefined) updateData.phone = profileData.phone;
+    if (profileData.company !== undefined) updateData.company = profileData.company;
+    if (profileData.bio !== undefined) updateData.bio = profileData.bio;
 
-      console.log('Updating user profile with data:', updateData);
+    console.log('Updating user profile with data:', updateData);
 
-      // Update the user's data in Supabase
-      const { error } = await supabase
-        .from("users")
-        .update(updateData)
-        .eq("id", user.id);
-
-      if (error) {
-        console.error("Supabase update error:", error);
-        throw error;
-      }
-
-      // Update the local user state
-      setUser((prev) => ({
-        ...prev,
-        ...updateData,
-      }));
-
-      return true;
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
-    }
-  }
-
-  async function resetPassword(email) {
-    try {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login`,
+    // Handle email update separately if provided
+    if (profileData.email !== undefined && profileData.email !== user.email) {
+      const { error: authError } = await supabase.auth.updateUser({
+        email: profileData.email,
       });
-      if (error) throw error;
-      return data;
-    } catch (error) {
+      if (authError) {
+        console.error("Error updating auth email:", authError);
+        throw authError;
+      }
+      updateData.email = profileData.email; // Update email in users table as well
+    }
+
+    // Check if there are any fields to update
+    if (Object.keys(updateData).length === 0) {
+      console.log("No changes to update");
+      return true; // No changes to save
+    }
+
+    console.log("userId====", user.id)
+
+    // Update the user's data in Supabase
+    const r = await supabase
+      .from("users")
+      .update(updateData)
+      .eq("id", user.id);
+    console.log('update response',r)
+    if (r.error) {
+      console.error("Supabase update error:", error);
       throw error;
     }
+
+    // Update the local user state
+    setUser((prev) => ({
+      ...prev,
+      ...updateData,
+    }));
+
+    return true;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
   }
+}
+
+async function resetPassword(email) {
+  try {
+    // Step 1: Query the users table
+    const { data, error } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .limit(1);
+
+    if (error) throw error;
+
+    // If no user found
+    if (!data || data.length === 0) {
+      throw new Error("No account found with this email address.");
+    }
+
+    // Step 2: Trigger password reset
+    const { data: resetData, error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (resetError) throw resetError;
+
+    return resetData;
+  } catch (error) {
+    throw error;
+  }
+}
+
 
   const value = {
     user,
