@@ -4,10 +4,10 @@ import Navbar from '../../../components/Navbar';
 import { courses } from '../../../data/courses';
 import '../../../pages.css';
 
-const course = courses.find(c => c.slug === 'shoestring-startups');
+const course = courses.find(c => c.slug === 'mindset-mastery');
 const modules = course ? course.modules : [];
 
-const ShoestringStartups = () => {
+const MindsetMastery = () => {
   const [expandedSections, setExpandedSections] = React.useState({
     intro: true, // Start with intro expanded
     workbook: false,
@@ -26,7 +26,7 @@ const ShoestringStartups = () => {
       <Navbar />
       <header className="dashboard-header">
         <div className="container">
-          <h1 className="dashboard-title">SHOESTRING STARTUPS</h1>
+          <h1 className="dashboard-title">MINDSET MASTERY</h1>
           <div className="dashboard-welcome">Guest Expert Video Series</div>
         </div>
       </header>
@@ -66,19 +66,19 @@ const ShoestringStartups = () => {
                       <div className="video-description">
                         <h3>About This Video</h3>
                         <p>
-                          Launching on a tight budget? This guide walks you through how to get up and running with damn near nothing—and still win. Learn proven strategies for building successful startups without breaking the bank.
+                          The Inner Game: Rewiring the Entrepreneurial Mindset. Master the mental game of entrepreneurship by reprogramming your operating system and building daily rhythms that compound. Learn how to develop the mindset, habits, and mental frameworks that separate successful entrepreneurs from the rest.
                         </p>
                         <h3>What You'll Learn</h3>
                         <ul>
-                          <li>How to start a business with minimal resources</li>
-                          <li>Creative ways to save money and maximize impact</li>
-                          <li>Stories of successful shoestring startups</li>
-                          <li>Essential tools and strategies for lean launches</li>
-                          <li>How to scale your business while keeping costs low</li>
+                          <li>How to reprogram your mental operating system for success</li>
+                          <li>Building daily rhythms that create compounding momentum</li>
+                          <li>Identity, beliefs, and behavior transformation</li>
+                          <li>Momentum over motivation strategies</li>
+                          <li>How to build lasting habits and maintain consistency</li>
                         </ul>
                         <h3>Expert Bio</h3>
                         <p>
-                          Mike Rodriguez is a serial entrepreneur and startup advisor who has built multiple businesses from the ground up with limited resources. Having launched three successful companies with less than $5,000 each, Mike has proven that you don't need a big budget to win. He's helped over 200 entrepreneurs launch their businesses and has been featured in major publications for his innovative approach to lean startup methodology.
+                          Dr. Sarah Chen is a renowned psychologist and business coach specializing in entrepreneurial mindset development. With over 15 years of experience working with high-performing entrepreneurs, Sarah has helped hundreds of business owners develop the mental frameworks needed for long-term success. She holds a PhD in Psychology and has been featured in major publications for her innovative approach to mindset training in business contexts.
                         </p>
                       </div>
                     </div>
@@ -106,14 +106,14 @@ const ShoestringStartups = () => {
                       color: 'white',
                       textAlign: 'center'
                     }}>
-                      <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>📚 Download Your Startup Workbook</h3>
+                      <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>📚 Download Your Mindset Mastery Worksheet</h3>
                       <p style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
-                        Get your hands on our comprehensive startup workbook. 
-                        This interactive guide includes lean startup worksheets, budget templates, 
-                        and exercises to help you launch your business on a shoestring budget.
+                        Get your hands on our comprehensive mindset mastery worksheet. 
+                        This interactive guide includes mindset exercises, habit tracking templates, 
+                        and frameworks to help you develop the mental game of entrepreneurship.
                       </p>
                       <a 
-                        href="/assets/downloads/shoestring-startups-workbook.docx" 
+                        href="/assets/downloads/Mindset_Mastery_Worksheet.docx" 
                         download
                         style={{
                           display: 'inline-block',
@@ -135,7 +135,7 @@ const ShoestringStartups = () => {
                           e.target.style.transform = 'translateY(0)';
                         }}
                       >
-                        📥 Download Startup Workbook (DOCX)
+                        📥 Download Mindset Mastery Worksheet (DOCX)
                       </a>
                       <p style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
                         Free download • No registration required
@@ -193,9 +193,9 @@ const ShoestringStartups = () => {
                   <h4>Entrepreneurial Brainstorming</h4>
                   <p>Discover how top-performing entrepreneurs transform everyday experiences into million-dollar ideas...</p>
                 </Link>
-                <Link to="/training/videos/mindset-mastery" className="related-video-item">
-                  <h4>Mindset Mastery</h4>
-                  <p>Master the mental game of entrepreneurship. Learn how to develop the mindset...</p>
+                <Link to="/training/videos/shoestring-startups" className="related-video-item">
+                  <h4>Shoestring Startups</h4>
+                  <p>Launching on a tight budget? This guide walks you through how to get up and running...</p>
                 </Link>
               </div>
             </div>
@@ -244,4 +244,4 @@ const ShoestringStartups = () => {
   );
 };
 
-export default ShoestringStartups; 
+export default MindsetMastery; 

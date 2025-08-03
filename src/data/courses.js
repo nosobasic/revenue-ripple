@@ -1332,5 +1332,76 @@ export const courses = [
         }
       }
     ]
+  },
+  {
+    slug: 'mindset-mastery',
+    title: 'Mindset Mastery',
+    description: 'Master the mental game of entrepreneurship. Learn how to develop the mindset, habits, and mental frameworks that separate successful entrepreneurs from the rest.',
+    estimatedTime: '10-15 minutes',
+    introVideo: {
+      vimeoId: '1106870211',
+      duration: '2:30',
+      thumbnail: 'https://vumbnail.com/000000029.jpg',
+      title: 'The Inner Game: Rewiring the Entrepreneurial Mindset'
+    },
+    modules: [
+      {
+        id: 1,
+        title: 'Reprogramming Your Operating System: Identity, Beliefs & Behavior',
+        description: 'Learn how to reprogram your mental operating system for entrepreneurial success.',
+        video: { vimeoId: '1106884492', duration: '3:35', thumbnail: 'https://vumbnail.com/999999998.jpg' }
+      },
+      {
+        id: 2,
+        title: 'Momentum Over Motivation: Building Daily Rhythm That Compounds',
+        description: 'Develop daily rhythms and habits that create compounding momentum in your business.',
+        video: { vimeoId: '1106930999', duration: '10:00', thumbnail: 'https://vumbnail.com/999999998.jpg' }
+      },
+
+    ]
+  },
+  {
+    slug: 'shoestring-startups',
+    title: 'Shoestring Startups',
+    description: 'Launching on a tight budget? This guide walks you through how to get up and running with damn near nothing—and still win.',
+    estimatedTime: '1-2 hours',
+    introVideo: {
+      vimeoId: '1096000000',
+      duration: '2:00',
+      thumbnail: 'https://vumbnail.com/999999997.jpg',
+      title: 'Start Smart, Scale Fast'
+    },
+    modules: [
+      {
+        id: 1,
+        title: 'Lean Startup Methodology',
+        description: 'Learn how to validate ideas quickly with minimal resources.',
+        video: { vimeoId: '1096000001', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 2,
+        title: 'Bootstrap Marketing',
+        description: 'Creative marketing strategies that don\'t require a big budget.',
+        video: { vimeoId: '1096000002', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 3,
+        title: 'Essential Tools & Resources',
+        description: 'Must-have tools and resources for lean startups.',
+        video: { vimeoId: '1096000003', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 4,
+        title: 'Funding Alternatives',
+        description: 'Creative ways to fund your startup without traditional investors.',
+        video: { vimeoId: '1096000004', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 5,
+        title: 'Scaling on a Budget',
+        description: 'How to scale your business while keeping costs low.',
+        video: { vimeoId: '1096000005', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      }
+    ]
   }
 ]; 

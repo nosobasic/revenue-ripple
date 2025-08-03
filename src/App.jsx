@@ -30,7 +30,7 @@ import SpecialInvite from './pages/SpecialInvite';
 import ResellerCheckout from './pages/ResellerCheckout';
 import ResellerTrial from './pages/ResellerTrial';
 import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
-import BulletproofBranding from './pages/training/videos/BulletproofBranding';
+import MindsetMastery from './pages/training/videos/MindsetMastery';
 import ShoestringStartups from './pages/training/videos/ShoestringStartups';
 import AdwordsQualityScore from './pages/training/guides/AdwordsQualityScore';
 import AnalyzingData from './pages/training/guides/AnalyzingData';
@@ -118,7 +118,7 @@ const App = () => {
         </ProtectedRoute>} />
 
         <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
-        <Route path="/training/videos/bulletproof-branding" element={<ProtectedRoute><BulletproofBranding /></ProtectedRoute>} />
+        <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
         <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
         <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
         <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />

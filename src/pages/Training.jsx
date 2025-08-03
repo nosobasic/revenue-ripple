@@ -105,11 +105,11 @@ const Training = () => {
                   className={`course-item ${expandedSection === 'branding' ? 'expanded' : ''}`}
                   onClick={() => toggleSection('branding')}
                 >
-                  <h3>Bulletproof Branding</h3>
+                                      <h3>Mindset Mastery</h3>
                   {expandedSection === 'branding' && (
-                    <div className="course-details">
-                      <p>Your brand is your reputation. Learn how to build one that hits hard and sticks with people long after they scroll past.</p>
-                      <Link to="/training/videos/bulletproof-branding" className="cta-link">
+                                          <div className="course-details">
+                        <p>Master the mental game of entrepreneurship. Learn how to develop the mindset, habits, and mental frameworks that separate successful entrepreneurs from the rest.</p>
+                      <Link to="/training/videos/mindset-mastery" className="cta-link">
                         Watch Now →
                       </Link>
                     </div>
