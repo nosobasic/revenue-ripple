@@ -238,6 +238,45 @@ const EntrepreneurialBrainstorming = () => {
           background: white;
           padding: 1.5rem;
         }
+
+        .related-videos {
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .related-video-item {
+          display: block;
+          padding: 1.25rem;
+          background: white;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          text-decoration: none;
+          color: inherit;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-video-item:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          border-color: #3b82f6;
+        }
+
+        .related-video-item h4 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1e293b;
+          margin: 0 0 0.75rem 0;
+          line-height: 1.3;
+        }
+
+        .related-video-item p {
+          font-size: 0.9rem;
+          color: #64748b;
+          margin: 0;
+          line-height: 1.5;
+        }
       `}</style>
     </div>
   );
