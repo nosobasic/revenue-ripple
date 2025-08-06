@@ -12,30 +12,45 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-//   const [sessionRestored, setSessionRestored] = useState(false);
+//   const [accessToken, setAccessToken] = useState("");
+//   const [refreshToken, setRefreshToken] = useState("");
 
-// useEffect(() => {
-//   const updateSessionFromURL = async () => {
-//     const hash = window.location.hash;
-//     const access_token = new URLSearchParams(hash.substring(1)).get('access_token');
-//     const refresh_token = new URLSearchParams(hash.substring(1)).get('refresh_token');
+  const fullUrl = window.location.href;
 
-//     if (!access_token || !refresh_token) {
-//       setError('Invalid or missing reset token.');
-//       return;
-//     }
+  console.log("fullURL=========",fullUrl);
 
-//     const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+//   console.log("accessToken=", accessToken, "refreshToken=",refreshToken)
+  
 
-//     if (error) {
-//       setError('Could not restore session. Please try the reset link again.');
-//     } else {
-//       setSessionRestored(true);
-//     }
-//   };
+  useEffect(() => {
+    const restoreSessionFromHash = async () => {
+      const hash = window.location.hash.substring(1); // remove the #
+      const params = new URLSearchParams(hash);
 
-//   updateSessionFromURL();
-// }, []);
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+
+        if (error) {
+          setError('Could not restore session.');
+          console.error(error);
+        } else {
+          console.log('✅ Session restored!', data);
+        }
+      } else {
+        console.warn('⚠️ Tokens missing in URL fragment');
+      }
+
+    //   setSessionLoading(false);
+    };
+
+    restoreSessionFromHash();
+  }, []);
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
