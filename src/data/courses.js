@@ -1364,44 +1364,33 @@ export const courses = [
     slug: 'shoestring-startups',
     title: 'Shoestring Startups',
     description: 'Launching on a tight budget? This guide walks you through how to get up and running with damn near nothing—and still win.',
-    estimatedTime: '1-2 hours',
+    estimatedTime: '10-15 minutes',
     introVideo: {
-      vimeoId: '1096000000',
-      duration: '2:00',
+      vimeoId: '1107105777',
+      duration: '3:15',
       thumbnail: 'https://vumbnail.com/999999997.jpg',
-      title: 'Start Smart, Scale Fast'
+      title: 'Escape the Grind'
     },
     modules: [
       {
         id: 1,
-        title: 'Lean Startup Methodology',
-        description: 'Learn how to validate ideas quickly with minimal resources.',
-        video: { vimeoId: '1096000001', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+        title: 'The Freedom-First Model',
+        description: 'Learn how to build a business that gives you the freedom to live your life.',
+        video: { vimeoId: '1107126423', duration: '2:57', thumbnail: 'https://vumbnail.com/999999997.jpg' }
       },
       {
         id: 2,
-        title: 'Bootstrap Marketing',
-        description: 'Creative marketing strategies that don\'t require a big budget.',
-        video: { vimeoId: '1096000002', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+        title: 'Systems Over Stress',
+        description: 'Learn how to build systems that reduce stress and increase productivity.',
+        video: { vimeoId: '1107569965', duration: '3:48', thumbnail: 'https://vumbnail.com/999999997.jpg' }
       },
       {
         id: 3,
-        title: 'Essential Tools & Resources',
-        description: 'Must-have tools and resources for lean startups.',
-        video: { vimeoId: '1096000003', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+        title: 'Build the Machine',
+        description: 'Learn how to build the machine that will run your business.',
+        video: { vimeoId: '1107873740', duration: '3:07', thumbnail: 'https://vumbnail.com/999999997.jpg' }
       },
-      {
-        id: 4,
-        title: 'Funding Alternatives',
-        description: 'Creative ways to fund your startup without traditional investors.',
-        video: { vimeoId: '1096000004', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
-      },
-      {
-        id: 5,
-        title: 'Scaling on a Budget',
-        description: 'How to scale your business while keeping costs low.',
-        video: { vimeoId: '1096000005', duration: '10:00', thumbnail: 'https://vumbnail.com/999999997.jpg' }
-      }
+
     ]
   }
 ]; 

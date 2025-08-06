@@ -106,14 +106,14 @@ const ShoestringStartups = () => {
                       color: 'white',
                       textAlign: 'center'
                     }}>
-                      <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>📚 Download Your Startup Workbook</h3>
+                      <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>📚 Download Your Shoestring Startup Worksheet</h3>
                       <p style={{ marginBottom: '1.5rem', opacity: 0.9 }}>
-                        Get your hands on our comprehensive startup workbook. 
+                        Get your hands on our comprehensive shoestring startup worksheet. 
                         This interactive guide includes lean startup worksheets, budget templates, 
                         and exercises to help you launch your business on a shoestring budget.
                       </p>
                       <a 
-                        href="/assets/downloads/shoestring-startups-workbook.docx" 
+                        href="/assets/downloads/Shoestring_Startup_Worksheet.docx" 
                         download
                         style={{
                           display: 'inline-block',
@@ -135,7 +135,7 @@ const ShoestringStartups = () => {
                           e.target.style.transform = 'translateY(0)';
                         }}
                       >
-                        📥 Download Startup Workbook (DOCX)
+                        📥 Download Shoestring Startup Worksheet (DOCX)
                       </a>
                       <p style={{ marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
                         Free download • No registration required
