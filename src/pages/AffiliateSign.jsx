@@ -42,26 +42,30 @@ export default function AffiliateSign() {
         formData.email,
         formData.password,
         formData.firstName,
-        formData.lastName
+        formData.lastName,
+        "affiliate"
       );
+
 
       if (authError) throw authError;
 
-      // Create affiliate profile
-      const { error: profileError } = await supabase
-        .from('users')
-        .update({
-          role: 'affiliate',
-          contact_email: formData.contactEmail,
-          paypal_email: formData.paypal,
-          commission_rate: 50 // Default commission rate
-        })
-        .eq('id', authData.user.id);
+      // // Create affiliate profile
+      // const { error: profileError } = await supabase
+      //   .from('users')
+      //   .update({
+      //     role: 'affiliate',
+      //     contact_email: formData.contactEmail,
+      //     paypal_email: formData.paypal,
+      //     commission_rate: 50 // Default commission rate
+      //   })
+      //   .eq('id', authData.user.id);
 
-      if (profileError) throw profileError;
+      //   console.log("profileError=====",profileError)
+
+      // if (profileError) throw profileError;
 
       // Redirect to special invite page
-      navigate('/special-invite');
+      navigate('/affiliate-login');
     } catch (err) {
       setError(err.message);
     } finally {

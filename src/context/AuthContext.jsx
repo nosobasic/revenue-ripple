@@ -91,7 +91,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  async function signup(email, password, name) {
+  async function signup(email, password, firstName, lastName ,role) {
     try {
       setLoading(true);
       
@@ -99,7 +99,7 @@ export function AuthProvider({ children }) {
         email,
         password,
       });
-
+      console.log("authData==",authData, "authError==",authError)
       if (authError) throw authError;
 
       // Create a user document in Supabase
@@ -107,15 +107,15 @@ export function AuthProvider({ children }) {
         const { error: userError } = await supabase.from("users").insert([
           {
             id: authData.user.id,
-            name,
+            name: firstName + " " + lastName,
             email,
-            role: "member",
+            role: role,
             status: "active",
             created_at: new Date().toISOString(),
             phone: "",
             company: "",
             bio: "",
-            plan: "member"
+            plan: ""
           },
         ]);
 

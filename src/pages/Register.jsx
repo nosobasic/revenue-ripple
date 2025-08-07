@@ -33,7 +33,7 @@ export default function Register() {
     }
 
     try {
-      await signup(email, password, firstName, lastName);
+      await signup(email, password, firstName, lastName,"member");
       alert('Registration successful! Please check your email for verification.');
       navigate('/login');
     } catch (error) {

@@ -12,44 +12,51 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-//   const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
 //   const [refreshToken, setRefreshToken] = useState("");
 
   const fullUrl = window.location.href;
 
   console.log("fullURL=========",fullUrl);
 
-//   console.log("accessToken=", accessToken, "refreshToken=",refreshToken)
-  
 
   useEffect(() => {
-    const restoreSessionFromHash = async () => {
-      const hash = window.location.hash.substring(1); // remove the #
-      const params = new URLSearchParams(hash);
-
-      const access_token = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
-
-      if (access_token && refresh_token) {
-        const { data, error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
+    const handleAuthCallback = async () => {
+      try {
+        // This will automatically parse the URL fragments and set the session
+        const { data, error } = await supabase.auth.getSession();
+        
         if (error) {
-          setError('Could not restore session.');
-          console.error(error);
-        } else {
-          console.log('✅ Session restored!', data);
+          console.error('Auth callback error:', error);
+          setError('Invalid or expired reset link.');
+          return;
         }
-      } else {
-        console.warn('⚠️ Tokens missing in URL fragment');
-      }
 
-    //   setSessionLoading(false);
+        // If no session from URL, try to get it from the hash
+        if (!data.session) {
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          
+          if (accessToken && refreshToken) {
+            const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            
+            if (sessionError) {
+              console.error('Session error:', sessionError);
+              setError('Failed to establish session from reset link.');
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Auth setup error:', err);
+        setError('Failed to process reset link.');
+      }
     };
 
-    restoreSessionFromHash();
+    handleAuthCallback();
   }, []);
 
   const handleResetPassword = async (e) => {
@@ -74,14 +81,22 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      throw new Error('No authenticated user found. Please check your reset link.');
+    }
       const { data ,error } = await supabase.auth.updateUser({ password: newPassword });
 
 console.log("DATA", data, "inside try error", error)
 
       if (error) throw error;
-
-      setMessage('Password updated successfully. Redirecting to login...');
-      setTimeout(() => navigate('/login'), 2000);
+if(data.user){
+  
+      alert('Password updated successfully. Redirecting to login...');
+      localStorage.removeItem('revenue-ripple-auth-token');
+      navigate('/login')
+}
     } catch (err) {
         console.log("Eroorrr", err)
       setError(err.message || 'Failed to update password.');
