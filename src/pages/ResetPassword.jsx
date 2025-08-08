@@ -12,14 +12,6 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const [accessToken, setAccessToken] = useState("");
-//   const [refreshToken, setRefreshToken] = useState("");
-
-  const fullUrl = window.location.href;
-
-  console.log("fullURL=========",fullUrl);
-
-
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {

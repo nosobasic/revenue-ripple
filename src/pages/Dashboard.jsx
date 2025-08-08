@@ -207,7 +207,7 @@ const Dashboard = () => {
         <header className="dashboard-header">
           <div className="container">
             <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
-            <p className="dashboard-welcome">Hello, Good To See You {user?.email?.split('@')[0]?.toUpperCase()}</p>
+            <p className="dashboard-welcome">Hello, Good To See You {user?.name?.toUpperCase()}</p>
           </div>
         </header>
 
