@@ -38,13 +38,13 @@ export default defineConfig({
     assetsInlineLimit: 4096, // 4kb - files smaller than this will be inlined
     
     // Minification options
-    minify: 'terser',
-    terserOptions: {
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : 'esbuild',
+    terserOptions: process.env.NODE_ENV === 'production' ? {
       compress: {
-        drop_console: process.env.NODE_ENV === 'production',
-        drop_debugger: process.env.NODE_ENV === 'production'
+        drop_console: true,
+        drop_debugger: true
       }
-    }
+    } : undefined
   },
   
   // Optimize deps
