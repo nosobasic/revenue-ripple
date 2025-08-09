@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { logger } from '../config/constants';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = React.memo(() => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
       navigate('/');
     } catch (error) {
-      console.error('Failed to log out:', error);
+      logger.error('Failed to log out:', error);
     }
-  };
+  }, [logout, navigate]);
 
-  const isActive = (path) => {
+  const isActive = useCallback((path) => {
     if (path === '/learn') {
       return location.pathname.includes('/courses') || location.pathname.includes('/training');
     }
@@ -30,19 +31,27 @@ const Navbar = () => {
       return location.pathname.includes('/affiliate');
     }
     return location.pathname === path;
-  };
+  }, [location.pathname]);
 
-  const getNavLinkClass = (path) => {
+  const getNavLinkClass = useCallback((path) => {
     return `navbar-link ${isActive(path) ? 'active' : ''}`;
-  };
+  }, [isActive]);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
-  };
+  }, []);
+
+  // Memoize navigation items
+  const navItems = useMemo(() => [
+    { path: '/progress', icon: FaChartLine, label: 'Progress' },
+    { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
+    { path: '/earn', icon: FaDollarSign, label: 'Earn' },
+    { path: '/support', icon: FaQuestionCircle, label: 'Support' }
+  ], []);
 
   return (
     <nav className="navbar">
@@ -172,6 +181,8 @@ const Navbar = () => {
       )}
     </nav>
   );
-};
+});
+
+Navbar.displayName = 'Navbar';
 
 export default Navbar; 

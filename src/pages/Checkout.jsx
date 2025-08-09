@@ -3,16 +3,17 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
 import PayPalButton from '../components/PayPalButton';
+import { STRIPE_CONFIG, API_ENDPOINTS, logger } from '../config/constants';
 import './checkout.css';
 
 // Initialize Stripe
-const stripePromise = loadStripe('pk_live_51RHozW2Ku9STqdAd7SjnK80bA8oxhPHCPybzZijyDi0wnpyO1siIK4cZRHOXxTNf5t2BKamwVluDpyyehhGUaxWO00oVepQ2bf');
+const stripePromise = loadStripe(STRIPE_CONFIG.PUBLIC_KEY);
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/create-payment-intent`, {
+    fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.PAYMENT_INTENT}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
@@ -21,7 +22,7 @@ export default function Checkout() {
       .then((data) => setClientSecret(data.clientSecret))
       .catch((error) => {
         setClientSecret(null);
-        console.error('Stripe error:', error);
+        logger.error('Stripe error:', error);
       });
   }, []);
 
