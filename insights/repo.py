@@ -12,6 +12,7 @@ from contextlib import contextmanager
 import psycopg
 from psycopg.rows import dict_row
 from .models import PromptOut
+from datetime import date
 
 logger = logging.getLogger(__name__)
 
@@ -338,6 +339,160 @@ class InsightsRepository:
                     
         except Exception as e:
             logger.error(f"Error incrementing usage for prompt {prompt_id}: {e}")
+            raise
+
+    def fetch_competitors(self, user_id: str, industry: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Fetch competitors for a specific user with optional filtering
+        
+        Args:
+            user_id: The user ID to get competitors for
+            industry: Optional industry filter
+            limit: Maximum number of competitors to return (default 50, max 250)
+            
+        Returns:
+            List of competitor dictionaries
+        """
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    # Build the base query
+                    query = """
+                        SELECT 
+                            id, user_id, name, industry, website, 
+                            last_seen, score
+                        FROM competitors 
+                        WHERE user_id = %s
+                    """
+                    
+                    params = [user_id]
+                    
+                    # Add industry filter if provided
+                    if industry:
+                        query += " AND LOWER(industry) = LOWER(%s)"
+                        params.append(industry)
+                    
+                    # Add ordering and limit
+                    query += " ORDER BY last_seen DESC LIMIT %s"
+                    params.append(limit)
+                    
+                    # Execute query
+                    cur.execute(query, params)
+                    rows = cur.fetchall()
+                    
+                    # Convert to list of dictionaries
+                    competitors = []
+                    for row in rows:
+                        try:
+                            competitors.append(dict(row))
+                        except Exception as e:
+                            logger.warning(f"Failed to parse competitor row {row.get('id')}: {e}")
+                            continue
+                    
+                    return competitors
+                    
+        except Exception as e:
+            logger.error(f"Error fetching competitors for user {user_id}: {e}")
+            raise
+
+    def fetch_analytics(self, user_id: str, business_id: Optional[str], 
+                       from_dt: date, to_dt: date, group_by: str, 
+                       metric_keys: List[str]) -> Dict[str, Any]:
+        """
+        Fetch analytics data for a specific user with time-series grouping
+        
+        Args:
+            user_id: The user ID to get analytics for
+            business_id: Optional business ID filter
+            from_dt: Start date for the analytics window
+            to_dt: End date for the analytics window
+            group_by: Grouping period ('day', 'week', 'month')
+            metric_keys: List of metrics to include in the response
+            
+        Returns:
+            Dictionary with 'rows' and 'totals' keys
+        """
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    # Build dynamic SELECT clause for requested metrics
+                    metric_columns = []
+                    for metric in metric_keys:
+                        if metric in ['impressions', 'clicks', 'conversions', 'rev']:
+                            metric_columns.append(f"SUM({metric}) as {metric}")
+                    
+                    if not metric_columns:
+                        # Default to all metrics if none specified
+                        metric_columns = [
+                            "SUM(impressions) as impressions",
+                            "SUM(clicks) as clicks", 
+                            "SUM(conversions) as conversions",
+                            "SUM(rev) as rev"
+                        ]
+                    
+                    # Build the main query for time-series data
+                    query = f"""
+                        SELECT 
+                            date_trunc(%s, occurred_at) as period_start,
+                            date_trunc(%s, occurred_at) + interval '1 {group_by}' as period_end,
+                            {', '.join(metric_columns)}
+                        FROM analytics_events 
+                        WHERE user_id = %s 
+                        AND occurred_at >= %s 
+                        AND occurred_at < %s
+                    """
+                    
+                    params = [group_by, group_by, user_id, from_dt, to_dt]
+                    
+                    # Add business_id filter if provided
+                    if business_id:
+                        query += " AND business_id = %s"
+                        params.append(business_id)
+                    
+                    query += " GROUP BY period_start ORDER BY period_start ASC"
+                    
+                    # Execute query for time-series data
+                    cur.execute(query, params)
+                    rows = cur.fetchall()
+                    
+                    # Convert to list of dictionaries
+                    analytics_rows = []
+                    for row in rows:
+                        try:
+                            row_dict = dict(row)
+                            analytics_rows.append(row_dict)
+                        except Exception as e:
+                            logger.warning(f"Failed to parse analytics row: {e}")
+                            continue
+                    
+                    # Build totals query
+                    totals_query = f"""
+                        SELECT {', '.join(metric_columns)}
+                        FROM analytics_events 
+                        WHERE user_id = %s 
+                        AND occurred_at >= %s 
+                        AND occurred_at < %s
+                    """
+                    
+                    totals_params = [user_id, from_dt, to_dt]
+                    
+                    if business_id:
+                        totals_query += " AND business_id = %s"
+                        totals_params.append(business_id)
+                    
+                    # Execute totals query
+                    cur.execute(totals_query, totals_params)
+                    totals_row = cur.fetchone()
+                    
+                    totals = dict(totals_row) if totals_row else {}
+                    
+                    return {
+                        "rows": analytics_rows,
+                        "totals": totals
+                    }
+                    
+        except Exception as e:
+            logger.error(f"Error fetching analytics for user {user_id}: {e}")
             raise
 
 

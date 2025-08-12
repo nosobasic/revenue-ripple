@@ -6,9 +6,12 @@ with JWT authentication, tier-based entitlements, and feature limits.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from flask import Blueprint, request, jsonify
-from .models import PromptListResponse, PromptOut, ErrorResponse, SuccessResponse
+from .models import (
+    PromptListResponse, PromptOut, ErrorResponse, SuccessResponse, 
+    CompetitorOut, CompetitorQuery, AnalyticsQuery, AnalyticsOut, AnalyticsRowOut, AnalyticsTotals
+)
 from .repo import insights_repo
 from .middleware.entitlements import require_tier, get_user_query_limit
 
@@ -330,6 +333,170 @@ def use_prompt(prompt_id: int):
         return jsonify(ErrorResponse(
             error="Failed to increment usage count",
             code="SERVER_ERROR"
+        ).dict()), 500
+
+
+@insights_bp.route('/competitors', methods=['GET'])
+@require_tier(["growth", "partner"])
+def get_competitors():
+    """
+    GET /insights/api/competitors
+    
+    Get a list of competitors for the authenticated user.
+    Requires tier in ["growth", "partner"].
+    
+    Query Parameters:
+        industry: Optional industry filter
+        limit: Maximum number of results (default: 50, max: 250)
+    
+    Returns:
+        200: List of competitors
+        401: Authentication error
+        403: Insufficient tier
+        500: Server error
+    """
+    try:
+        # Parse and validate query parameters
+        try:
+            query_data = CompetitorQuery(**request.args)
+        except Exception as e:
+            return jsonify(ErrorResponse(
+                error=f"Invalid query parameters: {str(e)}",
+                code="INVALID_PARAMS"
+            ).dict()), 400
+        
+        user_id = request.user_id
+        
+        # Fetch competitors
+        competitors_data = insights_repo.fetch_competitors(
+            user_id=user_id,
+            industry=query_data.industry,
+            limit=query_data.limit
+        )
+        
+        # Convert to Pydantic models
+        competitors = []
+        for competitor_data in competitors_data:
+            try:
+                competitor = CompetitorOut(**competitor_data)
+                competitors.append(competitor)
+            except Exception as e:
+                logger.warning(f"Failed to parse competitor data: {e}")
+                continue
+        
+        return jsonify(competitors), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting competitors for user {getattr(request, 'user_id', 'unknown')}: {e}")
+        return jsonify(ErrorResponse(
+            error="Failed to retrieve competitors",
+            code="SERVER_ERROR"
+        ).dict()), 500
+
+
+@insights_bp.route('/analytics', methods=['GET'])
+@require_tier(["growth", "partner"])
+def get_analytics():
+    """
+    GET /insights/api/analytics
+    
+    Get analytics data for the authenticated user with time-series grouping.
+    Requires tier in ["growth", "partner"].
+    
+    Query Parameters:
+        business_id: Optional business ID filter
+        from: Start date (YYYY-MM-DD, default: 30 days ago)
+        to: End date (YYYY-MM-DD, default: today)
+        group_by: Grouping period (day/week/month, default: day)
+        metrics: CSV of metrics to include (default: impressions,clicks,conversions,rev)
+    
+    Returns:
+        200: Analytics data with time-series rows and totals
+        400: Invalid query parameters
+        401: Authentication error
+        403: Insufficient tier
+        500: Server error
+    """
+    try:
+        # Parse and validate query parameters
+        try:
+            query_data = AnalyticsQuery(**request.args)
+        except Exception as e:
+            return jsonify(ErrorResponse(
+                error=f"Invalid query parameters: {str(e)}",
+                code="INVALID_PARAMS"
+            ).dict()), 400
+        
+        user_id = request.user_id
+        
+        # Set default date range if not provided (last 30 days)
+        today = date.today()
+        
+        if query_data.from_ is None:
+            from_dt = today - timedelta(days=30)
+        else:
+            from_dt = datetime.strptime(query_data.from_, '%Y-%m-%d').date()
+        
+        if query_data.to is None:
+            to_dt = today
+        else:
+            to_dt = datetime.strptime(query_data.to, '%Y-%m-%d').date()
+        
+        # Validate date range
+        if from_dt > to_dt:
+            return jsonify(ErrorResponse(
+                error="Start date must be before or equal to end date",
+                code="INVALID_DATE_RANGE"
+            ).dict()), 400
+        
+        # Enforce maximum window of 366 days
+        max_window = timedelta(days=366)
+        if (to_dt - from_dt) > max_window:
+            # Clamp to maximum window
+            from_dt = to_dt - max_window
+        
+        # Parse metrics
+        metric_keys = []
+        if query_data.metrics:
+            metric_keys = [m.strip() for m in query_data.metrics.split(',') if m.strip()]
+        
+        # Default to all metrics if none specified
+        if not metric_keys:
+            metric_keys = ['impressions', 'clicks', 'conversions', 'rev']
+        
+        # Fetch analytics data
+        analytics_data = insights_repo.fetch_analytics(
+            user_id=user_id,
+            business_id=query_data.business_id,
+            from_dt=from_dt,
+            to_dt=to_dt,
+            group_by=query_data.group_by,
+            metric_keys=metric_keys
+        )
+        
+        # Convert rows to Pydantic models
+        rows = []
+        for row_data in analytics_data['rows']:
+            try:
+                row = AnalyticsRowOut(**row_data)
+                rows.append(row)
+            except Exception as e:
+                logger.warning(f"Failed to parse analytics row: {e}")
+                continue
+        
+        # Convert totals to Pydantic model
+        totals = AnalyticsTotals(**analytics_data['totals'])
+        
+        # Create response
+        response = AnalyticsOut(rows=rows, totals=totals)
+        
+        return jsonify(response.dict()), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting analytics for user {getattr(request, 'user_id', 'unknown')}: {e}")
+        return jsonify(ErrorResponse(
+            error="internal_error",
+            code="INTERNAL_ERROR"
         ).dict()), 500
 
 

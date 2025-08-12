@@ -11,10 +11,10 @@ import {
   FaCheckCircle, 
   FaBrain, 
   FaLightbulb,
-  FaShield,
+  FaLock,
   FaCrown,
   FaFire,
-  FaTarget,
+  FaCrosshairs,
   FaStar
 } from 'react-icons/fa';
 import '../pages.css';
@@ -45,12 +45,12 @@ export default function AIVisibilityTracker() {
       description: "Get personalized recommendations for improving your AI discoverability"
     },
     {
-      icon: FaTarget,
+      icon: FaCrosshairs,
       title: "Keyword Optimization",
       description: "Optimize your content for AI search algorithms with data-driven insights"
     },
     {
-      icon: FaShield,
+      icon: FaLock,
       title: "Brand Protection",
       description: "Monitor mentions and ensure accurate representation across AI platforms"
     },
@@ -426,7 +426,6 @@ export default function AIVisibilityTracker() {
                     borderRadius: '8px',
                     fontWeight: 600,
                     fontSize: '1rem',
-                    border: 'none',
                     cursor: 'pointer',
                     background: tier.popular ? '#2563eb' : 'transparent',
                     color: tier.popular ? 'white' : '#2563eb',
