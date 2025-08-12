@@ -23,3 +23,6 @@ JWT_SECRET=your-jwt-secret-key-here
 # Server Configuration
 FLASK_ENV=development
 FLASK_DEBUG=True
+
+# Frontend Feature Flags
+VITE_USE_FLASK_INSIGHTS=true

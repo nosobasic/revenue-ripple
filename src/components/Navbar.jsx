@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NavigationUtils } from '../utils/navigationUtils';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -29,6 +29,9 @@ const Navbar = () => {
     }
     if (path === '/earn') {
       return location.pathname.includes('/affiliate');
+    }
+    if (path === '/insights') {
+      return location.pathname === '/insights';
     }
     return location.pathname === path;
   };
@@ -79,6 +82,23 @@ const Navbar = () => {
               <Link to="/training" className={getNavLinkClass('/support')} onClick={closeMobileMenu}>
                 <FaQuestionCircle className="nav-icon" />
                 <span>Support</span>
+              </Link>
+
+              {/* Insights Link */}
+              <Link to="/insights" className={getNavLinkClass('/insights')} onClick={closeMobileMenu}>
+                <FaLightbulb className="nav-icon" />
+                <span>Insights</span>
+                <span style={{ 
+                  background: "#f59e0b", 
+                  color: "white", 
+                  fontSize: "0.7rem", 
+                  padding: "2px 6px", 
+                  borderRadius: "10px", 
+                  marginLeft: "4px",
+                  fontWeight: "bold"
+                }}>
+                  NEW
+                </span>
               </Link>
 
               {/* Profile Link */}
@@ -143,6 +163,22 @@ const Navbar = () => {
                   <Link to="/training" className={`mobile-nav-link ${getNavLinkClass('/support')}`} onClick={closeMobileMenu}>
                     <FaQuestionCircle className="mobile-nav-icon" />
                     <span>Support</span>
+                  </Link>
+                  
+                  <Link to="/insights" className={`mobile-nav-link ${getNavLinkClass('/insights')}`} onClick={closeMobileMenu}>
+                    <FaLightbulb className="mobile-nav-icon" />
+                    <span>Insights</span>
+                    <span style={{ 
+                      background: "#f59e0b", 
+                      color: "white", 
+                      fontSize: "0.7rem", 
+                      padding: "2px 6px", 
+                      borderRadius: "10px", 
+                      marginLeft: "4px",
+                      fontWeight: "bold"
+                    }}>
+                      NEW
+                    </span>
                   </Link>
 
                   <div className="mobile-menu-divider"></div>

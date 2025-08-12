@@ -56,6 +56,7 @@ import WritingAdCopy from './pages/training/guides/WritingAdCopy';
 import SalesCopy from './pages/training/guides/SalesCopy';
 import AIVisibilityTracker from './pages/AIVisibilityTracker';
 import ProductComparison from './pages/ProductComparison';
+import Insights from './pages/Insights';
 
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
@@ -147,6 +148,7 @@ const App = () => {
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
         <Route path="/compare" element={<ProductComparison />} />
+        <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
