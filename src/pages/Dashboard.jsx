@@ -7,6 +7,7 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
+import InsightOfDayCard from '../components/InsightOfDayCard';
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -568,6 +569,11 @@ const Dashboard = () => {
 
           {/* Side Content - Right Side */}
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
+            {/* Insight of the Day Card */}
+            <div style={{ marginBottom: '2rem' }}>
+              <InsightOfDayCard />
+            </div>
+
             {/* Smart Upsell Banner */}
             <div style={{
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',

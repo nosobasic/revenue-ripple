@@ -2,8 +2,30 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { fetchPrompts, fetchPromptSuggestions, fetchCompetitors, fetchAnalytics } from "../api/insightsClient";
-import { FaEye, FaChartLine, FaList, FaUsers, FaLightbulb, FaCrown } from "react-icons/fa";
+import { 
+  FaEye, 
+  FaChartLine, 
+  FaList, 
+  FaUsers, 
+  FaLightbulb, 
+  FaCrown, 
+  FaArrowUp, 
+  FaArrowDown, 
+  FaSearch,
+  FaRobot,
+  FaGlobe,
+  FaCrosshairs,
+  FaChartBar,
+  FaLock,
+  FaBrain,
+  FaRocket,
+  FaClock,
+  FaStar,
+  FaExclamationTriangle,
+  FaCheckCircle
+} from "react-icons/fa";
 import Navbar from "../components/Navbar";
+import InsightOfDayCard from "../components/InsightOfDayCard";
 
 // Utility function to format datetime
 const formatDateTime = (isoString) => {
@@ -20,20 +42,88 @@ const formatDateTime = (isoString) => {
   }
 };
 
+// Mock data for placeholder UI
+const mockData = {
+  summary: {
+    totalImpressions: 15420,
+    totalClicks: 892,
+    conversionRate: 5.8,
+    revenue: 12450,
+    growthRate: 12.5,
+    aiMentions: 47,
+    competitorAlerts: 3
+  },
+  trafficAnalytics: [
+    { date: '2024-01-01', impressions: 1200, clicks: 68, conversions: 4, revenue: 850 },
+    { date: '2024-01-02', impressions: 1350, clicks: 72, conversions: 5, revenue: 920 },
+    { date: '2024-01-03', impressions: 1100, clicks: 65, conversions: 3, revenue: 780 },
+    { date: '2024-01-04', impressions: 1600, clicks: 89, conversions: 6, revenue: 1100 },
+    { date: '2024-01-05', impressions: 1400, clicks: 78, conversions: 4, revenue: 950 },
+    { date: '2024-01-06', impressions: 1800, clicks: 95, conversions: 7, revenue: 1250 },
+    { date: '2024-01-07', impressions: 1700, clicks: 88, conversions: 5, revenue: 1050 }
+  ],
+  competitorMentions: [
+    { platform: 'ChatGPT', competitor: 'TechCorp', mention: 'TechCorp offers better pricing for small businesses', sentiment: 'negative', impact: 'high' },
+    { platform: 'Claude', competitor: 'InnovateAI', mention: 'InnovateAI has superior customer support', sentiment: 'neutral', impact: 'medium' },
+    { platform: 'Perplexity', competitor: 'DataFlow', mention: 'DataFlow leads in enterprise solutions', sentiment: 'positive', impact: 'low' }
+  ],
+  suggestedActions: [
+    { 
+      type: 'urgent', 
+      title: 'Optimize Landing Page', 
+      description: 'Your conversion rate is 2% below industry average. Consider A/B testing your CTA buttons.',
+      impact: 'high',
+      effort: 'medium',
+      priority: 1
+    },
+    { 
+      type: 'opportunity', 
+      title: 'Target Competitor Keywords', 
+      description: 'TechCorp is ranking for 15 keywords you could easily compete for.',
+      impact: 'medium',
+      effort: 'low',
+      priority: 2
+    },
+    { 
+      type: 'improvement', 
+      title: 'Enhance AI Content', 
+      description: 'Your AI-generated content is performing 23% better than manual content.',
+      impact: 'high',
+      effort: 'low',
+      priority: 3
+    }
+  ],
+  aiInsights: [
+    {
+      insight: "Your business is mentioned 47 times across AI platforms this week, up 15% from last week.",
+      sentiment: "positive",
+      trend: "up"
+    },
+    {
+      insight: "Competitor 'TechCorp' is gaining traction in AI search results for your target keywords.",
+      sentiment: "warning",
+      trend: "down"
+    },
+    {
+      insight: "Your AI-generated content is performing 23% better than manual content across all channels.",
+      sentiment: "positive",
+      trend: "up"
+    }
+  ]
+};
+
 export default function Insights() {
   const { user, getToken } = useAuth();
-  const [tab, setTab] = useState("Overview");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [prompts, setPrompts] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [competitors, setCompetitors] = useState([]);
-  const [analytics, setAnalytics] = useState(null);
+  const [data, setData] = useState(mockData);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const tier = user?.tier || "core"; // fallback
 
   useEffect(() => {
-    (async () => {
+    // Load real data when available
+    const loadData = async () => {
       try {
         setLoading(true);
         const token = await getToken?.();
@@ -42,147 +132,235 @@ export default function Insights() {
           return;
         }
         
-        // preload minimal data for Overview
-        const [p, s] = await Promise.all([
-          fetchPrompts(token).catch(() => []),
-          fetchPromptSuggestions(token, {}).catch(() => [])
-        ]);
-        setPrompts(p); 
-        setSuggestions(s);
+        // TODO: Replace with real API calls when backend is ready
+        // const [prompts, suggestions, competitors, analytics] = await Promise.all([
+        //   fetchPrompts(token).catch(() => []),
+        //   fetchPromptSuggestions(token, {}).catch(() => []),
+        //   fetchCompetitors(token, {}).catch(() => []),
+        //   fetchAnalytics(token, {}).catch(() => null)
+        // ]);
+        
+        // For now, use mock data
+        setData(mockData);
       } catch (e) { 
         setError(String(e.message || e)); 
       } finally { 
         setLoading(false); 
       }
-    })();
+    };
+
+    loadData();
   }, [getToken]);
 
-  const loadCompetitors = async (industry, limit = 25) => {
-    setError(""); 
-    setLoading(true);
-    try {
-      const token = await getToken?.();
-      const data = await fetchCompetitors(token, { industry, limit });
-      setCompetitors(data);
-    } catch (e) { 
-      setError(String(e.message || e)); 
-    } finally { 
-      setLoading(false); 
-    }
-  };
+  const StatCard = ({ title, value, change, icon, color = "blue" }) => (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      style={{
+        background: "white",
+        borderRadius: 12,
+        padding: "1.5rem",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+        border: "1px solid #f1f5f9",
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem"
+      }}
+    >
+      <div style={{
+        width: "48px",
+        height: "48px",
+        borderRadius: "12px",
+        background: `linear-gradient(135deg, ${color === "blue" ? "#2563eb" : color === "green" ? "#10b981" : color === "orange" ? "#f59e0b" : "#7c3aed"}, ${color === "blue" ? "#1d4ed8" : color === "green" ? "#059669" : color === "orange" ? "#d97706" : "#6d28d9"})`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "white"
+      }}>
+        {icon}
+      </div>
+      <div style={{ flex: 1 }}>
+        <h3 style={{ color: "#6b7280", fontSize: "0.875rem", margin: "0 0 0.25rem 0", fontWeight: 500 }}>
+          {title}
+        </h3>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <span style={{ color: "#1f2937", fontSize: "1.5rem", fontWeight: 700 }}>
+            {typeof value === "number" && value >= 1000 ? value.toLocaleString() : value}
+          </span>
+          {change && (
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "0.25rem",
+              color: change > 0 ? "#10b981" : "#ef4444",
+              fontSize: "0.875rem",
+              fontWeight: 600
+            }}>
+              {change > 0 ? <FaArrowUp /> : <FaArrowDown />}
+              {Math.abs(change)}%
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
 
-  const loadAnalytics = async (params = {}) => {
-    setError(""); 
-    setLoading(true);
-    try {
-      const token = await getToken?.();
-      const data = await fetchAnalytics(token, params);
-      setAnalytics(data);
-    } catch (e) { 
-      setError(String(e.message || e)); 
-    } finally { 
-      setLoading(false); 
-    }
-  };
+  const InsightCard = ({ insight, sentiment, trend }) => (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      style={{
+        background: "white",
+        borderRadius: 12,
+        padding: "1.5rem",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+        border: "1px solid #f1f5f9",
+        borderLeft: `4px solid ${sentiment === "positive" ? "#10b981" : sentiment === "warning" ? "#f59e0b" : "#ef4444"}`
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+        <div style={{
+          color: sentiment === "positive" ? "#10b981" : sentiment === "warning" ? "#f59e0b" : "#ef4444",
+          marginTop: "0.25rem"
+        }}>
+          {sentiment === "positive" ? <FaCheckCircle /> : sentiment === "warning" ? <FaExclamationTriangle /> : <FaExclamationTriangle />}
+        </div>
+        <div style={{ flex: 1 }}>
+          <p style={{ color: "#374151", margin: "0 0 0.5rem 0", lineHeight: 1.5 }}>
+            {insight}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ 
+              color: trend === "up" ? "#10b981" : "#ef4444",
+              fontSize: "0.875rem",
+              fontWeight: 600
+            }}>
+              {trend === "up" ? <FaChartBar /> : <FaArrowDown />}
+            </span>
+            <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+              {trend === "up" ? "Trending up" : "Trending down"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
 
-  const loadSuggestions = async (q, business_id) => {
-    setError(""); 
-    setLoading(true);
-    try {
-      const token = await getToken?.();
-      const data = await fetchPromptSuggestions(token, { q, business_id });
-      setSuggestions(data);
-    } catch (e) { 
-      setError(String(e.message || e)); 
-    } finally { 
-      setLoading(false); 
-    }
-  };
-
-  // Available tabs based on tier
-  const availableTabs = [
-    "Overview",
-    "Prompts", 
-    "Suggestions",
-    ...(tier !== "core" ? ["Competitors", "Analytics"] : [])
-  ];
+  const ActionCard = ({ action }) => (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      style={{
+        background: "white",
+        borderRadius: 12,
+        padding: "1.5rem",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+        border: "1px solid #f1f5f9",
+        borderLeft: `4px solid ${action.type === "urgent" ? "#ef4444" : action.type === "opportunity" ? "#10b981" : "#f59e0b"}`
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.75rem" }}>
+        <h4 style={{ color: "#1f2937", margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+          {action.title}
+        </h4>
+        <span style={{
+          background: action.type === "urgent" ? "#fee2e2" : action.type === "opportunity" ? "#d1fae5" : "#fef3c7",
+          color: action.type === "urgent" ? "#991b1b" : action.type === "opportunity" ? "#065f46" : "#92400e",
+          padding: "0.25rem 0.75rem",
+          borderRadius: "20px",
+          fontSize: "0.75rem",
+          fontWeight: 600,
+          textTransform: "uppercase"
+        }}>
+          {action.type}
+        </span>
+      </div>
+      <p style={{ color: "#6b7280", margin: "0 0 1rem 0", lineHeight: 1.5 }}>
+        {action.description}
+      </p>
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>Impact:</span>
+          <span style={{ 
+            color: action.impact === "high" ? "#ef4444" : action.impact === "medium" ? "#f59e0b" : "#10b981",
+            fontWeight: 600,
+            fontSize: "0.875rem"
+          }}>
+            {action.impact}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>Effort:</span>
+          <span style={{ 
+            color: action.effort === "high" ? "#ef4444" : action.effort === "medium" ? "#f59e0b" : "#10b981",
+            fontWeight: 600,
+            fontSize: "0.875rem"
+          }}>
+            {action.effort}
+          </span>
+        </div>
+        <button style={{
+          background: "#2563eb",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          padding: "0.5rem 1rem",
+          fontSize: "0.875rem",
+          fontWeight: 600,
+          cursor: "pointer",
+          marginLeft: "auto"
+        }}>
+          Take Action
+        </button>
+      </div>
+    </motion.div>
+  );
 
   return (
     <>
       <Navbar />
       <div className="container" style={{ padding: "2rem 0" }}>
-        <motion.h1 
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.4 }} 
-          style={{ color: "#1e293b", fontSize: "2rem", marginBottom: "0.5rem" }}
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ marginBottom: "2rem" }}
         >
-          AI Insights
-        </motion.h1>
-        <p style={{ color: "#64748b", marginBottom: "1.5rem" }}>
-          Market visibility, competitor intel, and performance analytics — inside your Business OS.
-        </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
+            <FaBrain style={{ color: "#2563eb", fontSize: "2rem" }} />
+            <h1 style={{ color: "#1e293b", fontSize: "2rem", margin: 0 }}>
+              AI Insight Dashboard
+            </h1>
+            <span style={{
+              background: "#f59e0b",
+              color: "white",
+              fontSize: "0.75rem",
+              padding: "0.25rem 0.75rem",
+              borderRadius: "20px",
+              fontWeight: 600,
+              textTransform: "uppercase"
+            }}>
+              Beta
+            </span>
+          </div>
+          <p style={{ color: "#64748b", margin: 0, fontSize: "1.1rem" }}>
+            AI-powered marketing analytics, competitor intelligence, and actionable insights for your business.
+          </p>
+        </motion.div>
 
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-          {availableTabs.map((t) => (
-            <button 
-              key={t} 
-              onClick={() => setTab(t)}
-              style={{
-                padding: "0.6rem 1rem", 
-                border: "none", 
-                borderRadius: 50,
-                background: tab === t ? "#2563eb" : "white",
-                color: tab === t ? "white" : "#64748b",
-                fontWeight: 600, 
-                cursor: "pointer", 
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease"
-              }}
-            >
-              {t}
-            </button>
-          ))}
-          
-          {/* Show upgrade tabs for core tier */}
-          {tier === "core" && (
-            <>
-              <button 
-                style={{
-                  padding: "0.6rem 1rem", 
-                  border: "none", 
-                  borderRadius: 50,
-                  background: "white",
-                  color: "#9ca3af",
-                  fontWeight: 600, 
-                  cursor: "not-allowed", 
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  opacity: 0.6
-                }}
-                disabled
-              >
-                Competitors <FaLightbulb style={{ marginLeft: "0.25rem", fontSize: "0.75rem" }} />
-              </button>
-              <button 
-                style={{
-                  padding: "0.6rem 1rem", 
-                  border: "none", 
-                  borderRadius: 50,
-                  background: "white",
-                  color: "#9ca3af",
-                  fontWeight: 600, 
-                  cursor: "not-allowed", 
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  opacity: 0.6
-                }}
-                disabled
-              >
-                Analytics <FaLightbulb style={{ marginLeft: "0.25rem", fontSize: "0.75rem" }} />
-              </button>
-            </>
-          )}
-        </div>
+        {/* Insight of the Day - Prominent Display */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <InsightOfDayCard />
+        </motion.div>
 
         {error && (
           <motion.div 
@@ -207,575 +385,263 @@ export default function Insights() {
             animate={{ opacity: 1 }}
             style={{ color: "#64748b", margin: "0.75rem 0" }}
           >
-            Loading…
+            Loading AI insights...
           </motion.div>
         )}
 
-        {/* Overview Tab */}
-        {tab === "Overview" && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}
-          >
-            <div style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: "0.75rem" }}>
-                <FaLightbulb style={{ color: "#f59e0b", marginRight: "0.5rem" }} />
-                <h3 style={{ color: "#1f2937", margin: 0 }}>Insight of the Day</h3>
-              </div>
-              <p style={{ color: "#4b5563", lineHeight: 1.6 }}>
-                {suggestions[0]?.suggestion || "Connect your business to start receiving AI-powered suggestions and insights."}
-              </p>
-            </div>
-            
-            <div style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: "0.75rem" }}>
-                <FaList style={{ color: "#2563eb", marginRight: "0.5rem" }} />
-                <h3 style={{ color: "#1f2937", margin: 0 }}>Recent Prompts</h3>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: "1rem", color: "#4b5563" }}>
-                {prompts.slice(0, 5).map((p) => (
-                  <li key={p.id} style={{ marginBottom: 6, lineHeight: 1.4 }}>
-                    {p.title || p.body?.slice(0, 80) || "Untitled prompt"}…
-                  </li>
-                ))}
-                {prompts.length === 0 && (
-                  <li style={{ color: "#9ca3af", fontStyle: "italic" }}>No prompts yet</li>
-                )}
-              </ul>
-            </div>
+        {/* High-Level Summary */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            Performance Summary
+          </h2>
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
+            gap: "1rem" 
+          }}>
+            <StatCard 
+              title="Total Impressions"
+              value={data.summary.totalImpressions}
+              change={data.summary.growthRate}
+              icon={<FaEye />}
+              color="blue"
+            />
+                         <StatCard 
+               title="Conversion Rate"
+               value={`${data.summary.conversionRate}%`}
+               change={2.1}
+               icon={<FaCrosshairs />}
+               color="green"
+             />
+            <StatCard 
+              title="Revenue"
+              value={`$${data.summary.revenue.toLocaleString()}`}
+              change={8.3}
+              icon={<FaChartLine />}
+              color="green"
+            />
+            <StatCard 
+              title="AI Mentions"
+              value={data.summary.aiMentions}
+              change={15}
+              icon={<FaRobot />}
+              color="orange"
+            />
+          </div>
+        </motion.section>
 
-            <div style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", marginBottom: "0.75rem" }}>
-                <FaCrown style={{ color: "#f59e0b", marginRight: "0.5rem" }} />
-                <h3 style={{ color: "#1f2937", margin: 0 }}>Your Tier</h3>
-              </div>
-              <p style={{ color: "#4b5563", marginBottom: "0.5rem" }}>
-                <strong>{tier.charAt(0).toUpperCase() + tier.slice(1)}</strong>
-              </p>
-              {tier === "core" && (
-                <p style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                  Upgrade to Growth to unlock Competitors & Analytics features.
-                </p>
-              )}
-            </div>
-          </motion.div>
-        )}
+        {/* AI Insights */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            AI-Powered Insights
+          </h2>
+          <div style={{ display: "grid", gap: "1rem" }}>
+            {data.aiInsights.map((insight, index) => (
+              <InsightCard key={index} {...insight} />
+            ))}
+          </div>
+        </motion.section>
 
-        {/* Prompts Tab */}
-        {tab === "Prompts" && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-              <FaList style={{ color: "#2563eb", marginRight: "0.5rem" }} />
-              <h3 style={{ color: "#1f2937", margin: 0 }}>Your Prompts</h3>
-            </div>
-            {prompts.length > 0 ? (
-              <div style={{ display: "grid", gap: "1rem" }}>
-                {prompts.map((p) => (
-                  <div 
-                    key={p.id} 
-                    style={{ 
-                      padding: "1rem", 
-                      border: "1px solid #e5e7eb", 
-                      borderRadius: 8,
-                      background: "#fafafa"
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                      <h4 style={{ color: "#1f2937", margin: 0, fontSize: "1rem" }}>
-                        {p.title || "Untitled Prompt"}
-                      </h4>
-                      <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                        {formatDateTime(p.created_at)}
-                      </span>
-                    </div>
-                    <p style={{ color: "#4b5563", margin: 0, lineHeight: 1.5 }}>
-                      {p.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: "#9ca3af", textAlign: "center", fontStyle: "italic" }}>
-                No prompts found. Create your first prompt to get started.
-              </p>
-            )}
-          </motion.div>
-        )}
-
-        {/* Suggestions Tab */}
-        {tab === "Suggestions" && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-              <FaLightbulb style={{ color: "#f59e0b", marginRight: "0.5rem" }} />
-              <h3 style={{ color: "#1f2937", margin: 0 }}>Prompt Suggestions</h3>
-            </div>
-            
-            {/* Search Controls */}
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-              <input 
-                placeholder="Search suggestions..." 
-                id="suggestion-q" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8,
-                  minWidth: "200px"
-                }} 
-              />
-              <input 
-                placeholder="Business ID (optional)" 
-                id="suggestion-biz" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8,
-                  minWidth: "150px"
-                }} 
-              />
-              <button 
-                onClick={async () => {
-                  const q = document.getElementById("suggestion-q").value || undefined;
-                  const business_id = document.getElementById("suggestion-biz").value || undefined;
-                  await loadSuggestions(q, business_id);
-                }} 
-                style={{ 
-                  padding: "0.6rem 1rem", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  background: "#2563eb", 
-                  color: "white", 
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "background 0.2s ease"
-                }}
-                onMouseEnter={(e) => e.target.style.background = "#1d4ed8"}
-                onMouseLeave={(e) => e.target.style.background = "#2563eb"}
-              >
-                Search
-              </button>
-            </div>
-            
-            {/* Suggestions List */}
-            {suggestions.length > 0 ? (
-              <div style={{ display: "grid", gap: "1rem" }}>
-                {suggestions.map((s) => (
-                  <div 
-                    key={s.id} 
-                    style={{ 
-                      padding: "1rem", 
-                      border: "1px solid #e5e7eb", 
-                      borderRadius: 8,
-                      background: "#fafafa"
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                      <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                        Score: {s.score ? s.score.toFixed(2) : "N/A"}
-                      </span>
-                      <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                        {formatDateTime(s.created_at)}
-                      </span>
-                    </div>
-                    <p style={{ color: "#4b5563", margin: 0, lineHeight: 1.5 }}>
-                      {s.suggestion}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: "#9ca3af", textAlign: "center", fontStyle: "italic" }}>
-                No suggestions found. Try adjusting your search criteria.
-              </p>
-            )}
-          </motion.div>
-        )}
-
-        {/* Competitors Tab */}
-        {tab === "Competitors" && (tier === "growth" || tier === "partner" ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-              <FaUsers style={{ color: "#7c3aed", marginRight: "0.5rem" }} />
-              <h3 style={{ color: "#1f2937", margin: 0 }}>Competitors</h3>
-            </div>
-            
-            {/* Controls */}
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-              <input 
-                placeholder="Industry filter (optional)" 
-                id="competitor-industry" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8,
-                  minWidth: "200px"
-                }} 
-              />
-              <select 
-                id="competitor-limit" 
-                defaultValue="25" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8
-                }}
-              >
-                <option value="10">10 results</option>
-                <option value="25">25 results</option>
-                <option value="50">50 results</option>
-              </select>
-              <button 
-                onClick={async () => {
-                  const industry = document.getElementById("competitor-industry").value || undefined;
-                  const limit = parseInt(document.getElementById("competitor-limit").value, 10);
-                  await loadCompetitors(industry, limit);
-                }} 
-                style={{ 
-                  padding: "0.6rem 1rem", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  background: "#2563eb", 
-                  color: "white", 
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "background 0.2s ease"
-                }}
-                onMouseEnter={(e) => e.target.style.background = "#1d4ed8"}
-                onMouseLeave={(e) => e.target.style.background = "#2563eb"}
-              >
-                Load Competitors
-              </button>
-            </div>
-            
-            {/* Competitors List */}
-            {competitors.length > 0 ? (
-              <div style={{ display: "grid", gap: "1rem" }}>
-                {competitors.map((c) => (
-                  <div 
-                    key={c.id} 
-                    style={{ 
-                      padding: "1rem", 
-                      border: "1px solid #e5e7eb", 
-                      borderRadius: 8,
-                      background: "#fafafa"
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-                      <h4 style={{ color: "#1f2937", margin: 0, fontSize: "1rem" }}>
-                        {c.name}
-                      </h4>
-                      <span style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                        Score: {c.score ? c.score.toFixed(2) : "N/A"}
-                      </span>
-                    </div>
-                    <p style={{ color: "#4b5563", margin: "0.25rem 0" }}>
-                      <strong>Industry:</strong> {c.industry}
-                    </p>
-                    {c.website && (
-                      <p style={{ color: "#4b5563", margin: "0.25rem 0" }}>
-                        <strong>Website:</strong> {c.website}
-                      </p>
-                    )}
-                    <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: "0.25rem 0" }}>
-                      Last seen: {formatDateTime(c.last_seen)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: "#9ca3af", textAlign: "center", fontStyle: "italic" }}>
-                No competitors found. Try adjusting your filters.
-              </p>
-            )}
-          </motion.div>
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "#fff7ed", 
-              border: "1px solid #fed7aa", 
-              color: "#9a3412", 
-              padding: "1.5rem", 
-              borderRadius: 12,
-              textAlign: "center"
-            }}
-          >
-            <FaLightbulb style={{ fontSize: "2rem", marginBottom: "1rem", color: "#f59e0b" }} />
-            <h3 style={{ margin: "0 0 0.5rem 0" }}>Competitors is a Growth Feature</h3>
-            <p style={{ margin: "0 0 1rem 0" }}>
-              Unlock competitor intelligence and market insights with our Growth plan.
-            </p>
-            <a 
-              href="/pricing" 
-              style={{ 
-                color: "#2563eb", 
-                fontWeight: 600, 
-                textDecoration: "none",
-                padding: "0.75rem 1.5rem",
-                background: "white",
-                borderRadius: "8px",
-                display: "inline-block",
-                border: "1px solid #e5e7eb"
-              }}
-            >
-              Upgrade to Growth
-            </a>
-          </motion.div>
-        ))}
-
-        {/* Analytics Tab */}
-        {tab === "Analytics" && (tier === "growth" || tier === "partner" ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "white", 
-              borderRadius: 12, 
-              padding: "1.5rem", 
-              boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
-              border: "1px solid #f1f5f9"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-              <FaChartLine style={{ color: "#10b981", marginRight: "0.5rem" }} />
-              <h3 style={{ color: "#1f2937", margin: 0 }}>Analytics</h3>
-            </div>
-            
-            {/* Controls */}
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-              <input 
-                type="date" 
-                id="analytics-from" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8
-                }} 
-              />
-              <input 
-                type="date" 
-                id="analytics-to" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8
-                }} 
-              />
-              <select 
-                id="analytics-group" 
-                defaultValue="day" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8
-                }}
-              >
-                <option value="day">Daily</option>
-                <option value="week">Weekly</option>
-                <option value="month">Monthly</option>
-              </select>
-              <select 
-                id="analytics-metrics" 
-                defaultValue="impressions,clicks,conversions,rev" 
-                style={{ 
-                  padding: "0.6rem 0.8rem", 
-                  border: "1px solid #e5e7eb", 
-                  borderRadius: 8
-                }}
-              >
-                <option value="impressions,clicks,conversions,rev">All Metrics</option>
-                <option value="impressions,rev">Impressions + Revenue</option>
-                <option value="clicks,conversions">Clicks + Conversions</option>
-              </select>
-              <button 
-                onClick={async () => {
-                  const params = {
-                    from: document.getElementById("analytics-from").value || undefined,
-                    to: document.getElementById("analytics-to").value || undefined,
-                    group_by: document.getElementById("analytics-group").value,
-                    metrics: document.getElementById("analytics-metrics").value
-                  };
-                  await loadAnalytics(params);
-                }} 
-                style={{ 
-                  padding: "0.6rem 1rem", 
-                  border: "none", 
-                  borderRadius: 8, 
-                  background: "#2563eb", 
-                  color: "white", 
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "background 0.2s ease"
-                }}
-                onMouseEnter={(e) => e.target.style.background = "#1d4ed8"}
-                onMouseLeave={(e) => e.target.style.background = "#2563eb"}
-              >
-                Load Analytics
-              </button>
-            </div>
-            
-            {/* Analytics Table */}
-            {analytics?.rows && analytics.rows.length > 0 ? (
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0 }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white", borderRadius: "8px 0 0 0" }}>
-                        Period
-                      </th>
-                      <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
-                        Impressions
-                      </th>
-                      <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
-                        Clicks
-                      </th>
-                      <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
-                        Conversions
-                      </th>
-                      <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white", borderRadius: "0 8px 0 0" }}>
-                        Revenue
-                      </th>
+        {/* Traffic & Conversion Analytics */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            Traffic & Conversion Analytics
+          </h2>
+          <div style={{
+            background: "white",
+            borderRadius: 12,
+            padding: "1.5rem",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+            border: "1px solid #f1f5f9"
+          }}>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0 }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white", borderRadius: "8px 0 0 0" }}>
+                      Date
+                    </th>
+                    <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
+                      Impressions
+                    </th>
+                    <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
+                      Clicks
+                    </th>
+                    <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white" }}>
+                      Conversions
+                    </th>
+                    <th style={{ textAlign: "left", padding: "12px", background: "#111827", color: "white", borderRadius: "0 8px 0 0" }}>
+                      Revenue
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.trafficAnalytics.map((row, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#f9fafb" : "white" }}>
+                      <td style={{ padding: "12px", color: "#1f2937", fontWeight: 500 }}>
+                        {formatDateTime(row.date)}
+                      </td>
+                      <td style={{ padding: "12px", color: "#1f2937" }}>
+                        {row.impressions.toLocaleString()}
+                      </td>
+                      <td style={{ padding: "12px", color: "#1f2937" }}>
+                        {row.clicks.toLocaleString()}
+                      </td>
+                      <td style={{ padding: "12px", color: "#1f2937" }}>
+                        {row.conversions}
+                      </td>
+                      <td style={{ padding: "12px", color: "#1f2937" }}>
+                        ${row.revenue.toLocaleString()}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {analytics.rows.map((r, i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "#f9fafb" : "white" }}>
-                        <td style={{ padding: "12px", color: "#1f2937", fontWeight: 500 }}>
-                          {formatDateTime(r.period_start)} — {formatDateTime(r.period_end)}
-                        </td>
-                        <td style={{ padding: "12px", color: "#1f2937" }}>
-                          {r.impressions?.toLocaleString() ?? "-"}
-                        </td>
-                        <td style={{ padding: "12px", color: "#1f2937" }}>
-                          {r.clicks?.toLocaleString() ?? "-"}
-                        </td>
-                        <td style={{ padding: "12px", color: "#1f2937" }}>
-                          {r.conversions?.toLocaleString() ?? "-"}
-                        </td>
-                        <td style={{ padding: "12px", color: "#1f2937" }}>
-                          {typeof r.rev === "number" ? `$${r.rev.toFixed(2)}` : "-"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                
-                {/* Totals */}
-                {analytics.totals && (
-                  <div style={{ 
-                    marginTop: "1rem", 
-                    padding: "1rem", 
-                    background: "#f8fafc", 
-                    borderRadius: "8px",
-                    border: "1px solid #e2e8f0"
-                  }}>
-                    <h4 style={{ color: "#1f2937", margin: "0 0 0.5rem 0" }}>Totals</h4>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.5rem" }}>
-                      <div><strong>Impressions:</strong> {analytics.totals.impressions?.toLocaleString() ?? "-"}</div>
-                      <div><strong>Clicks:</strong> {analytics.totals.clicks?.toLocaleString() ?? "-"}</div>
-                      <div><strong>Conversions:</strong> {analytics.totals.conversions?.toLocaleString() ?? "-"}</div>
-                      <div><strong>Revenue:</strong> {typeof analytics.totals.rev === "number" ? `$${analytics.totals.rev.toFixed(2)}` : "-"}</div>
-                    </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Competitor Mentions */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            Competitor Mentions in AI Platforms
+          </h2>
+          <div style={{
+            background: "white",
+            borderRadius: 12,
+            padding: "1.5rem",
+            boxShadow: "0 8px 25px rgba(0,0,0,0.06)",
+            border: "1px solid #f1f5f9"
+          }}>
+            {data.competitorMentions.map((mention, index) => (
+              <div 
+                key={index}
+                style={{
+                  padding: "1rem",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
+                  marginBottom: index < data.competitorMentions.length - 1 ? "1rem" : 0,
+                  background: "#fafafa"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <FaGlobe style={{ color: "#2563eb" }} />
+                    <span style={{ color: "#1f2937", fontWeight: 600 }}>
+                      {mention.platform}
+                    </span>
                   </div>
-                )}
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{
+                      background: mention.sentiment === "positive" ? "#d1fae5" : mention.sentiment === "negative" ? "#fee2e2" : "#fef3c7",
+                      color: mention.sentiment === "positive" ? "#065f46" : mention.sentiment === "negative" ? "#991b1b" : "#92400e",
+                      padding: "0.25rem 0.75rem",
+                      borderRadius: "20px",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      textTransform: "uppercase"
+                    }}>
+                      {mention.sentiment}
+                    </span>
+                    <span style={{
+                      background: mention.impact === "high" ? "#fee2e2" : mention.impact === "medium" ? "#fef3c7" : "#d1fae5",
+                      color: mention.impact === "high" ? "#991b1b" : mention.impact === "medium" ? "#92400e" : "#065f46",
+                      padding: "0.25rem 0.75rem",
+                      borderRadius: "20px",
+                      fontSize: "0.75rem",
+                      fontWeight: 600
+                    }}>
+                      {mention.impact} impact
+                    </span>
+                  </div>
+                </div>
+                <p style={{ color: "#6b7280", margin: "0 0 0.5rem 0", fontStyle: "italic" }}>
+                  "{mention.mention}"
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <FaUsers style={{ color: "#6b7280", fontSize: "0.875rem" }} />
+                  <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                    Competitor: {mention.competitor}
+                  </span>
+                </div>
               </div>
-            ) : (
-              <p style={{ color: "#9ca3af", textAlign: "center", fontStyle: "italic" }}>
-                No analytics data found. Select a date range and load analytics.
-              </p>
-            )}
-          </motion.div>
-        ) : (
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Suggested Actions */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            Suggested Actions
+          </h2>
+          <div style={{ display: "grid", gap: "1rem" }}>
+            {data.suggestedActions.map((action, index) => (
+              <ActionCard key={index} action={action} />
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Upgrade CTA for Core Tier */}
+        {tier === "core" && (
           <motion.div 
-            initial={{ opacity: 0, y: 10 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.3 }}
-            style={{ 
-              background: "#fff7ed", 
-              border: "1px solid #fed7aa", 
-              color: "#9a3412", 
-              padding: "1.5rem", 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            style={{
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               borderRadius: 12,
-              textAlign: "center"
+              padding: "2rem",
+              textAlign: "center",
+              marginTop: "2rem"
             }}
           >
-            <FaChartLine style={{ fontSize: "2rem", marginBottom: "1rem", color: "#f59e0b" }} />
-            <h3 style={{ margin: "0 0 0.5rem 0" }}>Analytics is a Growth Feature</h3>
-            <p style={{ margin: "0 0 1rem 0" }}>
-              Unlock detailed performance analytics and insights with our Growth plan.
+            <FaRocket style={{ color: "white", fontSize: "2rem", marginBottom: "1rem" }} />
+            <h3 style={{ color: "white", margin: "0 0 0.5rem 0", fontSize: "1.5rem" }}>
+              Unlock Advanced AI Insights
+            </h3>
+            <p style={{ color: "rgba(255,255,255,0.9)", margin: "0 0 1.5rem 0" }}>
+              Upgrade to Growth or Partner tier to access real-time competitor monitoring, advanced analytics, and AI-powered recommendations.
             </p>
             <a 
               href="/pricing" 
-              style={{ 
-                color: "#2563eb", 
-                fontWeight: 600, 
-                textDecoration: "none",
-                padding: "0.75rem 1.5rem",
+              style={{
                 background: "white",
+                color: "#2563eb",
+                padding: "0.75rem 2rem",
                 borderRadius: "8px",
-                display: "inline-block",
-                border: "1px solid #e5e7eb"
+                textDecoration: "none",
+                fontWeight: 600,
+                display: "inline-block"
               }}
             >
-              Upgrade to Growth
+              View Plans
             </a>
           </motion.div>
-        ))}
+        )}
       </div>
     </>
   );
