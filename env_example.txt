@@ -1,0 +1,25 @@
+# Revenue Ripple Environment Variables Example
+# Copy this to .env and fill in your actual values
+
+# Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_DB_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
+
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# GetResponse Configuration
+GETRESPONSE_API_KEY=your-getresponse-api-key
+GETRESPONSE_CAMPAIGN_ID=your-campaign-id
+
+# OpenAI Configuration
+OPENAI_API_KEY=sk-...
+
+# JWT Configuration
+JWT_SECRET=your-jwt-secret-key-here
+
+# Server Configuration
+FLASK_ENV=development
+FLASK_DEBUG=True

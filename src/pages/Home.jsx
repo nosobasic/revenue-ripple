@@ -11,7 +11,7 @@ import {
   FaCheckCircle, 
   FaStar, 
   FaGraduationCap, 
-  FaHandshake, 
+  FaHandshake,  
   FaBook, 
   FaQuoteLeft, 
   FaRobot, 
@@ -183,20 +183,57 @@ export default function Home() {
             transition={{ duration: 2, repeat: Infinity }}
           >
             <FaFire style={{ marginRight: '0.5rem' }} />
-            🚀 COMPLETE BUSINESS GROWTH ECOSYSTEM
+            🚀 REVENUE RIPPLE OS — LEARN • AUTOMATE • EARN
           </motion.div>
           
           <h1 className="hero-title">
-            Everything You Need to
+            Scale Your Business Without Hiring a Team
             <span style={{ display: 'block', color: '#2563eb' }}>
-              Grow Your Business Online
+              Your All‑in‑One Business OS
             </span>
           </h1>
           
           <p className="hero-subtitle">
-            From marketing education to AI visibility tracking, business automation to earning opportunities - 
-            we've built the complete toolkit for modern entrepreneurs.
+            A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn’t fragile.
           </p>
+
+          {/* Primary CTAs (kept minimal to preserve current feel) */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+            <Link
+              to="/checkout"
+              style={{
+                background: '#2563eb',
+                color: 'white',
+                padding: '0.9rem 1.4rem',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
+              }}
+            >
+              <FaRocket /> Build My Business OS
+            </Link>
+            <Link
+              to="/how-it-works"
+              style={{
+                background: 'white',
+                color: '#2563eb',
+                border: '2px solid #2563eb',
+                padding: '0.85rem 1.3rem',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontWeight: 600,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <FaPlay /> See How It Works
+            </Link>
+          </div>
           
           {!user && (
             <div style={{ marginTop: '2rem' }}>
@@ -208,7 +245,6 @@ export default function Home() {
               }}>
                 What's your main goal right now?
               </h3>
-              
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -236,12 +272,12 @@ export default function Home() {
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                       }}
                     >
                       <path.icon style={{ 
@@ -281,6 +317,106 @@ export default function Home() {
               </div>
             </div>
           )}
+        </div>
+      </motion.section>
+
+      {/* Value Stack Section (Bundled Offer) */}
+      <motion.section
+        style={{ padding: '3rem 0', background: '#ffffff' }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="container">
+          <h2 style={{ textAlign: 'center', fontSize: '2.2rem', marginBottom: '0.5rem', color: '#1e293b' }}>
+            Revenue Ripple OS — Value Stack
+          </h2>
+          <p style={{ textAlign: 'center', color: '#64748b', margin: '0 auto 2rem', maxWidth: 780 }}>
+            Learn, Automate, and Scale: training + AI market visibility + always‑on command center.
+          </p>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', padding: '12px 14px', background: '#111827', color: 'white', position: 'sticky', top: 0 }}>Component</th>
+                  <th style={{ textAlign: 'left', padding: '12px 14px', background: '#111827', color: 'white', position: 'sticky', top: 0 }}>Description</th>
+                  <th style={{ textAlign: 'left', padding: '12px 14px', background: '#111827', color: 'white', position: 'sticky', top: 0 }}>Perceived Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    c: 'Full Learning Platform',
+                    d: '46+ expert‑led tutorials, 25+ pro courses, continuously updated.',
+                    v: '$2,500/mo'
+                  },
+                  {
+                    c: 'AI Insights Tool',
+                    d: 'Track market/competitors and optimize prompts to show up in AI results.',
+                    v: '$1,500/mo'
+                  },
+                  {
+                    c: 'AI Command Center',
+                    d: 'Agents monitor automations, funnels & webhooks 24/7 and auto‑heal issues.',
+                    v: '$1,000/mo'
+                  },
+                  {
+                    c: 'Affiliate Program',
+                    d: 'Earn commissions promoting Revenue Ripple — plug‑and‑play assets included.',
+                    v: '$500/mo'
+                  },
+                  {
+                    c: 'Reseller/White‑Label (Partner)',
+                    d: 'Sell the platform under your brand with white‑label dashboards & reports.',
+                    v: '$2,000/mo'
+                  },
+                  {
+                    c: 'Bonus: Prebuilt Funnels',
+                    d: 'Ready‑to‑launch funnels that save weeks of setup.',
+                    v: '$1,000 value'
+                  },
+                  {
+                    c: 'Bonus: Swipe Library',
+                    d: 'Ads, emails, landing copy and CTAs that convert.',
+                    v: '$500 value'
+                  },
+                  {
+                    c: 'Bonus: Quarterly Strategy Calls',
+                    d: 'High‑leverage planning to keep you scaling.',
+                    v: '$2,000 value'
+                  }
+                ].map((row, i) => (
+                  <tr key={row.c} style={{ background: i % 2 === 0 ? '#f9fafb' : 'white' }}>
+                    <td style={{ padding: '12px 14px', color: '#1f2937', fontWeight: 600 }}>{row.c}</td>
+                    <td style={{ padding: '12px 14px', color: '#4b5563' }}>{row.d}</td>
+                    <td style={{ padding: '12px 14px', color: '#111827' }}>{row.v}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '1rem', color: '#b45309', fontWeight: 700 }}>
+            Total Perceived Value: $8,500+/mo
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <Link
+              to="/checkout"
+              style={{
+                background: '#2563eb',
+                color: 'white',
+                padding: '0.9rem 1.4rem',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
+              }}
+            >
+              <FaRocket /> Get Started (Core $197/mo)
+            </Link>
+          </div>
         </div>
       </motion.section>
 
