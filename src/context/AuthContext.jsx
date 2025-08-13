@@ -15,6 +15,14 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Check if Supabase is properly configured
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+          console.warn('Supabase not configured, skipping auth initialization');
+          setUser(null);
+          setSession(null);
+          return;
+        }
+        
         const currentUser = await AuthService.getCurrentUser();
         if (currentUser) {
           setUser(currentUser);

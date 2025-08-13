@@ -118,12 +118,21 @@ export class AuthService {
 
   static async getCurrentUser(): Promise<any> {
     try {
+      // Check if Supabase is properly configured
+      const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL;
+      const supabaseKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey) {
+        console.warn('Supabase not configured, returning null for current user');
+        return null;
+      }
+      
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
       return data.user;
     } catch (error) {
       console.error('Get current user error:', error);
-      throw error;
+      return null;
     }
   }
 
