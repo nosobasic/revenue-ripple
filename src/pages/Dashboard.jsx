@@ -7,13 +7,10 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
-<<<<<<< Current (Your changes)
-import InsightsWidget from '../components/InsightsWidget';
-=======
+
 import UpgradeCTA from '../components/UpgradeCTA';
 import { insightsClient } from '../api/insightsClient';
 import { useTier } from '../lib/tier.js';
->>>>>>> Incoming (Background Agent changes)
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -287,9 +284,9 @@ const Dashboard = () => {
            <div className="container">
              <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
              <p className="dashboard-welcome">Hello, Good To See You {user?.email?.split('@')[0]?.toUpperCase()}</p>
-             {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+              {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
                <div style={{ marginTop: '1rem' }}>
-                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Todays Insight</h3>
+                  <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Today's Insight</h3>
                  {!insight && !insightError && <div className="animate-pulse h-8 bg-gray-100 rounded" />}
                  {insightError && <div className="p-2 bg-red-100 text-red-700 rounded">{insightError}</div>}
                  {insight && (
@@ -641,10 +638,18 @@ const Dashboard = () => {
 
           {/* Side Content - Right Side */}
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
-            {/* Insight of the Day Card */}
-            <div style={{ marginBottom: '2rem' }}>
-              <InsightsWidget />
-            </div>
+            {/* Insight of the Day Card (sidebar) */}
+            {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+              <div style={{ marginBottom: '2rem' }} className="p-4 bg-white rounded border">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontWeight: 600 }}>{insight?.title || "Today's Insight"}</div>
+                    <div style={{ color: '#4b5563' }}>{insight?.suggestion || 'Loading...'}</div>
+                  </div>
+                  <Link to="/insights" className="cta-link">View</Link>
+                </div>
+              </div>
+            )}
 
             {/* Smart Upsell Banner */}
             <div style={{
