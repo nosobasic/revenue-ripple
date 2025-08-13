@@ -5,20 +5,53 @@ import { NavigationUtils } from '../utils/navigationUtils';
 import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb } from 'react-icons/fa';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = React.memo(() => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     try {
       await logout();
       navigate('/');
     } catch (error) {
-      console.error('Failed to log out:', error);
+      logger.error('Failed to log out:', error);
     }
-  };
+  }, [logout, navigate]);
+
+  const isActive = useCallback((path) => {
+    if (path === '/learn') {
+      return location.pathname.includes('/courses') || location.pathname.includes('/training');
+    }
+    if (path === '/progress') {
+      return location.pathname === '/dashboard';
+    }
+    if (path === '/earn') {
+      return location.pathname.includes('/affiliate');
+    }
+    return location.pathname === path;
+  }, [location.pathname]);
+
+  const getNavLinkClass = useCallback((path) => {
+    return `navbar-link ${isActive(path) ? 'active' : ''}`;
+  }, [isActive]);
+
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
+
+  // Memoize navigation items
+  const navItems = useMemo(() => [
+    { path: '/progress', icon: FaChartLine, label: 'Progress' },
+    { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
+    { path: '/earn', icon: FaDollarSign, label: 'Earn' },
+    { path: '/support', icon: FaQuestionCircle, label: 'Support' }
+  ], []);
 
   const isActive = (path) => {
     if (path === '/learn') {
@@ -209,6 +242,8 @@ const Navbar = () => {
       )}
     </nav>
   );
-};
+});
+
+Navbar.displayName = 'Navbar';
 
 export default Navbar; 

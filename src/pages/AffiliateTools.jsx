@@ -99,12 +99,12 @@ const AffiliateTools = () => {
     {
       id: 3,
       title: 'Unleash the Power of Traffic',
-      description: "An excellent guide to creating powerful marketing materials that will captivate and engage your target audience. From lead magnets that attract new subscribers to landing pages that convert visitors into customers, this book is packed with actionable tips and techniques that will help you unleash your marketing potential. You'll learn how to craft compelling headlines and write copy that resonates with your audience. Whether you're a seasoned marketer or just starting out, 'Unlock Your Marketing Potential' is an invaluable resource that will help you take your reselling to the next level.",
+      description: "Master the art of driving targeted traffic to your offers with proven strategies that work across all major platforms. This comprehensive guide covers everything from paid advertising to organic growth tactics, helping you build sustainable traffic sources that convert. Learn how to optimize your campaigns, target the right audiences, and scale your marketing efforts for maximum ROI.",
       formats: ['PDF'],
-      platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
+      platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram', 'Google Ads'],
       image: '/assets/images/images/Power-of-traffic-book.png',
       downloads: {
-        ZIP: '/assets/downloads/Unleash-the-Power-of-Traffic.zip'
+        PDF: '/assets/downloads/Unleash-the-Power-of-Traffic.pdf'
       }
     },
     {
@@ -121,13 +121,23 @@ const AffiliateTools = () => {
     {
       id: 5,
       title: 'Social Media Secrets',
-      description: 'Engaging social media content for all platforms',
-      formats: ['PNG', 'JPG'],
+      description: 'Master the art of social media marketing with proven strategies and tactics that will help you build engaged audiences across all major platforms. Learn how to create viral content, optimize your profiles, and drive real business results through social media.',
+      formats: ['PDF'],
       platforms: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'],
-      image: '/assets/images/images/social-media-book.png',
+      image: '/assets/images/images/Social-Media-book.png',
       downloads: {
-        PNG: '/assets/downloads/social-media-posts.zip',
-        JPG: '/assets/downloads/social-media-posts-jpg.zip'
+        PDF: '/assets/downloads/Social-Media-Secrets.pdf'
+      }
+    },
+    {
+      id: 6,
+      title: '300 Snappy Headline Ideas',
+      description: 'Boost your click-through rates and conversions with this comprehensive collection of proven headline formulas and templates. Perfect for email subject lines, ad copy, blog titles, and landing page headlines. These headline ideas have been tested and optimized for maximum engagement across all marketing channels.',
+      formats: ['PDF'],
+      features: ['Proven Formulas', 'A/B Tested', 'Multiple Industries'],
+      image: '/assets/images/images/Title-Tricks-book.png',
+      downloads: {
+        PDF: '/assets/downloads/300-Snappy-Headline-Ideas.pdf'
       }
     }
   ];

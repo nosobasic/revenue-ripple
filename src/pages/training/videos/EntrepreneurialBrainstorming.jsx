@@ -188,9 +188,9 @@ const EntrepreneurialBrainstorming = () => {
             </div>
             <div className="section-content">
               <div className="related-videos">
-                <Link to="/training/videos/bulletproof-branding" className="related-video-item">
-                  <h4>Bulletproof Branding</h4>
-                  <p>Your brand is your reputation. Learn how to build one that hits hard...</p>
+                <Link to="/training/videos/mindset-mastery" className="related-video-item">
+                  <h4>Mindset Mastery</h4>
+                  <p>Master the mental game of entrepreneurship. Learn how to develop the mindset...</p>
                 </Link>
                 <Link to="/training/videos/shoestring-startups" className="related-video-item">
                   <h4>Shoestring Startups</h4>

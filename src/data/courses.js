@@ -1220,7 +1220,7 @@ export const courses = [
         title: 'Boost Productivity with Smart Interactions', 
         description: 'Discover how AI is transforming various business operations.',
         video: {
-          vimeoId: '1089912581',
+          vimeoId: '1090695297',
           duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
         }
@@ -1331,6 +1331,66 @@ export const courses = [
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
         }
       }
+    ]
+  },
+  {
+    slug: 'mindset-mastery',
+    title: 'Mindset Mastery',
+    description: 'Master the mental game of entrepreneurship. Learn how to develop the mindset, habits, and mental frameworks that separate successful entrepreneurs from the rest.',
+    estimatedTime: '10-15 minutes',
+    introVideo: {
+      vimeoId: '1106870211',
+      duration: '2:30',
+      thumbnail: 'https://vumbnail.com/000000029.jpg',
+      title: 'The Inner Game: Rewiring the Entrepreneurial Mindset'
+    },
+    modules: [
+      {
+        id: 1,
+        title: 'Reprogramming Your Operating System: Identity, Beliefs & Behavior',
+        description: 'Learn how to reprogram your mental operating system for entrepreneurial success.',
+        video: { vimeoId: '1106884492', duration: '3:35', thumbnail: 'https://vumbnail.com/999999998.jpg' }
+      },
+      {
+        id: 2,
+        title: 'Momentum Over Motivation: Building Daily Rhythm That Compounds',
+        description: 'Develop daily rhythms and habits that create compounding momentum in your business.',
+        video: { vimeoId: '1106930999', duration: '10:00', thumbnail: 'https://vumbnail.com/999999998.jpg' }
+      },
+
+    ]
+  },
+  {
+    slug: 'shoestring-startups',
+    title: 'Shoestring Startups',
+    description: 'Launching on a tight budget? This guide walks you through how to get up and running with damn near nothing—and still win.',
+    estimatedTime: '10-15 minutes',
+    introVideo: {
+      vimeoId: '1107105777',
+      duration: '3:15',
+      thumbnail: 'https://vumbnail.com/999999997.jpg',
+      title: 'Escape the Grind'
+    },
+    modules: [
+      {
+        id: 1,
+        title: 'The Freedom-First Model',
+        description: 'Learn how to build a business that gives you the freedom to live your life.',
+        video: { vimeoId: '1107126423', duration: '2:57', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 2,
+        title: 'Systems Over Stress',
+        description: 'Learn how to build systems that reduce stress and increase productivity.',
+        video: { vimeoId: '1107569965', duration: '3:48', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+      {
+        id: 3,
+        title: 'Build the Machine',
+        description: 'Learn how to build the machine that will run your business.',
+        video: { vimeoId: '1107873740', duration: '3:07', thumbnail: 'https://vumbnail.com/999999997.jpg' }
+      },
+
     ]
   }
 ]; 

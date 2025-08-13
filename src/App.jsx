@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './pages/Dashboard';
-import Training from './pages/Training';
+import { STORAGE_KEYS, logger } from './config/constants';
+
+// Immediate load components (critical path)
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
@@ -59,7 +61,7 @@ import ProductComparison from './pages/ProductComparison';
 import Insights from './pages/Insights';
 
 const UnprotectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
+  const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 
@@ -70,11 +72,13 @@ const App = () => {
     fetch('/meta.json')
       .then(res => res.json())
       .then(meta => {
-        const lastVersion = localStorage.getItem('app_version');
+        const lastVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
         if (lastVersion && lastVersion !== meta.build) setShowReload(true);
-        localStorage.setItem('app_version', meta.build);
+        localStorage.setItem(STORAGE_KEYS.APP_VERSION, meta.build);
       })
-      .catch(() => {});
+      .catch((error) => {
+        logger.warn('Could not fetch app version:', error);
+      });
   }, []);
 
   return (
@@ -84,7 +88,8 @@ const App = () => {
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>
         </div>
       )}
-      <Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
@@ -124,7 +129,7 @@ const App = () => {
         </ProtectedRoute>} />
 
         <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
-        <Route path="/training/videos/bulletproof-branding" element={<ProtectedRoute><BulletproofBranding /></ProtectedRoute>} />
+        <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
         <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
         <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
         <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />
@@ -150,8 +155,9 @@ const App = () => {
         <Route path="/compare" element={<ProductComparison />} />
         <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };
