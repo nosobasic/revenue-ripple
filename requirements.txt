@@ -5,5 +5,6 @@ python-dotenv
 requests
 stripe
 supabase
+PyJWT
 gunicorn
 openai

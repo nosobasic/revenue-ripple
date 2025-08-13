@@ -49,6 +49,8 @@ const Navbar = React.memo(() => {
   const navItems = useMemo(() => [
     { path: '/progress', icon: FaChartLine, label: 'Progress' },
     { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
+    ...(import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' ? [{ path: '/insights', icon: FaLightbulb, label: 'Insights' }] : []),
+    ...(import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' ? [{ path: '/command-center', icon: FaFlask, label: 'Command' }] : []),
     { path: '/earn', icon: FaDollarSign, label: 'Earn' },
     { path: '/support', icon: FaQuestionCircle, label: 'Support' }
   ], []);
