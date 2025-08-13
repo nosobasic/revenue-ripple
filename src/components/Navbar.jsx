@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NavigationUtils } from '../utils/navigationUtils';
 import { logger } from '../config/constants';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb, FaFlask } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = React.memo(() => {
