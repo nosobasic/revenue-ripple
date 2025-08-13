@@ -1,10 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { fetchDailyInsight } from "../api/insightsClient";
-import { FaLightbulb, FaRobot, FaExclamationTriangle } from "react-icons/fa";
+import { 
+  FaLightbulb, 
+  FaRobot, 
+  FaChartLine, 
+  FaUsers, 
+  FaExclamationTriangle,
+  FaArrowRight
+} from "react-icons/fa";
 
-export default function InsightOfDayCard() {
+export default function InsightsWidget() {
   const { user, getToken } = useAuth();
   const [insight, setInsight] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +38,7 @@ export default function InsightOfDayCard() {
         const data = await fetchDailyInsight(token);
         setInsight(data);
       } catch (err) {
-        console.error("Failed to fetch insight of the day:", err);
+        console.error("Failed to fetch insight for widget:", err);
         setError(err.message || "Failed to load insight");
       } finally {
         setLoading(false);
@@ -39,19 +47,6 @@ export default function InsightOfDayCard() {
 
     fetchInsight();
   }, [user, getToken]);
-
-  const formatDate = (dateString) => {
-    try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    } catch {
-      return dateString;
-    }
-  };
 
   const getSourceIcon = (source) => {
     switch (source) {
@@ -94,16 +89,33 @@ export default function InsightOfDayCard() {
       }}
     >
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
-        <FaLightbulb style={{ color: "#f59e0b", fontSize: "1.25rem" }} />
-        <h3 style={{ color: "#1f2937", margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-          {insight?.title || "Insight of the Day"}
-        </h3>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <FaLightbulb style={{ color: "#f59e0b", fontSize: "1.25rem" }} />
+          <h3 style={{ color: "#1f2937", margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
+            Insight of the Day
+          </h3>
+        </div>
+        <Link 
+          to="/insights"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "#2563eb",
+            textDecoration: "none",
+            fontSize: "0.875rem",
+            fontWeight: 600
+          }}
+        >
+          View All
+          <FaArrowRight style={{ fontSize: "0.75rem" }} />
+        </Link>
       </div>
 
       {/* Loading State */}
       {loading && (
-        <div style={{ color: "#6b7280", fontStyle: "italic" }}>
+        <div style={{ color: "#6b7280", fontStyle: "italic", fontSize: "0.875rem" }}>
           Loading today's insight...
         </div>
       )}
@@ -132,10 +144,13 @@ export default function InsightOfDayCard() {
           <p style={{ 
             color: "#374151", 
             margin: "0 0 1rem 0", 
-            lineHeight: 1.6,
-            fontSize: "0.95rem"
+            lineHeight: 1.5,
+            fontSize: "0.875rem"
           }}>
-            {insight.suggestion}
+            {insight.suggestion.length > 150 
+              ? `${insight.suggestion.substring(0, 150)}...` 
+              : insight.suggestion
+            }
           </p>
 
           {/* Source Tag */}
@@ -154,9 +169,45 @@ export default function InsightOfDayCard() {
             </span>
           </div>
 
-          {/* Date */}
-          <div style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-            {formatDate(insight.day)}
+          {/* Quick Actions */}
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <Link 
+              to="/insights"
+              style={{
+                background: "#2563eb",
+                color: "white",
+                padding: "0.5rem 1rem",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem"
+              }}
+            >
+              <FaChartLine />
+              View Analytics
+            </Link>
+            <Link 
+              to="/insights"
+              style={{
+                background: "transparent",
+                color: "#2563eb",
+                padding: "0.5rem 1rem",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontSize: "0.875rem",
+                fontWeight: 600,
+                border: "1px solid #2563eb",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem"
+              }}
+            >
+              <FaUsers />
+              Competitors
+            </Link>
           </div>
         </>
       )}
@@ -164,10 +215,24 @@ export default function InsightOfDayCard() {
       {/* No Data State */}
       {!loading && !error && !insight && (
         <div style={{ textAlign: "center", padding: "1rem 0" }}>
-          <FaLightbulb style={{ color: "#9ca3af", fontSize: "2rem", marginBottom: "0.75rem" }} />
-          <p style={{ color: "#6b7280", margin: 0, fontSize: "0.95rem" }}>
+          <FaLightbulb style={{ color: "#9ca3af", fontSize: "1.5rem", marginBottom: "0.5rem" }} />
+          <p style={{ color: "#6b7280", margin: "0 0 1rem 0", fontSize: "0.875rem" }}>
             Connect a business to receive daily insights.
           </p>
+          <Link 
+            to="/insights"
+            style={{
+              background: "#2563eb",
+              color: "white",
+              padding: "0.5rem 1rem",
+              borderRadius: "8px",
+              textDecoration: "none",
+              fontSize: "0.875rem",
+              fontWeight: 600
+            }}
+          >
+            Get Started
+          </Link>
         </div>
       )}
     </motion.div>

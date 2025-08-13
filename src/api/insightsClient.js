@@ -49,6 +49,17 @@ const Analytics = z.object({
   }) 
 });
 
+const DailyInsight = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  business_id: z.string().nullable().optional(),
+  day: z.string(),
+  title: z.string().optional(),
+  suggestion: z.string(),
+  source: z.string(),
+  created_at: z.string()
+});
+
 // Helper function for authenticated requests
 async function jfetch(path, token) {
   const res = await fetch(base + path, { 
@@ -67,6 +78,22 @@ async function jfetch(path, token) {
 // Check if we should use Flask insights or legacy endpoints
 const useFlaskInsights = import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true';
 
+export async function fetchDailyInsight(token, { business_id } = {}) {
+  if (!useFlaskInsights) {
+    // TODO: Implement legacy endpoint fallback
+    throw new Error("Legacy daily insight endpoint not implemented yet");
+  }
+  
+  const params = new URLSearchParams();
+  if (business_id) params.append('business_id', business_id);
+  
+  const queryString = params.toString();
+  const path = `/insights/api/daily${queryString ? `?${queryString}` : ''}`;
+  
+  const data = await jfetch(path, token);
+  return DailyInsight.parse(data);
+}
+
 export async function fetchPrompts(token) {
   if (!useFlaskInsights) {
     // TODO: Implement legacy endpoint fallback
@@ -77,10 +104,10 @@ export async function fetchPrompts(token) {
   return z.array(Prompt).parse(data);
 }
 
-export async function fetchPromptSuggestions(token, { q, business_id } = {}) {
+export async function fetchSuggestions(token, { q, business_id } = {}) {
   if (!useFlaskInsights) {
     // TODO: Implement legacy endpoint fallback
-    throw new Error("Legacy prompt suggestions endpoint not implemented yet");
+    throw new Error("Legacy suggestions endpoint not implemented yet");
   }
   
   const params = new URLSearchParams();
@@ -88,10 +115,15 @@ export async function fetchPromptSuggestions(token, { q, business_id } = {}) {
   if (business_id) params.append('business_id', business_id);
   
   const queryString = params.toString();
-  const path = `/insights/api/prompt-suggestions${queryString ? `?${queryString}` : ''}`;
+  const path = `/insights/api/suggestions${queryString ? `?${queryString}` : ''}`;
   
   const data = await jfetch(path, token);
   return z.array(Suggestion).parse(data);
+}
+
+export async function fetchPromptSuggestions(token, { q, business_id } = {}) {
+  // Alias for fetchSuggestions for backward compatibility
+  return fetchSuggestions(token, { q, business_id });
 }
 
 export async function fetchCompetitors(token, { industry, limit } = {}) {

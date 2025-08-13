@@ -103,7 +103,299 @@ class InsightsRepository:
         except Exception as e:
             logger.error(f"Error fetching prompts for user {user_id}: {e}")
             raise
-    
+
+    def get_cached_daily_insight(self, user_id: str, day: date, business_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """
+        Get cached daily insight for a user on a specific day
+        
+        Args:
+            user_id: The user ID
+            day: The date to get insight for
+            business_id: Optional business ID filter
+            
+        Returns:
+            Cached insight data or None if not found
+        """
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    query = """
+                        SELECT id, user_id, business_id, day, title, suggestion, source, created_at
+                        FROM insight_daily_cache 
+                        WHERE user_id = %s AND day = %s
+                    """
+                    params = [user_id, day]
+                    
+                    if business_id:
+                        query += " AND business_id = %s"
+                        params.append(business_id)
+                    else:
+                        query += " AND business_id IS NULL"
+                    
+                    cur.execute(query, params)
+                    row = cur.fetchone()
+                    
+                    if row:
+                        return dict(row)
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Error getting cached daily insight for user {user_id}: {e}")
+            return None
+
+    def generate_daily_insight(self, user_id: str, day: date, business_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """
+        Generate and cache a new daily insight for a user
+        
+        Args:
+            user_id: The user ID
+            day: The date for the insight
+            business_id: Optional business ID filter
+            
+        Returns:
+            Generated insight data or None if failed
+        """
+        try:
+            # Generate insight content (this would typically call an AI service)
+            # For now, we'll create a placeholder insight
+            insight_data = {
+                'title': f"Daily Insight for {day.strftime('%B %d, %Y')}",
+                'suggestion': f"Based on your business data, here's your personalized insight for {day.strftime('%B %d, %Y')}. Consider optimizing your marketing strategy to improve conversion rates.",
+                'source': 'generated'
+            }
+            
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    # Insert the new insight into cache
+                    query = """
+                        INSERT INTO insight_daily_cache 
+                        (user_id, business_id, day, title, suggestion, source)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                        RETURNING id, user_id, business_id, day, title, suggestion, source, created_at
+                    """
+                    
+                    cur.execute(query, [
+                        user_id, business_id, day, 
+                        insight_data['title'], insight_data['suggestion'], insight_data['source']
+                    ])
+                    
+                    row = cur.fetchone()
+                    conn.commit()
+                    
+                    if row:
+                        return dict(row)
+                    return None
+                    
+        except Exception as e:
+            logger.error(f"Error generating daily insight for user {user_id}: {e}")
+            return None
+
+    def get_monthly_usage(self, user_id: str, month: date) -> int:
+        """
+        Get monthly insights usage for a user
+        
+        Args:
+            user_id: The user ID
+            month: The month to check (first day of month)
+            
+        Returns:
+            Total usage count for the month
+        """
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    query = """
+                        SELECT COALESCE(SUM(prompts_queries + suggestions_queries), 0) as total_usage
+                        FROM insights_usage 
+                        WHERE user_id = %s AND month = %s
+                    """
+                    
+                    cur.execute(query, [user_id, month])
+                    row = cur.fetchone()
+                    
+                    return row['total_usage'] if row else 0
+                    
+        except Exception as e:
+            logger.error(f"Error getting monthly usage for user {user_id}: {e}")
+            return 0
+
+    def increment_monthly_usage(self, user_id: str, month: date) -> bool:
+        """
+        Increment monthly insights usage for a user
+        
+        Args:
+            user_id: The user ID
+            month: The month to increment (first day of month)
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            with self.get_connection() as conn:
+                with conn.cursor() as cur:
+                    # Try to update existing record, insert if not exists
+                    query = """
+                        INSERT INTO insights_usage (user_id, month, prompts_queries, suggestions_queries)
+                        VALUES (%s, %s, 0, 1)
+                        ON CONFLICT (user_id, month) 
+                        DO UPDATE SET 
+                            suggestions_queries = insights_usage.suggestions_queries + 1,
+                            updated_at = NOW()
+                    """
+                    
+                    cur.execute(query, [user_id, month])
+                    conn.commit()
+                    return True
+                    
+        except Exception as e:
+            logger.error(f"Error incrementing monthly usage for user {user_id}: {e}")
+            return False
+
+    def fetch_suggestions(self, user_id: str, q: Optional[str] = None, business_id: Optional[str] = None) -> List[Dict[str, Any]]:
+        """
+        Fetch AI-powered suggestions for a user
+        
+        Args:
+            user_id: The user ID
+            q: Optional seed text for suggestions
+            business_id: Optional business ID filter
+            
+        Returns:
+            List of suggestion dictionaries
+        """
+        try:
+            # For now, return mock suggestions
+            # In a real implementation, this would call an AI service
+            suggestions = [
+                {
+                    'id': '1',
+                    'user_id': user_id,
+                    'business_id': business_id,
+                    'suggestion': 'Consider implementing A/B testing on your landing pages to improve conversion rates.',
+                    'score': 0.85,
+                    'created_at': '2024-01-01T00:00:00Z'
+                },
+                {
+                    'id': '2',
+                    'user_id': user_id,
+                    'business_id': business_id,
+                    'suggestion': 'Your email open rates are below industry average. Try personalizing subject lines.',
+                    'score': 0.72,
+                    'created_at': '2024-01-01T00:00:00Z'
+                }
+            ]
+            
+            # Filter by seed text if provided
+            if q:
+                suggestions = [s for s in suggestions if q.lower() in s['suggestion'].lower()]
+            
+            return suggestions
+            
+        except Exception as e:
+            logger.error(f"Error fetching suggestions for user {user_id}: {e}")
+            return []
+
+    def fetch_competitors(self, user_id: str, industry: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """
+        Fetch competitors for a user
+        
+        Args:
+            user_id: The user ID
+            industry: Optional industry filter
+            limit: Maximum number of results
+            
+        Returns:
+            List of competitor dictionaries
+        """
+        try:
+            # For now, return mock competitors
+            # In a real implementation, this would query a competitors database
+            competitors = [
+                {
+                    'id': '1',
+                    'user_id': user_id,
+                    'name': 'TechCorp Solutions',
+                    'industry': 'Technology',
+                    'website': 'https://techcorp.com',
+                    'last_seen': '2024-01-01T00:00:00Z',
+                    'score': 0.92
+                },
+                {
+                    'id': '2',
+                    'user_id': user_id,
+                    'name': 'InnovateAI',
+                    'industry': 'Technology',
+                    'website': 'https://innovateai.com',
+                    'last_seen': '2024-01-01T00:00:00Z',
+                    'score': 0.78
+                }
+            ]
+            
+            # Filter by industry if provided
+            if industry:
+                competitors = [c for c in competitors if c['industry'].lower() == industry.lower()]
+            
+            return competitors[:limit]
+            
+        except Exception as e:
+            logger.error(f"Error fetching competitors for user {user_id}: {e}")
+            return []
+
+    def fetch_analytics(self, user_id: str, business_id: Optional[str] = None, 
+                       from_dt: date = None, to_dt: date = None, 
+                       group_by: str = 'day', metric_keys: List[str] = None) -> Dict[str, Any]:
+        """
+        Fetch analytics data for a user
+        
+        Args:
+            user_id: The user ID
+            business_id: Optional business ID filter
+            from_dt: Start date
+            to_dt: End date
+            group_by: Grouping period (day/week/month)
+            metric_keys: List of metrics to include
+            
+        Returns:
+            Analytics data with rows and totals
+        """
+        try:
+            # For now, return mock analytics
+            # In a real implementation, this would query analytics tables
+            rows = [
+                {
+                    'period_start': '2024-01-01T00:00:00Z',
+                    'period_end': '2024-01-01T23:59:59Z',
+                    'impressions': 1200,
+                    'clicks': 68,
+                    'conversions': 4,
+                    'rev': 850.00
+                },
+                {
+                    'period_start': '2024-01-02T00:00:00Z',
+                    'period_end': '2024-01-02T23:59:59Z',
+                    'impressions': 1350,
+                    'clicks': 72,
+                    'conversions': 5,
+                    'rev': 920.00
+                }
+            ]
+            
+            totals = {
+                'impressions': 2550,
+                'clicks': 140,
+                'conversions': 9,
+                'rev': 1770.00
+            }
+            
+            return {
+                'rows': rows,
+                'totals': totals
+            }
+            
+        except Exception as e:
+            logger.error(f"Error fetching analytics for user {user_id}: {e}")
+            return {'rows': [], 'totals': {}}
+
     def get_prompt_count(self, user_id: str) -> int:
         """
         Get total count of prompts for a user
@@ -131,39 +423,7 @@ class InsightsRepository:
         except Exception as e:
             logger.error(f"Error getting prompt count for user {user_id}: {e}")
             raise
-    
-    def get_monthly_usage(self, user_id: str, month: str, year: str) -> int:
-        """
-        Get monthly usage count for a user
-        
-        Args:
-            user_id: The user ID
-            month: Month (e.g., "01", "02")
-            year: Year (e.g., "2024")
-            
-        Returns:
-            Monthly usage count
-        """
-        try:
-            with self.get_connection() as conn:
-                with conn.cursor() as cur:
-                    query = """
-                        SELECT COALESCE(SUM(usage_count), 0) as total_usage
-                        FROM ai_prompts 
-                        WHERE user_id = %s 
-                        AND EXTRACT(MONTH FROM created_at) = %s
-                        AND EXTRACT(YEAR FROM created_at) = %s
-                    """
-                    
-                    cur.execute(query, [user_id, int(month), int(year)])
-                    result = cur.fetchone()
-                    
-                    return result['total_usage'] if result else 0
-                    
-        except Exception as e:
-            logger.error(f"Error getting monthly usage for user {user_id}: {e}")
-            raise
-    
+
     def create_prompt(self, user_id: str, prompt_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create a new prompt for a user
@@ -219,7 +479,7 @@ class InsightsRepository:
         except Exception as e:
             logger.error(f"Error creating prompt for user {user_id}: {e}")
             raise
-    
+
     def update_prompt(self, prompt_id: int, user_id: str, update_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         Update an existing prompt
@@ -284,7 +544,7 @@ class InsightsRepository:
         except Exception as e:
             logger.error(f"Error updating prompt {prompt_id} for user {user_id}: {e}")
             raise
-    
+
     def delete_prompt(self, prompt_id: int, user_id: str) -> bool:
         """
         Delete a prompt (soft delete by setting is_active = False)
@@ -312,7 +572,7 @@ class InsightsRepository:
         except Exception as e:
             logger.error(f"Error deleting prompt {prompt_id} for user {user_id}: {e}")
             raise
-    
+
     def increment_usage_count(self, prompt_id: int, user_id: str) -> bool:
         """
         Increment the usage count for a prompt
@@ -339,160 +599,6 @@ class InsightsRepository:
                     
         except Exception as e:
             logger.error(f"Error incrementing usage for prompt {prompt_id}: {e}")
-            raise
-
-    def fetch_competitors(self, user_id: str, industry: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
-        """
-        Fetch competitors for a specific user with optional filtering
-        
-        Args:
-            user_id: The user ID to get competitors for
-            industry: Optional industry filter
-            limit: Maximum number of competitors to return (default 50, max 250)
-            
-        Returns:
-            List of competitor dictionaries
-        """
-        try:
-            with self.get_connection() as conn:
-                with conn.cursor() as cur:
-                    # Build the base query
-                    query = """
-                        SELECT 
-                            id, user_id, name, industry, website, 
-                            last_seen, score
-                        FROM competitors 
-                        WHERE user_id = %s
-                    """
-                    
-                    params = [user_id]
-                    
-                    # Add industry filter if provided
-                    if industry:
-                        query += " AND LOWER(industry) = LOWER(%s)"
-                        params.append(industry)
-                    
-                    # Add ordering and limit
-                    query += " ORDER BY last_seen DESC LIMIT %s"
-                    params.append(limit)
-                    
-                    # Execute query
-                    cur.execute(query, params)
-                    rows = cur.fetchall()
-                    
-                    # Convert to list of dictionaries
-                    competitors = []
-                    for row in rows:
-                        try:
-                            competitors.append(dict(row))
-                        except Exception as e:
-                            logger.warning(f"Failed to parse competitor row {row.get('id')}: {e}")
-                            continue
-                    
-                    return competitors
-                    
-        except Exception as e:
-            logger.error(f"Error fetching competitors for user {user_id}: {e}")
-            raise
-
-    def fetch_analytics(self, user_id: str, business_id: Optional[str], 
-                       from_dt: date, to_dt: date, group_by: str, 
-                       metric_keys: List[str]) -> Dict[str, Any]:
-        """
-        Fetch analytics data for a specific user with time-series grouping
-        
-        Args:
-            user_id: The user ID to get analytics for
-            business_id: Optional business ID filter
-            from_dt: Start date for the analytics window
-            to_dt: End date for the analytics window
-            group_by: Grouping period ('day', 'week', 'month')
-            metric_keys: List of metrics to include in the response
-            
-        Returns:
-            Dictionary with 'rows' and 'totals' keys
-        """
-        try:
-            with self.get_connection() as conn:
-                with conn.cursor() as cur:
-                    # Build dynamic SELECT clause for requested metrics
-                    metric_columns = []
-                    for metric in metric_keys:
-                        if metric in ['impressions', 'clicks', 'conversions', 'rev']:
-                            metric_columns.append(f"SUM({metric}) as {metric}")
-                    
-                    if not metric_columns:
-                        # Default to all metrics if none specified
-                        metric_columns = [
-                            "SUM(impressions) as impressions",
-                            "SUM(clicks) as clicks", 
-                            "SUM(conversions) as conversions",
-                            "SUM(rev) as rev"
-                        ]
-                    
-                    # Build the main query for time-series data
-                    query = f"""
-                        SELECT 
-                            date_trunc(%s, occurred_at) as period_start,
-                            date_trunc(%s, occurred_at) + interval '1 {group_by}' as period_end,
-                            {', '.join(metric_columns)}
-                        FROM analytics_events 
-                        WHERE user_id = %s 
-                        AND occurred_at >= %s 
-                        AND occurred_at < %s
-                    """
-                    
-                    params = [group_by, group_by, user_id, from_dt, to_dt]
-                    
-                    # Add business_id filter if provided
-                    if business_id:
-                        query += " AND business_id = %s"
-                        params.append(business_id)
-                    
-                    query += " GROUP BY period_start ORDER BY period_start ASC"
-                    
-                    # Execute query for time-series data
-                    cur.execute(query, params)
-                    rows = cur.fetchall()
-                    
-                    # Convert to list of dictionaries
-                    analytics_rows = []
-                    for row in rows:
-                        try:
-                            row_dict = dict(row)
-                            analytics_rows.append(row_dict)
-                        except Exception as e:
-                            logger.warning(f"Failed to parse analytics row: {e}")
-                            continue
-                    
-                    # Build totals query
-                    totals_query = f"""
-                        SELECT {', '.join(metric_columns)}
-                        FROM analytics_events 
-                        WHERE user_id = %s 
-                        AND occurred_at >= %s 
-                        AND occurred_at < %s
-                    """
-                    
-                    totals_params = [user_id, from_dt, to_dt]
-                    
-                    if business_id:
-                        totals_query += " AND business_id = %s"
-                        totals_params.append(business_id)
-                    
-                    # Execute totals query
-                    cur.execute(totals_query, totals_params)
-                    totals_row = cur.fetchone()
-                    
-                    totals = dict(totals_row) if totals_row else {}
-                    
-                    return {
-                        "rows": analytics_rows,
-                        "totals": totals
-                    }
-                    
-        except Exception as e:
-            logger.error(f"Error fetching analytics for user {user_id}: {e}")
             raise
 
 

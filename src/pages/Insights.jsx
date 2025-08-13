@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import { fetchPrompts, fetchPromptSuggestions, fetchCompetitors, fetchAnalytics } from "../api/insightsClient";
+import { 
+  fetchDailyInsight, 
+  fetchPrompts, 
+  fetchSuggestions, 
+  fetchCompetitors, 
+  fetchAnalytics 
+} from "../api/insightsClient";
 import { 
   FaEye, 
   FaChartLine, 
@@ -22,7 +28,8 @@ import {
   FaClock,
   FaStar,
   FaExclamationTriangle,
-  FaCheckCircle
+  FaCheckCircle,
+  FaPlus
 } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import InsightOfDayCard from "../components/InsightOfDayCard";
@@ -118,6 +125,12 @@ export default function Insights() {
   const [error, setError] = useState("");
   const [data, setData] = useState(mockData);
   const [activeTab, setActiveTab] = useState("overview");
+  const [apiData, setApiData] = useState({
+    prompts: [],
+    suggestions: [],
+    competitors: [],
+    analytics: null
+  });
 
   const tier = user?.tier || "core"; // fallback
 
@@ -132,15 +145,22 @@ export default function Insights() {
           return;
         }
         
-        // TODO: Replace with real API calls when backend is ready
-        // const [prompts, suggestions, competitors, analytics] = await Promise.all([
-        //   fetchPrompts(token).catch(() => []),
-        //   fetchPromptSuggestions(token, {}).catch(() => []),
-        //   fetchCompetitors(token, {}).catch(() => []),
-        //   fetchAnalytics(token, {}).catch(() => null)
-        // ]);
+        // Load data from new API endpoints
+        const [prompts, suggestions, competitors, analytics] = await Promise.all([
+          fetchPrompts(token).catch(() => []),
+          fetchSuggestions(token, {}).catch(() => []),
+          fetchCompetitors(token, {}).catch(() => []),
+          fetchAnalytics(token, {}).catch(() => null)
+        ]);
         
-        // For now, use mock data
+        setApiData({
+          prompts,
+          suggestions,
+          competitors,
+          analytics
+        });
+        
+        // For now, use mock data for the main dashboard
         setData(mockData);
       } catch (e) { 
         setError(String(e.message || e)); 
@@ -151,6 +171,74 @@ export default function Insights() {
 
     loadData();
   }, [getToken]);
+
+  const InsightActionButton = ({ icon, title, description, onClick, disabled = false }) => (
+    <motion.button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        background: "white",
+        border: "1px solid #e2e8f0",
+        borderRadius: "12px",
+        padding: "1.5rem",
+        textAlign: "left",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1,
+        transition: "all 0.2s ease",
+        width: "100%"
+      }}
+      whileHover={!disabled ? { scale: 1.02, boxShadow: "0 8px 25px rgba(0,0,0,0.1)" } : {}}
+      whileTap={!disabled ? { scale: 0.98 } : {}}
+    >
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
+        <div style={{
+          width: "48px",
+          height: "48px",
+          borderRadius: "12px",
+          background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+          flexShrink: 0
+        }}>
+          {icon}
+        </div>
+        <div style={{ flex: 1 }}>
+          <h3 style={{ 
+            color: "#1f2937", 
+            margin: "0 0 0.5rem 0", 
+            fontSize: "1.1rem",
+            fontWeight: 600
+          }}>
+            {title}
+          </h3>
+          <p style={{ 
+            color: "#6b7280", 
+            margin: 0, 
+            fontSize: "0.875rem",
+            lineHeight: 1.5
+          }}>
+            {description}
+          </p>
+          {disabled && (
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "0.5rem",
+              marginTop: "0.5rem",
+              color: "#f59e0b",
+              fontSize: "0.75rem",
+              fontWeight: 600
+            }}>
+              <FaLock />
+              {tier === "core" ? "Upgrade required" : "Coming soon"}
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.button>
+  );
 
   const StatCard = ({ title, value, change, icon, color = "blue" }) => (
     <motion.div 
@@ -361,6 +449,50 @@ export default function Insights() {
         >
           <InsightOfDayCard />
         </motion.div>
+
+        {/* Quick Action Buttons */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ marginBottom: "2rem" }}
+        >
+          <h2 style={{ color: "#1e293b", fontSize: "1.5rem", marginBottom: "1rem" }}>
+            AI Insights Tools
+          </h2>
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
+            gap: "1rem" 
+          }}>
+            <InsightActionButton
+              icon={<FaList />}
+              title="AI Prompts"
+              description="Create and manage AI prompts for business insights and automation."
+              onClick={() => setActiveTab("prompts")}
+            />
+            <InsightActionButton
+              icon={<FaLightbulb />}
+              title="AI Suggestions"
+              description="Get personalized AI-powered suggestions for your business growth."
+              onClick={() => setActiveTab("suggestions")}
+            />
+            <InsightActionButton
+              icon={<FaUsers />}
+              title="Competitor Analysis"
+              description="Track competitors and identify market opportunities."
+              onClick={() => setActiveTab("competitors")}
+              disabled={tier === "core"}
+            />
+            <InsightActionButton
+              icon={<FaChartLine />}
+              title="Advanced Analytics"
+              description="Deep dive into your business performance with AI-powered analytics."
+              onClick={() => setActiveTab("analytics")}
+              disabled={tier === "core"}
+            />
+          </div>
+        </motion.section>
 
         {error && (
           <motion.div 

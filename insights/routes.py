@@ -21,6 +21,75 @@ logger = logging.getLogger(__name__)
 insights_bp = Blueprint('insights', __name__, url_prefix='/insights/api')
 
 
+@insights_bp.route('/daily', methods=['GET'])
+@require_tier(["core", "growth", "partner"])
+def get_daily_insight():
+    """
+    GET /insights/api/daily
+    
+    Returns cached "Insight of the Day" for the user if available, 
+    otherwise generates and stores it. Enforces quotas based on user tier.
+    Requires tier in ["core", "growth", "partner"].
+    
+    Query Parameters:
+        business_id: Optional business ID filter
+        
+    Returns:
+        200: Daily insight data
+        401: Authentication error
+        403: Insufficient tier or quota exceeded
+        500: Server error
+    """
+    try:
+        user_id = request.user_id
+        user_tier = request.user_tier
+        business_id = request.args.get('business_id')
+        
+        # Check quota for Core tier users
+        if user_tier == "core":
+            current_month = date.today().replace(day=1)
+            monthly_usage = insights_repo.get_monthly_usage(user_id, current_month)
+            
+            if monthly_usage >= 10:  # Core plan limit
+                return jsonify(ErrorResponse(
+                    error="Monthly insights quota exceeded. Upgrade to Growth or Partner tier for unlimited insights.",
+                    code="QUOTA_EXCEEDED",
+                    details={"current_usage": monthly_usage, "limit": 10}
+                ).dict()), 403
+        
+        # Get today's date
+        today = date.today()
+        
+        # Try to get cached insight first
+        cached_insight = insights_repo.get_cached_daily_insight(user_id, today, business_id)
+        
+        if cached_insight:
+            # Return cached insight
+            return jsonify(cached_insight), 200
+        
+        # Generate new insight if not cached
+        new_insight = insights_repo.generate_daily_insight(user_id, today, business_id)
+        
+        if not new_insight:
+            return jsonify(ErrorResponse(
+                error="Failed to generate daily insight",
+                code="GENERATION_FAILED"
+            ).dict()), 500
+        
+        # Increment usage count for Core tier users
+        if user_tier == "core":
+            insights_repo.increment_monthly_usage(user_id, current_month)
+        
+        return jsonify(new_insight), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting daily insight for user {getattr(request, 'user_id', 'unknown')}: {e}")
+        return jsonify(ErrorResponse(
+            error="Failed to retrieve daily insight",
+            code="SERVER_ERROR"
+        ).dict()), 500
+
+
 @insights_bp.route('/prompts', methods=['GET'])
 @require_tier(["core", "growth", "partner"])
 def get_prompts():
@@ -72,6 +141,60 @@ def get_prompts():
         logger.error(f"Error getting prompts for user {getattr(request, 'user_id', 'unknown')}: {e}")
         return jsonify(ErrorResponse(
             error="Failed to retrieve prompts",
+            code="SERVER_ERROR"
+        ).dict()), 500
+
+
+@insights_bp.route('/suggestions', methods=['GET'])
+@require_tier(["core", "growth", "partner"])
+def get_suggestions():
+    """
+    GET /insights/api/suggestions
+    
+    Get AI-powered suggestions for the authenticated user.
+    Requires tier in ["core", "growth", "partner"].
+    
+    Query Parameters:
+        q: Optional seed text for suggestions
+        business_id: Optional business ID filter
+        
+    Returns:
+        200: List of suggestions
+        401: Authentication error
+        403: Insufficient tier or quota exceeded
+        500: Server error
+    """
+    try:
+        user_id = request.user_id
+        user_tier = request.user_tier
+        q = request.args.get('q')
+        business_id = request.args.get('business_id')
+        
+        # Check quota for Core tier users
+        if user_tier == "core":
+            current_month = date.today().replace(day=1)
+            monthly_usage = insights_repo.get_monthly_usage(user_id, current_month)
+            
+            if monthly_usage >= 10:  # Core plan limit
+                return jsonify(ErrorResponse(
+                    error="Monthly insights quota exceeded. Upgrade to Growth or Partner tier for unlimited insights.",
+                    code="QUOTA_EXCEEDED",
+                    details={"current_usage": monthly_usage, "limit": 10}
+                ).dict()), 403
+        
+        # Fetch suggestions
+        suggestions_data = insights_repo.fetch_suggestions(user_id, q=q, business_id=business_id)
+        
+        # Increment usage count for Core tier users
+        if user_tier == "core":
+            insights_repo.increment_monthly_usage(user_id, current_month)
+        
+        return jsonify(suggestions_data), 200
+        
+    except Exception as e:
+        logger.error(f"Error getting suggestions for user {getattr(request, 'user_id', 'unknown')}: {e}")
+        return jsonify(ErrorResponse(
+            error="Failed to retrieve suggestions",
             code="SERVER_ERROR"
         ).dict()), 500
 

@@ -7,7 +7,7 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
-import InsightOfDayCard from '../components/InsightOfDayCard';
+import InsightsWidget from '../components/InsightsWidget';
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -253,6 +253,7 @@ const Dashboard = () => {
           </Link>
         </div>
       )}
+      
       {loading ? (
         <div className="spinner" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           Loading...
@@ -308,7 +309,6 @@ const Dashboard = () => {
                 </div>
                 <hr className="section-divider" />
               </div>
-            </div>
             
             {/*Reseller Program Section*/}
             <div className="section mb-8">
@@ -571,7 +571,7 @@ const Dashboard = () => {
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
             {/* Insight of the Day Card */}
             <div style={{ marginBottom: '2rem' }}>
-              <InsightOfDayCard />
+              <InsightsWidget />
             </div>
 
             {/* Smart Upsell Banner */}

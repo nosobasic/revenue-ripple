@@ -7,6 +7,7 @@ import requests
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
+from insights.routes import insights_bp
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -21,6 +22,7 @@ CORS(app)
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 
 app.register_blueprint(ai_assistant_bp)
+app.register_blueprint(insights_bp)
 
 @app.route('/create-payment-intent', methods=['POST'])
 def create_payment():

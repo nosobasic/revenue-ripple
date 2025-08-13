@@ -242,3 +242,4 @@ def increment_monthly_usage(user_id: str, month: str, year: str) -> int:
     # In a real implementation, you'd update the usage tracking table
     return 1  # Placeholder
 
+
