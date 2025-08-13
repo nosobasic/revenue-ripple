@@ -67,99 +67,19 @@ const UnprotectedRoute = ({ children }) => {
 };
 
 const App = () => {
-  const [showReload, setShowReload] = useState(false);
-
-  useEffect(() => {
-    fetch('/meta.json')
-      .then(res => res.json())
-      .then(meta => {
-        const lastVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
-        if (lastVersion && lastVersion !== meta.build) setShowReload(true);
-        localStorage.setItem(STORAGE_KEYS.APP_VERSION, meta.build);
-      })
-      .catch((error) => {
-        logger.warn('Could not fetch app version:', error);
-      });
-  }, []);
-
+  console.log('App component rendering...');
+  
   return (
-    <>
-      {showReload && (
-        <div className="fixed top-0 w-full bg-yellow-300 text-black text-center p-4 z-50">
-          A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>
-        </div>
-      )}
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-        <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
-        <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
-        <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
-        <Route path="/affiliate-login" element={<AffiliateLogin />} />
-        <Route path="/reset-password" element={<UnprotectedRoute><ResetPassword /></UnprotectedRoute>} />
-        <Route path="/affiliate/sign-up-fixed" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
-
-        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-        <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
-        <Route path="/affiliate/sign-up" element={<AffiliateSignupFixed />} />
-        <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
-        <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
-        <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
-        <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
-        <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
-        <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
-        <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
-        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
-        <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
-
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-        <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
-        <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
-
-        <Route path="/affiliate-centre/*" element={<ProtectedRoute>
-          <Routes>
-            <Route path="/" element={<AffiliateCentre />} />
-            <Route path="tools" element={<AffiliateTools />} />
-            <Route path="training" element={<AffiliateTraining />} />
-            <Route path="payouts" element={<AffiliatePayouts />} />
-            <Route path="support" element={<AffiliateSupport />} />
-          </Routes>
-        </ProtectedRoute>} />
-
-        <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
-        <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
-        <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
-        <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
-        <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />
-        <Route path="/training/guides/article-marketing" element={<ProtectedRoute><ArticleMarketing /></ProtectedRoute>} />
-        <Route path="/training/guides/mailing-list" element={<ProtectedRoute><BuildingMailingList /></ProtectedRoute>} />
-        <Route path="/training/guides/keyword-technique" element={<ProtectedRoute><KeywordTechnique /></ProtectedRoute>} />
-        <Route path="/training/guides/landing-components" element={<ProtectedRoute><LandingComponents /></ProtectedRoute>} />
-        <Route path="/training/guides/purchase-cycle" element={<ProtectedRoute><PurchaseCycle /></ProtectedRoute>} />
-        <Route path="/training/guides/backlinks-social" element={<ProtectedRoute><BacklinksSocial /></ProtectedRoute>} />
-        <Route path="/training/guides/backlinks-article" element={<ProtectedRoute><BacklinksArticle /></ProtectedRoute>} />
-        <Route path="/training/guides/landing-optimization" element={<ProtectedRoute><LandingOptimization /></ProtectedRoute>} />
-        <Route path="/training/guides/men-guide" element={<ProtectedRoute><MenGuide /></ProtectedRoute>} />
-        <Route path="/training/guides/market-research" element={<ProtectedRoute><MarketResearch /></ProtectedRoute>} />
-        <Route path="/training/guides/keyword-research" element={<ProtectedRoute><KeywordResearch /></ProtectedRoute>} />
-        <Route path="/training/guides/ppc-start" element={<ProtectedRoute><PPCStart /></ProtectedRoute>} />
-        <Route path="/training/guides/seo-google" element={<ProtectedRoute><SEOGoogle /></ProtectedRoute>} />
-        <Route path="/training/guides/target-audiences" element={<ProtectedRoute><TargetAudiences /></ProtectedRoute>} />
-        <Route path="/training/guides/marketing-mistakes" element={<ProtectedRoute><MarketingMistakes /></ProtectedRoute>} />
-        <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
-        <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
-        <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-        <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
-        <Route path="/compare" element={<ProductComparison />} />
-        <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
-    </>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h1>Revenue Ripple</h1>
+      <p>App is loading successfully!</p>
+      <p>Environment check:</p>
+      <ul>
+        <li>Supabase URL: {import.meta.env.VITE_SUPABASE_URL ? 'SET' : 'NOT_SET'}</li>
+        <li>Supabase Key: {import.meta.env.VITE_SUPABASE_ANON_KEY ? 'SET' : 'NOT_SET'}</li>
+        <li>Node Env: {import.meta.env.NODE_ENV}</li>
+      </ul>
+    </div>
   );
 };
 
