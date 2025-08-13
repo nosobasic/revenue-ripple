@@ -31,6 +31,7 @@ const ProResellerUpsell = lazy(() => import('./pages/ProResellerUpsell'));
 const ThreeMonthsFreeUpsell = lazy(() => import('./pages/ThreeMonthsFreeUpsell'));
 const Profile = lazy(() => import('./pages/Profile'));
 const DMDLanding = lazy(() => import('./pages/DMDLanding'));
+const DFY = lazy(() => import('./pages/DFY'));
 const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
@@ -59,6 +60,8 @@ const UnderstandingRelevance = lazy(() => import('./pages/training/guides/Unders
 const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
 const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+const InsightsPage = lazy(() => import('./pages/Insights'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
 
 // Loading component for lazy loaded routes
 const LoadingFallback = () => (
@@ -119,8 +122,9 @@ const App = () => {
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
+                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+         <Route path="/dfy" element={<ProtectedRoute><DFY /></ProtectedRoute>} />
+<Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
 
         <Route path="/affiliate-centre/*" element={<ProtectedRoute>
@@ -156,7 +160,13 @@ const App = () => {
         <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-        <Route path="/command-center" element={<CommandCenter />} />
+                 {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+           <>
+             <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
+             <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+           </>
+         )}
+         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
