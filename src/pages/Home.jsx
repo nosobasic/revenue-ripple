@@ -19,7 +19,7 @@ import {
   FaCode,
   FaEye,
   FaTools,
-  FaShield,
+  FaShieldAlt,
   FaDollarSign,
   FaArrowRight,
   FaCrown,

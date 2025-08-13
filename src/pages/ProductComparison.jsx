@@ -16,10 +16,10 @@ import {
   FaCrown,
   FaStar,
   FaArrowRight,
-  FaShield,
+  FaShieldAlt,
   FaBrain,
   FaSearch,
-  FaTarget,
+  FaCrosshairs,
   FaLightbulb
 } from 'react-icons/fa';
 import '../pages.css';

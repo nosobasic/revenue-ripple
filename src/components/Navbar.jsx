@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { NavigationUtils } from '../utils/navigationUtils';
+import { logger } from '../config/constants';
 import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb } from 'react-icons/fa';
 import './Navbar.css';
 
@@ -52,34 +53,6 @@ const Navbar = React.memo(() => {
     { path: '/earn', icon: FaDollarSign, label: 'Earn' },
     { path: '/support', icon: FaQuestionCircle, label: 'Support' }
   ], []);
-
-  const isActive = (path) => {
-    if (path === '/learn') {
-      return location.pathname.includes('/courses') || location.pathname.includes('/training');
-    }
-    if (path === '/progress') {
-      return location.pathname === '/dashboard';
-    }
-    if (path === '/earn') {
-      return location.pathname.includes('/affiliate');
-    }
-    if (path === '/insights') {
-      return location.pathname === '/insights';
-    }
-    return location.pathname === path;
-  };
-
-  const getNavLinkClass = (path) => {
-    return `navbar-link ${isActive(path) ? 'active' : ''}`;
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
 
   return (
     <nav className="navbar">
