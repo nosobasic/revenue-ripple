@@ -7,7 +7,13 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
+<<<<<<< Current (Your changes)
 import InsightsWidget from '../components/InsightsWidget';
+=======
+import UpgradeCTA from '../components/UpgradeCTA';
+import { insightsClient } from '../api/insightsClient';
+import { useTier } from '../lib/tier.js';
+>>>>>>> Incoming (Background Agent changes)
 import '../pages.css';
 import { 
   FaMoneyBillWave, 
@@ -52,6 +58,9 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
+  const [insight, setInsight] = useState(null);
+  const [insightError, setInsightError] = useState(null);
+  const { tier } = useTier();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -98,6 +107,19 @@ const Dashboard = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+  }, []);
+
+  // Fetch Insight of the Day for dashboard widget when feature flag enabled
+  useEffect(() => {
+    if (import.meta.env.VITE_USE_FLASK_INSIGHTS !== 'true') return;
+    (async () => {
+      try {
+        const i = await insightsClient.getInsightOfDay();
+        setInsight(i);
+      } catch (e) {
+        setInsightError('Could not load today\'s insight');
+      }
+    })();
   }, []);
 
   // Fetch all course progress for the user
@@ -260,13 +282,31 @@ const Dashboard = () => {
         </div>
       ) : (
       <div className="dashboard">
-        {/* Header */}
-        <header className="dashboard-header">
-          <div className="container">
-            <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
-            <p className="dashboard-welcome">Hello, Good To See You {user?.email?.split('@')[0]?.toUpperCase()}</p>
-          </div>
-        </header>
+                 {/* Header */}
+         <header className="dashboard-header">
+           <div className="container">
+             <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
+             <p className="dashboard-welcome">Hello, Good To See You {user?.email?.split('@')[0]?.toUpperCase()}</p>
+             {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+               <div style={{ marginTop: '1rem' }}>
+                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Todays Insight</h3>
+                 {!insight && !insightError && <div className="animate-pulse h-8 bg-gray-100 rounded" />}
+                 {insightError && <div className="p-2 bg-red-100 text-red-700 rounded">{insightError}</div>}
+                 {insight && (
+                   <div className="p-3 bg-white rounded border">
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                       <div>
+                         <div style={{ fontWeight: 600 }}>{insight.title || 'Insight'}</div>
+                         <div style={{ color: '#4b5563' }}>{insight.suggestion}</div>
+                       </div>
+                       <Link to="/insights" className="cta-link">View insights</Link>
+                     </div>
+                   </div>
+                 )}
+               </div>
+             )}
+           </div>
+         </header>
 
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}

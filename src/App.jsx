@@ -7,76 +7,73 @@ import { STORAGE_KEYS, logger } from './config/constants';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Admin from './pages/Admin';
-import Checkout from './pages/Checkout';
-import ThankYou from './pages/ThankYou';
-import AffiliateSign from './pages/AffiliateSign';
-import AffiliateLogin from './pages/AffiliateLogin';
-import AffiliateCentre from './pages/AffiliateCentre';
-import AffiliateTools from './pages/AffiliateTools';
-import AffiliateTraining from './pages/AffiliateTraining';
-import AffiliatePayouts from './pages/AffiliatePayouts';
-import AffiliateSupport from './pages/AffiliateSupport';
-import CourseOverview from './pages/CourseOverview';
-import CourseModule from './pages/CourseModule';
-import Courses from './pages/Courses';
-import Dashboard from './pages/Dashboard';
-import Training from './pages/Training';
-import Reseller from './pages/Reseller';
-import TripwireSuccess from './pages/TripwireSuccess';
-import ResellerSuccess from './pages/ResellerSuccess';
-import ProResellerUpsell from './pages/ProResellerUpsell';
-import ThreeMonthsFreeUpsell from './pages/ThreeMonthsFreeUpsell';
-import Profile from './pages/Profile';
-import DMDLanding from './pages/DMDLanding';
-import SpecialInvite from './pages/SpecialInvite';
-import ResellerCheckout from './pages/ResellerCheckout';
-import ResellerTrial from './pages/ResellerTrial';
-import ResetPassword from './pages/ResetPassword';
-import AffiliateSignupFixed from './pages/AffiliateSignupFixed';
-import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
-import MindsetMastery from './pages/training/videos/MindsetMastery';
-import ShoestringStartups from './pages/training/videos/ShoestringStartups';
-import AdwordsQualityScore from './pages/training/guides/AdwordsQualityScore';
-import AnalyzingData from './pages/training/guides/AnalyzingData';
-import ArticleMarketing from './pages/training/guides/ArticleMarketing';
-import BuildingMailingList from './pages/training/guides/BuildingMailingList';
-import KeywordTechnique from './pages/training/guides/KeywordTechnique';
-import LandingComponents from './pages/training/guides/LandingComponents';
-import PurchaseCycle from './pages/training/guides/PurchaseCycle';
-import BacklinksSocial from './pages/training/guides/BacklinksSocial';
-import BacklinksArticle from './pages/training/guides/BacklinksArticle';
-import LandingOptimization from './pages/training/guides/LandingOptimization';
-import MenGuide from './pages/training/guides/MenGuide';
-import MarketResearch from './pages/training/guides/MarketResearch';
-import KeywordResearch from './pages/training/guides/KeywordResearch';
-import PPCStart from './pages/training/guides/PPCStart';
-import SEOGoogle from './pages/training/guides/SEOGoogle';
-import TargetAudiences from './pages/training/guides/TargetAudiences';
-import MarketingMistakes from './pages/training/guides/MarketingMistakes';
-import UnderstandingRelevance from './pages/training/guides/UnderstandingRelevance';
-import WritingAdCopy from './pages/training/guides/WritingAdCopy';
-import SalesCopy from './pages/training/guides/SalesCopy';
-import AIVisibilityTracker from './pages/AIVisibilityTracker';
-import ProductComparison from './pages/ProductComparison';
-import Insights from './pages/Insights';
+
+// Lazy load heavy components
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Training = lazy(() => import('./pages/Training'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const ThankYou = lazy(() => import('./pages/ThankYou'));
+const AffiliateSign = lazy(() => import('./pages/AffiliateSign'));
+const AffiliateLogin = lazy(() => import('./pages/AffiliateLogin'));
+const AffiliateCentre = lazy(() => import('./pages/AffiliateCentre'));
+const AffiliateTools = lazy(() => import('./pages/AffiliateTools'));
+const AffiliateTraining = lazy(() => import('./pages/AffiliateTraining'));
+const AffiliatePayouts = lazy(() => import('./pages/AffiliatePayouts'));
+const AffiliateSupport = lazy(() => import('./pages/AffiliateSupport'));
+const CourseOverview = lazy(() => import('./pages/CourseOverview'));
+const CourseModule = lazy(() => import('./pages/CourseModule'));
+const Courses = lazy(() => import('./pages/Courses'));
+const Reseller = lazy(() => import('./pages/Reseller'));
+const TripwireSuccess = lazy(() => import('./pages/TripwireSuccess'));
+const ResellerSuccess = lazy(() => import('./pages/ResellerSuccess'));
+const ProResellerUpsell = lazy(() => import('./pages/ProResellerUpsell'));
+const ThreeMonthsFreeUpsell = lazy(() => import('./pages/ThreeMonthsFreeUpsell'));
+const Profile = lazy(() => import('./pages/Profile'));
+const DMDLanding = lazy(() => import('./pages/DMDLanding'));
+const DFY = lazy(() => import('./pages/DFY'));
+const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
+const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
+const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
+// Lazy load training components
+const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
+const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
+const ShoestringStartups = lazy(() => import('./pages/training/videos/ShoestringStartups'));
+const AdwordsQualityScore = lazy(() => import('./pages/training/guides/AdwordsQualityScore'));
+const AnalyzingData = lazy(() => import('./pages/training/guides/AnalyzingData'));
+const ArticleMarketing = lazy(() => import('./pages/training/guides/ArticleMarketing'));
+const BuildingMailingList = lazy(() => import('./pages/training/guides/BuildingMailingList'));
+const KeywordTechnique = lazy(() => import('./pages/training/guides/KeywordTechnique'));
+const LandingComponents = lazy(() => import('./pages/training/guides/LandingComponents'));
+const PurchaseCycle = lazy(() => import('./pages/training/guides/PurchaseCycle'));
+const BacklinksSocial = lazy(() => import('./pages/training/guides/BacklinksSocial'));
+const BacklinksArticle = lazy(() => import('./pages/training/guides/BacklinksArticle'));
+const LandingOptimization = lazy(() => import('./pages/training/guides/LandingOptimization'));
+const MenGuide = lazy(() => import('./pages/training/guides/MenGuide'));
+const MarketResearch = lazy(() => import('./pages/training/guides/MarketResearch'));
+const KeywordResearch = lazy(() => import('./pages/training/guides/KeywordResearch'));
+const PPCStart = lazy(() => import('./pages/training/guides/PPCStart'));
+const SEOGoogle = lazy(() => import('./pages/training/guides/SEOGoogle'));
+const TargetAudiences = lazy(() => import('./pages/training/guides/TargetAudiences'));
+const MarketingMistakes = lazy(() => import('./pages/training/guides/MarketingMistakes'));
+const UnderstandingRelevance = lazy(() => import('./pages/training/guides/UnderstandingRelevance'));
+const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
+const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
+const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+const InsightsPage = lazy(() => import('./pages/Insights'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
+
+// Loading component for lazy loaded routes
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+);
 
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
-
-const LoadingFallback = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    height: '100vh',
-    fontSize: '18px'
-  }}>
-    Loading Revenue Ripple...
-  </div>
-);
 
 const App = () => {
   const [showReload, setShowReload] = useState(false);
@@ -103,70 +100,73 @@ const App = () => {
       )}
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
-          <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
-          <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
-          <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
-          <Route path="/affiliate-login" element={<AffiliateLogin />} />
-          <Route path="/reset-password" element={<UnprotectedRoute><ResetPassword /></UnprotectedRoute>} />
-          <Route path="/affiliate/sign-up-fixed" element={<UnprotectedRoute><AffiliateSignupFixed /></UnprotectedRoute>} />
+        <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
+        <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
+        <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
+        <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
 
-          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-          <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
-          <Route path="/affiliate/sign-up" element={<AffiliateSignupFixed />} />
-          <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
-          <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
-          <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
-          <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
-          <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
-          <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
-          <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
-          <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
-          <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
+        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
+        <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
+        <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
+        <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
+        <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
+        <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
+        <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
+        <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
+        <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
+        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
+        <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
 
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-          <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
-          <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
-          <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+        <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
+        <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
+                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+         <Route path="/dfy" element={<ProtectedRoute><DFY /></ProtectedRoute>} />
+<Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
 
-          <Route path="/affiliate-centre/*" element={<ProtectedRoute>
-            <Routes>
-              <Route path="/" element={<AffiliateCentre />} />
-              <Route path="tools" element={<AffiliateTools />} />
-              <Route path="training" element={<AffiliateTraining />} />
-              <Route path="payouts" element={<AffiliatePayouts />} />
-              <Route path="support" element={<AffiliateSupport />} />
-            </Routes>
-          </ProtectedRoute>} />
+        <Route path="/affiliate-centre/*" element={<ProtectedRoute>
+          <Routes>
+            <Route path="/" element={<AffiliateCentre />} />
+            <Route path="tools" element={<AffiliateTools />} />
+            <Route path="training" element={<AffiliateTraining />} />
+            <Route path="payouts" element={<AffiliatePayouts />} />
+            <Route path="support" element={<AffiliateSupport />} />
+          </Routes>
+        </ProtectedRoute>} />
 
-          <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
-          <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
-          <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
-          <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
-          <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />
-          <Route path="/training/guides/article-marketing" element={<ProtectedRoute><ArticleMarketing /></ProtectedRoute>} />
-          <Route path="/training/guides/mailing-list" element={<ProtectedRoute><BuildingMailingList /></ProtectedRoute>} />
-          <Route path="/training/guides/keyword-technique" element={<ProtectedRoute><KeywordTechnique /></ProtectedRoute>} />
-          <Route path="/training/guides/landing-components" element={<ProtectedRoute><LandingComponents /></ProtectedRoute>} />
-          <Route path="/training/guides/purchase-cycle" element={<ProtectedRoute><PurchaseCycle /></ProtectedRoute>} />
-          <Route path="/training/guides/backlinks-social" element={<ProtectedRoute><BacklinksSocial /></ProtectedRoute>} />
-          <Route path="/training/guides/backlinks-article" element={<ProtectedRoute><BacklinksArticle /></ProtectedRoute>} />
-          <Route path="/training/guides/landing-optimization" element={<ProtectedRoute><LandingOptimization /></ProtectedRoute>} />
-          <Route path="/training/guides/men-guide" element={<ProtectedRoute><MenGuide /></ProtectedRoute>} />
-          <Route path="/training/guides/market-research" element={<ProtectedRoute><MarketResearch /></ProtectedRoute>} />
-          <Route path="/training/guides/keyword-research" element={<ProtectedRoute><KeywordResearch /></ProtectedRoute>} />
-          <Route path="/training/guides/ppc-start" element={<ProtectedRoute><PPCStart /></ProtectedRoute>} />
-          <Route path="/training/guides/seo-google" element={<ProtectedRoute><SEOGoogle /></ProtectedRoute>} />
-          <Route path="/training/guides/target-audiences" element={<ProtectedRoute><TargetAudiences /></ProtectedRoute>} />
-          <Route path="/training/guides/marketing-mistakes" element={<ProtectedRoute><MarketingMistakes /></ProtectedRoute>} />
-          <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
-          <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
-          <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-          <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
-          <Route path="/compare" element={<ProductComparison />} />
-          <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
+        <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
+        <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
+        <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
+        <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
+        <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />
+        <Route path="/training/guides/article-marketing" element={<ProtectedRoute><ArticleMarketing /></ProtectedRoute>} />
+        <Route path="/training/guides/mailing-list" element={<ProtectedRoute><BuildingMailingList /></ProtectedRoute>} />
+        <Route path="/training/guides/keyword-technique" element={<ProtectedRoute><KeywordTechnique /></ProtectedRoute>} />
+        <Route path="/training/guides/landing-components" element={<ProtectedRoute><LandingComponents /></ProtectedRoute>} />
+        <Route path="/training/guides/purchase-cycle" element={<ProtectedRoute><PurchaseCycle /></ProtectedRoute>} />
+        <Route path="/training/guides/backlinks-social" element={<ProtectedRoute><BacklinksSocial /></ProtectedRoute>} />
+        <Route path="/training/guides/backlinks-article" element={<ProtectedRoute><BacklinksArticle /></ProtectedRoute>} />
+        <Route path="/training/guides/landing-optimization" element={<ProtectedRoute><LandingOptimization /></ProtectedRoute>} />
+        <Route path="/training/guides/men-guide" element={<ProtectedRoute><MenGuide /></ProtectedRoute>} />
+        <Route path="/training/guides/market-research" element={<ProtectedRoute><MarketResearch /></ProtectedRoute>} />
+        <Route path="/training/guides/keyword-research" element={<ProtectedRoute><KeywordResearch /></ProtectedRoute>} />
+        <Route path="/training/guides/ppc-start" element={<ProtectedRoute><PPCStart /></ProtectedRoute>} />
+        <Route path="/training/guides/seo-google" element={<ProtectedRoute><SEOGoogle /></ProtectedRoute>} />
+        <Route path="/training/guides/target-audiences" element={<ProtectedRoute><TargetAudiences /></ProtectedRoute>} />
+        <Route path="/training/guides/marketing-mistakes" element={<ProtectedRoute><MarketingMistakes /></ProtectedRoute>} />
+        <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
+        <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
+        <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
+                 {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+           <>
+             <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
+             <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+           </>
+         )}
+         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

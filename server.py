@@ -40,8 +40,18 @@ if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
 
+# Register blueprints
 app.register_blueprint(ai_assistant_bp)
+<<<<<<< Current (Your changes)
 app.register_blueprint(insights_bp)
+=======
+try:
+    from server.routes.insights import insights_bp
+except Exception:
+    from routes.insights import insights_bp
+app.register_blueprint(insights_bp)
+print("✅ Registered insights blueprint at /insights/api")
+>>>>>>> Incoming (Background Agent changes)
 
 @app.route('/', methods=['GET'])
 def health_check():
