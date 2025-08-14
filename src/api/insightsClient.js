@@ -1,6 +1,8 @@
 import { getAccessToken } from '../lib/supabase.js';
+import { getApiBase, USE_PROXY } from '../config/constants';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+// Prefer proxy on Vercel to avoid browser CORS; can be overridden via env
+const baseUrl = USE_PROXY ? '' : getApiBase();
 
 async function authFetch(path, options = {}) {
 	const token = await getAccessToken();
@@ -9,7 +11,7 @@ async function authFetch(path, options = {}) {
 		...(options.headers || {}),
 		...(token ? { Authorization: `Bearer ${token}` } : {})
 	};
-	const res = await fetch(`${baseUrl}${path}`, { ...options, headers });
+    const res = await fetch(`${baseUrl}${path}`, { ...options, headers });
 	if (!res.ok) throw new Error(`HTTP ${res.status}`);
 	return res.json();
 }

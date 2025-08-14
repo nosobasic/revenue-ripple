@@ -65,16 +65,8 @@ def handle_global_options():
 
 # Register blueprints
 app.register_blueprint(ai_assistant_bp)
-<<<<<<< Current (Your changes)
-app.register_blueprint(insights_bp)
-=======
-try:
-    from server.routes.insights import insights_bp
-except Exception:
-    from routes.insights import insights_bp
 app.register_blueprint(insights_bp)
 print("✅ Registered insights blueprint at /insights/api")
->>>>>>> Incoming (Background Agent changes)
 
 @app.route('/', methods=['GET'])
 def health_check_root():
@@ -104,27 +96,27 @@ if not stripe.api_key:
 
 @app.route('/create-tripwire-session', methods=['POST'])
 def create_tripwire_session():
-	try:
-		data = request.get_json()
-		referrer_username = data.get('referrer_username')
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
 
-		session = stripe.checkout.Session.create(
-			payment_method_types=['card'],
-			line_items=[{
-				'price': 'price_1RKIXE2Ku9STqdAdktgTsVDf',  # $7 Tripwire price
-				'quantity': 1,
-			}],
-			mode='payment',
-			success_url='https://revenueripple.org/tripwire-success?session_id={CHECKOUT_SESSION_ID}',
-			cancel_url='https://revenueripple.org/tripwire-cancel',
-			metadata={
-				'referrer_username': referrer_username or 'none',
-				'product': 'digital_marketing_domination_book'
-			}
-		)
-		return jsonify({'url': session.url})
-	except Exception as e:
-		return jsonify({'error': str(e)}), 400
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RKIXE2Ku9STqdAdktgTsVDf',  # $7 Tripwire price
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='https://revenueripple.org/tripwire-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/tripwire-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'digital_marketing_domination_book'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 # Membership Subscription Checkout Session
 @app.route('/create-pro-reseller-session', methods=['POST'])
@@ -144,73 +136,73 @@ def create_pro_reseller_session():
                 name='3 Months Free Pro Reseller'
             )
 
-		session = stripe.checkout.Session.create(
-			payment_method_types=['card'],
-			line_items=[{
-				'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
-				'quantity': 1,
-			}],
-			mode='subscription',
-			success_url='https://revenueripple.org/pro-reseller-success?session_id={CHECKOUT_SESSION_ID}',
-			cancel_url='https://revenueripple.org/pro-reseller-cancel',
-			metadata={
-				'referrer_username': referrer_username or 'none',
-				'product': 'pro_reseller_subscription',
-				'three_months_free': str(three_months_free)
-			},
-			discounts=[{'coupon': coupon.id}] if coupon else None
-		)
-		return jsonify({'url': session.url})
-	except Exception as e:
-		return jsonify({'error': str(e)}), 400
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/pro-reseller-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/pro-reseller-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'pro_reseller_subscription',
+                'three_months_free': str(three_months_free)
+            },
+            discounts=[{'coupon': coupon.id}] if coupon else None
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/create-reseller-session', methods=['POST'])
 def create_reseller_session():
-	try:
-		data = request.get_json()
-		referrer_username = data.get('referrer_username')
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
 
-		session = stripe.checkout.Session.create(
-			payment_method_types=['card'],
-			line_items=[{
-				'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Replace with your Reseller $47/month Price ID
-				'quantity': 1,
-			}],
-			mode='subscription',
-			success_url='https://revenueripple.org/reseller-success?session_id={CHECKOUT_SESSION_ID}',
-			cancel_url='https://revenueripple.org/reseller-cancel',
-			metadata={
-				'referrer_username': referrer_username or 'none',
-				'product': 'reseller_subscription'
-			}
-		)
-		return jsonify({'url': session.url})
-	except Exception as e:
-		return jsonify({'error': str(e)}), 400
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Replace with your Reseller $47/month Price ID
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/reseller-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/reseller-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'reseller_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/create-membership-session', methods=['POST'])
 def create_membership_session():
-	try:
-		data = request.get_json()
-		referrer_username = data.get('referrer_username')
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
 
-		session = stripe.checkout.Session.create(
-			payment_method_types=['card'],
-			line_items=[{
-				'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet', 
-				'quantity': 1,
-			}],
-			mode='subscription',
-			success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
-			cancel_url='https://revenueripple.org/membership-cancel',
-			metadata={
-				'referrer_username': referrer_username or 'none',
-				'product': 'membership_subscription'
-			}
-		)
-		return jsonify({'url': session.url})
-	except Exception as e:
-		return jsonify({'error': str(e)}), 400
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet', 
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/membership-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'membership_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
