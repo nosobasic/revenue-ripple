@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
+import { getApiBase } from '../config/constants';
 
 export default function AIAssistantWidget({ showWelcomeBubble = false, pageContext = '' }) {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   const [showHelpBubble, setShowHelpBubble] = useState(false);
   const [lastHelpOffer, setLastHelpOffer] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [apiUnreachable, setApiUnreachable] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const helpBubbleTimer = useRef(null);
@@ -125,7 +127,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       userMessage.text;
 
     try {
-      const response = await fetch('https://revenue-ripple.onrender.com/api/ai-assistant', {
+      const response = await fetch(`${getApiBase()}/api/ai-assistant`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,6 +148,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       }
 
       const data = await response.json();
+      setApiUnreachable(false);
       
       const aiMessage = {
         id: Date.now() + 1,
@@ -157,7 +160,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       setMessages(prev => [...prev, aiMessage]);
       
     } catch (error) {
-      console.error('AI Assistant error:', error);
+      console.debug('Ripple API unreachable or error:', error);
+      setApiUnreachable(true);
       const errorMessage = {
         id: Date.now() + 1,
         from: 'ai',
@@ -320,6 +324,11 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
   return (
     <>
+      {apiUnreachable && (
+        <div style={{ position: 'fixed', bottom: '96px', right: '24px', background: '#FEF3C7', color: '#92400E', padding: '8px 12px', border: '1px solid #FDE68A', borderRadius: '6px', zIndex: 50 }}>
+          Ripple is having trouble connecting to the API. <button onClick={sendMessage} style={{ textDecoration: 'underline' }}>Retry</button>
+        </div>
+      )}
       {/* Main Chat Panel */}
       <div style={getChatPanelStyles()}>
         {/* Header */}

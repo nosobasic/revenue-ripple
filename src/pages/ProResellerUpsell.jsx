@@ -3,12 +3,13 @@ import Navbar from '../components/Navbar';
 import { FaCheckCircle } from 'react-icons/fa';
 import '../pages.css';
 import { useEffect } from 'react';
+import { getApiBase } from '../config/constants';
 
 export default function ProResellerUpsell() {
   const navigate = useNavigate();
 
   const handleProResellerUpgrade = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
+    const res = await fetch(`${getApiBase()}/create-pro-reseller-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })

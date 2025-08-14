@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { FaCheckCircle } from 'react-icons/fa';
 import '../pages.css';
+import { getApiBase } from '../config/constants';
 
 export default function ThreeMonthsFreeUpsell() {
   const handleThreeMonthsFreeUpgrade = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
+    const res = await fetch(`${getApiBase()}/create-pro-reseller-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 

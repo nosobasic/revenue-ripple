@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getApiBase } from '../config/constants';
 
 const TripwireSuccess = () => {
   const handleMembershipUpsell = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-membership-session`, {
+    const res = await fetch(`${getApiBase()}/create-membership-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })

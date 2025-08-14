@@ -34,6 +34,17 @@ export const API_ENDPOINTS = {
   }
 };
 
+export function getApiBase() {
+  const explicit = import.meta.env.VITE_API_BASE_URL || import.meta.env.NEXT_PUBLIC_API_URL;
+  if (explicit) return explicit;
+  if (import.meta.env.PROD) {
+    return 'https://revenue-ripple.onrender.com';
+  }
+  return 'http://localhost:5001';
+}
+
+export const USE_PROXY = (import.meta.env.NEXT_PUBLIC_USE_PROXY === 'true' || import.meta.env.VITE_USE_PROXY === 'true');
+
 export const USER_ROLES = {
   ADMIN: 'admin',
   MEMBER: 'member',

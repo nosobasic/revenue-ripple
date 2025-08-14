@@ -11,7 +11,9 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "bundle-analyzer": "npx vite-bundle-analyzer dist"
+    "bundle-analyzer": "npx vite-bundle-analyzer dist",
+    "diag:options": "node scripts/diag-options.js",
+    "diag:env": "node scripts/print-env.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -31,7 +33,11 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.20.0",
+<<<<<<< Current (Your changes)
     "terser": "^5.43.1"
+=======
+    "undici": "^6.19.8"
+>>>>>>> Incoming (Background Agent changes)
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

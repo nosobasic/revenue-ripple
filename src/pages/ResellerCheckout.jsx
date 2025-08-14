@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../config/constants';
 
 export default function ResellerCheckout() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function ResellerCheckout() {
   const handleCheckout = async () => {
     setIsProcessing(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-reseller-session`, {
+      const response = await fetch(`${getApiBase()}/create-reseller-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

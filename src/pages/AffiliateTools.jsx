@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
+import { getApiBase } from '../config/constants';
 
 const AffiliateTools = () => {
   const handleDownload = (materialId, format) => {
@@ -53,7 +54,7 @@ const AffiliateTools = () => {
 
   const handleProResellerUpgrade = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
+      const response = await fetch(`${getApiBase()}/create-pro-reseller-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

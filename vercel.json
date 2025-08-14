@@ -14,6 +14,11 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://revenue-ripple.onrender.com/api/$1" },
+    { "source": "/insights/(.*)", "destination": "https://revenue-ripple.onrender.com/insights/$1" },
+    { "source": "/devops/(.*)", "destination": "https://revenue-ripple.onrender.com/devops/$1" },
+    { "source": "/create-(.*)", "destination": "https://revenue-ripple.onrender.com/create-$1" },
+    { "source": "/your-existing-api/(.*)", "destination": "https://revenue-ripple.onrender.com/your-existing-api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 } 
