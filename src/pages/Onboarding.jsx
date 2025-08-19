@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
+import Checklist from '../components/Onboarding/Checklist';
+import plan from '../data/onboardingPlan.core.json';
+import { emit } from '../utils/analytics';
 import { supabase } from '../lib/supabase.js';
 
 const QUESTIONS = [
@@ -32,6 +35,9 @@ export default function Onboarding() {
 			<Navbar />
 			<div className="container mx-auto p-4">
 				<h1 className="text-2xl font-semibold mb-4">Onboarding</h1>
+				<div className="mb-6">
+					<Checklist plan={plan} onComplete={() => emit('onboarding_completed')} />
+				</div>
 				<div className="space-y-4">
 					{QUESTIONS.map(q => (
 						<div key={q.key} className="p-4 bg-white rounded border">
