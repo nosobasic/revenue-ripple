@@ -29,9 +29,12 @@ import {
 import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
+import PricingRibbon from '../components/Common/PricingRibbon';
+import { FLAGS } from '../config/flags';
+import { emit } from '../utils/analytics';
 
 export default function Home() {
-  const [activeProductTab, setActiveProductTab] = useState('education');
+  const [activeProductTab, setActiveProductTab] = useState('ai-tracker');
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [userIntent, setUserIntent] = useState(null);
   const { user } = useAuth();
@@ -122,7 +125,7 @@ export default function Home() {
       description: 'Master digital marketing fundamentals',
       icon: FaGraduationCap,
       color: '#2563eb',
-      link: '/checkout',
+      link: '/os-core',
       recommended: 'education'
     },
     {
@@ -130,7 +133,7 @@ export default function Home() {
       description: 'Monitor your business across AI platforms',
       icon: FaEye,
       color: '#7c3aed',
-      link: '/ai-visibility-tracker',
+      link: '/for-marketers',
       recommended: 'ai-tracker'
     },
     {
@@ -138,7 +141,7 @@ export default function Home() {
       description: 'Set up business monitoring and automation',
       icon: FaTools,
       color: '#059669',
-      link: '/command-center',
+      link: '/for-operators',
       recommended: 'command-center'
     },
     {
@@ -194,8 +197,14 @@ export default function Home() {
           </h1>
           
           <p className="hero-subtitle">
-            A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn’t fragile.
+            Outcomes-first tools — AI visibility + an always-on command center — with training included. Set up in 30 minutes, get your first insights in 24 hours.
           </p>
+
+          {FLAGS.BUNDLE_SEGMENTED_FUNNELS && (
+            <div style={{ marginTop: '0.75rem', textAlign: 'center', color: '#475569' }}>
+              Prefer to skip training? <Link to="/for-operators" style={{ color: '#2563eb', fontWeight: 600 }}>Get dashboards, monitors, and AI visibility immediately.</Link>
+            </div>
+          )}
 
           {/* Primary CTAs (kept minimal to preserve current feel) */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
@@ -260,7 +269,11 @@ export default function Home() {
                   >
                     <Link
                       to={path.link}
-                      onClick={() => setActiveProductTab(path.recommended)}
+                      onClick={() => {
+                        setActiveProductTab(path.recommended);
+                        const intent = path.recommended === 'command-center' ? 'operators' : path.recommended === 'ai-tracker' ? 'marketers' : path.recommended === 'education' ? 'builders' : 'earn';
+                        emit('intent_selected', { intent });
+                      }}
                       style={{
                         display: 'block',
                         padding: '1.5rem',
@@ -398,6 +411,7 @@ export default function Home() {
           <div style={{ textAlign: 'center', marginTop: '1rem', color: '#b45309', fontWeight: 700 }}>
             Total Perceived Value: $8,500+/mo
           </div>
+          {FLAGS.BUNDLE_SEGMENTED_FUNNELS && <PricingRibbon />}
           <div style={{ textAlign: 'center', marginTop: '1rem' }}>
             <Link
               to="/checkout"

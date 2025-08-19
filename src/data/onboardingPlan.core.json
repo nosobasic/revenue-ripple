@@ -1,0 +1,57 @@
+{
+  "planId": "core-7d-win",
+  "title": "7-Day Win Plan",
+  "days": [
+    {
+      "day": 0,
+      "title": "Connect & Baseline (30–45 min)",
+      "tasks": [
+        "Connect GA4, Stripe, website, CRM, socials",
+        "Run Baseline AI Visibility report",
+        "Enable 3 default Command Center monitors",
+        "Pick your North Star metric"
+      ],
+      "gates": ["baseline_visibility_done", "monitors_enabled>=3"]
+    },
+    {
+      "day": 1,
+      "title": "Publish 1 Optimized Asset",
+      "tasks": [
+        "Use template to answer one high-intent question",
+        "Queue for distribution"
+      ],
+      "gates": ["asset_published>=1"]
+    },
+    {
+      "day": 2,
+      "title": "Fix One Automation Leak",
+      "tasks": [
+        "Review Command Center incidents",
+        "Turn on auto-heal for one flow"
+      ],
+      "gates": ["autoheal_enabled>=1"]
+    },
+    {
+      "day": 3,
+      "title": "Set Revenue Dashboard",
+      "tasks": [
+        "Configure tiles: lead cost, MRR, LTV proxy",
+        "Enable weekly digest"
+      ],
+      "gates": ["digest_enabled"]
+    },
+    {
+      "day": 7,
+      "title": "Review & Decide",
+      "tasks": [
+        "Check Visibility Delta",
+        "Review Incidents Auto-resolved",
+        "Invite a teammate"
+      ],
+      "gates": ["teammates_invited>=1"]
+    }
+  ],
+  "trialUnlockGate": ["baseline_visibility_done", "monitors_enabled>=3"]
+}
+
+

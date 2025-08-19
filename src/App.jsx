@@ -2,6 +2,7 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { STORAGE_KEYS, logger } from './config/constants';
+import { FLAGS } from './config/flags';
 
 // Immediate load components (critical path)
 import Home from './pages/Home';
@@ -62,6 +63,11 @@ const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 const InsightsPage = lazy(() => import('./pages/Insights'));
 const Onboarding = lazy(() => import('./pages/Onboarding'));
+// New segmented funnels pages (gated by flags)
+const OsCore = lazy(() => import('./pages/OsCore'));
+const ForOperators = lazy(() => import('./pages/ForOperators'));
+const ForMarketers = lazy(() => import('./pages/ForMarketers'));
+const ForBuilders = lazy(() => import('./pages/ForBuilders'));
 
 // Loading component for lazy loaded routes
 const LoadingFallback = () => (
@@ -167,6 +173,15 @@ const App = () => {
            </>
          )}
          <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+
+         {FLAGS.BUNDLE_SEGMENTED_FUNNELS && (
+           <>
+             <Route path="/os-core" element={<UnprotectedRoute><OsCore /></UnprotectedRoute>} />
+             <Route path="/for-operators" element={<UnprotectedRoute><ForOperators /></UnprotectedRoute>} />
+             <Route path="/for-marketers" element={<UnprotectedRoute><ForMarketers /></UnprotectedRoute>} />
+             <Route path="/for-builders" element={<UnprotectedRoute><ForBuilders /></UnprotectedRoute>} />
+           </>
+         )}
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
