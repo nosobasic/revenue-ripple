@@ -16,7 +16,13 @@ export default function Checkout() {
     fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.PAYMENT_INTENT}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        // Pass optional bump metadata if backend supports it; otherwise ignored server-side
+        metadata: {
+          lead_email: localStorage.getItem('lead_email') || undefined,
+          bump_selected: localStorage.getItem('bump_selected') || undefined
+        }
+      }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret))
@@ -41,9 +47,12 @@ export default function Checkout() {
         <p className="checkout-description">
           You're just one step away from accessing premium features. Complete your payment to get started.
         </p>
+        <div style={{ marginBottom: '1rem', color: '#4b5563' }}>
+          Apple Pay and Google Pay are available on supported devices.
+        </div>
         {clientSecret ? (
           <Elements options={options} stripe={stripePromise}>
-            <CheckoutForm />
+            <CheckoutForm clientSecret={clientSecret} />
           </Elements>
         ) : (
           <div style={{ margin: '2rem 0', textAlign: 'center' }}>

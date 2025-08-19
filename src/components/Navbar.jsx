@@ -92,6 +92,10 @@ const Navbar = React.memo(() => {
                 <span>Support</span>
               </Link>
 
+              <Link to="/revenue-ripple" className="navbar-link" onClick={closeMobileMenu}>
+                Start OS Core
+              </Link>
+
               {/* Insights Link */}
               <Link to="/insights" className={getNavLinkClass('/insights')} onClick={closeMobileMenu}>
                 <FaLightbulb className="nav-icon" />
@@ -119,6 +123,7 @@ const Navbar = React.memo(() => {
             <>
               <Link to="/login" className="navbar-link" onClick={closeMobileMenu}>Member Sign In</Link>
               <Link to="/affiliate-login" className="navbar-link" onClick={closeMobileMenu}>Affiliates & Resellers</Link>
+              <Link to="/revenue-ripple" className="navbar-link" onClick={closeMobileMenu}>Start OS Core</Link>
             </>
           )}
         </div>
