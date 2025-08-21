@@ -70,48 +70,82 @@ export default function Home() {
       id: 'ai-tracker',
       name: 'AI Visibility Tracker',
       icon: FaEye,
-      price: 'From $29/month',
+      price: '$79/mo',
       description: 'Track your business visibility across AI platforms like ChatGPT',
       features: [
-        'Monitor 15+ AI platforms',
-        'Competitor intelligence reports',
-        'AI content optimization',
+        'Includes 3 tracked entities',
+        'Weekly scans (upgrade for daily)',
+        'Track 2 competitors',
         'Real-time visibility alerts',
-        'Strategic positioning insights'
+        'Add-ons: +$10/entity, +$15 competitor, +$20 daily scans'
       ],
       cta: 'Start Free Trial',
       link: '/ai-visibility-tracker',
-      badge: 'NEW LAUNCH'
+      badge: 'ESSENTIAL'
     },
     {
       id: 'command-center',
       name: 'Command Center',
       icon: FaTools,
-      price: 'Starting at $97/month',
+      price: '$149/mo',
       description: 'AI-powered DevOps dashboard for online business owners',
       features: [
         'Monitor all business systems',
         'Automated issue detection',
-        'Performance optimization',
+        'Basic incident alerts & lite automations',
         'Revenue tracking dashboard',
         'Business automation tools'
       ],
       cta: 'View Demo',
       link: '/command-center',
-      badge: 'PREMIUM TOOL'
+      badge: 'TOOL'
+    },
+    {
+      id: 'operator',
+      name: 'Operator Bundle',
+      icon: MdDashboard,
+      price: '$197/mo',
+      description: 'Command Center + Visibility Pro quotas for operators who want results fast',
+      features: [
+        '10 entities, daily scans',
+        'Competitor intelligence (up to 5)',
+        'Automation & incident alerts',
+        'Priority support',
+        'Perfect for solo operators'
+      ],
+      cta: 'Start Operator',
+      link: '/checkout',
+      badge: 'MOST POPULAR'
+    },
+    {
+      id: 'os-bundle',
+      name: 'OS Bundle',
+      icon: FaCrown,
+      price: '$297/mo',
+      description: 'Full Business OS: Education + Operator (Visibility Pro + Command Center Pro)',
+      features: [
+        'All courses & tutorials included',
+        'Pro quotas + daily scans',
+        'SLA alerts & priority support',
+        'Prebuilt funnels & swipe library',
+        'Quarterly strategy calls'
+      ],
+      cta: 'Start OS',
+      link: '/checkout',
+      badge: 'BUNDLE'
     },
     {
       id: 'earn',
       name: 'Affiliate & Reseller',
       icon: FaDollarSign,
-      price: '100% Commissions',
-      description: 'Earn monthly recurring income promoting our products',
+      price: 'Members: 50% • Reseller $47/mo • Pro $97/mo',
+      description: 'Simple, sustainable payouts: members earn 50% as affiliates. Upgrade to reseller tiers for deeper earnings.',
       features: [
-        '$47/month per referral',
-        '100% commission on sales',
-        'Professional marketing materials',
-        'Monthly PayPal payments',
-        'Comprehensive training included'
+        'Affiliates (members): 50% recurring on member subscriptions',
+        'Reseller ($47/mo): commissions on members you refer',
+        'Pro Reseller ($97/mo): commissions on members & on resellers you refer',
+        'Plug-and-play funnels & assets included',
+        'Monthly Stripe/PayPal payouts; performance bumps at milestones'
       ],
       cta: 'Start Earning',
       link: '/special',
@@ -243,6 +277,7 @@ export default function Home() {
               <FaPlay /> See How It Works
             </Link>
           </div>
+          <div style={{ marginTop: '0.5rem', textAlign: 'center', color: '#475569', fontSize: '0.95rem' }}>Plans: Learn $47 • Visibility $79 • Operator $197 • OS $297</div>
           
           {!user && (
             <div style={{ marginTop: '2rem' }}>
@@ -375,12 +410,12 @@ export default function Home() {
                   },
                   {
                     c: 'Affiliate Program',
-                    d: 'Earn commissions promoting Revenue Ripple — plug‑and‑play assets included.',
+                    d: 'Members earn 50% recurring as affiliates (no extra fee). Plug‑and‑play assets included.',
                     v: '$500/mo'
                   },
                   {
                     c: 'Reseller/White‑Label (Partner)',
-                    d: 'Sell the platform under your brand with white‑label dashboards & reports.',
+                    d: 'Reseller tiers: $47/mo (reseller) and $97/mo (pro). Resellers earn on members; Pro resellers earn on members & resellers.',
                     v: '$2,000/mo'
                   },
                   {
@@ -428,7 +463,7 @@ export default function Home() {
                 boxShadow: '0 4px 15px rgba(37, 99, 235, 0.3)'
               }}
             >
-              <FaRocket /> Get Started (Core $197/mo)
+              <FaRocket /> Get Started (Operator $197/mo)
             </Link>
           </div>
         </div>
@@ -812,7 +847,7 @@ export default function Home() {
               }}
             >
               <FaRocket />
-              Start with Marketing Education
+              Start Operator ($197/mo)
             </Link>
             
             <Link
@@ -832,7 +867,7 @@ export default function Home() {
               }}
             >
               <FaEye />
-              Try AI Visibility Tracker
+              Try AI Visibility ($79/mo)
             </Link>
           </div>
           
