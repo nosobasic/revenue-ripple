@@ -80,7 +80,7 @@ export default function Home() {
         'Add-ons: +$10/entity, +$15 competitor, +$20 daily scans'
       ],
       cta: 'Start Free Trial',
-      link: '/ai-visibility-tracker',
+      link: '/checkout?product=ai-tracker',
       badge: 'ESSENTIAL'
     },
     {
@@ -97,7 +97,7 @@ export default function Home() {
         'Business automation tools'
       ],
       cta: 'View Demo',
-      link: '/command-center',
+      link: import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' ? '/command-center' : '/checkout?product=command-center',
       badge: 'TOOL'
     },
     {
@@ -260,7 +260,7 @@ export default function Home() {
               <FaRocket /> Build My Business OS
             </Link>
             <Link
-              to="/how-it-works"
+              to="/checkout?demo=true"
               style={{
                 background: 'white',
                 color: '#2563eb',
@@ -851,7 +851,7 @@ export default function Home() {
             </Link>
             
             <Link
-              to="/ai-visibility-tracker"
+              to="/checkout?product=ai-tracker"
               style={{
                 background: 'transparent',
                 color: 'white',
