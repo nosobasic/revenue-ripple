@@ -28,9 +28,9 @@ const KeywordResearch = () => {
               <div className="guide-content">
                 <div className="guide-intro">
                   <h3>Google Wants You to Win (and So Should You)</h3>
-                  <p>Google’s got your back. Why? Because when you run better campaigns and use more keywords, they make more money. To help you win, they’ve built one of the most powerful keyword research tools out there—and even better, it’s free.</p>
+                  <p>Google's got your back. Why? Because when you run better campaigns and use more keywords, they make more money. To help you win, they've built one of the most powerful keyword research tools out there—and even better, it's free.</p>
                   <p>Forget paid tools filled with outdated or inaccurate data. This is the real deal, straight from the source.</p>
-                  <p><strong><a href="https://adwords.google.com/select/KeywordToolExternal" target="_blank" rel="noopener noreferrer">Click here to access Google’s Free Keyword Tool</a></strong></p>
+                  <p><strong><a href="https://ads.google.com/um/KeywordPlanner/Home" target="_blank" rel="noopener noreferrer">Click here to access Google's Free Keyword Planner</a></strong></p>
                 </div>
 
                 <h4>Step 1: Pick a Starting Idea</h4>

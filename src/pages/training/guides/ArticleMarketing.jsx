@@ -46,11 +46,11 @@ const ArticleMarketing = () => {
                 <div className="guide-section">
                   <h3>How to Get Listed in Google</h3>
                   <ol>
-                    <li>Submit your article to trusted directories like Squidoo, EzineArticles, or ArticlesBase.</li>
+                    <li>Submit your article to trusted platforms like Medium, LinkedIn Pulse, or industry-specific blogs.</li>
                     <li>No extra SEO work is needed — their systems handle indexing.</li>
                     <li>Focus on keyword-optimized, relevant content.</li>
                   </ol>
-                  <p><strong>Pro tip:</strong> Target a low-competition keyword phrase. That’s your golden ticket.</p>
+                  <p><strong>Pro tip:</strong> Target a low-competition keyword phrase. That's your golden ticket.</p>
                 </div>
 
                 <div className="guide-section">
@@ -60,7 +60,7 @@ const ArticleMarketing = () => {
                     <li><strong>Too broad:</strong> "Make Money" → 571M results</li>
                     <li><strong>Better:</strong> "Money Making Membership Site" → 2,000 results</li>
                   </ul>
-                  <p>Use tools like <a href="http://toolbar.google.com" target="_blank">Google Toolbar</a> or other keyword analyzers to measure ranking difficulty.</p>
+                  <p>Use tools like <a href="https://ahrefs.com/keyword-generator" target="_blank" rel="noopener noreferrer">Ahrefs Keyword Generator</a> or <a href="https://www.semrush.com/analytics/keywordoverview/" target="_blank" rel="noopener noreferrer">SEMrush Keyword Overview</a> to measure ranking difficulty.</p>
                 </div>
 
                 <div className="guide-section">
@@ -97,8 +97,8 @@ const ArticleMarketing = () => {
 
                 <div className="guide-section">
                   <h3>Use Directories — Not Just Blogs</h3>
-                  <p>Your own blog might get indexed slowly. Article directories have structure and PageRank that help you rank faster.</p>
-                  <p>Leverage their authority. Sites like Squidoo, ArticlesBase, and EzineArticles are built for indexing. Use them.</p>
+                  <p>Your own blog might get indexed slowly. High-authority platforms have structure and PageRank that help you rank faster.</p>
+                  <p>Leverage their authority. Sites like Medium, LinkedIn, and industry-specific platforms are built for indexing. Use them.</p>
                 </div>
 
                 <div className="guide-section">
@@ -108,16 +108,16 @@ const ArticleMarketing = () => {
                 </div>
 
                 <div className="guide-section">
-                  <h3>Recommended Article Directories</h3>
+                  <h3>Recommended Article Platforms</h3>
                   <ul>
-                    <li><a href="https://www.squidoo.com" target="_blank" rel="noopener noreferrer">Squidoo.com</a></li>
-                    <li><a href="https://www.articlesbase.com" target="_blank" rel="noopener noreferrer">ArticlesBase.com</a></li>
-                    <li><a href="https://www.hubpages.com" target="_blank" rel="noopener noreferrer">HubPages.com</a></li>
-                    <li><a href="https://www.goarticles.com" target="_blank" rel="noopener noreferrer">GoArticles.com</a></li>
-                    <li><a href="https://www.usfreeads.com" target="_blank" rel="noopener noreferrer">UsFreeads.com</a></li>
-                    <li><a href="https://www.ezinearticles.com" target="_blank" rel="noopener noreferrer">EzineArticles.com</a></li>
-                    <li><a href="https://www.associatedcontent.com" target="_blank" rel="noopener noreferrer">AssociatedContent.com</a></li>
-                    <li><a href="https://www.wetpaint.com" target="_blank" rel="noopener noreferrer">WetPaint.com</a></li>
+                    <li><a href="https://medium.com" target="_blank" rel="noopener noreferrer">Medium.com</a> - High-authority platform with excellent SEO</li>
+                    <li><a href="https://www.linkedin.com/pulse/" target="_blank" rel="noopener noreferrer">LinkedIn Pulse</a> - Professional audience and strong domain authority</li>
+                    <li><a href="https://www.hubspot.com/blog" target="_blank" rel="noopener noreferrer">HubSpot Blog</a> - Marketing-focused platform</li>
+                    <li><a href="https://www.forbes.com" target="_blank" rel="noopener noreferrer">Forbes.com</a> - Guest posting opportunities</li>
+                    <li><a href="https://www.entrepreneur.com" target="_blank" rel="noopener noreferrer">Entrepreneur.com</a> - Business and marketing content</li>
+                    <li><a href="https://www.inc.com" target="_blank" rel="noopener noreferrer">Inc.com</a> - Business insights and strategies</li>
+                    <li><a href="https://www.fastcompany.com" target="_blank" rel="noopener noreferrer">FastCompany.com</a> - Innovation and business trends</li>
+                    <li><a href="https://www.businessinsider.com" target="_blank" rel="noopener noreferrer">BusinessInsider.com</a> - Business news and analysis</li>
                   </ul>
                   <p>We'll show you how to use each of these later in the course.</p>
                 </div>
