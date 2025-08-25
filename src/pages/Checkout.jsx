@@ -6,10 +6,11 @@ import PayPalButton from '../components/PayPalButton';
 import './checkout.css';
 
 // Initialize Stripe
-const stripePromise = loadStripe('pk_live_51RHozW2Ku9STqdAd7SjnK80bA8oxhPHCPybzZijyDi0wnpyO1siIK4cZRHOXxTNf5t2BKamwVluDpyyehhGUaxWO00oVepQ2bf');
+const stripePromise = loadStripe('pk_test_51RHozW2Ku9STqdAdSpODYq05ZmIegKu1er3DKtwqDs3SMPMWxK9mjFBEV1CdcfWXzq9jUY8z9LwrPwLY30c2Xs7M00VolIBrBK');
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
+  console.log("clientSecret", clientSecret)
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/create-payment-intent`, {

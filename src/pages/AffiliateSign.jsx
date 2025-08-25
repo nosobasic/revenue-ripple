@@ -65,6 +65,7 @@ export default function AffiliateSign() {
       // if (profileError) throw profileError;
 
       // Redirect to special invite page
+      alert('Registration successful! Please check your email for verification.');
       navigate('/affiliate-login');
     } catch (err) {
       setError(err.message);
