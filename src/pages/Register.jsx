@@ -34,7 +34,7 @@ export default function Register() {
 
     try {
       await signup(email, password, firstName, lastName,"member");
-      alert('Registration successful! Please check your email for verification.');
+      // alert('Registration successful! Please check your email for verification.');
       navigate('/login');
     } catch (error) {
       setError(error.message);

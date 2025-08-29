@@ -10,7 +10,7 @@ const stripePromise = loadStripe('pk_test_51RHozW2Ku9STqdAdSpODYq05ZmIegKu1er3DK
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
-  console.log("clientSecret", clientSecret)
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/create-payment-intent`, {
@@ -19,9 +19,13 @@ export default function Checkout() {
       body: JSON.stringify({}),
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret))
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+        setIsLoading(false);
+      })
       .catch((error) => {
         setClientSecret(null);
+        setIsLoading(false);
         console.error('Stripe error:', error);
       });
   }, []);
@@ -41,7 +45,11 @@ export default function Checkout() {
         <p className="checkout-description">
           You're just one step away from accessing premium features. Complete your payment to get started.
         </p>
-        {clientSecret ? (
+        {isLoading ? (
+          <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+            <div style={{ color: '#2563eb', fontWeight: 600 }}>Loading...</div>
+          </div>
+        ) : clientSecret ? (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
@@ -56,4 +64,4 @@ export default function Checkout() {
       </div>
     </div>
   );
-} 
+}

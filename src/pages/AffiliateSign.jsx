@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +17,16 @@ export default function AffiliateSign() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 👇 Grab ref from URL and save to localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    console.log("ref===", ref)
+    if (ref) {
+      localStorage.setItem('affiliate_ref', ref);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,8 +75,8 @@ export default function AffiliateSign() {
       // if (profileError) throw profileError;
 
       // Redirect to special invite page
-      alert('Registration successful! Please check your email for verification.');
-      navigate('/affiliate-login');
+      // alert('Registration successful! Please check your email for verification.');
+      navigate('/checkout');
     } catch (err) {
       setError(err.message);
     } finally {
