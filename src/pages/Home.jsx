@@ -34,12 +34,12 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-          <h1 className="hero-title">
+          <h1 className="hero-title" style={{ lineHeight: '1.2', letterSpacing: '0.5px' }}>
             Marketing Is Complicated...
-            <span style={{ display: 'block' }}>Revenue Ripple Makes It Easy.</span>
+            <span style={{ display: 'block', marginTop: '0.5rem' }}>Revenue Ripple Makes It Easy.</span>
           </h1>
           
-          <p className="hero-subtitle">
+          <p className="hero-subtitle" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '1px' }}>
             As a Member You'll Get Instant Access To The Walkthroughs, "Watch Over Our Shoulder" Videos, Trainings, and Support You Need TO GET MARKETING DONE.
           </p>
           
@@ -73,13 +73,13 @@ export default function Home() {
         <div className="content-section">
           <div className="content-grid">
             <div className="content-text">
-              <h2>Ready To Get Started To Make Marketing Easy?</h2>
-              <h3>Create Your Account for Instant Access to:</h3>
-              <ul className="checkmark-list">
-                <li><FaCheckCircle className="checkmark" /> 46 comprehensive marketing tutorials and 25 expert-led video courses, continuously updated to stay ahead of the curve.</li>
-                <li><FaCheckCircle className="checkmark" /> A members-only affiliate program, empowering you to earn as you learn.</li>
-                <li><FaCheckCircle className="checkmark" /> Dedicated support from our experienced team, always on hand to address your queries and guide your growth.</li>
-                <li><FaCheckCircle className="checkmark" /> PLUS, stay competitive with access to a growing library of marketing resources, tailored to help you achieve success in today's ever-evolving landscape.</li>
+              <h2 style={{ lineHeight: '1.3', letterSpacing: '0.3px', marginBottom: '1rem' }}>Ready To Get Started To Make Marketing Easy?</h2>
+              <h3 style={{ lineHeight: '1.4', letterSpacing: '0.2px', marginBottom: '1.5rem' }}>Create Your Account for Instant Access to:</h3>
+              <ul className="checkmark-list" style={{ lineHeight: '1.7', letterSpacing: '0.2px' }}>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> 46 comprehensive marketing tutorials and 25 expert-led video courses, continuously updated to stay ahead of the curve.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> A members-only affiliate program, empowering you to earn as you learn.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> Dedicated support from our experienced team, always on hand to address your queries and guide your growth.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> PLUS, stay competitive with access to a growing library of marketing resources, tailored to help you achieve success in today's ever-evolving landscape.</li>
               </ul>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <Link to="/checkout" className="cta-button">
@@ -157,7 +157,7 @@ export default function Home() {
               </div>
               <div className="course-content">
                 <h3 className="course-title">Website Design</h3>
-                <p className="course-description">
+                <p className="course-description" style={{ lineHeight: '1.6', letterSpacing: '0.2px', wordSpacing: '0.5px' }}>
                   Looking to create an effective website for your business? Our Website Design course has got you covered. From choosing the right layout and color scheme to optimizing your website for search engines, we'll provide you with the skills and knowledge you need to create a professional and effective website that represents your brand.
                 </p>
                 <div className="course-pricing">
@@ -175,7 +175,7 @@ export default function Home() {
               </div>
               <div className="course-content">
                 <h3 className="course-title">Social Media Marketing</h3>
-                <p className="course-description">
+                <p className="course-description" style={{ lineHeight: '1.6', letterSpacing: '0.2px', wordSpacing: '0.5px' }}>
                   Wanna know how to market your business on social media like a pro? Our Social Media Marketing course will teach you how to create engaging content, optimize your profiles, and connect with your target audience on all the major social media platforms, including Facebook, Instagram, Twitter, and Youtube.
                 </p>
                 <div className="course-pricing">
@@ -466,7 +466,7 @@ export default function Home() {
       >
         <div className="container">
           <h2 className="section-title">WHAT IS REVENUE RIPPLE?</h2>
-          <p className="what-is-description">
+          <p className="what-is-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
             Whether you're a beginner looking for a place to start or a seasoned marketer looking to uplevel 
             your skills, Revenue Ripple has everything you need to get marketing DONE. Our platform is like 
             a personal coach, but without the awkward eye contact. We offer 46 comprehensive marketing 
@@ -617,7 +617,7 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">No Free Trial?</h2>
           <h3>What about a guarantee?</h3>
-          <p className="no-free-trial-description">
+          <p className="no-free-trial-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
             Free trials are cool in theory—until you're left with nothing but an expired login and the sour aftertaste of wasted time. We don't do the whole "test drive" thing over here. Why? Because growth doesn't come from dabbling—it comes from committing.
 
             At Revenue Ripple, we're not trying to attract tire-kickers or fence-sitters. We're looking for the go-getters, the doers, the ones ready to make moves and invest in themselves. When you put real skin in the game, that's when real results show up.
@@ -645,7 +645,7 @@ export default function Home() {
       >
         <div className="container">
           <h2 className="section-title">Ready to Transform Your Marketing?</h2>
-          <p className="cta-description">
+          <p className="cta-description" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
             Join thousands of successful marketers who have already transformed their businesses with Revenue Ripple.
             Start your journey today and get instant access to all our premium features.
           </p>
