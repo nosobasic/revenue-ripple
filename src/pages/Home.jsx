@@ -46,7 +46,7 @@ export default function Home() {
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
             {!user && (
               <Link 
-                to="/checkout" 
+                to="/founders" 
                 className="cta-button"
                 style={{
                   background: '#2563eb',
@@ -62,7 +62,7 @@ export default function Home() {
                   boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
                 }}
               >
-                <FaRocket /> Begin Checkout - $47/month
+                <FaRocket /> Founders Annual — 2 months free
               </Link>
             )}
           </div>

@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
   RESELLER_SESSION: '/create-reseller-session',
   PRO_RESELLER_SESSION: '/create-pro-reseller-session',
   MEMBERSHIP_SESSION: '/create-membership-session',
+  FOUNDERS_ANNUAL_SESSION: '/create-founders-annual-session',
   WEBHOOK: '/webhook',
   DASHBOARD: '/your-existing-api/dashboard',
   DEVOPS: {
