@@ -205,6 +205,49 @@ def create_membership_session():
         return jsonify({'error': str(e)}), 400
 
 
+@app.route('/create-founders-annual-session', methods=['POST'])
+def create_founders_annual_session():
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+
+        # Check campaign cap before creating session
+        sold = 0
+        cap = 10
+        status = 'active'
+        try:
+            resp = supabase.table('founders_campaign').select('sold_count, cap, status').eq('status', 'active').limit(1).execute()
+            if resp.data and len(resp.data) > 0:
+                sold = resp.data[0].get('sold_count', 0)
+                cap = resp.data[0].get('cap', 10)
+                status = resp.data[0].get('status', 'active')
+        except Exception as _:
+            pass
+
+        if status != 'active' or sold >= cap:
+            return jsonify({'sold_out': True}), 200
+
+        founders_annual_price_id = os.getenv('STRIPE_FOUNDERS_ANNUAL_PRICE_ID', 'price_ANNUAL_PLACEHOLDER')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': founders_annual_price_id,
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url='https://revenueripple.org/founders-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/founders-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'founders_annual',
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 @app.route('/webhook', methods=['POST'])
@@ -278,6 +321,21 @@ def stripe_webhook():
         except Exception as e:
             print(f"❌ Error processing failed payment: {e}")
             log_webhook_error(event, str(e))
+
+        elif product == 'founders_annual':
+            print(f"Founders annual by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+            try:
+                if supabase:
+                    # increment sold_count and enforce cap inside DB function
+                    supabase.rpc('increment_founders_sold').execute()
+                    supabase.table('founder_members').upsert({
+                        'email': customer_email,
+                        'badge': 'founder',
+                        'status': 'active',
+                    }).execute()
+                    add_contact_to_getresponse(customer_email, 'founder')
+            except Exception as e:
+                print(f"⚠️ Founders post-purchase error: {e}")
 
     return jsonify({'status': 'success'})
 =======

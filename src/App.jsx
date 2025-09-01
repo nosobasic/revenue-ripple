@@ -35,6 +35,9 @@ const DFY = lazy(() => import('./pages/DFY'));
 const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
+const FoundersCheckout = lazy(() => import('./pages/FoundersCheckout'));
+const FoundersWaitlist = lazy(() => import('./pages/FoundersWaitlist'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -106,6 +109,8 @@ const App = () => {
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
 
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/founders" element={<ProtectedRoute><FoundersCheckout /></ProtectedRoute>} />
+        <Route path="/founders-waitlist" element={<UnprotectedRoute><FoundersWaitlist /></UnprotectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />

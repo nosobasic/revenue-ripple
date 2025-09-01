@@ -196,6 +196,32 @@ export default function Home() {
           <p className="hero-subtitle">
             A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn’t fragile.
           </p>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            {!user && (
+              <Link 
+                to="/founders" 
+                className="cta-button"
+                style={{
+                  background: '#2563eb',
+                  color: 'white',
+                  padding: '1rem 2.5rem',
+                  borderRadius: '50px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '1.25rem',
+                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                }}
+              >
+                <FaRocket /> Founders Annual — 2 months free
+              </Link>
+            )}
+          </div>
+        </div>
+      </motion.section>
 
           {/* Primary CTAs (kept minimal to preserve current feel) */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
@@ -317,8 +343,6 @@ export default function Home() {
               </div>
             </div>
           )}
-        </div>
-      </motion.section>
 
       {/* Value Stack Section (Bundled Offer) */}
       <motion.section
