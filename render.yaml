@@ -18,3 +18,5 @@ services:
         fromEnvVar: GETRESPONSE_API_KEY
       - key: GETRESPONSE_CAMPAIGN_ID
         fromEnvVar: GETRESPONSE_CAMPAIGN_ID
+      - key: OPENAI_API_KEY
+        fromEnvVar: OPENAI_API_KEY
