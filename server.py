@@ -30,7 +30,8 @@ CORS(app, origins=[
     "http://localhost:3000", 
     "https://revenueripple.org",
     "https://www.revenueripple.org",
-    "https://revenue-ripple.onrender.com"
+    "https://revenue-ripple.onrender.com",
+    "https://friendly-neat-walrus.ngrok-free.app"
 ])
 
 # Stripe secret key

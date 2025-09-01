@@ -18,6 +18,8 @@ const Profile = () => {
     bio: ''
   });
 
+  console.log("user-=-=-=", user)
+
   useEffect(() => {
     if (user) {
       setFormData({

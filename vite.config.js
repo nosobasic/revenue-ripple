@@ -59,6 +59,7 @@ export default defineConfig({
   },
   
   server: {
+    allowedHosts: ['friendly-neat-walrus.ngrok-free.app'],
     proxy: {
       '/devops': {
         target: 'http://localhost:5001',

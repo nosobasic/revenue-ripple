@@ -81,6 +81,8 @@ const CourseOverview = () => {
       .eq('user_id', user.id)
       .eq('course_id', courseSlug)
       .eq('completed', true);
+
+     
     const percentDone = Math.round((completedModules.length / totalModules) * 100);
     const status = percentDone === 100 ? 'completed' : 'in_progress';
     await supabase

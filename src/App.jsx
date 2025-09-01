@@ -34,6 +34,7 @@ const DMDLanding = lazy(() => import('./pages/DMDLanding'));
 const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -157,6 +158,7 @@ const App = () => {
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/command-center" element={<CommandCenter />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

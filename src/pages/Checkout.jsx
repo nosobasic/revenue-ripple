@@ -11,6 +11,7 @@ const stripePromise = loadStripe(STRIPE_CONFIG.PUBLIC_KEY);
 
 export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.PAYMENT_INTENT}`, {
@@ -19,9 +20,13 @@ export default function Checkout() {
       body: JSON.stringify({}),
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret))
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+        setIsLoading(false);
+      })
       .catch((error) => {
         setClientSecret(null);
+        setIsLoading(false);
         logger.error('Stripe error:', error);
       });
   }, []);
@@ -41,7 +46,11 @@ export default function Checkout() {
         <p className="checkout-description">
           You're just one step away from accessing premium features. Complete your payment to get started.
         </p>
-        {clientSecret ? (
+        {isLoading ? (
+          <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+            <div style={{ color: '#2563eb', fontWeight: 600 }}>Loading...</div>
+          </div>
+        ) : clientSecret ? (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
@@ -56,4 +65,4 @@ export default function Checkout() {
       </div>
     </div>
   );
-} 
+}
