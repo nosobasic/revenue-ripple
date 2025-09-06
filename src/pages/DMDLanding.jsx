@@ -119,7 +119,20 @@ export default function DMDLanding() {
             Get Instant Access for $7
           </Link>
           <div style={{marginTop: '0.75rem', animation: 'fadeInUp 0.8s ease-out 0.5s backwards'}}>
-            <img src="/assets/images/icons/trust-seal.png" alt="Trusted by marketers worldwide" style={{height: 32}} />
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)'
+            }}>
+              <span style={{marginRight: '0.5rem'}}>✓</span>
+              Trusted by 1,000+ Marketers
+            </div>
           </div>
         </div>
       </section>
@@ -278,7 +291,21 @@ export default function DMDLanding() {
           </p>
           
           <div style={{ marginTop: '1rem' }}>
-            <img src="/assets/images/icons/trust-seal.png" alt="Trusted by marketers worldwide" style={{ height: 32, margin: '0 auto' }} />
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)',
+              margin: '0 auto'
+            }}>
+              <span style={{marginRight: '0.5rem'}}>✓</span>
+              Trusted by 1,000+ Marketers
+            </div>
           </div>
           
           <div style={{ marginTop: '1rem', background: '#fffde7', display: 'inline-block', padding: '0.5rem 1rem', borderRadius: '4px', color: '#166534', fontWeight: 600 }}>
