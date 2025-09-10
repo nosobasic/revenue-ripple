@@ -20,8 +20,8 @@ export default function Reseller() {
   const handleResellerCheckout = async () => {
     setLoading(true);
     try {
-      const referrer_username = getReferrer();
-      const response = await fetch('/create-reseller-session', {
+      const referrer_username = "nosobasic";
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-reseller-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ referrer_username }),

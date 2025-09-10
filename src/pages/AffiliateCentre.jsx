@@ -43,6 +43,8 @@ export default function AffiliateCentre() {
 
         if (userError) throw userError;
 
+        console.log("userData=====",userData)
+
         // Fetch commissions
         const { data: commissions, error: commissionsError } = await supabase
           .from('commissions')
@@ -50,6 +52,7 @@ export default function AffiliateCentre() {
           .eq('referrer_username', user.id);
 
         if (commissionsError) throw commissionsError;
+        console.log("commissions=====",commissions)
 
         const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
         const totalSales = commissions.length;

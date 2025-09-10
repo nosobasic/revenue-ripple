@@ -136,7 +136,7 @@ def create_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Replace with your Reseller $47/month Price ID
+                'price': 'price_1S5iln2Ku9STqdAdi0Z2zX3w',  # Replace with your Reseller $47/month Price ID
                 'quantity': 1,
             }],
             mode='subscription',
