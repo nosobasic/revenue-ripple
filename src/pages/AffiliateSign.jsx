@@ -46,6 +46,7 @@ export default function AffiliateSign() {
       if (formData.password !== formData.confirmPassword) {
         throw new Error('Passwords do not match');
       }
+      localStorage.setItem("customerEmail",formData.email )
 
       // Create user account
       const { data: authData, error: authError } = await signup(

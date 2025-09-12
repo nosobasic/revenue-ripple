@@ -8,6 +8,7 @@ export default function ThankYou() {
   const refUserId = localStorage.getItem('affiliate_ref');
   const memberRole = localStorage.getItem('memberRole');
   const memberId = localStorage.getItem('memberId');
+  const customerEmail = localStorage.getItem('customerEmail')
 
   const commissionPercent = 0.5; // 0.5%
   const baseAmount = 47;
@@ -66,30 +67,30 @@ export default function ThankYou() {
     const addAmount = (commissionPercent / 100) * baseAmount;
   
     // READ (will return row only if SELECT policy allows)
-    const { data: existing, error: selErr } = await supabase
-      .from("commissions")
-      .select("id, amount, commission")
-      .eq("referrer_username", refUserId)
-      .maybeSingle();
+    // const { data: existing, error: selErr } = await supabase
+    //   .from("commissions")
+    //   .select("id, amount, commission")
+    //   .eq("referrer_username", refUserId)
+    //   .maybeSingle();
   
-    if (selErr) {
-      console.error("Select error:", selErr);
-      return;
-    }
+    // if (selErr) {
+    //   console.error("Select error:", selErr);
+    //   return;
+    // }
   
-    if (existing) {
-      // UPDATE
-      const { error: updErr } = await supabase
-        .from("commissions")
-        .update({
-          amount: Number(existing.amount ?? 0) + addAmount.toFixed(2),
-          commission: Number(existing.commission ?? 0) + addAmount.toFixed(2),
-          status: "active",
-        })
-        .eq("id", existing.id);
+    // if (existing) {
+    //   // UPDATE
+    //   const { error: updErr } = await supabase
+    //     .from("commissions")
+    //     .update({
+    //       amount: Number(existing.amount ?? 0) + addAmount.toFixed(2),
+    //       commission: Number(existing.commission ?? 0) + addAmount.toFixed(2),
+    //       status: "active",
+    //     })
+    //     .eq("id", existing.id);
   
-      if (updErr) console.error("Update error:", updErr);
-    } else {
+    //   if (updErr) console.error("Update error:", updErr);
+    // } else {
       // INSERT
       const { error: insErr } = await supabase
         .from("commissions")
@@ -98,12 +99,12 @@ export default function ThankYou() {
           amount: addAmount.toFixed(2),
           commission: addAmount.toFixed(2),
           tier: "membership",
-          email: "affiliate@revenueripple.org", 
+          email: customerEmail, 
           status: "active",
         });
   
       if (insErr) console.error("Insert error:", insErr);
-    }
+    // }
   };
 
   return (
