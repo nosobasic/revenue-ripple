@@ -6,6 +6,8 @@ import { supabase } from '../supabase/client';
 export default function ThankYou() {
   const [status, setStatus] = useState("");
   const refUserId = localStorage.getItem('affiliate_ref');
+  const memberRole = localStorage.getItem('memberRole');
+  const memberId = localStorage.getItem('memberId');
 
   const commissionPercent = 0.5; // 0.5%
   const baseAmount = 47;
@@ -27,6 +29,35 @@ export default function ThankYou() {
     }
   }, [status, refUserId]);
 
+  useEffect(() => {
+    const handleUpdateRole = async () => {
+      try {
+
+        if (!memberId && status !== "succeeded" && memberRole !== "member") {
+          console.error("No member found");
+          return;
+        }
+        const { data, error } = await supabase
+          .from("users")
+          .update({ role: "affiliate" })   // 👈 new role
+          .eq("id", memberId)
+          .select();
+
+        if (error) {
+          console.error("Supabase update error:", error);
+        } else {
+          console.log("User role updated:", data);
+          localStorage.removeItem('memberRole');
+          localStorage.removeItem('memberId');
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    handleUpdateRole();
+  }, [memberId]);
+
   const saveCommission = async () => {
     if (status !== "succeeded" || !refUserId) return;
   
@@ -45,8 +76,6 @@ export default function ThankYou() {
       console.error("Select error:", selErr);
       return;
     }
-
-    console.log("existing",existing)
   
     if (existing) {
       // UPDATE
@@ -69,16 +98,14 @@ export default function ThankYou() {
           amount: addAmount.toFixed(2),
           commission: addAmount.toFixed(2),
           tier: "membership",
-          email: "affiliate@revenueripple.org", // apni email set karo
+          email: "affiliate@revenueripple.org", 
           status: "active",
         });
   
       if (insErr) console.error("Insert error:", insErr);
     }
   };
-  
 
-  console.log("status====", refUserId, status)
   return (
     <div className="checkout-container">
       <div className="checkout-content" style={{ textAlign: 'center' }}>

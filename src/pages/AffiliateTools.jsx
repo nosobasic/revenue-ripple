@@ -1,10 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
+import { useAuth } from '../context/AuthContext';
 
 const AffiliateTools = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
   const handleDownload = (materialId, format) => {
     // Find the material by ID
     const material = marketingMaterials.find(m => m.id === materialId);
@@ -51,26 +55,36 @@ const AffiliateTools = () => {
     });
   };
 
-  const handleProResellerUpgrade = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          referrer_username: localStorage.getItem("ref_id") || "none" 
-        })
-      });
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Error creating checkout session.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error connecting to server.');
-    }
-  };
+  // const handleProResellerUpgrade = async () => {
+  //   try {
+  //     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ 
+  //         referrer_username: localStorage.getItem("ref_id") || "none" 
+  //       })
+  //     });
+  //     const data = await response.json();
+  //     if (data.url) {
+  //       window.location.href = data.url;
+  //     } else {
+  //       alert('Error creating checkout session.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     alert('Error connecting to server.');
+  //   }
+  // };
+
+  const handleProResellerUpgrade = () => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+          navigate(`/pro-reseller-success?session_id=${user?.id}`);
+          setLoading(false);
+        }, 2000);
+    
+        return () => clearTimeout(timer);
+  }
 
   const marketingMaterials = [
     {
@@ -434,8 +448,10 @@ const AffiliateTools = () => {
                     onClick={handleProResellerUpgrade}
                     className="cta-button pro-button"
                     style={{ border: 'none', cursor: 'pointer' }}
+                    disabled={loading}
                   >
-                    Upgrade to Reseller PRO - $97/month
+                     {loading ? 'Redirecting…' : 'Upgrade to Reseller PRO - $97/month'}
+                    
                   </button>
                 </div>
               </div>

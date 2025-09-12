@@ -17,8 +17,10 @@ export default function AffiliateCentre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log("user=====?", user)
+
   const baseUrl = "http://localhost:5173/affiliate/sign-up";
-  const affiliateLink = `${baseUrl}/?ref=${user?.id}`;
+  const affiliateLink = `${baseUrl}/?ref=${user?.id}&role=${user?.role}`;
 
   const copyAffiliateLink = () => {
     navigator.clipboard.writeText(affiliateLink).then(() => {

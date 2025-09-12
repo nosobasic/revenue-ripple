@@ -54,6 +54,7 @@ import WritingAdCopy from './pages/training/guides/WritingAdCopy';
 import SalesCopy from './pages/training/guides/SalesCopy';
 import CommandCenter from './pages/CommandCenter';
 import ResetPassword from './pages/ResetPassword';
+import ProResellerSuccess from './pages/ProResellerSuccess';
 
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
@@ -93,6 +94,7 @@ const App = () => {
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
+        <Route path="/pro-reseller-success" element={<ProtectedRoute><ProResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
         <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
         <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
