@@ -3,6 +3,7 @@ from flask_cors import CORS
 import stripe
 import os
 import requests
+import time
 
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -515,6 +516,115 @@ def sync_commissions_to_devops():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Rate limiting storage (in production, use Redis or similar)
+submission_attempts = {}
+
+# Book Giveaway API Endpoint
+@app.route('/api/book-giveaway', methods=['POST'])
+def book_giveaway_submission():
+    try:
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        ip_address = request.remote_addr
+        
+        # Rate limiting: max 3 attempts per IP per hour
+        current_time = time.time()
+        if ip_address in submission_attempts:
+            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
+            if len(attempts) >= 3:
+                return jsonify({"error": "Too many attempts. Please try again later."}), 429
+            submission_attempts[ip_address] = attempts
+        else:
+            submission_attempts[ip_address] = []
+        
+        # Record this attempt
+        submission_attempts[ip_address].append(current_time)
+        
+        # Validate input
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        # Basic email validation
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Check for duplicate submissions (spam prevention)
+        if supabase:
+            try:
+                # Check if email already exists in book giveaway submissions
+                existing = supabase.table("book_giveaway_submissions").select("email").eq("email", email).execute()
+                if existing.data and len(existing.data) > 0:
+                    return jsonify({"error": "This email has already been used to claim a free book"}), 400
+            except Exception as db_error:
+                print(f"Warning: Could not check for duplicates: {db_error}")
+        
+        # Add to GetResponse
+        add_book_giveaway_to_getresponse(email, name)
+        
+        # Log submission to database
+        if supabase:
+            try:
+                submission_data = {
+                    "name": name,
+                    "email": email,
+                    "submitted_at": "now()",
+                    "ip_address": ip_address,
+                    "user_agent": request.headers.get('User-Agent', '')
+                }
+                supabase.table("book_giveaway_submissions").insert(submission_data).execute()
+                print(f"✅ Logged book giveaway submission for {email}")
+            except Exception as db_error:
+                print(f"❌ Failed to log book giveaway submission: {db_error}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Successfully submitted! Redirecting to your free book..."
+        })
+        
+    except Exception as e:
+        print(f"❌ Book giveaway submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def get_getresponse_campaign_id():
+    """Get the campaign ID for the master list from GetResponse"""
+    # Use the specific campaign ID provided by the user
+    return "5lkFO"
+
+def add_book_giveaway_to_getresponse(email, name):
+    """Add book giveaway lead to GetResponse master list"""
+    api_key = "tnkyixvg8dxdsmwks2ll69y8k31zd7qg"  # Your provided API key
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": name
+    }
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse master list")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
