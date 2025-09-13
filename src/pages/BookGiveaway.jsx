@@ -55,7 +55,7 @@ const BookGiveaway = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/book-giveaway', {
+      const response = await fetch('https://revenue-ripple.onrender.com/api/book-giveaway', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
