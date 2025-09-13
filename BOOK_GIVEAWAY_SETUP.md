@@ -33,7 +33,7 @@ psql -f create_book_giveaway_table.sql
 ### 2. GetResponse Configuration
 The system uses your provided API key: `tnkyixvg8dxdsmwks2ll69y8k31zd7qg`
 
-**Campaign ID**: `5lkFO` (your master list for cultivation)
+**Campaign ID**: `50yn9` (your master list for cultivation)
 
 The system is already configured with your specific campaign ID. You can test the integration:
 ```bash
@@ -142,7 +142,7 @@ Handles form submissions with the following features:
 - `user_agent`: Browser information
 
 ### GetResponse Integration
-All leads are added directly to your master list campaign (`5lkFO`) without custom tags. This ensures maximum compatibility and reliability.
+All leads are added directly to your master list campaign (`50yn9`) without custom tags. This ensures maximum compatibility and reliability.
 
 ## 🚨 Important Notes
 

@@ -599,7 +599,7 @@ def book_giveaway_submission():
 def get_getresponse_campaign_id():
     """Get the campaign ID for the master list from GetResponse"""
     # Use the campaign ID from environment variable or fallback to the provided one
-    return os.getenv("GETRESPONSE_CAMPAIGN_ID", "5lkFO")
+    return os.getenv("GETRESPONSE_CAMPAIGN_ID", "50yn9")
 
 def add_book_giveaway_to_getresponse(email, name):
     """Add book giveaway lead to GetResponse master list"""

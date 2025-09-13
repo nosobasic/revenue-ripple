@@ -11,7 +11,7 @@ def test_getresponse_connection():
     """Test GetResponse API connection with specific campaign ID"""
     import os
     api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
-    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID", "5lkFO")
+    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID", "50yn9")
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
