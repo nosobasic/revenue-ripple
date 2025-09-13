@@ -221,8 +221,8 @@ def stripe_webhook():
     return jsonify({'status': 'success'})
 
 def add_contact_to_getresponse(email, tag):
-    api_key = os.getenv("GETRESPONSE_API_KEY")
-    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
+    api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
+    campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
 
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
