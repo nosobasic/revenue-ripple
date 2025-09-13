@@ -521,10 +521,24 @@ def sync_commissions_to_devops():
 submission_attempts = {}
 
 # Book Giveaway API Endpoint
-@app.route('/api/book-giveaway', methods=['POST'])
+@app.route('/api/book-giveaway', methods=['POST', 'GET'])
 def book_giveaway_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Book Giveaway API is running",
+            "method": "GET",
+            "message": "This endpoint accepts POST requests for form submissions"
+        })
+    
+    # Handle POST requests
+    print(f"📥 Book giveaway submission received from {request.remote_addr}")
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
     try:
         data = request.get_json()
+        print(f"📥 Request data: {data}")
         name = data.get('name', '').strip()
         email = data.get('email', '').strip().lower()
         ip_address = request.remote_addr
@@ -591,12 +605,12 @@ def book_giveaway_submission():
 
 def get_getresponse_campaign_id():
     """Get the campaign ID for the master list from GetResponse"""
-    # Use the specific campaign ID provided by the user
-    return "5lkFO"
+    # Use the campaign ID from environment variable or fallback to the provided one
+    return os.getenv("GETRESPONSE_CAMPAIGN_ID", "5lkFO")
 
 def add_book_giveaway_to_getresponse(email, name):
     """Add book giveaway lead to GetResponse master list"""
-    api_key = "tnkyixvg8dxdsmwks2ll69y8k31zd7qg"  # Your provided API key
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",

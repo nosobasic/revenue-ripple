@@ -9,8 +9,9 @@ import json
 
 def test_getresponse_connection():
     """Test GetResponse API connection with specific campaign ID"""
-    api_key = "tnkyixvg8dxdsmwks2ll69y8k31zd7qg"
-    campaign_id = "5lkFO"  # Specific campaign ID provided by user
+    import os
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID", "5lkFO")
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -40,7 +41,8 @@ def test_getresponse_connection():
 
 def test_add_contact(campaign_id):
     """Test adding a contact to GetResponse"""
-    api_key = "tnkyixvg8dxdsmwks2ll69y8k31zd7qg"
+    import os
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
