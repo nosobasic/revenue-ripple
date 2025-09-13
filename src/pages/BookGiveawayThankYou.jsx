@@ -89,13 +89,12 @@ const BookGiveawayThankYou = () => {
               <div className="mb-8">
                 <div className="inline-block bg-white rounded-lg shadow-xl p-6 mb-6">
                   <img 
-                    src="/assets/images/images/money-book.jpeg" 
+                    src="/assets/images/images/money-models.jpeg" 
                     alt="$100M Money Models by Alex Hormozi" 
                     className="w-32 h-40 object-cover rounded-lg shadow-lg"
                     onError={(e) => {
-                      // Fallback to gradient if image fails to load
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
+                      // Fallback to original image if new one fails
+                      e.target.src = "/assets/images/images/money-book.jpeg";
                     }}
                   />
                   <div className="w-32 h-40 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-lg font-bold hidden">
@@ -170,21 +169,25 @@ const BookGiveawayThankYou = () => {
                 While you wait for your book to arrive, check out these resources to start building your business:
               </p>
               
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white bg-opacity-20 rounded-lg p-6">
                   <h4 className="font-semibold mb-2">📚 Read the $100M Series</h4>
                   <p className="text-sm opacity-90">Check out Alex's other bestsellers: $100M Offers and $100M Leads</p>
                 </div>
                 
                 <div className="bg-white bg-opacity-20 rounded-lg p-6">
-                  <h4 className="font-semibold mb-2">🎯 Join Our Community</h4>
-                  <p className="text-sm opacity-90">Connect with other entrepreneurs in our mastermind group</p>
+                  <h4 className="font-semibold mb-2">🚀 Explore Revenue Ripple</h4>
+                  <p className="text-sm opacity-90">Discover our training programs and business resources</p>
                 </div>
-                
-                <div className="bg-white bg-opacity-20 rounded-lg p-6">
-                  <h4 className="font-semibold mb-2">🚀 Scale Your Business</h4>
-                  <p className="text-sm opacity-90">Get access to our premium training and coaching programs</p>
-                </div>
+              </div>
+              
+              <div className="mt-8">
+                <button
+                  onClick={() => navigate('/')}
+                  className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-white focus:ring-opacity-50 transition-all"
+                >
+                  Explore Revenue Ripple
+                </button>
               </div>
             </div>
           </div>
@@ -192,8 +195,16 @@ const BookGiveawayThankYou = () => {
           {/* Footer */}
           <div className="text-center mt-12">
             <p className="text-gray-500 text-sm">
-              Questions? Contact us at support@revenueripple.org
+              Questions? Contact us at <a href="mailto:hello@revenueripple.org" className="text-blue-600 hover:text-blue-800 underline">hello@revenueripple.org</a>
             </p>
+            <div className="mt-4">
+              <button
+                onClick={() => navigate('/')}
+                className="text-blue-600 hover:text-blue-800 text-sm underline"
+              >
+                ← Back to Revenue Ripple Homepage
+              </button>
+            </div>
           </div>
         </div>
       </div>

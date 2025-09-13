@@ -110,13 +110,12 @@ const BookGiveaway = () => {
             <div className="mb-8">
               <div className="inline-block bg-white rounded-lg shadow-xl p-6">
                 <img 
-                  src="/assets/images/images/money-book.jpeg" 
+                  src="/assets/images/images/money-models.jpeg" 
                   alt="$100M Money Models by Alex Hormozi" 
                   className="w-48 h-64 object-cover rounded-lg shadow-lg"
                   onError={(e) => {
-                    // Fallback to gradient if image fails to load
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
+                    // Fallback to original image if new one fails
+                    e.target.src = "/assets/images/images/money-book.jpeg";
                   }}
                 />
                 <div className="w-48 h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl font-bold hidden">
