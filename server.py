@@ -26,14 +26,7 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
-CORS(app, origins=[
-    "http://localhost:5173",
-    "http://localhost:3000", 
-    "https://revenueripple.org",
-    "https://www.revenueripple.org",
-    "https://revenue-ripple.onrender.com",
-    "https://friendly-neat-walrus.ngrok-free.app"
-])
+CORS(app, origins="*")
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
