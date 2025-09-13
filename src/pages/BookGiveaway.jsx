@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const BookGiveaway = () => {
@@ -8,7 +8,22 @@ const BookGiveaway = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [emailValid, setEmailValid] = useState(null); // null, true, or false
+  const [copiesRemaining, setCopiesRemaining] = useState(198);
   const navigate = useNavigate();
+
+  // Simulate decreasing counter for urgency
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCopiesRemaining(prev => {
+        // Randomly decrease by 1-3 copies every 30-60 seconds
+        const decrease = Math.floor(Math.random() * 3) + 1;
+        return Math.max(150, prev - decrease); // Don't go below 150
+      });
+    }, Math.random() * 30000 + 30000); // 30-60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,6 +33,16 @@ const BookGiveaway = () => {
     }));
     // Clear error when user starts typing
     if (error) setError('');
+    
+    // Real-time email validation
+    if (name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (value.length === 0) {
+        setEmailValid(null);
+      } else {
+        setEmailValid(emailRegex.test(value));
+      }
+    }
   };
 
   const validateForm = () => {
@@ -140,7 +165,7 @@ const BookGiveaway = () => {
                 <span className="text-2xl">⚡</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Limited Edition</h3>
-              <p className="text-gray-600">Only 198 copies available - first come, first served</p>
+              <p className="text-gray-600">Only <span className="font-bold text-red-600">{copiesRemaining}</span> copies remaining - first come, first served</p>
             </div>
             
             <div className="text-center p-6 bg-white rounded-lg shadow-lg">
@@ -180,16 +205,39 @@ const BookGiveaway = () => {
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    placeholder="Enter your email address"
-                    disabled={isSubmitting}
-                  />
+                  <div className="relative">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`w-full px-4 py-3 pr-10 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                        emailValid === true ? 'border-green-300 bg-green-50' : 
+                        emailValid === false ? 'border-red-300 bg-red-50' : 
+                        'border-gray-300'
+                      }`}
+                      placeholder="Enter your email address"
+                      disabled={isSubmitting}
+                    />
+                    {emailValid === true && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <svg className="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                    {emailValid === false && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <svg className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  {emailValid === false && (
+                    <p className="mt-1 text-sm text-red-600">Please enter a valid email address</p>
+                  )}
                 </div>
 
                 {error && (
