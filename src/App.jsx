@@ -35,6 +35,8 @@ const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
+const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -159,6 +161,10 @@ const App = () => {
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/command-center" element={<CommandCenter />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        
+        {/* Book Giveaway Routes */}
+        <Route path="/book-giveaway" element={<BookGiveaway />} />
+        <Route path="/book-giveaway-thank-you" element={<BookGiveawayThankYou />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
