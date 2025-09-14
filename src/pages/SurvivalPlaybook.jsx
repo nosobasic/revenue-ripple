@@ -130,11 +130,11 @@ const SurvivalPlaybook = () => {
             <div className="mb-8">
               <div className="inline-block bg-white rounded-lg shadow-xl p-6">
                 <img 
-                  src="/assets/downloads/The Survival Systems Playbook.pdf" 
+                  src="/assets/images/images/survival-playbook-cover.png" 
                   alt="The Survival Systems Playbook" 
                   className="w-48 h-64 object-cover rounded-lg shadow-lg"
                   onError={(e) => {
-                    // Fallback to a placeholder if the PDF preview doesn't work
+                    // Fallback to a placeholder if the image doesn't load
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'flex';
                   }}
