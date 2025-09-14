@@ -130,7 +130,7 @@ const SurvivalPlaybook = () => {
             <div className="mb-8">
               <div className="inline-block bg-white rounded-lg shadow-xl p-6">
                 <img 
-                  src="/assets/images/images/survival-playbook-cover.png" 
+                  src="/assets/images/images/money-models.jpeg" 
                   alt="The Survival Systems Playbook" 
                   className="w-48 h-64 object-cover rounded-lg shadow-lg"
                   onError={(e) => {
