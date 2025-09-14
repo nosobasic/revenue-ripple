@@ -37,6 +37,8 @@ const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
 const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
+const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
+const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -165,6 +167,10 @@ const App = () => {
         {/* Book Giveaway Routes */}
         <Route path="/book-giveaway" element={<BookGiveaway />} />
         <Route path="/book-giveaway-thank-you" element={<BookGiveawayThankYou />} />
+        
+        {/* Survival Playbook Routes */}
+        <Route path="/survival-playbook" element={<SurvivalPlaybook />} />
+        <Route path="/thank-you-survival-playbook" element={<ThankYouSurvivalPlaybook />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
