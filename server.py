@@ -719,7 +719,7 @@ def survival_playbook_submission():
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
 def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
-    """Add survival playbook lead to GetResponse master list with survival-playbook tag"""
+    """Add survival playbook lead to GetResponse master list - simplified like book giveaway"""
     api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
     
     headers = {
@@ -733,81 +733,25 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
         print("❌ Could not get GetResponse campaign ID")
         return
     
+    # Simple body like book giveaway - just email, campaign, and name
+    # We'll add the tag in the name to identify survival playbook leads
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": name,
-        "tags": ["survival-playbook"],
-        "customFieldValues": [
-            {
-                "customFieldId": "source",
-                "value": [source]
-            },
-            {
-                "customFieldId": "utm_source", 
-                "value": [utm_source]
-            },
-            {
-                "customFieldId": "utm_medium",
-                "value": [utm_medium]
-            },
-            {
-                "customFieldId": "utm_campaign",
-                "value": [utm_campaign]
-            },
-            {
-                "customFieldId": "utm_term",
-                "value": [utm_term]
-            },
-            {
-                "customFieldId": "utm_content",
-                "value": [utm_content]
-            }
-        ]
+        "name": f"{name} (Survival Playbook)"
     }
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
         if response.status_code == 202:
-            print(f"✅ Successfully added {email} to GetResponse with survival-playbook tag")
+            print(f"✅ Successfully added {email} to GetResponse (Survival Playbook)")
         elif response.status_code == 409:
-            print(f"⚠️ Contact {email} already exists in GetResponse - updating tags")
-            # Try to update existing contact with new tag
-            update_contact_tags(email, ["survival-playbook"])
+            print(f"⚠️ Contact {email} already exists in GetResponse")
         else:
             print(f"❌ GetResponse error {response.status_code}: {response.text}")
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
-def update_contact_tags(email, tags):
-    """Update existing contact with new tags"""
-    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
-    
-    headers = {
-        "X-Auth-Token": f"api-key {api_key}",
-        "Content-Type": "application/json"
-    }
-    
-    try:
-        # First, get the contact ID
-        response = requests.get(f"https://api.getresponse.com/v3/contacts?email={email}", headers=headers)
-        if response.status_code == 200:
-            contacts = response.json()
-            if contacts:
-                contact_id = contacts[0]['contactId']
-                
-                # Update the contact with new tags
-                update_body = {
-                    "tags": tags
-                }
-                update_response = requests.post(f"https://api.getresponse.com/v3/contacts/{contact_id}/tags", 
-                                              json=update_body, headers=headers)
-                if update_response.status_code == 204:
-                    print(f"✅ Successfully updated tags for {email}")
-                else:
-                    print(f"❌ Failed to update tags: {update_response.status_code} - {update_response.text}")
-    except Exception as e:
-        print(f"❌ Failed to update contact tags: {str(e)}")
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
