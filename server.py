@@ -619,13 +619,13 @@ def add_book_giveaway_to_getresponse(email, name):
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": name
+        "name": f"{name} (Book Giveaway)"
     }
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
         if response.status_code == 202:
-            print(f"✅ Successfully added {email} to GetResponse master list")
+            print(f"✅ Successfully added {email} to GetResponse (Book Giveaway)")
         elif response.status_code == 409:
             print(f"⚠️ Contact {email} already exists in GetResponse")
         else:
