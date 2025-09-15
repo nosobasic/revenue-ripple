@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import VideoPlayer from '../components/VideoPlayer';
 
 const BookGiveawayThankYou = () => {
   const [submissionData, setSubmissionData] = useState(null);
@@ -77,6 +78,33 @@ const BookGiveawayThankYou = () => {
               You've successfully claimed your FREE copy of <strong>$100M Money Models</strong> by Alex Hormozi. 
               Your book is ready for pickup - just cover the shipping costs!
             </p>
+          </div>
+
+          {/* Thank You Video Section */}
+          <div className="bg-white rounded-2xl shadow-2xl p-8 mb-12">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                A Personal Message for You
+              </h2>
+              <p className="text-lg text-gray-600">
+                Thank you for your interest! Please watch this quick message, then click the link below to get your free book.
+              </p>
+            </div>
+            
+            <div className="max-w-4xl mx-auto">
+              <VideoPlayer 
+                video={{ 
+                  vimeoId: "1118772549"
+                }}
+                title="Thank You Message"
+              />
+            </div>
+            
+            <div className="text-center mt-6">
+              <p className="text-lg text-gray-700 font-semibold">
+                After watching the video above, click the button below to get your free book!
+              </p>
+            </div>
           </div>
 
           {/* Book Redemption Section */}
