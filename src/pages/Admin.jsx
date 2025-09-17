@@ -383,55 +383,57 @@ const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFil
           </button>
         </div>
       </div>
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Member Since</th>
-            <th>Earnings</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>
-                <select
-                  value={user.status}
-                  onChange={e => handleStatusChange(user.id, e.target.value)}
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </td>
-              <td>{user.memberSince}</td>
-              <td>{user.earnings}</td>
-              <td>
-                <select
-                  value={user.role}
-                  onChange={e => handleRoleChange(user.id, e.target.value)}
-                >
-                  <option value="member">Member</option>
-                  <option value="affiliate">Affiliate</option>
-                  <option value="reseller">Reseller</option>
-                  <option value="pro_reseller">Pro Reseller</option>
-                </select>
-              </td>
-              <td>
-                <div className="user-actions">
-                  <button className="action-btn edit-btn" onClick={() => onEditUser(user)}>Edit</button>
-                  <button className="action-btn delete-btn">Delete</button>
-                </div>
-              </td>
+      <div className="table-wrapper">
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Member Since</th>
+              <th>Earnings</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  <select
+                    value={user.status}
+                    onChange={e => handleStatusChange(user.id, e.target.value)}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </td>
+                <td>{user.memberSince}</td>
+                <td>{user.earnings}</td>
+                <td>
+                  <select
+                    value={user.role}
+                    onChange={e => handleRoleChange(user.id, e.target.value)}
+                  >
+                    <option value="member">Member</option>
+                    <option value="affiliate">Affiliate</option>
+                    <option value="reseller">Reseller</option>
+                    <option value="pro_reseller">Pro Reseller</option>
+                  </select>
+                </td>
+                <td>
+                  <div className="user-actions">
+                    <button className="action-btn edit-btn" onClick={() => onEditUser(user)}>Edit</button>
+                    <button className="action-btn delete-btn">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </>
 );
@@ -1521,6 +1523,8 @@ const Admin = () => {
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   // DevOps API Key state and generator
   const [apiKey, setApiKey] = useState('');
   const [webhookSecret, setWebhookSecret] = useState('');
@@ -1553,6 +1557,24 @@ const Admin = () => {
     }
     setGeneratingKeys(false);
   };
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [location.pathname, isMobile]);
 
   // Debug log to help trace admin access issues
   useEffect(() => {
@@ -1797,8 +1819,27 @@ const Admin = () => {
 
   return (
     <div className="admin-layout">
+      {/* Mobile Menu Toggle */}
+      {isMobile && (
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? '✕' : '☰'}
+        </button>
+      )}
+
+      {/* Mobile Overlay */}
+      {isMobile && isMobileMenuOpen && (
+        <div 
+          className="mobile-overlay visible"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${isMobile ? (isMobileMenuOpen ? 'mobile-visible' : 'mobile-hidden') : ''}`}>
         <div className="admin-logo">
           Revenue Ripple
         </div>
@@ -1854,7 +1895,7 @@ const Admin = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="admin-main">
+      <main className={`admin-main ${isMobile ? 'mobile-full' : ''}`}>
         <Routes>
           <Route path="/" element={
             <>
