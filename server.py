@@ -27,7 +27,6 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
-<<<<<<< HEAD
 
 # --- Robust CORS configuration ---
 # ALLOWED_ORIGINS supports comma-separated values and wildcard pattern like https://*.vercel.app
@@ -89,9 +88,6 @@ def cors_test():
         'origin': request.headers.get('Origin'),
         'request_headers': {k: v for k, v in request.headers.items()}
     })
-=======
-CORS(app, origins="*")
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -99,34 +95,6 @@ if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
 
-<<<<<<< HEAD
-=======
-app.register_blueprint(ai_assistant_bp)
-
-@app.route('/', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
-
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-user-role')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    return response
-
-@app.route('/create-payment-intent', methods=['POST'])
-def create_payment():
-    try:
-        intent = stripe.PaymentIntent.create(
-            amount=4700,  # $47.00 in cents
-            currency='usd',
-            automatic_payment_methods={'enabled': True},
-        )
-        return jsonify({'clientSecret': intent.client_secret})
-    except Exception as e:
-        return jsonify(error=str(e)), 403
-
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 @app.route('/create-tripwire-session', methods=['POST'])
 def create_tripwire_session():
     try:
@@ -285,7 +253,6 @@ endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 @app.route('/webhook', methods=['POST'])
 def stripe_webhook():
-<<<<<<< Current (Your changes)
     payload = request.data
     sig_header = request.headers.get('stripe-signature')
 
@@ -313,10 +280,24 @@ def stripe_webhook():
 
             if product == "digital_marketing_domination_book":
                 process_tripwire_purchase(customer_email, amount_total, referrer_username)
-                
+
             elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
                 process_subscription_purchase(customer_email, amount_total, referrer_username, product)
-            
+
+            elif product == 'founders_annual':
+                print(f"Founders annual by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+                try:
+                    if supabase:
+                        supabase.rpc('increment_founders_sold').execute()
+                        supabase.table('founder_members').upsert({
+                            'email': customer_email,
+                            'badge': 'founder',
+                            'status': 'active',
+                        }).execute()
+                        add_contact_to_getresponse(customer_email, 'founder')
+                except Exception as e:
+                    print(f"⚠️ Founders post-purchase error: {e}")
+
             else:
                 print(f"⚠️ Unknown product type: {product}")
 
@@ -355,62 +336,7 @@ def stripe_webhook():
             print(f"❌ Error processing failed payment: {e}")
             log_webhook_error(event, str(e))
 
-        elif product == 'founders_annual':
-            print(f"Founders annual by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
-            try:
-                if supabase:
-                    # increment sold_count and enforce cap inside DB function
-                    supabase.rpc('increment_founders_sold').execute()
-                    supabase.table('founder_members').upsert({
-                        'email': customer_email,
-                        'badge': 'founder',
-                        'status': 'active',
-                    }).execute()
-                    add_contact_to_getresponse(customer_email, 'founder')
-            except Exception as e:
-                print(f"⚠️ Founders post-purchase error: {e}")
-
     return jsonify({'status': 'success'})
-=======
-	payload = request.data
-	sig_header = request.headers.get('stripe-signature')
-
-	try:
-		event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-	except stripe.error.SignatureVerificationError:
-		return abort(400)
-
-	if event['type'] == 'checkout.session.completed':
-		session = event['data']['object']
-		referrer_username = session['metadata'].get('referrer_username')
-		customer_email = session['customer_details']['email']
-		amount_total = session['amount_total'] / 100
-
-		product = session['metadata'].get('product')
-
-		if product == "digital_marketing_domination_book":
-			print(f"Tripwire bought by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
-			log_tripwire_purchase_to_supabase(customer_email, amount_total, referrer_username)
-			add_contact_to_getresponse(customer_email, "tripwire")
-			if referrer_username and referrer_username != 'none':
-				log_commission(referrer_username, customer_email, "tripwire", amount_total)
-
-		elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
-			tier = product.replace("_subscription", "")
-			print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
-			log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
-			add_contact_to_getresponse(customer_email, tier)
-			if referrer_username and referrer_username != 'none':
-				log_commission(referrer_username, customer_email, tier, amount_total)
-			if product == "membership_subscription":
-				set_user_role(customer_email, "member")
-			elif product == "reseller_subscription":
-				set_user_role(customer_email, "reseller")
-			elif product == "pro_reseller_subscription":
-				set_user_role(customer_email, "pro_reseller")
-
-	return jsonify({'status': 'success'})
->>>>>>> Incoming (Background Agent changes)
 
 # Helper functions for webhook processing
 def log_webhook_event(event):
@@ -515,13 +441,8 @@ def update_webhook_processed(customer_email, event_type):
         print(f"❌ Failed to mark webhook as processed: {e}")
 
 def add_contact_to_getresponse(email, tag):
-<<<<<<< HEAD
 	api_key = os.getenv("GETRESPONSE_API_KEY")
 	campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
-=======
-    api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
-    campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
 	headers = {
 		"X-Auth-Token": f"api-key {api_key}",

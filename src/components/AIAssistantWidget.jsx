@@ -165,30 +165,12 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       setMessages(prev => [...prev, aiMessage]);
       
     } catch (error) {
-<<<<<<< HEAD
       console.debug('Ripple API unreachable or error:', error);
       setApiUnreachable(true);
-=======
-      console.error('AI Assistant error:', error);
-      
-      let errorText = "I'm sorry, I'm experiencing some technical difficulties. Please try again in a moment, or contact support if the issue persists.";
-      
-      // Provide more specific error messages based on the error type
-      if (error.message.includes('403')) {
-        errorText = "I'm not authorized to help you right now. Please make sure you're logged in with the correct permissions.";
-      } else if (error.message.includes('404')) {
-        errorText = "The AI service is currently unavailable. Please try again later or contact support.";
-      } else if (error.message.includes('503')) {
-        errorText = "The AI service is temporarily unavailable. Please try again in a few moments.";
-      } else if (error.message.includes('OpenAI API key not configured')) {
-        errorText = "The AI service is not properly configured. Please contact support.";
-      }
-      
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       const errorMessage = {
         id: Date.now() + 1,
         from: 'ai',
-        text: errorText,
+        text: "I'm sorry, I'm experiencing some technical difficulties. Please try again in a moment, or contact support if the issue persists.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);

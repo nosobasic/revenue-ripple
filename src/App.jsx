@@ -35,17 +35,13 @@ const DFY = lazy(() => import('./pages/DFY'));
 const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
-<<<<<<< HEAD
 const FoundersCheckout = lazy(() => import('./pages/FoundersCheckout'));
 const FoundersWaitlist = lazy(() => import('./pages/FoundersWaitlist'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-=======
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
 const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -173,26 +169,24 @@ const App = () => {
         <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-<<<<<<< HEAD
-                 {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
-           <>
-             <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
-             <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
-           </>
-         )}
-         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-=======
-        <Route path="/command-center" element={<CommandCenter />} />
+        {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
+          <>
+            <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
+            <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+          </>
+        )}
+        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+
+        {/* Public utility routes */}
         <Route path="/reset-password" element={<ResetPassword />} />
-        
+
         {/* Book Giveaway Routes */}
         <Route path="/book-giveaway" element={<BookGiveaway />} />
         <Route path="/book-giveaway-thank-you" element={<BookGiveawayThankYou />} />
-        
+
         {/* Survival Playbook Routes */}
         <Route path="/survival-playbook" element={<SurvivalPlaybook />} />
         <Route path="/thank-you-survival-playbook" element={<ThankYouSurvivalPlaybook />} />
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
