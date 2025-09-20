@@ -66,6 +66,13 @@ const Dashboard = () => {
     }
   }, [user, navigate]);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   // Check for first-time user onboarding
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('hasOnboarded');
@@ -106,6 +113,7 @@ const Dashboard = () => {
     }, 1000);
   }, []);
 
+<<<<<<< HEAD
   // Fetch Insight of the Day for dashboard widget when feature flag enabled
   useEffect(() => {
     if (import.meta.env.VITE_USE_FLASK_INSIGHTS !== 'true') return;
@@ -141,6 +149,30 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+=======
+  // Fetch all course progress for the user
+  const fetchAllProgress = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('user_progress')
+      .select('course_id, percent_done')
+      .eq('user_id', user.id);
+    if (error) {
+      setError('Failed to fetch progress');
+      return;
+    }
+    // Map course_id to percent_done
+    const progressMap = {};
+    if (data) {
+      data.forEach(row => {
+        progressMap[row.course_id] = row.percent_done;
+      });
+    }
+    setCourseProgress(progressMap);
+  };
+
+  useEffect(() => {
+>>>>>>> main
     fetchAllProgress();
   }, [user]);
 
@@ -175,7 +207,6 @@ const Dashboard = () => {
           { to: '/support', label: 'Support', icon: <FaUserTie /> }
         ]}
       />
-      <TestimonialCarousel />
       <AIAssistantWidget />
 
       {/* Smart Notification Banner */}
@@ -195,7 +226,11 @@ const Dashboard = () => {
           left: 0,
           right: 0,
           bottom: 0,
+<<<<<<< HEAD
           background: 'url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+=======
+          background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+>>>>>>> main
           opacity: 0.3
         }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -638,6 +673,7 @@ const Dashboard = () => {
 
           {/* Side Content - Right Side */}
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
+<<<<<<< HEAD
             {/* Insight of the Day Card (sidebar) */}
             {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
               <div style={{ marginBottom: '2rem' }} className="p-4 bg-white rounded border">
@@ -651,6 +687,8 @@ const Dashboard = () => {
               </div>
             )}
 
+=======
+>>>>>>> main
             {/* Smart Upsell Banner */}
             <div style={{
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -1254,6 +1292,10 @@ const Dashboard = () => {
         </div>
       </div>
       )}
+      
+      {/* Testimonials at the bottom */}
+      <TestimonialCarousel />
+      
       {showOnboarding && (
         <OnboardingModal
           onComplete={handleOnboardingComplete}
