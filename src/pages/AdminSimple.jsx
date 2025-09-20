@@ -492,7 +492,6 @@ const AdminSimple = () => {
               </div>
               
               {users.length > 0 ? (
-<<<<<<< HEAD
                 <table className="user-table">
                   <thead>
                     <tr>
@@ -515,7 +514,6 @@ const AdminSimple = () => {
                         <td>
                           <button onClick={() => handleEditUser(user)} style={{ padding: '4px 8px', fontSize: '12px' }}>Edit</button>
                         </td>
-=======
                 <div className="table-wrapper">
                   <table className="user-table">
                     <thead>
@@ -525,7 +523,6 @@ const AdminSimple = () => {
                         <th>Role</th>
                         <th>Status</th>
                         <th>Member Since</th>
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                       </tr>
                     </thead>
                     <tbody>

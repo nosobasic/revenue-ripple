@@ -1,21 +1,17 @@
 import { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthService } from '../services/authService';
 import Navbar from '../components/Navbar';
 import '../pages.css';
-=======
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 import '../pages.css';
 import Navbar from '../components/Navbar';
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-<<<<<<< HEAD
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -35,7 +31,6 @@ export default function ResetPassword() {
     };
 
     checkSession();
-=======
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -77,13 +72,11 @@ export default function ResetPassword() {
     };
 
     handleAuthCallback();
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
   }, []);
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
-<<<<<<< HEAD
     setLoading(true);
 
     // Validate passwords
@@ -114,7 +107,6 @@ export default function ResetPassword() {
     } catch (error) {
       console.error('Reset password error:', error);
       setError(error.message || 'Failed to reset password. Please try again.');
-=======
     setMessage('');
 
     // Validation
@@ -153,13 +145,11 @@ if(data.user){
     } catch (err) {
         console.log("Eroorrr", err)
       setError(err.message || 'Failed to update password.');
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
     } finally {
       setLoading(false);
     }
   };
 
-<<<<<<< HEAD
   if (success) {
     return (
       <div className="auth-container">
@@ -176,14 +166,11 @@ if(data.user){
     );
   }
 
-=======
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
   return (
     <div className="auth-container">
       <Navbar />
       <div className="auth-box">
         <div className="auth-header">
-<<<<<<< HEAD
           <h2 className="auth-title">Set New Password</h2>
           <p className="auth-subtitle">
             Enter your new password below
@@ -201,7 +188,6 @@ if(data.user){
             <label htmlFor="new-password">
               New Password
             </label>
-=======
           <h2 className="auth-title">Reset your password</h2>
         </div>
 
@@ -211,41 +197,33 @@ if(data.user){
 
           <div className="form-group">
             <label htmlFor="new-password">New Password</label>
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
             <input
               id="new-password"
               name="newPassword"
               type="password"
               required
               className="form-input"
-<<<<<<< HEAD
               placeholder="Enter new password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               minLength={6}
-=======
               placeholder="New Password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
             />
           </div>
 
           <div className="form-group">
-<<<<<<< HEAD
             <label htmlFor="confirm-password">
               Confirm New Password
             </label>
-=======
             <label htmlFor="confirm-password">Confirm Password</label>
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
             <input
               id="confirm-password"
               name="confirmPassword"
               type="password"
               required
               className="form-input"
-<<<<<<< HEAD
               placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -275,7 +253,6 @@ if(data.user){
     </div>
   );
 }
-=======
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -296,4 +273,3 @@ if(data.user){
     </div>
   );
 }
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63

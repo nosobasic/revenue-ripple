@@ -42,9 +42,6 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
-<<<<<<< HEAD
-      const userData = await AuthService.getUserById(authUser.id);
-=======
       const { data: userData, error } = await supabase
         .from("users")
         .select(
@@ -63,8 +60,6 @@ export function AuthProvider({ children }) {
         });
         return;
       }
-
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       if (userData) {
         setUser(userData);
       } else {
@@ -87,10 +82,6 @@ export function AuthProvider({ children }) {
   async function signup(email, password, firstName, lastName ,role) {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const user = await AuthService.signup(email, password, name);
-      return user;
-=======
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -122,7 +113,6 @@ export function AuthProvider({ children }) {
       }
 
       return authData.user;
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
     } catch (error) {
       throw error;
     } finally {
@@ -133,12 +123,6 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const user = await AuthService.login(email, password);
-      setUser(user);
-      setSession({ user });
-      return user;
-=======
       
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
@@ -146,15 +130,12 @@ export function AuthProvider({ children }) {
           password,
         });
 
-
-
       if (authError) throw authError;
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
       await fetchUserData(authData.user);
       return authData.user;
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
     } catch (error) {
       console.error("login: error", error);
       throw error;
@@ -178,65 +159,47 @@ export function AuthProvider({ children }) {
   }
 
   async function updateUserProfile(profileData) {
-<<<<<<< HEAD
     try {
       if (!user) throw new Error("No user logged in");
-      const updatedUser = await AuthService.updateProfile(user.id, profileData);
-      setUser(updatedUser);
-      return true;
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
-    }
-  }
 
-  async function resetPassword(email) {
-    try {
-      return await AuthService.resetPassword(email);
-    } catch (error) {
-=======
-  try {
-    if (!user) throw new Error("No user logged in");
+      // Prepare data for the users table
+      const updateData = {};
+      if (profileData.name !== undefined) updateData.name = profileData.name;
+      if (profileData.phone !== undefined) updateData.phone = profileData.phone;
+      if (profileData.company !== undefined) updateData.company = profileData.company;
+      if (profileData.bio !== undefined) updateData.bio = profileData.bio;
 
-    // Prepare data for the users table
-    const updateData = {};
-    if (profileData.name !== undefined) updateData.name = profileData.name;
-    if (profileData.phone !== undefined) updateData.phone = profileData.phone;
-    if (profileData.company !== undefined) updateData.company = profileData.company;
-    if (profileData.bio !== undefined) updateData.bio = profileData.bio;
+      console.log('Updating user profile with data:', updateData);
 
-    console.log('Updating user profile with data:', updateData);
-
-    // Handle email update separately if provided
-    if (profileData.email !== undefined && profileData.email !== user.email) {
-      const { error: authError } = await supabase.auth.updateUser({
-        email: profileData.email,
-      });
-      if (authError) {
-        console.error("Error updating auth email:", authError);
-        throw authError;
+      // Handle email update separately if provided
+      if (profileData.email !== undefined && profileData.email !== user.email) {
+        const { error: authError } = await supabase.auth.updateUser({
+          email: profileData.email,
+        });
+        if (authError) {
+          console.error("Error updating auth email:", authError);
+          throw authError;
+        }
+        updateData.email = profileData.email; // Update email in users table as well
       }
-      updateData.email = profileData.email; // Update email in users table as well
-    }
 
-    // Check if there are any fields to update
-    if (Object.keys(updateData).length === 0) {
-      console.log("No changes to update");
-      return true; // No changes to save
-    }
+      // Check if there are any fields to update
+      if (Object.keys(updateData).length === 0) {
+        console.log("No changes to update");
+        return true; // No changes to save
+      }
 
-    console.log("userId====", user.id)
+      console.log("userId====", user.id)
 
-    // Update the user's data in Supabase
-    const r = await supabase
-      .from("users")
-      .update(updateData)
-      .eq("id", user.id);
-    console.log('update response',r)
-    if (r.error) {
-      console.error("Supabase update error:", error);
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
-      throw error;
+      // Update the user's data in Supabase
+      const r = await supabase
+        .from("users")
+        .update(updateData)
+        .eq("id", user.id);
+      console.log('update response',r)
+      if (r.error) {
+        console.error("Supabase update error:", r.error);
+        throw r.error;
     }
 
     // Update the local user state
