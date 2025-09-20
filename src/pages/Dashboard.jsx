@@ -27,8 +27,10 @@ import {
   FaBook, 
   FaChartLine, 
   FaBell,
-  FaRocket
+  FaRocket,
+  FaArrowRight
 } from 'react-icons/fa';
+import { MdDashboard } from 'react-icons/md';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -49,6 +51,13 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   // Check for first-time user onboarding
   useEffect(() => {
@@ -91,27 +100,38 @@ const Dashboard = () => {
   }, []);
 
   // Fetch all course progress for the user
+  const fetchAllProgress = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('user_progress')
+      .select('course_id, percent_done')
+      .eq('user_id', user.id);
+    if (error) {
+      setError('Failed to fetch progress');
+      return;
+    }
+    // Map course_id to percent_done
+    const progressMap = {};
+    if (data) {
+      data.forEach(row => {
+        progressMap[row.course_id] = row.percent_done;
+      });
+    }
+    setCourseProgress(progressMap);
+  };
+
   useEffect(() => {
-    const fetchAllProgress = async () => {
-      if (!user) return;
-      const { data, error } = await supabase
-        .from('user_progress')
-        .select('course_id, percent_done')
-        .eq('user_id', user.id);
-      if (error) {
-        setError('Failed to fetch progress');
-        return;
-      }
-      // Map course_id to percent_done
-      const progressMap = {};
-      if (data) {
-        data.forEach(row => {
-          progressMap[row.course_id] = row.percent_done;
-        });
-      }
-      setCourseProgress(progressMap);
-    };
     fetchAllProgress();
+  }, [user]);
+
+  // Refresh progress when user returns to dashboard
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchAllProgress();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, [user]);
 
   const handleSignOut = async () => {
@@ -135,8 +155,43 @@ const Dashboard = () => {
           { to: '/support', label: 'Support', icon: <FaUserTie /> }
         ]}
       />
-      <TestimonialCarousel />
       <AIAssistantWidget />
+
+      {/* Smart Notification Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+        color: 'white',
+        padding: '1rem 2rem',
+        textAlign: 'center',
+        margin: '0 2rem 1rem',
+        borderRadius: '8px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          opacity: 0.3
+        }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <strong>🎯 Pro Tip:</strong> Users with AI Visibility Tracking report 73% more referrals. 
+          <Link 
+            to="/ai-visibility-tracker" 
+            style={{ 
+              color: 'white', 
+              textDecoration: 'underline', 
+              fontWeight: 600,
+              marginLeft: '0.5rem'
+            }}
+          >
+            Check your AI visibility now →
+          </Link>
+        </div>
+      </div>
 
       {/* User Intent Welcome Message */}
       {userIntent && !showOnboarding && (
@@ -235,7 +290,7 @@ const Dashboard = () => {
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
-                      <p>To join, just click here.</p>
+                      <p>To join, just <Link to="/affiliate/sign-up" className="cta-link" style={{ display: 'inline' }}>click here</Link>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
                       <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
@@ -319,9 +374,9 @@ const Dashboard = () => {
                   {expandedSection === 'digital-email' && (
                     <div className="course-details">
                       <p>Master email marketing in record time with our comprehensive guide. Learn everything from list building to advanced automation in one complete package.</p>
-                      <Link to="/assets/downloads/digital-marketing.pdf" className="cta-link" target="_blank" rel="noopener noreferrer" download>
+                      <a href="/assets/downloads/digital-marketing.pdf" className="cta-link" target="_blank" rel="noopener noreferrer" download>
                         <span><FaBook style={{ marginRight: '8px' }} /> Get Complete Guide →</span>
-                      </Link>
+                      </a>
                     </div>
                   )}
                 </div>
@@ -373,7 +428,7 @@ const Dashboard = () => {
                 >
                   <h3>
                     AI Essentials
-                    <span className={`chevron ${expandedSection === 'ai-essentials' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'ai-essentials' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                    <span className={`chevron ${expandedSection === 'ai-essentials' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                     <div style={{ width: `${courseProgress['ai-essentials'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
@@ -405,7 +460,7 @@ const Dashboard = () => {
                 >
                   <h3>
                     AI Agent Fundamentals
-                    <span className={`chevron ${expandedSection === 'ai-agent-fundamentals' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'ai-agent-fundamentals' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                    <span className={`chevron ${expandedSection === 'ai-agent-fundamentals' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                     <div style={{ width: `${courseProgress['ai-agent-fundamentals'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
@@ -437,7 +492,7 @@ const Dashboard = () => {
                 >
                   <h3>
                     Prompt Engineering
-                    <span className={`chevron ${expandedSection === 'prompt-engineering' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'prompt-engineering' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                    <span className={`chevron ${expandedSection === 'prompt-engineering' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                     <div style={{ width: `${courseProgress['prompt-engineering'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
@@ -512,6 +567,111 @@ const Dashboard = () => {
 
           {/* Side Content - Right Side */}
           <div className="side-content w-full md:w-1/3 mt-8 md:mt-0">
+            {/* Smart Upsell Banner */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <FaRocket style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                🚀 Boost Your Visibility
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Are you invisible to AI? Track your business across ChatGPT, Perplexity & more
+              </p>
+              <Link
+                to="/ai-visibility-tracker"
+                style={{
+                  background: 'white',
+                  color: '#667eea',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                Start Free Trial <FaArrowRight />
+              </Link>
+            </div>
+
+            {/* Command Center Promo */}
+            <div style={{
+              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <MdDashboard style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                ⚡ Business Command Center
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Monitor all your business systems and catch issues before they cost you money
+              </p>
+              <Link
+                to="/command-center"
+                style={{
+                  background: 'white',
+                  color: '#059669',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                View Demo <FaArrowRight />
+              </Link>
+            </div>
+
+            {/* Affiliate Earnings Promo */}
+            <div style={{
+              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+              borderRadius: '12px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              color: 'white',
+              textAlign: 'center'
+            }}>
+              <FaMoneyBillWave style={{ fontSize: '2rem', marginBottom: '0.75rem' }} />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+                💰 Start Earning Monthly
+              </h3>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem', opacity: 0.9 }}>
+                Get $47/month for every referral with our 100% commission affiliate program
+              </p>
+              <Link
+                to="/special"
+                style={{
+                  background: 'white',
+                  color: '#dc2626',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                Start Earning <FaArrowRight />
+              </Link>
+            </div>
+            
             <h2 className="section-overview-title mb-4 mt-2">Additional Tools & Advanced Training</h2>
             <div className="grid-layout">
               {/* Building Section */}
@@ -531,10 +691,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Website Design
-                      <span className={`chevron ${expandedSection === 'building-website' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'building-website' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'building-website' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '35%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['website-design'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'building-website' && (
                       <div className="course-details">
@@ -556,10 +716,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Funnel Building
-                      <span className={`chevron ${expandedSection === 'building-funnel' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'building-funnel' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'building-funnel' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '65%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['funnel-building'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'building-funnel' && (
                       <div className="course-details">
@@ -581,10 +741,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Outsourcing
-                      <span className={`chevron ${expandedSection === 'building-wordpress' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'building-wordpress' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'building-wordpress' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '15%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['outsourcing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'building-wordpress' && (
                       <div className="course-details">
@@ -618,10 +778,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Automation
-                      <span className={`chevron ${expandedSection === 'marketing-automation' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-automation' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-automation' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '30%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['automation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-automation' && (
                       <div className="course-details">
@@ -642,10 +802,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Banner Ads
-                      <span className={`chevron ${expandedSection === 'marketing-banner-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-banner-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-banner-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '40%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['banner-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-banner-ads' && (
                       <div className="course-details">
@@ -666,10 +826,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Ads
-                      <span className={`chevron ${expandedSection === 'marketing-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '15%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-ads' && (
                       <div className="course-details">
@@ -690,10 +850,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Email Marketing
-                      <span className={`chevron ${expandedSection === 'marketing-email' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-email' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-email' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '60%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['email-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-email' && (
                       <div className="course-details">
@@ -714,10 +874,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Geo Targeting
-                      <span className={`chevron ${expandedSection === 'marketing-geo-targeting' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-geo-targeting' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-geo-targeting' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '22%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['geo-targeting'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-geo-targeting' && (
                       <div className="course-details">
@@ -738,10 +898,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       Lead Generation
-                      <span className={`chevron ${expandedSection === 'marketing-lead-generation' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-lead-generation' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-lead-generation' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '70%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['lead-generation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-lead-generation' && (
                       <div className="course-details">
@@ -762,10 +922,10 @@ const Dashboard = () => {
                   >
                     <h3>
                       LinkedIn Advertising
-                      <span className={`chevron ${expandedSection === 'marketing-linkedin-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-linkedin-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                      <span className={`chevron ${expandedSection === 'marketing-linkedin-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '33%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['linkedin-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-linkedin-ads' && (
                       <div className="course-details">
@@ -789,7 +949,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-messenger' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-messenger' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '40%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['messenger-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-messenger' && (
                       <div className="course-details">
@@ -813,7 +973,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-newsfeed-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-newsfeed-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '18%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['newsfeed-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-newsfeed-ads' && (
                       <div className="course-details">
@@ -837,7 +997,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-ppc' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-ppc' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '55%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['paid-traffic'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-ppc' && (
                       <div className="course-details">
@@ -861,7 +1021,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-pinterest' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-pinterest' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '20%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['pinterest-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-pinterest' && (
                       <div className="course-details">
@@ -885,7 +1045,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-search-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-search-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '12%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['search-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-search-ads' && (
                       <div className="course-details">
@@ -909,7 +1069,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-social' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-social' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '80%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['social-media-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-social' && (
                       <div className="course-details">
@@ -933,7 +1093,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-twitter' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-twitter' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '10%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['twitter-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'marketing-twitter' && (
                       <div className="course-details">
@@ -967,7 +1127,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'fine-seo' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'fine-seo' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '75%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['seo'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'fine-seo' && (
                       <div className="course-details">
@@ -991,7 +1151,7 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'fine-split-testing' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'fine-split-testing' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                      <div style={{ width: '25%', height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+                      <div style={{ width: `${courseProgress['split-testing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
                     </div>
                     {expandedSection === 'fine-split-testing' && (
                       <div className="course-details">
@@ -1010,6 +1170,10 @@ const Dashboard = () => {
         </div>
       </div>
       )}
+      
+      {/* Testimonials at the bottom */}
+      <TestimonialCarousel />
+      
       {showOnboarding && (
         <OnboardingModal
           onComplete={handleOnboardingComplete}
