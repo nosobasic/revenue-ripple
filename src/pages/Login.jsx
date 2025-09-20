@@ -16,7 +16,7 @@ export default function Login() {
   const { login, resetPassword } = useAuth();
 
   // Get the intended redirect path, default to dashboard
-  const from = location.state?.from?.pathname || '/dashboard';
+  const from =  '/dashboard' || location.state?.from?.pathname  ;
 
   const handleLogin = async (e) => {
     e.preventDefault();

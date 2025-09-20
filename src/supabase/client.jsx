@@ -18,9 +18,9 @@ export const supabase = createClient(supabaseUrl || fallbackUrl, supabaseAnonKey
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true,
+    detectSessionInUrl: false,
     storageKey: 'revenue-ripple-auth-token',
-    flowType: 'pkce', // Use PKCE flow for better security
+    // flowType: 'pkce', // Use PKCE flow for better security
     storage: {
       getItem: (key) => {
         try {

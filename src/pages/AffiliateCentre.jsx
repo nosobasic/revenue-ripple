@@ -17,7 +17,7 @@ export default function AffiliateCentre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const baseUrl = "http://localhost:5173/affiliate/sign-up";
   const affiliateLink = `${baseUrl}/?ref=${user?.id}`;
 
   const copyAffiliateLink = () => {

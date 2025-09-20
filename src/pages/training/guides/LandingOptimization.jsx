@@ -71,7 +71,7 @@ const LandingOptimization = () => {
                   </ul>
 
                   <figure className="guide-image-block">
-                    <img src="/assets/images/images/Landing-Page-Opt1.png" alt="Landing Page Benefits Example" className="guide-image" />
+                    <img src="/assets/images/Landing-Page-Opt1.png" alt="Landing Page Benefits Example" className="guide-image" />
                     <figcaption>Example of effective benefit presentation on a landing page.</figcaption>
                   </figure>
                 </div>

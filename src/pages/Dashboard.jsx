@@ -73,6 +73,7 @@ const Dashboard = () => {
     }
   }, [user, navigate]);
 
+
   // Check for first-time user onboarding
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('hasOnboarded');
@@ -314,6 +315,7 @@ const Dashboard = () => {
         </div>
       ) : (
       <div className="dashboard">
+<<<<<<< HEAD
                  {/* Header */}
          <header className="dashboard-header">
            <div className="container">
@@ -339,6 +341,15 @@ const Dashboard = () => {
              )}
            </div>
          </header>
+=======
+        {/* Header */}
+        <header className="dashboard-header">
+          <div className="container">
+            <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
+            <p className="dashboard-welcome">Hello, Good To See You {user?.name?.toUpperCase()}</p>
+          </div>
+        </header>
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}
@@ -816,7 +827,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'building-website' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['website-design'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['website-design'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'building-website' && (
                       <div className="course-details">
@@ -841,7 +856,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'building-funnel' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['funnel-building'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['funnel-building'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'building-funnel' && (
                       <div className="course-details">
@@ -866,7 +885,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'building-wordpress' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['outsourcing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['outsourcing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'building-wordpress' && (
                       <div className="course-details">
@@ -903,7 +926,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-automation' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['automation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['automation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-automation' && (
                       <div className="course-details">
@@ -927,7 +954,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-banner-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['banner-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['banner-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-banner-ads' && (
                       <div className="course-details">
@@ -938,6 +969,7 @@ const Dashboard = () => {
                       </div>
                     )}
                   </div>
+<<<<<<< HEAD
                   <div
                     className={`course-item ${expandedSection === 'marketing-ads' ? 'expanded' : ''}`}
                     onClick={() => toggleSection('marketing-ads')}
@@ -976,16 +1008,22 @@ const Dashboard = () => {
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                       <div style={{ width: `${courseProgress['email-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+
+                  <div className="course-item">
+                    <h3>Email Marketing</h3>
+                    <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+                      <div style={{ width: `${courseProgress['email-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
                     </div>
-                    {expandedSection === 'marketing-email' && (
-                      <div className="course-details">
-                        <p>Build and nurture your email list. Master segmentation, automation, and conversion optimization.</p>
-                        <Link to="/courses/email-marketing" className="cta-link">
-                          <span>Start Email Marketing →</span>
-                        </Link>
-                      </div>
-                    )}
+                    <div className="course-details">
+                      <p>Build and nurture your email list. Master segmentation, automation, and conversion optimization.</p>
+                      <Link to="/courses/email-marketing" className="cta-link">
+                        <span>Start Email Marketing →</span>
+                      </Link>
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+                    </div>
                   </div>
+<<<<<<< HEAD
                   <div
                     className={`course-item ${expandedSection === 'marketing-geo-targeting' ? 'expanded' : ''}`}
                     onClick={() => toggleSection('marketing-geo-targeting')}
@@ -1000,15 +1038,19 @@ const Dashboard = () => {
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                       <div style={{ width: `${courseProgress['geo-targeting'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                  <div className="course-item">
+                    <h3>Geo Targeting</h3>
+                    <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+                      <div style={{ width: `${courseProgress['geo-targeting'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
                     </div>
-                    {expandedSection === 'marketing-geo-targeting' && (
-                      <div className="course-details">
-                        <p>Learn how to target your marketing campaigns to specific geographic locations for better results.</p>
-                        <Link to="/courses/geo-targeting" className="cta-link">
-                          <span>Start Geo Targeting Course →</span>
-                        </Link>
-                      </div>
-                    )}
+                    <div className="course-details">
+                      <p>Learn how to target your marketing campaigns to specific geographic locations for better results.</p>
+                      <Link to="/courses/geo-targeting" className="cta-link">
+                        <span>Start Geo Targeting Course →</span>
+                      </Link>
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+                    </div>
                   </div>
                   <div
                     className={`course-item ${expandedSection === 'marketing-lead-generation' ? 'expanded' : ''}`}
@@ -1023,7 +1065,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-lead-generation' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['lead-generation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['lead-generation'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-lead-generation' && (
                       <div className="course-details">
@@ -1047,7 +1093,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-linkedin-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, display: 'inline-block' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['linkedin-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['linkedin-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-linkedin-ads' && (
                       <div className="course-details">
@@ -1071,7 +1121,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-messenger' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-messenger' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['messenger-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['messenger-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-messenger' && (
                       <div className="course-details">
@@ -1095,7 +1149,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-newsfeed-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-newsfeed-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['newsfeed-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['newsfeed-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-newsfeed-ads' && (
                       <div className="course-details">
@@ -1119,7 +1177,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-ppc' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-ppc' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['paid-traffic'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['paid-traffic'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-ppc' && (
                       <div className="course-details">
@@ -1143,7 +1205,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-pinterest' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-pinterest' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['pinterest-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['pinterest-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-pinterest' && (
                       <div className="course-details">
@@ -1167,7 +1233,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-search-ads' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-search-ads' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['search-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['search-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-search-ads' && (
                       <div className="course-details">
@@ -1191,7 +1261,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-social' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-social' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['social-media-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['social-media-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-social' && (
                       <div className="course-details">
@@ -1215,7 +1289,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'marketing-twitter' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-twitter' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['twitter-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['twitter-ads'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'marketing-twitter' && (
                       <div className="course-details">
@@ -1249,7 +1327,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'fine-seo' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'fine-seo' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['seo'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['seo'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'fine-seo' && (
                       <div className="course-details">
@@ -1273,7 +1355,11 @@ const Dashboard = () => {
                       <span className={`chevron ${expandedSection === 'fine-split-testing' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'fine-split-testing' ? 'rotate(180deg)' : 'none' }}>▼</span>
                     </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
+<<<<<<< HEAD
                       <div style={{ width: `${courseProgress['split-testing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+=======
+                      <div style={{ width: `${courseProgress['split-testing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                     </div>
                     {expandedSection === 'fine-split-testing' && (
                       <div className="course-details">

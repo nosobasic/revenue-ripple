@@ -1,7 +1,23 @@
 import { Link } from 'react-router-dom';
 import './checkout.css';
+import { useEffect, useState } from 'react';
+// import { supabase } from '../supabase/client';
 
 export default function ThankYou() {
+  const [status, setStatus] = useState("");
+  const refUserId = localStorage.getItem('affiliate_ref');
+
+  // const commission = (0.5 / 100) * 47;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectStatus = params.get("redirect_status");
+    if (redirectStatus) {
+      setStatus(redirectStatus);
+    }
+  }, []);
+
+  console.log("status====", refUserId)
   return (
     <div className="checkout-container">
       <div className="checkout-content" style={{ textAlign: 'center' }}>

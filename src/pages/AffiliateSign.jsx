@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +17,16 @@ export default function AffiliateSign() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 👇 Grab ref from URL and save to localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    console.log("ref===", ref)
+    if (ref) {
+      localStorage.setItem('affiliate_ref', ref);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,26 +52,31 @@ export default function AffiliateSign() {
         formData.email,
         formData.password,
         formData.firstName,
-        formData.lastName
+        formData.lastName,
+        "affiliate"
       );
+
 
       if (authError) throw authError;
 
-      // Create affiliate profile
-      const { error: profileError } = await supabase
-        .from('users')
-        .update({
-          role: 'affiliate',
-          contact_email: formData.contactEmail,
-          paypal_email: formData.paypal,
-          commission_rate: 50 // Default commission rate
-        })
-        .eq('id', authData.user.id);
+      // // Create affiliate profile
+      // const { error: profileError } = await supabase
+      //   .from('users')
+      //   .update({
+      //     role: 'affiliate',
+      //     contact_email: formData.contactEmail,
+      //     paypal_email: formData.paypal,
+      //     commission_rate: 50 // Default commission rate
+      //   })
+      //   .eq('id', authData.user.id);
 
-      if (profileError) throw profileError;
+      //   console.log("profileError=====",profileError)
+
+      // if (profileError) throw profileError;
 
       // Redirect to special invite page
-      navigate('/special-invite');
+      // alert('Registration successful! Please check your email for verification.');
+      navigate('/checkout');
     } catch (err) {
       setError(err.message);
     } finally {

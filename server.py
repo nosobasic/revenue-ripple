@@ -3,6 +3,7 @@ from flask_cors import CORS
 import stripe
 import os
 import requests
+import time
 
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -26,6 +27,7 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
+<<<<<<< HEAD
 
 # --- Robust CORS configuration ---
 # ALLOWED_ORIGINS supports comma-separated values and wildcard pattern like https://*.vercel.app
@@ -87,6 +89,9 @@ def cors_test():
         'origin': request.headers.get('Origin'),
         'request_headers': {k: v for k, v in request.headers.items()}
     })
+=======
+CORS(app, origins="*")
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -94,6 +99,34 @@ if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
 
+<<<<<<< HEAD
+=======
+app.register_blueprint(ai_assistant_bp)
+
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-user-role')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
+@app.route('/create-payment-intent', methods=['POST'])
+def create_payment():
+    try:
+        intent = stripe.PaymentIntent.create(
+            amount=4700,  # $47.00 in cents
+            currency='usd',
+            automatic_payment_methods={'enabled': True},
+        )
+        return jsonify({'clientSecret': intent.client_secret})
+    except Exception as e:
+        return jsonify(error=str(e)), 403
+
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 @app.route('/create-tripwire-session', methods=['POST'])
 def create_tripwire_session():
     try:
@@ -482,8 +515,13 @@ def update_webhook_processed(customer_email, event_type):
         print(f"❌ Failed to mark webhook as processed: {e}")
 
 def add_contact_to_getresponse(email, tag):
+<<<<<<< HEAD
 	api_key = os.getenv("GETRESPONSE_API_KEY")
 	campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
+=======
+    api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
+    campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
 
 	headers = {
 		"X-Auth-Token": f"api-key {api_key}",
@@ -777,6 +815,249 @@ def sync_commissions_to_devops():
 		})
 	except Exception as e:
 		return jsonify({"error": str(e)}), 500
+
+# Rate limiting storage (in production, use Redis or similar)
+submission_attempts = {}
+
+# Book Giveaway API Endpoint
+@app.route('/api/book-giveaway', methods=['POST', 'GET'])
+def book_giveaway_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Book Giveaway API is running",
+            "method": "GET",
+            "message": "This endpoint accepts POST requests for form submissions"
+        })
+    
+    # Handle POST requests
+    print(f"📥 Book giveaway submission received from {request.remote_addr}")
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Request data: {data}")
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        ip_address = request.remote_addr
+        
+        # Rate limiting: max 3 attempts per IP per hour
+        current_time = time.time()
+        if ip_address in submission_attempts:
+            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
+            if len(attempts) >= 3:
+                return jsonify({"error": "Too many attempts. Please try again later."}), 429
+            submission_attempts[ip_address] = attempts
+        else:
+            submission_attempts[ip_address] = []
+        
+        # Record this attempt
+        submission_attempts[ip_address].append(current_time)
+        
+        # Validate input
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        # Basic email validation
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Check for duplicate submissions (spam prevention)
+        if supabase:
+            try:
+                # Check if email already exists in book giveaway submissions
+                existing = supabase.table("book_giveaway_submissions").select("email").eq("email", email).execute()
+                if existing.data and len(existing.data) > 0:
+                    return jsonify({"error": "This email has already been used to claim a free book"}), 400
+            except Exception as db_error:
+                print(f"Warning: Could not check for duplicates: {db_error}")
+        
+        # Add to GetResponse
+        add_book_giveaway_to_getresponse(email, name)
+        
+        # Log submission to database
+        if supabase:
+            try:
+                submission_data = {
+                    "name": name,
+                    "email": email,
+                    "submitted_at": "now()",
+                    "ip_address": ip_address,
+                    "user_agent": request.headers.get('User-Agent', '')
+                }
+                supabase.table("book_giveaway_submissions").insert(submission_data).execute()
+                print(f"✅ Logged book giveaway submission for {email}")
+            except Exception as db_error:
+                print(f"❌ Failed to log book giveaway submission: {db_error}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Successfully submitted! Redirecting to your free book..."
+        })
+        
+    except Exception as e:
+        print(f"❌ Book giveaway submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def get_getresponse_campaign_id():
+    """Get the campaign ID for the master list from GetResponse"""
+    # Use the campaign ID from environment variable or fallback to the provided one
+    return os.getenv("GETRESPONSE_CAMPAIGN_ID", "50yn9")
+
+def add_book_giveaway_to_getresponse(email, name):
+    """Add book giveaway lead to GetResponse master list"""
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Book Giveaway)"
+    }
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Book Giveaway)")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Survival Playbook API Endpoint
+@app.route('/api/getresponse/survival-playbook', methods=['POST', 'GET'])
+def survival_playbook_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Survival Playbook API is running",
+            "method": "GET",
+            "message": "This endpoint accepts POST requests for form submissions"
+        })
+    
+    # Handle POST requests
+    print(f"📥 Survival playbook submission received from {request.remote_addr}")
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Request data: {data}")
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        source = data.get('source', 'direct')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'survival-playbook')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        ip_address = request.remote_addr
+        
+        # Rate limiting: max 3 attempts per IP per hour
+        current_time = time.time()
+        if ip_address in submission_attempts:
+            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
+            if len(attempts) >= 3:
+                return jsonify({"error": "Too many attempts. Please try again later."}), 429
+            submission_attempts[ip_address] = attempts
+        else:
+            submission_attempts[ip_address] = []
+        
+        # Record this attempt
+        submission_attempts[ip_address].append(current_time)
+        
+        # Validate input
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        # Basic email validation
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with survival-playbook tag
+        add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    "name": name,
+                    "email": email,
+                    "source": source,
+                    "utm_source": utm_source,
+                    "utm_medium": utm_medium,
+                    "utm_campaign": utm_campaign,
+                    "utm_term": utm_term,
+                    "utm_content": utm_content,
+                    "submitted_at": "now()",
+                    "ip_address": ip_address,
+                    "user_agent": request.headers.get('User-Agent', '')
+                }
+                supabase.table("survival_playbook_submissions").insert(submission_data).execute()
+                print(f"✅ Logged survival playbook submission for {email}")
+            except Exception as db_error:
+                print(f"❌ Failed to log survival playbook submission: {db_error}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Successfully submitted! Redirecting to your free guide..."
+        })
+        
+    except Exception as e:
+        print(f"❌ Survival playbook submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add survival playbook lead to GetResponse master list - simplified like book giveaway"""
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Simple body like book giveaway - just email, campaign, and name
+    # We'll add the tag in the name to identify survival playbook leads
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Survival Playbook)"
+    }
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Survival Playbook)")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0', port=5001)

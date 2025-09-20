@@ -13,6 +13,8 @@ const AdminSimple = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const initializationRef = useRef(false);
   const [editUserId, setEditUserId] = useState(null);
   const [editRole, setEditRole] = useState('member');
@@ -23,6 +25,24 @@ const AdminSimple = () => {
   console.log('AdminSimple: User:', user);
   console.log('AdminSimple: AuthLoading:', authLoading);
   console.log('AdminSimple: DataLoaded:', dataLoaded);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close mobile menu when tab changes
+  useEffect(() => {
+    if (isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [activeTab, isMobile]);
 
   useEffect(() => {
     // Only initialize once when we have a confirmed admin user
@@ -230,8 +250,27 @@ const AdminSimple = () => {
 
   return (
     <div className="admin-layout">
+      {/* Mobile Menu Toggle */}
+      {isMobile && (
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? '✕' : '☰'}
+        </button>
+      )}
+
+      {/* Mobile Overlay */}
+      {isMobile && isMobileMenuOpen && (
+        <div 
+          className="mobile-overlay visible"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="admin-sidebar">
+      <aside className={`admin-sidebar ${isMobile ? (isMobileMenuOpen ? 'mobile-visible' : 'mobile-hidden') : ''}`}>
         <div className="admin-logo">
           Revenue Ripple Admin
         </div>
@@ -321,7 +360,7 @@ const AdminSimple = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="admin-main">
+      <main className={`admin-main ${isMobile ? 'mobile-full' : ''}`}>
         {error && (
           <div style={{ 
             background: '#fee2e2', 
@@ -453,6 +492,7 @@ const AdminSimple = () => {
               </div>
               
               {users.length > 0 ? (
+<<<<<<< HEAD
                 <table className="user-table">
                   <thead>
                     <tr>
@@ -475,10 +515,32 @@ const AdminSimple = () => {
                         <td>
                           <button onClick={() => handleEditUser(user)} style={{ padding: '4px 8px', fontSize: '12px' }}>Edit</button>
                         </td>
+=======
+                <div className="table-wrapper">
+                  <table className="user-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Member Since</th>
+>>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {users.slice(0, 20).map((user) => (
+                        <tr key={user.id}>
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>{user.role}</td>
+                          <td>{user.status}</td>
+                          <td>{user.memberSince}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
                   <p>No users loaded. Click "Refresh Users" to load user data.</p>
