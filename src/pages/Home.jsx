@@ -166,7 +166,6 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-<<<<<<< HEAD
           <motion.div 
             className="hero-badge"
             style={{
@@ -195,16 +194,7 @@ export default function Home() {
           </h1>
           
           <p className="hero-subtitle">
-            A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn’t fragile.
-=======
-          <h1 className="hero-title" style={{ lineHeight: '1.2', letterSpacing: '0.5px' }}>
-            Marketing Is Complicated...
-            <span style={{ display: 'block', marginTop: '0.5rem' }}>Revenue Ripple Makes It Easy.</span>
-          </h1>
-          
-          <p className="hero-subtitle" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '1px' }}>
-            As a Member You'll Get Instant Access To The Walkthroughs, "Watch Over Our Shoulder" Videos, Trainings, and Support You Need TO GET MARKETING DONE.
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+            A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn't fragile.
           </p>
           
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -233,12 +223,6 @@ export default function Home() {
         </div>
       </motion.section>
 
-<<<<<<< HEAD
-          {/* Primary CTAs (kept minimal to preserve current feel) */}
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-            <Link
-              to="/checkout"
-=======
       <div className="container">
         <div className="content-section">
           <div className="content-grid">
@@ -567,7 +551,6 @@ export default function Home() {
             <Link 
               to="/checkout" 
               className="cta-button"
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
               style={{
                 background: '#2563eb',
                 color: 'white',
@@ -793,7 +776,6 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-<<<<<<< HEAD
           <h2 style={{ 
             textAlign: 'center', 
             fontSize: '2.5rem', 
@@ -812,7 +794,6 @@ export default function Home() {
           }}>
             Each product is designed to solve specific business challenges. 
             Start with one or combine them for maximum growth.
-=======
           <h2 className="section-title">The Revenue Ripple Affiliate Program</h2>
           <h3 className="section-subtitle">(Unlock a World of Earning Potential—Faster Than You Can Say 'Cha-Ching')</h3>
           
@@ -862,7 +843,6 @@ export default function Home() {
             of the curve. Plus, our exclusive affiliate program means you can earn while you learn and turn 
             your marketing skills into profit! And our experienced team is always here to support you, like having a mentor in your pocket—minus the awkward small talk. Revenue Ripple truly is an unfair advantage for any 
             marketer. So why wait? Join today and take your marketing game to the next level!
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
           </p>
           
           {/* Product Tabs */}
@@ -1163,8 +1143,6 @@ export default function Home() {
         </div>
       </motion.section>
 
-<<<<<<< HEAD
-=======
       {/* No Free Trial Section */}
       <motion.section 
         className="no-free-trial-section"
@@ -1194,7 +1172,6 @@ export default function Home() {
         </div>
       </motion.section>
 
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       {/* Final CTA Section */}
       <motion.section
         style={{
@@ -1205,7 +1182,6 @@ export default function Home() {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-<<<<<<< HEAD
         <div className="container" style={{ textAlign: 'center' }}>
           <h2 style={{
             fontSize: '2.5rem',
@@ -1223,13 +1199,11 @@ export default function Home() {
           }}>
             Join thousands of successful entrepreneurs who have already transformed 
             their businesses with our complete growth ecosystem.
-=======
         <div className="container">
           <h2 className="section-title">Ready to Transform Your Marketing?</h2>
           <p className="cta-description" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
             Join thousands of successful marketers who have already transformed their businesses with Revenue Ripple.
             Start your journey today and get instant access to all our premium features.
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
           </p>
           
           <div style={{

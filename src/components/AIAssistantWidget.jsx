@@ -165,10 +165,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       setMessages(prev => [...prev, aiMessage]);
       
     } catch (error) {
-<<<<<<< HEAD
       console.debug('Ripple API unreachable or error:', error);
       setApiUnreachable(true);
-=======
       console.error('AI Assistant error:', error);
       
       let errorText = "I'm sorry, I'm experiencing some technical difficulties. Please try again in a moment, or contact support if the issue persists.";
@@ -184,7 +182,6 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         errorText = "The AI service is not properly configured. Please contact support.";
       }
       
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       const errorMessage = {
         id: Date.now() + 1,
         from: 'ai',
