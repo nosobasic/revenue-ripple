@@ -159,15 +159,11 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <motion.section 
+      <section 
         className="hero"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
-<<<<<<< HEAD
-          <motion.div 
+          <div 
             className="hero-badge"
             style={{
               display: 'inline-block',
@@ -180,12 +176,10 @@ export default function Home() {
               marginBottom: '2rem',
               boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
             }}
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
           >
             <FaFire style={{ marginRight: '0.5rem' }} />
             🚀 REVENUE RIPPLE OS — LEARN • AUTOMATE • EARN
-          </motion.div>
+          </div>
           
           <h1 className="hero-title">
             Scale Your Business Without Hiring a Team
@@ -196,15 +190,6 @@ export default function Home() {
           
           <p className="hero-subtitle">
             A bundled platform that teaches you marketing, gives you AI market insights, and runs AI agents that monitor & self‑heal your automations — so growth isn’t fragile.
-=======
-          <h1 className="hero-title" style={{ lineHeight: '1.2', letterSpacing: '0.5px' }}>
-            Marketing Is Complicated...
-            <span style={{ display: 'block', marginTop: '0.5rem' }}>Revenue Ripple Makes It Easy.</span>
-          </h1>
-          
-          <p className="hero-subtitle" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '1px' }}>
-            As a Member You'll Get Instant Access To The Walkthroughs, "Watch Over Our Shoulder" Videos, Trainings, and Support You Need TO GET MARKETING DONE.
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
           </p>
           
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -231,50 +216,21 @@ export default function Home() {
             )}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-<<<<<<< HEAD
           {/* Primary CTAs (kept minimal to preserve current feel) */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
             <Link
               to="/checkout"
-=======
-      <div className="container">
-        <div className="content-section">
-          <div className="content-grid">
-            <div className="content-text">
-              <h2 style={{ lineHeight: '1.3', letterSpacing: '0.3px', marginBottom: '1rem' }}>Ready To Get Started To Make Marketing Easy?</h2>
-              <h3 style={{ lineHeight: '1.4', letterSpacing: '0.2px', marginBottom: '1.5rem' }}>Create Your Account for Instant Access to:</h3>
-              <ul className="checkmark-list" style={{ lineHeight: '1.7', letterSpacing: '0.2px' }}>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> 46 comprehensive marketing tutorials and 25 expert-led video courses, continuously updated to stay ahead of the curve.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> A members-only affiliate program, empowering you to earn as you learn.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> Dedicated support from our experienced team, always on hand to address your queries and guide your growth.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> PLUS, stay competitive with access to a growing library of marketing resources, tailored to help you achieve success in today's ever-evolving landscape.</li>
-              </ul>
-              <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <Link to="/checkout" className="cta-button">
-                  <FaHandshake style={{ marginRight: '8px' }} />
-                  Join Now for Only $47/month
-                </Link>
-              </div>
-            </div>
-            <div className="content-image">
-              <img 
-                src="/assets/images/images/rev-rip-device.png" 
-                alt="Revenue Ripple Platform" 
-                className="device-image"
-              />
-            </div>
+              className="cta-button"
+            >
+              Join Now for Only $47/month
+            </Link>
           </div>
-        </div>
-      </div>
 
       {/* Stats Section */}
-      <motion.section 
+      <section 
         className="stats-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <div className="stats-grid">
@@ -304,14 +260,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Courses Section */}
-      <motion.section 
+      <section 
         className="courses-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 className="section-title">Benefits of Membership</h2>
@@ -524,14 +477,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* AI Education Section */}
-      <motion.section 
+      <section 
         className="ai-education-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 className="section-title">AI-Powered Marketing Education</h2>
@@ -567,7 +517,6 @@ export default function Home() {
             <Link 
               to="/checkout" 
               className="cta-button"
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
               style={{
                 background: '#2563eb',
                 color: 'white',
@@ -684,13 +633,12 @@ export default function Home() {
               </div>
             </div>
           )}
+        </div>
+      </section>
 
       {/* Value Stack Section (Bundled Offer) */}
-      <motion.section
+      <section
         style={{ padding: '3rem 0', background: '#ffffff' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
       >
         <div className="container">
           <h2 style={{ textAlign: 'center', fontSize: '2.2rem', marginBottom: '0.5rem', color: '#1e293b' }}>
@@ -783,17 +731,13 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Products Showcase Section */}
-      <motion.section
+      <section
         style={{ padding: '4rem 0', background: '#f8fafc' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
-<<<<<<< HEAD
           <h2 style={{ 
             textAlign: 'center', 
             fontSize: '2.5rem', 
@@ -812,57 +756,6 @@ export default function Home() {
           }}>
             Each product is designed to solve specific business challenges. 
             Start with one or combine them for maximum growth.
-=======
-          <h2 className="section-title">The Revenue Ripple Affiliate Program</h2>
-          <h3 className="section-subtitle">(Unlock a World of Earning Potential—Faster Than You Can Say 'Cha-Ching')</h3>
-          
-          <div className="affiliate-content">
-            <div className="affiliate-text">
-              <p className="affiliate-description">
-                Whether you're just getting started or already know your way around funnels and tracking links, our members-only affiliate program is built to help you win. It's stacked with tools, training, and proven resources to help you start earning fast—no fluff, just what works.
-              </p>
-              <Link to="/affiliate-program" className="affiliate-cta">Learn More About Affiliate Program</Link>
-            </div>
-
-            <div className="affiliate-image">
-              <img 
-                src="/assets/images/images/ebook-explosion.png" 
-                alt="Affiliate Program Materials" 
-                className="responsive-image"
-              />
-            </div>
-
-            <div className="affiliate-text">
-              <p className="affiliate-description">
-                You'll get access to lead magnets, landing pages, promo scripts, and full walkthroughs so you're never guessing what to do next. We're even dropping exclusive digital books and templates in the mix—because we're not just teaching you how to make money, we're handing you the blueprint.
-              </p>
-              <div className="affiliate-visual-highlight">
-                <img src="/assets/images/images/Affilate-reseller-earnings-dash.png" alt="Affiliate Dashboard Preview" className="responsive-image" />
-                <p className="caption">Real dashboard. Real payouts. Real growth.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* What is Revenue Ripple Section */}
-      <motion.section 
-        className="what-is-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container">
-          <h2 className="section-title">WHAT IS REVENUE RIPPLE?</h2>
-          <p className="what-is-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
-            Whether you're a beginner looking for a place to start or a seasoned marketer looking to uplevel 
-            your skills, Revenue Ripple has everything you need to get marketing DONE. Our platform is like 
-            a personal coach, but without the awkward eye contact. We offer 46 comprehensive marketing 
-            tutorials, 25 expert-led video courses, and a growing library of resources to help you stay ahead 
-            of the curve. Plus, our exclusive affiliate program means you can earn while you learn and turn 
-            your marketing skills into profit! And our experienced team is always here to support you, like having a mentor in your pocket—minus the awkward small talk. Revenue Ripple truly is an unfair advantage for any 
-            marketer. So why wait? Join today and take your marketing game to the next level!
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
           </p>
           
           {/* Product Tabs */}
@@ -1015,14 +908,11 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Success Stories Section */}
-      <motion.section
+      <section
         style={{ padding: '4rem 0' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 style={{ 
@@ -1161,51 +1051,15 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-<<<<<<< HEAD
-=======
-      {/* No Free Trial Section */}
-      <motion.section 
-        className="no-free-trial-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container">
-          <h2 className="section-title">No Free Trial?</h2>
-          <h3>What about a guarantee?</h3>
-          <p className="no-free-trial-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
-            Free trials are cool in theory—until you're left with nothing but an expired login and the sour aftertaste of wasted time. We don't do the whole "test drive" thing over here. Why? Because growth doesn't come from dabbling—it comes from committing.
-
-            At Revenue Ripple, we're not trying to attract tire-kickers or fence-sitters. We're looking for the go-getters, the doers, the ones ready to make moves and invest in themselves. When you put real skin in the game, that's when real results show up.
-
-            Now, don't get it twisted—we're not heartless. That's why we back it up with a 30-day money-back guarantee. If it's not for you or doesn't deliver what you expected, no hard feelings. We'll refund you, no questions asked. It's like going on a first date, realizing we're not your type, and still parting ways with respect (and maybe a follow on Instagram).
-
-            So if you're ready to level up, we've got your back—and your wallet—covered.
-
-            Access Revenue Ripple Today.
-          </p>
-          <div className="no-free-trial-cta">
-            <Link to="/checkout" className="cta-button">
-              Join Now for Only $47/month
-            </Link>
-          </div>
-        </div>
-      </motion.section>
-
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       {/* Final CTA Section */}
-      <motion.section
+      <section
         style={{
           padding: '4rem 0',
           background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
-<<<<<<< HEAD
         <div className="container" style={{ textAlign: 'center' }}>
           <h2 style={{
             fontSize: '2.5rem',
@@ -1223,13 +1077,6 @@ export default function Home() {
           }}>
             Join thousands of successful entrepreneurs who have already transformed 
             their businesses with our complete growth ecosystem.
-=======
-        <div className="container">
-          <h2 className="section-title">Ready to Transform Your Marketing?</h2>
-          <p className="cta-description" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
-            Join thousands of successful marketers who have already transformed their businesses with Revenue Ripple.
-            Start your journey today and get instant access to all our premium features.
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
           </p>
           
           <div style={{
@@ -1287,7 +1134,7 @@ export default function Home() {
             ✅ 30-day money-back guarantee • ✅ No long-term contracts • ✅ Cancel anytime
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Testimonial Modal */}
       {showTestimonialModal && (
