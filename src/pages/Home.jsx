@@ -159,14 +159,11 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <motion.section 
+      <section 
         className="hero"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
-          <motion.div 
+          <div 
             className="hero-badge"
             style={{
               display: 'inline-block',
@@ -179,12 +176,10 @@ export default function Home() {
               marginBottom: '2rem',
               boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3)'
             }}
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
           >
             <FaFire style={{ marginRight: '0.5rem' }} />
             🚀 REVENUE RIPPLE OS — LEARN • AUTOMATE • EARN
-          </motion.div>
+          </div>
           
           <h1 className="hero-title">
             Scale Your Business Without Hiring a Team
@@ -221,7 +216,7 @@ export default function Home() {
             )}
           </div>
         </div>
-      </motion.section>
+      </section>
 
           {/* Primary CTAs (kept minimal to preserve current feel) */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
@@ -234,11 +229,8 @@ export default function Home() {
           </div>
 
       {/* Stats Section */}
-      <motion.section 
+      <section 
         className="stats-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <div className="stats-grid">
@@ -268,14 +260,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Courses Section */}
-      <motion.section 
+      <section 
         className="courses-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 className="section-title">Benefits of Membership</h2>
@@ -488,14 +477,11 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* AI Education Section */}
-      <motion.section 
+      <section 
         className="ai-education-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 className="section-title">AI-Powered Marketing Education</h2>
@@ -647,13 +633,12 @@ export default function Home() {
               </div>
             </div>
           )}
+        </div>
+      </section>
 
       {/* Value Stack Section (Bundled Offer) */}
-      <motion.section
+      <section
         style={{ padding: '3rem 0', background: '#ffffff' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
       >
         <div className="container">
           <h2 style={{ textAlign: 'center', fontSize: '2.2rem', marginBottom: '0.5rem', color: '#1e293b' }}>
@@ -746,14 +731,11 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Products Showcase Section */}
-      <motion.section
+      <section
         style={{ padding: '4rem 0', background: '#f8fafc' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 style={{ 
@@ -926,14 +908,11 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Success Stories Section */}
-      <motion.section
+      <section
         style={{ padding: '4rem 0' }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container">
           <h2 style={{ 
@@ -1072,17 +1051,14 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Final CTA Section */}
-      <motion.section
+      <section
         style={{
           padding: '4rem 0',
           background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'
         }}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
       >
         <div className="container" style={{ textAlign: 'center' }}>
           <h2 style={{
@@ -1158,7 +1134,7 @@ export default function Home() {
             ✅ 30-day money-back guarantee • ✅ No long-term contracts • ✅ Cancel anytime
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Testimonial Modal */}
       {showTestimonialModal && (
