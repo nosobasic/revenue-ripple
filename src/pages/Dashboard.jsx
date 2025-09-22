@@ -802,29 +802,53 @@ const Dashboard = () => {
                     )}
                   </div>
 
-                  <div className="course-item">
-                    <h3>Email Marketing</h3>
+                  <div
+                    className={`course-item ${expandedSection === 'marketing-email' ? 'expanded' : ''}`}
+                    onClick={() => toggleSection('marketing-email')}
+                    role="button"
+                    aria-expanded={expandedSection === 'marketing-email'}
+                    tabIndex={0}
+                    onKeyPress={(e) => { if (e.key === 'Enter') toggleSection('marketing-email'); }}
+                  >
+                    <h3>
+                      Email Marketing
+                      <span className={`chevron ${expandedSection === 'marketing-email' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-email' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                    </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                       <div style={{ width: `${courseProgress['email-marketing'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
                     </div>
-                    <div className="course-details">
-                      <p>Build and nurture your email list. Master segmentation, automation, and conversion optimization.</p>
-                      <Link to="/courses/email-marketing" className="cta-link">
-                        <span>Start Email Marketing →</span>
-                      </Link>
-                    </div>
+                    {expandedSection === 'marketing-email' && (
+                      <div className="course-details">
+                        <p>Build and nurture your email list. Master segmentation, automation, and conversion optimization.</p>
+                        <Link to="/courses/email-marketing" className="cta-link">
+                          <span>Start Email Marketing →</span>
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                  <div className="course-item">
-                    <h3>Geo Targeting</h3>
+                  <div
+                    className={`course-item ${expandedSection === 'marketing-geo-targeting' ? 'expanded' : ''}`}
+                    onClick={() => toggleSection('marketing-geo-targeting')}
+                    role="button"
+                    aria-expanded={expandedSection === 'marketing-geo-targeting'}
+                    tabIndex={0}
+                    onKeyPress={(e) => { if (e.key === 'Enter') toggleSection('marketing-geo-targeting'); }}
+                  >
+                    <h3>
+                      Geo Targeting
+                      <span className={`chevron ${expandedSection === 'marketing-geo-targeting' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'marketing-geo-targeting' ? 'rotate(180deg)' : 'none' }}>▼</span>
+                    </h3>
                     <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
                       <div style={{ width: `${courseProgress['geo-targeting'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2 }} />
                     </div>
-                    <div className="course-details">
-                      <p>Learn how to target your marketing campaigns to specific geographic locations for better results.</p>
-                      <Link to="/courses/geo-targeting" className="cta-link">
-                        <span>Start Geo Targeting Course →</span>
-                      </Link>
-                    </div>
+                    {expandedSection === 'marketing-geo-targeting' && (
+                      <div className="course-details">
+                        <p>Learn how to target your marketing campaigns to specific geographic locations for better results.</p>
+                        <Link to="/courses/geo-targeting" className="cta-link">
+                          <span>Start Geo Targeting Course →</span>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                   <div
                     className={`course-item ${expandedSection === 'marketing-lead-generation' ? 'expanded' : ''}`}
