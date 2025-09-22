@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
 import './checkout.css';
 import { useEffect, useState } from 'react';
-// import { supabase } from '../supabase/client';
+import { supabase } from '../supabase/client';
 
 export default function ThankYou() {
   const [status, setStatus] = useState("");
   const refUserId = localStorage.getItem('affiliate_ref');
+  const memberRole = localStorage.getItem('memberRole');
+  const memberId = localStorage.getItem('memberId');
+  const customerEmail = localStorage.getItem('customerEmail')
+
+  const commissionPercent = 0.5; // 0.5%
+  const baseAmount = 47;
+  const amount = (commissionPercent / 100) * baseAmount;
 
   // const commission = (0.5 / 100) * 47;
 
@@ -17,7 +24,89 @@ export default function ThankYou() {
     }
   }, []);
 
-  console.log("status====", refUserId)
+  useEffect(() => {
+    if (status === "succeeded" && refUserId) {
+      saveCommission();
+    }
+  }, [status, refUserId]);
+
+  useEffect(() => {
+    const handleUpdateRole = async () => {
+      try {
+
+        if (!memberId && status !== "succeeded" && memberRole !== "member") {
+          console.error("No member found");
+          return;
+        }
+        const { data, error } = await supabase
+          .from("users")
+          .update({ role: "affiliate" })   // 👈 new role
+          .eq("id", memberId)
+          .select();
+
+        if (error) {
+          console.error("Supabase update error:", error);
+        } else {
+          console.log("User role updated:", data);
+          localStorage.removeItem('memberRole');
+          localStorage.removeItem('memberId');
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    handleUpdateRole();
+  }, [memberId]);
+
+  const saveCommission = async () => {
+    if (status !== "succeeded" || !refUserId) return;
+  
+    const commissionPercent = 0.5;   // 0.5%
+    const baseAmount = 47;
+    const addAmount = (commissionPercent / 100) * baseAmount;
+  
+    // READ (will return row only if SELECT policy allows)
+    // const { data: existing, error: selErr } = await supabase
+    //   .from("commissions")
+    //   .select("id, amount, commission")
+    //   .eq("referrer_username", refUserId)
+    //   .maybeSingle();
+  
+    // if (selErr) {
+    //   console.error("Select error:", selErr);
+    //   return;
+    // }
+  
+    // if (existing) {
+    //   // UPDATE
+    //   const { error: updErr } = await supabase
+    //     .from("commissions")
+    //     .update({
+    //       amount: Number(existing.amount ?? 0) + addAmount.toFixed(2),
+    //       commission: Number(existing.commission ?? 0) + addAmount.toFixed(2),
+    //       status: "active",
+    //     })
+    //     .eq("id", existing.id);
+  
+    //   if (updErr) console.error("Update error:", updErr);
+    // } else {
+      // INSERT
+      const { error: insErr } = await supabase
+        .from("commissions")
+        .insert({
+          referrer_username: refUserId,
+          amount: addAmount.toFixed(2),
+          commission: addAmount.toFixed(2),
+          tier: "membership",
+          email: customerEmail, 
+          status: "active",
+        });
+  
+      if (insErr) console.error("Insert error:", insErr);
+    // }
+  };
+
   return (
     <div className="checkout-container">
       <div className="checkout-content" style={{ textAlign: 'center' }}>

@@ -1,42 +1,59 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../pages.css';
 import { FaCheckCircle } from 'react-icons/fa';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Reseller() {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  console.log("USER=======", user)
+  
 
   // Helper to get referrer from URL or localStorage
-  const getReferrer = () => {
-    const params = new URLSearchParams(location.search);
-    return params.get('ref') || localStorage.getItem('referrer') || null;
-  };
+  // const getReferrer = () => {
+  //   const params = new URLSearchParams(location.search);
+  //   return params.get('ref') || localStorage.getItem('referrer') || null;
+  // };
 
   // Handler for all main CTAs
-  const handleResellerCheckout = async () => {
+  // const handleResellerCheckout = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const referrer_username = getReferrer();
+  //     const response = await fetch('/create-reseller-session', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ referrer_username }),
+  //     });
+  //     const data = await response.json();
+  //     if (data.url) {
+  //       window.location.href = data.url;
+  //     } else {
+  //       alert('Error creating checkout session.');
+  //     }
+  //   } catch (err) {
+  //     alert('Error connecting to server.');
+  //   }
+  //   setLoading(false);
+  //   navigate('/checkout');
+  // };
+
+  const handleResellerCheckout = () => {
     setLoading(true);
-    try {
-      const referrer_username = getReferrer();
-      const response = await fetch('/create-reseller-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ referrer_username }),
-      });
-      const data = await response.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Error creating checkout session.');
-      }
-    } catch (err) {
-      alert('Error connecting to server.');
-    }
-    setLoading(false);
-  };
+    const timer = setTimeout(() => {
+          navigate(`/reseller-success?session_id=${user?.id}`);
+          setLoading(false);
+        }, 2000);
+    
+        return () => clearTimeout(timer);
+  }
 
   return (
     <div className="home">

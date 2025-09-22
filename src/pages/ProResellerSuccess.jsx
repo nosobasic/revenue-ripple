@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { supabase } from '../supabase/client';
 
-export default function ResellerSuccess() {
+export default function ProResellerSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,7 +27,7 @@ export default function ResellerSuccess() {
         }
         const { data, error } = await supabase
           .from("users")
-          .update({ role: "reseller" })   // 👈 new role
+          .update({ role: "pro_reseller" })   // 👈 new role
           .eq("id", userId)
           .select();
 
@@ -48,9 +48,9 @@ export default function ResellerSuccess() {
     <div className="frontend-container">
       {/* Success Message */}
       <section className="hero-section">
-        <h1 className="hero-title">Welcome to the Revenue Ripple Reseller Program! 🎉</h1>
+        <h1 className="hero-title">Welcome to the Revenue Ripple Reseller Pro Program! 🎉</h1>
         <p className="hero-subtitle">
-          Congratulations on joining our exclusive reseller program. You're now part of a community of successful digital marketers.
+          Congratulations on joining our exclusive reseller pro program. You're now part of a community of successful digital marketers.
         </p>
       </section>
 
@@ -64,7 +64,7 @@ export default function ResellerSuccess() {
           </div>
           <h3 className="feature-title">Access Your Dashboard</h3>
           <p className="feature-description">
-            Your reseller dashboard is now active. Log in to access your unique affiliate links, marketing materials, and performance tracking.
+            Your reseller pro dashboard is now active. Log in to access your unique affiliate links, marketing materials, and performance tracking.
           </p>
           <Link to="/affiliate-centre" className="cta-link">Go to Dashboard</Link>
         </div>

@@ -7,7 +7,6 @@ import { STORAGE_KEYS, logger } from './config/constants';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -39,9 +38,14 @@ const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
 const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
+const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
+const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+const InsightsPage = lazy(() => import('./pages/Insights'));
+const Onboarding = lazy(() => import('./pages/Onboarding'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
+const BulletproofBranding = lazy(() => import('./pages/training/videos/BulletproofBranding'));
 const ShoestringStartups = lazy(() => import('./pages/training/videos/ShoestringStartups'));
 const AdwordsQualityScore = lazy(() => import('./pages/training/guides/AdwordsQualityScore'));
 const AnalyzingData = lazy(() => import('./pages/training/guides/AnalyzingData'));
@@ -63,9 +67,7 @@ const MarketingMistakes = lazy(() => import('./pages/training/guides/MarketingMi
 const UnderstandingRelevance = lazy(() => import('./pages/training/guides/UnderstandingRelevance'));
 const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
 const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
-const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 
-// Loading component for lazy loaded routes
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -113,6 +115,7 @@ const App = () => {
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
+        <Route path="/pro-reseller-success" element={<ProtectedRoute><ProResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
         <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
         <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />

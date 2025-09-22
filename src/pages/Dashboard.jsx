@@ -174,6 +174,12 @@ const Dashboard = () => {
     }
   };
 
+  const handleJoinAffiliate = (role) => {
+    navigate("/checkout")
+    localStorage.setItem("memberRole", role)
+    localStorage.setItem("memberId", user.id)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <ReferralTracker />
@@ -286,18 +292,22 @@ const Dashboard = () => {
                   {expandedSection === 'affiliate-paid' && (
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
-                                              <p>To join, just <a 
-                          href="/affiliate/sign-up" 
+                                              <p>To join, just <span 
+                          // href="/affiliate/sign-up" 
                           style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}
-                          onClick={(e) => e.stopPropagation()}
-                        >click here</a>.</p>
+                          onClick={(e) => {e.stopPropagation()
+                            handleJoinAffiliate("member")
+                          }}
+                        >click here</span>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
                       <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-                        <a 
-                          href="/affiliate/sign-up"
+                        <button 
+                          // href="/affiliate/sign-up"
                           className="cta-link"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {e.stopPropagation()
+                            handleJoinAffiliate("member")
+                          }}
                           style={{
                             background: '#2563eb',
                             color: 'white',
@@ -320,7 +330,7 @@ const Dashboard = () => {
                           }}
                         >
                           <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
-                        </a>
+                        </button>
                         <Link 
                           to="/affiliate-centre/tools" 
                           className="cta-link"

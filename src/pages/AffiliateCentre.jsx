@@ -18,7 +18,7 @@ export default function AffiliateCentre() {
   const [error, setError] = useState(null);
 
   const baseUrl = "http://localhost:5173/affiliate/sign-up";
-  const affiliateLink = `${baseUrl}/?ref=${user?.id}`;
+  const affiliateLink = `${baseUrl}/?ref=${user?.id}&role=${user?.role}`;
 
   const copyAffiliateLink = () => {
     navigator.clipboard.writeText(affiliateLink).then(() => {
@@ -43,6 +43,8 @@ export default function AffiliateCentre() {
 
         if (userError) throw userError;
 
+        console.log("userData=====",userData)
+
         // Fetch commissions
         const { data: commissions, error: commissionsError } = await supabase
           .from('commissions')
@@ -50,6 +52,7 @@ export default function AffiliateCentre() {
           .eq('referrer_username', user.id);
 
         if (commissionsError) throw commissionsError;
+        console.log("commissions=====",commissions)
 
         const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
         const totalSales = commissions.length;
@@ -66,7 +69,7 @@ export default function AffiliateCentre() {
           .map((entry) => ({
             type: "commission",
             message: `Commission earned: $${entry.commission.toFixed(2)} from ${entry.tier.toUpperCase()}`,
-            timestamp: new Date(entry.timestamp).toLocaleString()
+            timestamp: new Date(entry.created_at).toLocaleString()
           }));
 
         setActivity(recentActivity);
@@ -112,7 +115,7 @@ export default function AffiliateCentre() {
       <div className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Affiliate & Reseller Centre</h1>
-          <p className="dashboard-welcome">Welcome, {user?.email}</p>
+          <p className="dashboard-welcome">Welcome, {user.name || user?.email}</p>
         </div>
       </div>
 

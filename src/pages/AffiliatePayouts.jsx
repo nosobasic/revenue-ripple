@@ -1,60 +1,81 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import '../pages.css';
+import "../pages.css";
+
+import React, { useState } from "react";
+
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import PayPalPayoutButton from "../components/PayPalPayoutButton";
+import { useAuth } from "../context/AuthContext";
 
 const AffiliatePayouts = () => {
+  const { user } = useAuth();
+  const [payoutSuccess, setPayoutSuccess] = useState(false);
+  const [payoutError, setPayoutError] = useState(null);
+
   const earningsData = {
     currentBalance: 1250.75,
     pendingBalance: 450.25,
-    totalEarned: 8750.50,
+    totalEarned: 8750.5,
     lastPayout: {
-      date: '2024-02-15',
-      amount: 1200.00,
-      status: 'Completed'
-    }
+      date: "2024-02-15",
+      amount: 1200.0,
+      status: "Completed",
+    },
+  };
+
+  const handlePayoutSuccess = (data) => {
+    setPayoutSuccess(true);
+    setPayoutError(null);
+    // You could also refresh the earnings data here
+    console.log("Payout successful:", data);
+  };
+
+  const handlePayoutError = (error) => {
+    setPayoutError(error.message);
+    setPayoutSuccess(false);
+    console.error("Payout error:", error);
   };
 
   const recentTransactions = [
     {
       id: 1,
-      date: '2024-03-01',
-      type: 'Commission',
+      date: "2024-03-01",
+      type: "Commission",
       amount: 250.75,
-      status: 'Pending'
+      status: "Pending",
     },
     {
       id: 2,
-      date: '2024-02-28',
-      type: 'Commission',
-      amount: 175.50,
-      status: 'Pending'
+      date: "2024-02-28",
+      type: "Commission",
+      amount: 175.5,
+      status: "Pending",
     },
     {
       id: 3,
-      date: '2024-02-15',
-      type: 'Payout',
-      amount: -1200.00,
-      status: 'Completed'
-    }
+      date: "2024-02-15",
+      type: "Payout",
+      amount: -1200.0,
+      status: "Completed",
+    },
   ];
 
   const performanceMetrics = [
     {
-      label: 'Total Clicks',
-      value: '2,450',
-      change: '+15%'
+      label: "Total Clicks",
+      value: "2,450",
+      change: "+15%",
     },
     {
-      label: 'Conversions',
-      value: '45',
-      change: '+8%'
+      label: "Conversions",
+      value: "45",
+      change: "+8%",
     },
     {
-      label: 'Conversion Rate',
-      value: '1.84%',
-      change: '+0.5%'
-    }
+      label: "Conversion Rate",
+      value: "1.84%",
+      change: "+0.5%",
+    },
   ];
 
   return (
@@ -63,7 +84,9 @@ const AffiliatePayouts = () => {
       <header className="dashboard-header">
         <div className="container">
           <h1 className="dashboard-title">Earnings & Payouts</h1>
-          <p className="dashboard-welcome">Track your performance and earnings</p>
+          <p className="dashboard-welcome">
+            Track your performance and earnings
+          </p>
         </div>
       </header>
 
@@ -80,22 +103,59 @@ const AffiliatePayouts = () => {
                 <div className="course-item">
                   <h3>Current Balance</h3>
                   <div className="course-details">
-                    <div className="earnings-amount">${earningsData.currentBalance}</div>
+                    <div className="earnings-amount">
+                      ${earningsData.currentBalance}
+                    </div>
                     <p>Available for withdrawal</p>
-                    <button className="cta-button">Request Payout</button>
+                    <p
+                      style={{
+                        fontSize: "0.875rem",
+                        color: "#6b7280",
+                        marginTop: "0.25rem",
+                      }}
+                    >
+                      Minimum payout: $10.00
+                    </p>
+                    <PayPalPayoutButton
+                      userEmail={user?.email}
+                      amount={earningsData.currentBalance}
+                      onSuccess={handlePayoutSuccess}
+                      onError={handlePayoutError}
+                      disabled={
+                        !user?.email || earningsData.currentBalance <= 0
+                      }
+                      minimumAmount={10.0}
+                    />
+                    {payoutSuccess && (
+                      <div
+                        style={{
+                          color: "#10b981",
+                          fontSize: "0.875rem",
+                          marginTop: "0.5rem",
+                          textAlign: "center",
+                          fontWeight: "500",
+                        }}
+                      >
+                        ✅ Payout request submitted successfully!
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="course-item">
                   <h3>Pending Balance</h3>
                   <div className="course-details">
-                    <div className="earnings-amount">${earningsData.pendingBalance}</div>
+                    <div className="earnings-amount">
+                      ${earningsData.pendingBalance}
+                    </div>
                     <p>Clearing in 30 days</p>
                   </div>
                 </div>
                 <div className="course-item">
                   <h3>Total Earned</h3>
                   <div className="course-details">
-                    <div className="earnings-amount">${earningsData.totalEarned}</div>
+                    <div className="earnings-amount">
+                      ${earningsData.totalEarned}
+                    </div>
                     <p>All-time earnings</p>
                   </div>
                 </div>
@@ -114,14 +174,24 @@ const AffiliatePayouts = () => {
                 {recentTransactions.map((transaction) => (
                   <div key={transaction.id} className="transaction-item">
                     <div className="transaction-info">
-                      <span className="transaction-type">{transaction.type}</span>
-                      <span className="transaction-date">{transaction.date}</span>
+                      <span className="transaction-type">
+                        {transaction.type}
+                      </span>
+                      <span className="transaction-date">
+                        {transaction.date}
+                      </span>
                     </div>
                     <div className="transaction-details">
-                      <span className={`transaction-amount ${transaction.amount < 0 ? 'negative' : 'positive'}`}>
+                      <span
+                        className={`transaction-amount ${
+                          transaction.amount < 0 ? "negative" : "positive"
+                        }`}
+                      >
                         ${Math.abs(transaction.amount).toFixed(2)}
                       </span>
-                      <span className={`transaction-status ${transaction.status.toLowerCase()}`}>
+                      <span
+                        className={`transaction-status ${transaction.status.toLowerCase()}`}
+                      >
                         {transaction.status}
                       </span>
                     </div>
@@ -145,7 +215,11 @@ const AffiliatePayouts = () => {
                   <div key={index} className="stat-card">
                     <div className="stat-number">{metric.value}</div>
                     <div className="stat-label">{metric.label}</div>
-                    <div className={`stat-change ${metric.change.startsWith('+') ? 'positive' : 'negative'}`}>
+                    <div
+                      className={`stat-change ${
+                        metric.change.startsWith("+") ? "positive" : "negative"
+                      }`}
+                    >
                       {metric.change}
                     </div>
                   </div>
@@ -172,7 +246,9 @@ const AffiliatePayouts = () => {
                 </div>
                 <div className="detail-group">
                   <strong>Status:</strong>
-                  <span className={`status ${earningsData.lastPayout.status.toLowerCase()}`}>
+                  <span
+                    className={`status ${earningsData.lastPayout.status.toLowerCase()}`}
+                  >
                     {earningsData.lastPayout.status}
                   </span>
                 </div>
@@ -187,26 +263,26 @@ const AffiliatePayouts = () => {
               <h2>Navigation</h2>
             </div>
             <div className="section-content">
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li style={{ marginBottom: '1rem' }}>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre" className="cta-link">
                     <span className="item-icon">🏠</span>
                     Dashboard
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/tools" className="cta-link">
                     <span className="item-icon">🛠️</span>
                     Marketing Tools
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/training" className="cta-link">
                     <span className="item-icon">📚</span>
                     Training & Guides
                   </Link>
                 </li>
-                <li style={{ marginBottom: '1rem' }}>
+                <li style={{ marginBottom: "1rem" }}>
                   <Link to="/affiliate-centre/support" className="cta-link">
                     <span className="item-icon">💬</span>
                     Support & FAQ
@@ -221,4 +297,4 @@ const AffiliatePayouts = () => {
   );
 };
 
-export default AffiliatePayouts; 
+export default AffiliatePayouts;

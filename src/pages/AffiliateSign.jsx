@@ -22,7 +22,6 @@ export default function AffiliateSign() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
-    console.log("ref===", ref)
     if (ref) {
       localStorage.setItem('affiliate_ref', ref);
     }
@@ -40,12 +39,14 @@ export default function AffiliateSign() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
     try {
       // Validate passwords match
       if (formData.password !== formData.confirmPassword) {
         throw new Error('Passwords do not match');
       }
+      localStorage.setItem("customerEmail",formData.email )
 
       // Create user account
       const { data: authData, error: authError } = await signup(
@@ -53,7 +54,7 @@ export default function AffiliateSign() {
         formData.password,
         formData.firstName,
         formData.lastName,
-        "affiliate"
+        role
       );
 
 
