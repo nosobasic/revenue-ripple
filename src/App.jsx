@@ -43,7 +43,6 @@ const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
-const BulletproofBranding = lazy(() => import('./pages/training/videos/BulletproofBranding'));
 const ShoestringStartups = lazy(() => import('./pages/training/videos/ShoestringStartups'));
 const AdwordsQualityScore = lazy(() => import('./pages/training/guides/AdwordsQualityScore'));
 const AnalyzingData = lazy(() => import('./pages/training/guides/AnalyzingData'));
