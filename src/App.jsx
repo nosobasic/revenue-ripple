@@ -40,7 +40,6 @@ const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
 const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
-const Onboarding = lazy(() => import('./pages/Onboarding'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
