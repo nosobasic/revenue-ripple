@@ -176,6 +176,94 @@ const learningPathsStyles = `
   .highlight {
     color: #2563eb;
   }
+  
+  /* Support Section Styles */
+  .support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .support-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  
+  .support-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+    border-color: #2563eb;
+  }
+  
+  .support-card.premium {
+    border-color: #059669;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  }
+  
+  .support-icon {
+    font-size: 2.5rem;
+    color: #2563eb;
+    margin-bottom: 1rem;
+  }
+  
+  .support-card.premium .support-icon {
+    color: #059669;
+  }
+  
+  .support-card h3 {
+    margin: 0 0 0.75rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+  }
+  
+  .support-card p {
+    margin: 0 0 1.5rem 0;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+  
+  .support-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .support-cta:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+  
+  .support-card.premium .support-cta {
+    background: #059669;
+  }
+  
+  .support-card.premium .support-cta:hover {
+    background: #047857;
+  }
+  
+  .premium-badge {
+    background: #059669;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
 `;
 
 // Inject styles
@@ -515,6 +603,56 @@ export default function Home() {
             >
               <FaRocket /> Begin Checkout - $47/month
             </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Support & Guidance Section */}
+      <motion.section 
+        className="support-section"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{ background: '#f9fafb', padding: '4rem 0' }}
+      >
+        <div className="container">
+          <h2 className="section-title">Still Need Help? We've Got You Covered</h2>
+          <p className="section-subtitle">Get personalized support when you need it most</p>
+          
+          <div className="support-grid">
+            {/* AI Assistant Card */}
+            <div className="support-card">
+              <FaRobot className="support-icon" />
+              <h3>AI Marketing Assistant</h3>
+              <p>
+                Get instant answers to your marketing questions. Our AI assistant is trained on all our courses and can help you apply strategies to your specific business.
+              </p>
+              <Link to="/dashboard" className="support-cta">
+                <FaRobot /> Chat with AI Assistant
+              </Link>
+            </div>
+
+            {/* 1-on-1 Coaching Card */}
+            <div className="support-card premium">
+              <span className="premium-badge">Premium Support</span>
+              <FaUsers className="support-icon" />
+              <h3>1-on-1 Business Coaching</h3>
+              <p>
+                Book a personal strategy session with our marketing experts. Get tailored advice for your specific business challenges and accelerate your growth.
+              </p>
+              <Link to="/coaching" className="support-cta">
+                <FaUsers /> Book Coaching Call
+              </Link>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '2rem', padding: '1.5rem', background: 'white', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <p style={{ margin: '0 0 1rem 0', color: '#6b7280', fontSize: '0.875rem' }}>
+              <strong>Members-only benefit:</strong> Both support options are included with your Revenue Ripple membership
+            </p>
+            <p style={{ margin: 0, color: '#2563eb', fontWeight: 600 }}>
+              No additional fees • Available 24/7 • Expert guidance when you need it
+            </p>
           </div>
         </div>
       </motion.section>
