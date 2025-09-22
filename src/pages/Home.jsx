@@ -8,6 +8,183 @@ import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
 
+// Add styles for the new learning paths structure
+const learningPathsStyles = `
+  .learning-paths-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .learning-path-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+  }
+  
+  .learning-path-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .learning-path-card.featured {
+    border-color: #2563eb;
+    background: linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%);
+  }
+  
+  .path-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .path-icon {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 0.5rem;
+  }
+  
+  .path-header h3 {
+    margin: 0.5rem 0;
+    color: #1f2937;
+    font-size: 1.25rem;
+  }
+  
+  .path-duration {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+  
+  .featured-badge {
+    background: #2563eb;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+  
+  .path-courses {
+    margin-bottom: 1.5rem;
+  }
+  
+  .course-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+  
+  .course-number {
+    background: #2563eb;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .course-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
+    color: #1f2937;
+  }
+  
+  .course-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  .path-cta {
+    display: block;
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  
+  .path-cta:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+  }
+  
+  .path-cta.featured {
+    background: #059669;
+  }
+  
+  .path-cta.featured:hover {
+    background: #047857;
+  }
+  
+  .all-courses-summary {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 12px;
+  }
+  
+  .all-courses-summary h3 {
+    margin: 0 0 1rem 0;
+    color: #1f2937;
+  }
+  
+  .all-courses-summary p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+  
+  .value-proposition {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+  }
+  
+  .total-value {
+    color: #6b7280;
+    margin: 0;
+  }
+  
+  .membership-price {
+    color: #059669;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  
+  .highlight {
+    color: #2563eb;
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = learningPathsStyles;
+  document.head.appendChild(styleSheet);
+}
+
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
@@ -35,12 +212,12 @@ export default function Home() {
       >
         <div className="container">
           <h1 className="hero-title" style={{ lineHeight: '1.2', letterSpacing: '0.5px' }}>
-            Marketing Is Complicated...
-            <span style={{ display: 'block', marginTop: '0.5rem' }}>Revenue Ripple Makes It Easy.</span>
+            Stop Struggling with Marketing.
+            <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}>Get Results in 30 Days.</span>
           </h1>
           
           <p className="hero-subtitle" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '1px' }}>
-            As a Member You'll Get Instant Access To The Walkthroughs, "Watch Over Our Shoulder" Videos, Trainings, and Support You Need TO GET MARKETING DONE.
+            Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
           
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -73,18 +250,18 @@ export default function Home() {
         <div className="content-section">
           <div className="content-grid">
             <div className="content-text">
-              <h2 style={{ lineHeight: '1.3', letterSpacing: '0.3px', marginBottom: '1rem' }}>Ready To Get Started To Make Marketing Easy?</h2>
-              <h3 style={{ lineHeight: '1.4', letterSpacing: '0.2px', marginBottom: '1.5rem' }}>Create Your Account for Instant Access to:</h3>
+              <h2 style={{ lineHeight: '1.3', letterSpacing: '0.3px', marginBottom: '1rem' }}>Why Revenue Ripple Works</h2>
+              <h3 style={{ lineHeight: '1.4', letterSpacing: '0.2px', marginBottom: '1.5rem' }}>We focus on what actually generates revenue:</h3>
               <ul className="checkmark-list" style={{ lineHeight: '1.7', letterSpacing: '0.2px' }}>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> 46 comprehensive marketing tutorials and 25 expert-led video courses, continuously updated to stay ahead of the curve.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> A members-only affiliate program, empowering you to earn as you learn.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> Dedicated support from our experienced team, always on hand to address your queries and guide your growth.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> PLUS, stay competitive with access to a growing library of marketing resources, tailored to help you achieve success in today's ever-evolving landscape.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>AI-First Approach:</strong> Learn the latest AI marketing strategies that your competitors don't know yet.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>Proven Learning Paths:</strong> Follow step-by-step roadmaps that get you from zero to first sale in 30 days.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>Earn While You Learn:</strong> Access our exclusive affiliate program to start making money immediately.</li>
+                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>No Fluff:</strong> Every course is designed to generate real results, not just theory.</li>
               </ul>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <Link to="/checkout" className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
-                  Join Now for Only $47/month
+                  Start Your 30-Day Journey - $47/month
                 </Link>
               </div>
             </div>
@@ -136,221 +313,146 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Courses Section */}
+      {/* Learning Paths Section */}
       <motion.section 
-        className="courses-section"
+        className="learning-paths-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-          <h2 className="section-title">Benefits of Membership</h2>
-          <hr />
-          <h1 className="section-title">25+ Expert-Led Video Courses
-          That GET STUFF DONE</h1>
-          <div className="courses-grid">
-            <h2 className="course-category-title">Foundational Skills</h2>
-            {/* Website Design Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/4.png" alt="Website Design Course" />
+          <h2 className="section-title">Choose Your Path to Success</h2>
+          <p className="section-subtitle">Follow these proven learning paths to get results fast</p>
+          
+          <div className="learning-paths-grid">
+            {/* Get Your First Sale Path */}
+            <div className="learning-path-card">
+              <div className="path-header">
+                <FaRocket className="path-icon" />
+                <h3>Get Your First Sale</h3>
+                <p className="path-duration">30 Days</p>
               </div>
-              <div className="course-content">
-                <h3 className="course-title">Website Design</h3>
-                <p className="course-description" style={{ lineHeight: '1.6', letterSpacing: '0.2px', wordSpacing: '0.5px' }}>
-                  Looking to create an effective website for your business? Our Website Design course has got you covered. From choosing the right layout and color scheme to optimizing your website for search engines, we'll provide you with the skills and knowledge you need to create a professional and effective website that represents your brand.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
+              <div className="path-courses">
+                <div className="course-item">
+                  <span className="course-number">1</span>
+                  <div className="course-info">
+                    <h4>AI Essentials</h4>
+                    <p>Build your AI foundation</p>
+                  </div>
                 </div>
-                <Link to="/courses/website-design" className="course-cta">Preview Course</Link>
+                <div className="course-item">
+                  <span className="course-number">2</span>
+                  <div className="course-info">
+                    <h4>Email Marketing</h4>
+                    <p>Build and nurture your audience</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">3</span>
+                  <div className="course-info">
+                    <h4>Funnel Building</h4>
+                    <p>Convert leads into customers</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">4</span>
+                  <div className="course-info">
+                    <h4>Paid Traffic</h4>
+                    <p>Drive targeted traffic</p>
+                  </div>
+                </div>
               </div>
+              <Link to="/checkout" className="path-cta">Start This Path</Link>
             </div>
 
-            {/* Social Media Marketing Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/3.png" alt="Social Media Marketing Course" />
+            {/* Scale Your Business Path */}
+            <div className="learning-path-card">
+              <div className="path-header">
+                <FaChartLine className="path-icon" />
+                <h3>Scale Your Business</h3>
+                <p className="path-duration">60 Days</p>
               </div>
-              <div className="course-content">
-                <h3 className="course-title">Social Media Marketing</h3>
-                <p className="course-description" style={{ lineHeight: '1.6', letterSpacing: '0.2px', wordSpacing: '0.5px' }}>
-                  Wanna know how to market your business on social media like a pro? Our Social Media Marketing course will teach you how to create engaging content, optimize your profiles, and connect with your target audience on all the major social media platforms, including Facebook, Instagram, Twitter, and Youtube.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
+              <div className="path-courses">
+                <div className="course-item">
+                  <span className="course-number">1</span>
+                  <div className="course-info">
+                    <h4>Prompt Engineering</h4>
+                    <p>Master AI interactions</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">2</span>
+                  <div className="course-info">
+                    <h4>Marketing Automation</h4>
+                    <p>Automate your workflows</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">3</span>
+                  <div className="course-info">
+                    <h4>SEO</h4>
+                    <p>Long-term traffic growth</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">4</span>
+                  <div className="course-info">
+                    <h4>Social Media Marketing</h4>
+                    <p>Organic growth strategies</p>
+                  </div>
                 </div>
               </div>
+              <Link to="/checkout" className="path-cta">Start This Path</Link>
             </div>
 
-            {/* Email Marketing Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/6.png" alt="Email Marketing Course" />
+            {/* Master AI Marketing Path */}
+            <div className="learning-path-card featured">
+              <div className="path-header">
+                <FaRobot className="path-icon" />
+                <h3>Master AI Marketing</h3>
+                <p className="path-duration">45 Days</p>
+                <span className="featured-badge">Most Popular</span>
               </div>
-              <div className="course-content">
-                <h3 className="course-title">Email Marketing</h3>
-                <p className="course-description">
-                  Looking to boost your revenue with email marketing? Our Email Marketing course covers the essentials of email platform basics, content creation, and automation techniques that will help you create effective email campaigns that engage and convert your audience.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
+              <div className="path-courses">
+                <div className="course-item">
+                  <span className="course-number">1</span>
+                  <div className="course-info">
+                    <h4>AI Essentials</h4>
+                    <p>Build your AI foundation</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">2</span>
+                  <div className="course-info">
+                    <h4>Prompt Engineering</h4>
+                    <p>Craft perfect prompts</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">3</span>
+                  <div className="course-info">
+                    <h4>AI Agent Fundamentals</h4>
+                    <p>Build and deploy AI agents</p>
+                  </div>
+                </div>
+                <div className="course-item">
+                  <span className="course-number">4</span>
+                  <div className="course-info">
+                    <h4>Marketing Automation</h4>
+                    <p>AI-powered workflows</p>
+                  </div>
                 </div>
               </div>
+              <Link to="/checkout" className="path-cta featured">Start AI Mastery</Link>
             </div>
+          </div>
 
-            {/* SEO Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/7.png" alt="SEO Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">SEO</h3>
-                <p className="course-description">
-                  Master the art of data-driven decision making. Learn how to track, analyze, and interpret key metrics across all your marketing channels to optimize your campaigns and maximize ROI.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* E-commerce Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/8.png" alt="E-commerce Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">E-commerce</h3>
-                <p className="course-description">
-                  Build and optimize your online store for maximum conversions. Learn essential e-commerce strategies, from product page optimization to checkout flow improvements and customer retention tactics.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            <h2 className="course-category-title">Revenue Drivers</h2>
-            {/* Affiliate Marketing Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/2.png" alt="Affiliate Marketing Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Affiliate Marketing</h3>
-                <p className="course-description">
-                  Transform your online presence into a revenue-generating machine. Discover proven monetization strategies, from digital products to subscription models, and implement them in your business.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Paid Traffic Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/10.png" alt="Paid Traffic Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Paid Traffic</h3>
-                <p className="course-description">
-                  Looking to drive more traffic to your website through paid advertising? Our Paid Traffic course will teach you how to set up and optimize your ad campaigns on all the major advertising platforms, including Google Ads and Facebook Ads.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Funnel Building Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/1.png" alt="Funnel Building Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Funnel Building</h3>
-                <p className="course-description">
-                  Want to maximize your sales? Our Funnel Building course will teach you how to create effective sales funnels that convert your audience into customers. From creating high-converting landing pages to optimizing your upsell and downsell offers, we'll cover all the essential elements of funnel building.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Freelancing Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/5.png" alt="Freelancing Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Freelancing</h3>
-                <p className="course-description">
-                  Looking to become a successful freelancer? Our Freelancing course covers everything you need to know to start and grow your own freelancing business, from finding clients to setting your rates and building a portfolio.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Marketing Automation Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/12.png" alt="Marketing Automation Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Marketing Automation</h3>
-                <p className="course-description">
-                  Ready to save time and streamline your marketing efforts? Our Marketing Automation course teaches you how to automate your marketing processes using the latest tools and techniques, so that you can focus on what you do best - growing your business.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Online Learning Course */}
-            <div className="course-card">
-              <div className="course-image">
-                <img src="/assets/images/images/11.png" alt="Online Learning Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Online Learning</h3>
-                <p className="course-description">
-                  Learn how to create and sell your own online course with our course. We'll teach you everything you need to know, from choosing the right topic to creating engaging content and marketing your course effectively. With our Online Learning course, turn your expertise into profit.
-                </p>
-                <div className="course-pricing">
-                  <p className="retail-price">Retail Price: <span className="strikethrough">$197</span></p>
-                  <p className="membership-status">Included with Membership</p>
-                </div>
-              </div>
-            </div>
-
-            {/* More Courses Summary */}
-            <div className="course-card summary-card">
-              <div className="course-image">
-                <img src="/assets/images/images/courses-preview.png" alt="Online Learning Course" />
-              </div>
-              <div className="course-content">
-                <h3 className="course-title">Plus 14 More Courses Inside</h3>
-                <div className="course-pricing">
-                  <p className="retail-price">Total Retail Value: <span className="strikethrough">$2,758</span></p>
-                  <p className="membership-status">All Included with Membership</p>
-                </div>
-              </div>
+          <div className="all-courses-summary">
+            <h3>Plus 20+ Additional Courses</h3>
+            <p>Website Design • Social Media Marketing • E-commerce • Affiliate Marketing • Freelancing • And More</p>
+            <div className="value-proposition">
+              <p className="total-value">Total Value: <span className="strikethrough">$2,758</span></p>
+              <p className="membership-price">Your Price: <span className="highlight">$47/month</span></p>
             </div>
           </div>
         </div>
@@ -364,8 +466,8 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-          <h2 className="section-title">AI-Powered Marketing Education</h2>
-          <p className="section-subtitle">Learn to leverage AI for unprecedented marketing success</p>
+          <h2 className="section-title">🚀 Master AI Marketing (Your Competitive Edge)</h2>
+          <p className="section-subtitle">While others struggle with outdated tactics, you'll dominate with AI-powered strategies</p>
           
           <div className="ai-features-grid">
             <div className="ai-feature-card">

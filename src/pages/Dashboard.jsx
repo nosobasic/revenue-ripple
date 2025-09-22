@@ -8,6 +8,56 @@ import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import '../pages.css';
+
+// Add styles for the learning path options
+const learningPathStyles = `
+  .learning-path-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  
+  .path-option {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #e5e7eb;
+  }
+  
+  .path-option.featured {
+    background: #dbeafe;
+    border-left-color: #2563eb;
+  }
+  
+  .path-option h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1f2937;
+  }
+  
+  .path-option p {
+    margin: 0 0 0.5rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .path-option ul {
+    margin: 0;
+    padding-left: 1rem;
+  }
+  
+  .path-option li {
+    color: #374151;
+    font-size: 0.875rem;
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = learningPathStyles;
+  document.head.appendChild(styleSheet);
+}
 import { 
   FaMoneyBillWave, 
   FaChartBar, 
@@ -214,7 +264,7 @@ const Dashboard = () => {
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
-            <h2 className="section-overview-title mb-4 mt-2">Your Core Training & Earnings Center</h2>
+            <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2>
             {/* Affiliate Program Section */}
             <div className="section mb-8">
               <div className="section-header affiliate">
@@ -334,6 +384,47 @@ const Dashboard = () => {
               </div>
             </div>
             
+            {/* Learning Paths Section */}
+            <div className="section mb-8">
+              <div className="section-header suggested">
+                <FaLightbulb className="section-icon" />
+                <h2>CHOOSE YOUR SUCCESS PATH</h2>
+              </div>
+              <div className="section-content">
+                <div className="suggested-content">
+                  <p>Follow these proven learning paths to get results fast:</p>
+                  
+                  <div className="learning-path-options">
+                    <div className="path-option">
+                      <h4>🚀 Get Your First Sale (30 Days)</h4>
+                      <p>Perfect for beginners who want to see results quickly</p>
+                      <ul>
+                        <li>AI Essentials → Email Marketing → Funnel Building → Paid Traffic</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="path-option">
+                      <h4>📈 Scale Your Business (60 Days)</h4>
+                      <p>For those ready to grow their existing business</p>
+                      <ul>
+                        <li>Prompt Engineering → Marketing Automation → SEO → Social Media Marketing</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="path-option featured">
+                      <h4>🤖 Master AI Marketing (45 Days)</h4>
+                      <p><strong>Most Popular:</strong> Stay ahead with AI-powered strategies</p>
+                      <ul>
+                        <li>AI Essentials → Prompt Engineering → AI Agent Fundamentals → Marketing Automation</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <p>Each path is designed to build upon previous knowledge and get you real results. Choose the path that matches your current goals.</p>
+                </div>
+                <hr className="section-divider" />
+              </div>
+            </div>
 
             {/* Digital Marketing Section */}
             <div className="section mb-8">
@@ -562,7 +653,7 @@ const Dashboard = () => {
               <div className="section mb-8">
                 <div className="section-header building">
                   <FaGraduationCap className="section-icon" />
-                  <h2>BUILDING SECTION</h2>
+                  <h2>FOUNDATION SKILLS</h2>
                 </div>
                 <div className="section-content">
                   <div
@@ -648,7 +739,7 @@ const Dashboard = () => {
               {/* Marketing Section */}
               <div className="section mb-8">
                 <div className="section-header marketing">
-                  <h2>MARKETING SECTION</h2>
+                  <h2>REVENUE GENERATION</h2>
                 </div>
                 <div className="section-content">
                   {/* Repeat for each marketing course-item: add ARIA, chevron, progress bar, cta-link span */}
@@ -948,7 +1039,7 @@ const Dashboard = () => {
               {/* Fine Tuning Section */}
               <div className="section mb-8">
                 <div className="section-header" style={{ backgroundColor: '#6366f1', color: 'white' }}>
-                  <h2>FINE TUNING SECTION</h2>
+                  <h2>OPTIMIZATION & SCALING</h2>
                 </div>
                 <div className="section-content">
                   <div
