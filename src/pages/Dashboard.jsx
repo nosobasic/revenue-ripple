@@ -9,7 +9,7 @@ import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import '../pages.css';
 
-// Add styles for the learning path options
+// Add styles for the learning path options and progress bars
 const learningPathStyles = `
   .learning-path-options {
     display: flex;
@@ -49,6 +49,28 @@ const learningPathStyles = `
   .path-option li {
     color: #374151;
     font-size: 0.875rem;
+  }
+  
+  /* Progress bar styles */
+  .progress-bar-container {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-bar-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 `;
 
@@ -521,7 +543,10 @@ const Dashboard = () => {
                     <span className={`chevron ${expandedSection === 'ai-essentials' ? 'rotated' : ''}`} style={{ marginLeft: 8, transition: 'transform 0.2s', display: 'inline-block', transform: expandedSection === 'ai-essentials' ? 'rotate(180deg)' : 'none' }}>▼</span>
                   </h3>
                   <div className="progress-bar-container" style={{ height: 4, background: '#eee', borderRadius: 2, margin: '4px 0 8px 0' }}>
-                    <div style={{ width: `${courseProgress['ai-essentials'] ?? 0}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+                    <div style={{ width: `${Math.max(courseProgress['ai-essentials'] ?? 0, 2)}%`, height: '100%', background: '#38bdf8', borderRadius: 2, transition: 'width 0.3s' }} />
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '2px' }}>
+                    {courseProgress['ai-essentials'] ?? 0}% Complete
                   </div>
                   {expandedSection === 'ai-essentials' && (
                     <div className="course-details">
