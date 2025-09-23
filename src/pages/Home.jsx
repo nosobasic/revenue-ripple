@@ -17,6 +17,14 @@ const learningPathsStyles = `
     margin: 2rem 0;
   }
   
+  @media (max-width: 768px) {
+    .learning-paths-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+  }
+  
   .learning-path-card {
     background: white;
     border-radius: 12px;
@@ -24,6 +32,13 @@ const learningPathsStyles = `
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border: 2px solid #e5e7eb;
     transition: all 0.3s ease;
+  }
+  
+  @media (max-width: 768px) {
+    .learning-path-card {
+      padding: 1rem;
+      margin: 0 0.5rem;
+    }
   }
   
   .learning-path-card:hover {
@@ -177,12 +192,132 @@ const learningPathsStyles = `
     color: #2563eb;
   }
   
+  /* Mobile-specific improvements */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 1.75rem !important;
+      padding: 0 1rem;
+    }
+    
+    .hero-subtitle {
+      font-size: 1rem !important;
+      padding: 0 1rem;
+    }
+    
+    .section-title {
+      font-size: 1.5rem !important;
+      padding: 0 1rem;
+    }
+    
+    .section-subtitle {
+      font-size: 1rem !important;
+      padding: 0 1rem;
+    }
+    
+    .testimonials-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+      padding: 0 1rem !important;
+    }
+    
+    .testimonial-card {
+      margin: 0 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 1rem !important;
+      padding: 0 1rem !important;
+    }
+    
+    .stat-card {
+      padding: 1rem !important;
+      margin: 0 0.5rem !important;
+    }
+    
+    .affiliate-content {
+      flex-direction: column !important;
+      gap: 1rem !important;
+      padding: 0 1rem !important;
+    }
+    
+    .affiliate-text {
+      padding: 0 !important;
+    }
+    
+    .value-proposition {
+      flex-direction: column !important;
+      gap: 1rem !important;
+    }
+    
+    .ai-features-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1rem !important;
+      padding: 0 1rem !important;
+    }
+    
+    .ai-feature-card {
+      margin: 0 0.5rem !important;
+      padding: 1rem !important;
+    }
+    
+    .container {
+      padding: 0 0.5rem !important;
+    }
+    
+    .content-grid {
+      flex-direction: column !important;
+      gap: 1rem !important;
+    }
+    
+    .content-text {
+      padding: 0 1rem !important;
+    }
+    
+    .content-image {
+      padding: 0 1rem !important;
+    }
+    
+    .device-image {
+      width: 100% !important;
+      height: auto !important;
+    }
+    
+    .responsive-image {
+      width: 100% !important;
+      height: auto !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr !important;
+    }
+    
+    .hero-title {
+      font-size: 1.5rem !important;
+    }
+    
+    .section-title {
+      font-size: 1.25rem !important;
+    }
+  }
+  
   /* Support Section Styles */
   .support-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
+  }
+  
+  @media (max-width: 768px) {
+    .support-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
   }
   
   .support-card {
@@ -193,6 +328,13 @@ const learningPathsStyles = `
     border: 2px solid #e5e7eb;
     transition: all 0.3s ease;
     text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .support-card {
+      padding: 1rem;
+      margin: 0 0.5rem;
+    }
   }
   
   .support-card:hover {
@@ -276,6 +418,7 @@ if (typeof document !== 'undefined') {
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -285,6 +428,14 @@ export default function Home() {
       VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
       VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL
     });
+    
+    // Handle window resize for responsive design
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
@@ -299,16 +450,35 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container">
-          <h1 className="hero-title" style={{ lineHeight: '1.2', letterSpacing: '0.5px' }}>
+          <h1 className="hero-title" style={{ 
+            lineHeight: '1.2', 
+            letterSpacing: '0.5px',
+            fontSize: isMobile ? '1.75rem' : '2.5rem',
+            padding: isMobile ? '0 1rem' : '0'
+          }}>
             Stop Struggling with Marketing.
             <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}>Get Results in 30 Days.</span>
           </h1>
           
-          <p className="hero-subtitle" style={{ lineHeight: '1.6', letterSpacing: '0.3px', wordSpacing: '1px' }}>
+          <p className="hero-subtitle" style={{ 
+            lineHeight: '1.6', 
+            letterSpacing: '0.3px', 
+            wordSpacing: '1px',
+            fontSize: isMobile ? '1rem' : '1.125rem',
+            padding: isMobile ? '0 1rem' : '0'
+          }}>
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
           
-          <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <div style={{ 
+            marginTop: '2rem', 
+            display: 'flex', 
+            gap: '1rem', 
+            justifyContent: 'center',
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: 'center',
+            padding: isMobile ? '0 1rem' : '0'
+          }}>
             {!user && (
               <Link 
                 to="/checkout" 
@@ -316,15 +486,18 @@ export default function Home() {
                 style={{
                   background: '#2563eb',
                   color: 'white',
-                  padding: '1rem 2.5rem',
+                  padding: isMobile ? '0.875rem 2rem' : '1rem 2.5rem',
                   borderRadius: '50px',
                   fontWeight: 600,
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  fontSize: '1.25rem',
-                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                  fontSize: isMobile ? '1rem' : '1.25rem',
+                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+                  width: isMobile ? '100%' : 'auto',
+                  justifyContent: 'center',
+                  maxWidth: isMobile ? '320px' : 'none'
                 }}
               >
                 <FaRocket /> Begin Checkout - $47/month
@@ -903,25 +1076,30 @@ export default function Home() {
         onClick={() => setShowTestimonialModal(true)}
         style={{
           position: 'fixed',
-          bottom: '32px',
-          right: '32px',
+          bottom: isMobile ? '16px' : '32px',
+          right: isMobile ? '16px' : '32px',
           zIndex: 1200,
           background: '#2563eb',
           color: 'white',
           border: 'none',
           borderRadius: '50px',
-          padding: '0.75rem 1.5rem',
+          padding: isMobile ? '0.625rem 1rem' : '0.75rem 1.5rem',
           fontWeight: 600,
-          fontSize: '1rem',
+          fontSize: isMobile ? '0.875rem' : '1rem',
           boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           gap: '0.5rem',
+          maxWidth: isMobile ? '200px' : 'none',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
         }}
         aria-label="See More Reviews"
       >
-        <FaQuoteLeft style={{ fontSize: '1.25rem' }} /> See More Reviews
+        <FaQuoteLeft style={{ fontSize: isMobile ? '1rem' : '1.25rem' }} /> 
+        {isMobile ? 'More Reviews' : 'See More Reviews'}
       </button>
       {/* Testimonial Modal Overlay */}
       {showTestimonialModal && (
@@ -942,13 +1120,14 @@ export default function Home() {
           <div
             style={{
               background: 'white',
-              borderRadius: '1rem',
+              borderRadius: isMobile ? '0.5rem' : '1rem',
               maxWidth: '700px',
-              width: '90vw',
-              maxHeight: '80vh',
+              width: isMobile ? '95vw' : '90vw',
+              maxHeight: isMobile ? '90vh' : '80vh',
               overflowY: 'auto',
-              padding: '2rem',
+              padding: isMobile ? '1rem' : '2rem',
               position: 'relative',
+              margin: isMobile ? '0.5rem' : '0',
             }}
             onClick={e => e.stopPropagation()}
           >
