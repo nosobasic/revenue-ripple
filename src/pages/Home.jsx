@@ -196,22 +196,29 @@ const learningPathsStyles = `
   @media (max-width: 768px) {
     .hero-title {
       font-size: 1.75rem !important;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
+      margin-bottom: 1.5rem !important;
+      line-height: 1.3 !important;
     }
     
     .hero-subtitle {
       font-size: 1rem !important;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
+      margin-bottom: 2rem !important;
+      line-height: 1.6 !important;
     }
     
     .section-title {
       font-size: 1.5rem !important;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
+      margin-bottom: 1rem !important;
     }
     
     .section-subtitle {
       font-size: 1rem !important;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
+      margin-bottom: 2rem !important;
+      line-height: 1.5 !important;
     }
     
     .testimonials-grid {
@@ -227,13 +234,25 @@ const learningPathsStyles = `
     
     .stats-grid {
       grid-template-columns: repeat(2, 1fr) !important;
-      gap: 1rem !important;
-      padding: 0 1rem !important;
+      gap: 1.5rem !important;
+      padding: 0 1.5rem !important;
+      margin: 2rem 0 !important;
     }
     
     .stat-card {
-      padding: 1rem !important;
-      margin: 0 0.5rem !important;
+      padding: 1.5rem 1rem !important;
+      margin: 0 !important;
+      text-align: center !important;
+    }
+    
+    .stat-card h3 {
+      font-size: 1.25rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    .stat-card p {
+      font-size: 0.875rem !important;
+      margin-bottom: 1rem !important;
     }
     
     .affiliate-content {
@@ -263,20 +282,43 @@ const learningPathsStyles = `
     }
     
     .container {
-      padding: 0 0.5rem !important;
+      padding: 0 1rem !important;
     }
     
     .content-grid {
       flex-direction: column !important;
-      gap: 1rem !important;
+      gap: 2rem !important;
+      padding: 2rem 0 !important;
     }
     
     .content-text {
-      padding: 0 1rem !important;
+      padding: 0 1.5rem !important;
+    }
+    
+    .content-text h2 {
+      font-size: 1.5rem !important;
+      margin-bottom: 1rem !important;
+      line-height: 1.3 !important;
+    }
+    
+    .content-text h3 {
+      font-size: 1.25rem !important;
+      margin-bottom: 1.5rem !important;
+      line-height: 1.4 !important;
+    }
+    
+    .checkmark-list {
+      margin: 1.5rem 0 !important;
+    }
+    
+    .checkmark-list li {
+      margin-bottom: 1.5rem !important;
+      padding: 0.5rem 0 !important;
+      line-height: 1.6 !important;
     }
     
     .content-image {
-      padding: 0 1rem !important;
+      padding: 0 1.5rem !important;
     }
     
     .device-image {
@@ -451,10 +493,11 @@ export default function Home() {
       >
         <div className="container">
           <h1 className="hero-title" style={{ 
-            lineHeight: '1.2', 
+            lineHeight: isMobile ? '1.3' : '1.2', 
             letterSpacing: '0.5px',
             fontSize: isMobile ? '1.75rem' : '2.5rem',
-            padding: isMobile ? '0 1rem' : '0'
+            padding: isMobile ? '0 1.5rem' : '0',
+            marginBottom: isMobile ? '1.5rem' : '1rem'
           }}>
             Stop Struggling with Marketing.
             <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}>Get Results in 30 Days.</span>
@@ -465,19 +508,20 @@ export default function Home() {
             letterSpacing: '0.3px', 
             wordSpacing: '1px',
             fontSize: isMobile ? '1rem' : '1.125rem',
-            padding: isMobile ? '0 1rem' : '0'
+            padding: isMobile ? '0 1.5rem' : '0',
+            marginBottom: isMobile ? '2rem' : '1.5rem'
           }}>
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
           
           <div style={{ 
-            marginTop: '2rem', 
+            marginTop: isMobile ? '1rem' : '2rem', 
             display: 'flex', 
             gap: '1rem', 
             justifyContent: 'center',
             flexDirection: isMobile ? 'column' : 'row',
             alignItems: 'center',
-            padding: isMobile ? '0 1rem' : '0'
+            padding: isMobile ? '0 1.5rem' : '0'
           }}>
             {!user && (
               <Link 
@@ -511,13 +555,43 @@ export default function Home() {
         <div className="content-section">
           <div className="content-grid">
             <div className="content-text">
-              <h2 style={{ lineHeight: '1.3', letterSpacing: '0.3px', marginBottom: '1rem' }}>Why Revenue Ripple Works</h2>
-              <h3 style={{ lineHeight: '1.4', letterSpacing: '0.2px', marginBottom: '1.5rem' }}>We focus on what actually generates revenue:</h3>
-              <ul className="checkmark-list" style={{ lineHeight: '1.7', letterSpacing: '0.2px' }}>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>AI-First Approach:</strong> Learn the latest AI marketing strategies that your competitors don't know yet.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>Proven Learning Paths:</strong> Follow step-by-step roadmaps that get you from zero to first sale in 30 days.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>Earn While You Learn:</strong> Access our exclusive affiliate program to start making money immediately.</li>
-                <li style={{ marginBottom: '1rem' }}><FaCheckCircle className="checkmark" /> <strong>No Fluff:</strong> Every course is designed to generate real results, not just theory.</li>
+              <h2 style={{ 
+                lineHeight: '1.3', 
+                letterSpacing: '0.3px', 
+                marginBottom: isMobile ? '1.5rem' : '1rem',
+                fontSize: isMobile ? '1.5rem' : '2rem'
+              }}>Why Revenue Ripple Works</h2>
+              <h3 style={{ 
+                lineHeight: '1.4', 
+                letterSpacing: '0.2px', 
+                marginBottom: isMobile ? '2rem' : '1.5rem',
+                fontSize: isMobile ? '1.25rem' : '1.5rem'
+              }}>We focus on what actually generates revenue:</h3>
+              <ul className="checkmark-list" style={{ 
+                lineHeight: '1.7', 
+                letterSpacing: '0.2px',
+                marginBottom: isMobile ? '2rem' : '1.5rem'
+              }}>
+                <li style={{ 
+                  marginBottom: isMobile ? '1.5rem' : '1rem',
+                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1rem' : '1.125rem'
+                }}><FaCheckCircle className="checkmark" /> <strong>AI-First Approach:</strong> Learn the latest AI marketing strategies that your competitors don't know yet.</li>
+                <li style={{ 
+                  marginBottom: isMobile ? '1.5rem' : '1rem',
+                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1rem' : '1.125rem'
+                }}><FaCheckCircle className="checkmark" /> <strong>Proven Learning Paths:</strong> Follow step-by-step roadmaps that get you from zero to first sale in 30 days.</li>
+                <li style={{ 
+                  marginBottom: isMobile ? '1.5rem' : '1rem',
+                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1rem' : '1.125rem'
+                }}><FaCheckCircle className="checkmark" /> <strong>Earn While You Learn:</strong> Access our exclusive affiliate program to start making money immediately.</li>
+                <li style={{ 
+                  marginBottom: isMobile ? '1.5rem' : '1rem',
+                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1rem' : '1.125rem'
+                }}><FaCheckCircle className="checkmark" /> <strong>No Fluff:</strong> Every course is designed to generate real results, not just theory.</li>
               </ul>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <Link to="/checkout" className="cta-button">
