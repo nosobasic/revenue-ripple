@@ -196,29 +196,29 @@ const learningPathsStyles = `
   @media (max-width: 768px) {
     .hero-title {
       font-size: 1.75rem !important;
-      padding: 0 1.5rem;
-      margin-bottom: 1.5rem !important;
-      line-height: 1.3 !important;
+      padding: 0 2rem;
+      margin-bottom: 2rem !important;
+      line-height: 1.4 !important;
     }
     
     .hero-subtitle {
       font-size: 1rem !important;
-      padding: 0 1.5rem;
-      margin-bottom: 2rem !important;
-      line-height: 1.6 !important;
+      padding: 0 2rem;
+      margin-bottom: 2.5rem !important;
+      line-height: 1.7 !important;
     }
     
     .section-title {
       font-size: 1.5rem !important;
-      padding: 0 1.5rem;
-      margin-bottom: 1rem !important;
+      padding: 0 2rem;
+      margin-bottom: 1.5rem !important;
     }
     
     .section-subtitle {
       font-size: 1rem !important;
-      padding: 0 1.5rem;
-      margin-bottom: 2rem !important;
-      line-height: 1.5 !important;
+      padding: 0 2rem;
+      margin-bottom: 2.5rem !important;
+      line-height: 1.6 !important;
     }
     
     .testimonials-grid {
@@ -282,43 +282,62 @@ const learningPathsStyles = `
     }
     
     .container {
-      padding: 0 1rem !important;
+      padding: 0 1.5rem !important;
     }
     
     .content-grid {
       flex-direction: column !important;
-      gap: 2rem !important;
-      padding: 2rem 0 !important;
+      gap: 3rem !important;
+      padding: 3rem 0 !important;
     }
     
     .content-text {
-      padding: 0 1.5rem !important;
+      padding: 0 2rem !important;
     }
     
     .content-text h2 {
-      font-size: 1.5rem !important;
-      margin-bottom: 1rem !important;
-      line-height: 1.3 !important;
+      font-size: 1.75rem !important;
+      margin-bottom: 2rem !important;
+      line-height: 1.4 !important;
+      text-align: center !important;
     }
     
     .content-text h3 {
-      font-size: 1.25rem !important;
-      margin-bottom: 1.5rem !important;
-      line-height: 1.4 !important;
+      font-size: 1.375rem !important;
+      margin-bottom: 2.5rem !important;
+      line-height: 1.5 !important;
+      text-align: center !important;
     }
     
     .checkmark-list {
-      margin: 1.5rem 0 !important;
+      margin: 2rem 0 !important;
+      padding: 0 !important;
     }
     
     .checkmark-list li {
-      margin-bottom: 1.5rem !important;
-      padding: 0.5rem 0 !important;
-      line-height: 1.6 !important;
+      margin-bottom: 2.5rem !important;
+      padding: 1rem 0 !important;
+      line-height: 1.8 !important;
+      font-size: 1.125rem !important;
+      display: block !important;
+      clear: both !important;
+    }
+    
+    .checkmark-list li strong {
+      display: block !important;
+      margin-bottom: 0.5rem !important;
+      font-size: 1.25rem !important;
+    }
+    
+    .checkmark {
+      margin-right: 1rem !important;
+      font-size: 1.25rem !important;
+      vertical-align: top !important;
+      margin-top: 0.25rem !important;
     }
     
     .content-image {
-      padding: 0 1.5rem !important;
+      padding: 0 2rem !important;
     }
     
     .device-image {
@@ -493,23 +512,23 @@ export default function Home() {
       >
         <div className="container">
           <h1 className="hero-title" style={{ 
-            lineHeight: isMobile ? '1.3' : '1.2', 
+            lineHeight: isMobile ? '1.4' : '1.2', 
             letterSpacing: '0.5px',
             fontSize: isMobile ? '1.75rem' : '2.5rem',
-            padding: isMobile ? '0 1.5rem' : '0',
-            marginBottom: isMobile ? '1.5rem' : '1rem'
+            padding: isMobile ? '0 2rem' : '0',
+            marginBottom: isMobile ? '2rem' : '1rem'
           }}>
             Stop Struggling with Marketing.
             <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}>Get Results in 30 Days.</span>
           </h1>
           
           <p className="hero-subtitle" style={{ 
-            lineHeight: '1.6', 
+            lineHeight: '1.7', 
             letterSpacing: '0.3px', 
             wordSpacing: '1px',
             fontSize: isMobile ? '1rem' : '1.125rem',
-            padding: isMobile ? '0 1.5rem' : '0',
-            marginBottom: isMobile ? '2rem' : '1.5rem'
+            padding: isMobile ? '0 2rem' : '0',
+            marginBottom: isMobile ? '2.5rem' : '1.5rem'
           }}>
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
@@ -521,7 +540,7 @@ export default function Home() {
             justifyContent: 'center',
             flexDirection: isMobile ? 'column' : 'row',
             alignItems: 'center',
-            padding: isMobile ? '0 1.5rem' : '0'
+            padding: isMobile ? '0 2rem' : '0'
           }}>
             {!user && (
               <Link 
@@ -556,43 +575,139 @@ export default function Home() {
           <div className="content-grid">
             <div className="content-text">
               <h2 style={{ 
-                lineHeight: '1.3', 
+                lineHeight: '1.4', 
                 letterSpacing: '0.3px', 
-                marginBottom: isMobile ? '1.5rem' : '1rem',
-                fontSize: isMobile ? '1.5rem' : '2rem'
+                marginBottom: isMobile ? '2rem' : '1rem',
+                fontSize: isMobile ? '1.75rem' : '2rem',
+                textAlign: isMobile ? 'center' : 'left'
               }}>Why Revenue Ripple Works</h2>
               <h3 style={{ 
-                lineHeight: '1.4', 
+                lineHeight: '1.5', 
                 letterSpacing: '0.2px', 
-                marginBottom: isMobile ? '2rem' : '1.5rem',
-                fontSize: isMobile ? '1.25rem' : '1.5rem'
+                marginBottom: isMobile ? '2.5rem' : '1.5rem',
+                fontSize: isMobile ? '1.375rem' : '1.5rem',
+                textAlign: isMobile ? 'center' : 'left'
               }}>We focus on what actually generates revenue:</h3>
-              <ul className="checkmark-list" style={{ 
-                lineHeight: '1.7', 
-                letterSpacing: '0.2px',
-                marginBottom: isMobile ? '2rem' : '1.5rem'
+              <div className="checkmark-list" style={{ 
+                marginBottom: isMobile ? '2.5rem' : '1.5rem',
+                padding: 0
               }}>
-                <li style={{ 
-                  marginBottom: isMobile ? '1.5rem' : '1rem',
-                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
-                  fontSize: isMobile ? '1rem' : '1.125rem'
-                }}><FaCheckCircle className="checkmark" /> <strong>AI-First Approach:</strong> Learn the latest AI marketing strategies that your competitors don't know yet.</li>
-                <li style={{ 
-                  marginBottom: isMobile ? '1.5rem' : '1rem',
-                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
-                  fontSize: isMobile ? '1rem' : '1.125rem'
-                }}><FaCheckCircle className="checkmark" /> <strong>Proven Learning Paths:</strong> Follow step-by-step roadmaps that get you from zero to first sale in 30 days.</li>
-                <li style={{ 
-                  marginBottom: isMobile ? '1.5rem' : '1rem',
-                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
-                  fontSize: isMobile ? '1rem' : '1.125rem'
-                }}><FaCheckCircle className="checkmark" /> <strong>Earn While You Learn:</strong> Access our exclusive affiliate program to start making money immediately.</li>
-                <li style={{ 
-                  marginBottom: isMobile ? '1.5rem' : '1rem',
-                  padding: isMobile ? '0.75rem 0' : '0.5rem 0',
-                  fontSize: isMobile ? '1rem' : '1.125rem'
-                }}><FaCheckCircle className="checkmark" /> <strong>No Fluff:</strong> Every course is designed to generate real results, not just theory.</li>
-              </ul>
+                <div style={{ 
+                  marginBottom: isMobile ? '2.5rem' : '1rem',
+                  padding: isMobile ? '1rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1.125rem' : '1.125rem',
+                  lineHeight: '1.8'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    marginBottom: isMobile ? '0.5rem' : '0.25rem'
+                  }}>
+                    <FaCheckCircle style={{ 
+                      color: '#2563eb', 
+                      fontSize: '1.25rem',
+                      marginTop: '0.25rem',
+                      flexShrink: 0
+                    }} />
+                    <strong style={{ 
+                      fontSize: isMobile ? '1.25rem' : '1.125rem',
+                      display: 'block',
+                      marginBottom: '0.5rem'
+                    }}>AI-First Approach:</strong>
+                  </div>
+                  <div style={{ paddingLeft: isMobile ? '2.25rem' : '1.5rem' }}>
+                    Learn the latest AI marketing strategies that your competitors don't know yet.
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  marginBottom: isMobile ? '2.5rem' : '1rem',
+                  padding: isMobile ? '1rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1.125rem' : '1.125rem',
+                  lineHeight: '1.8'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    marginBottom: isMobile ? '0.5rem' : '0.25rem'
+                  }}>
+                    <FaCheckCircle style={{ 
+                      color: '#2563eb', 
+                      fontSize: '1.25rem',
+                      marginTop: '0.25rem',
+                      flexShrink: 0
+                    }} />
+                    <strong style={{ 
+                      fontSize: isMobile ? '1.25rem' : '1.125rem',
+                      display: 'block',
+                      marginBottom: '0.5rem'
+                    }}>Proven Learning Paths:</strong>
+                  </div>
+                  <div style={{ paddingLeft: isMobile ? '2.25rem' : '1.5rem' }}>
+                    Follow step-by-step roadmaps that get you from zero to first sale in 30 days.
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  marginBottom: isMobile ? '2.5rem' : '1rem',
+                  padding: isMobile ? '1rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1.125rem' : '1.125rem',
+                  lineHeight: '1.8'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    marginBottom: isMobile ? '0.5rem' : '0.25rem'
+                  }}>
+                    <FaCheckCircle style={{ 
+                      color: '#2563eb', 
+                      fontSize: '1.25rem',
+                      marginTop: '0.25rem',
+                      flexShrink: 0
+                    }} />
+                    <strong style={{ 
+                      fontSize: isMobile ? '1.25rem' : '1.125rem',
+                      display: 'block',
+                      marginBottom: '0.5rem'
+                    }}>Earn While You Learn:</strong>
+                  </div>
+                  <div style={{ paddingLeft: isMobile ? '2.25rem' : '1.5rem' }}>
+                    Access our exclusive affiliate program to start making money immediately.
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  marginBottom: isMobile ? '2.5rem' : '1rem',
+                  padding: isMobile ? '1rem 0' : '0.5rem 0',
+                  fontSize: isMobile ? '1.125rem' : '1.125rem',
+                  lineHeight: '1.8'
+                }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    marginBottom: isMobile ? '0.5rem' : '0.25rem'
+                  }}>
+                    <FaCheckCircle style={{ 
+                      color: '#2563eb', 
+                      fontSize: '1.25rem',
+                      marginTop: '0.25rem',
+                      flexShrink: 0
+                    }} />
+                    <strong style={{ 
+                      fontSize: isMobile ? '1.25rem' : '1.125rem',
+                      display: 'block',
+                      marginBottom: '0.5rem'
+                    }}>No Fluff:</strong>
+                  </div>
+                  <div style={{ paddingLeft: isMobile ? '2.25rem' : '1.5rem' }}>
+                    Every course is designed to generate real results, not just theory.
+                  </div>
+                </div>
+              </div>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <Link to="/checkout" className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
