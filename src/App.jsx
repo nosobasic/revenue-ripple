@@ -39,6 +39,15 @@ const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
 const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
+// New landing page components
+const MembershipVariation1 = lazy(() => import('./pages/MembershipVariation1'));
+const MembershipVariation2 = lazy(() => import('./pages/MembershipVariation2'));
+const MembershipVariation3 = lazy(() => import('./pages/MembershipVariation3'));
+const DMDVariation1 = lazy(() => import('./pages/DMDVariation1'));
+const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
+const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
+const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
+const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
@@ -171,6 +180,18 @@ const App = () => {
         {/* Survival Playbook Routes */}
         <Route path="/survival-playbook" element={<SurvivalPlaybook />} />
         <Route path="/thank-you-survival-playbook" element={<ThankYouSurvivalPlaybook />} />
+        
+        {/* Membership Mastery Landing Page Routes */}
+        <Route path="/membership-variation-1" element={<MembershipVariation1 />} />
+        <Route path="/membership-variation-2" element={<MembershipVariation2 />} />
+        <Route path="/membership-variation-3" element={<MembershipVariation3 />} />
+        <Route path="/thank-you-membership-mastery" element={<ThankYouMembershipMastery />} />
+        
+        {/* Digital Marketing Domination Landing Page Routes */}
+        <Route path="/dmd-variation-1" element={<DMDVariation1 />} />
+        <Route path="/dmd-variation-2" element={<DMDVariation2 />} />
+        <Route path="/dmd-variation-3" element={<DMDVariation3 />} />
+        <Route path="/thank-you-dmd" element={<ThankYouDMD />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

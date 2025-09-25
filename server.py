@@ -977,6 +977,234 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
+# Membership Mastery API Endpoint
+@app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET'])
+def membership_mastery_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Membership Mastery API is running",
+            "message": "Use POST to submit form data"
+        })
+    
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract form data
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        phone = data.get('phone', '').strip()
+        source = data.get('source', 'membership-mastery')
+        
+        # Extract UTM parameters
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'membership-mastery')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        
+        # Validate required fields
+        if not email or not name:
+            return jsonify({"error": "Email and name are required"}), 400
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with membership-mastery tag
+        add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    'email': email,
+                    'name': name,
+                    'phone': phone,
+                    'source': source,
+                    'utm_source': utm_source,
+                    'utm_medium': utm_medium,
+                    'utm_campaign': utm_campaign,
+                    'utm_term': utm_term,
+                    'utm_content': utm_content,
+                    'submitted_at': 'now()'
+                }
+                
+                result = supabase.table('membership_mastery_submissions').insert(submission_data).execute()
+                print(f"✅ Logged membership mastery submission to database: {email}")
+                
+            except Exception as db_error:
+                print(f"⚠️ Database logging failed: {db_error}")
+        
+        return jsonify({"success": True, "message": "Successfully submitted"})
+        
+    except Exception as e:
+        print(f"❌ Membership mastery submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add membership mastery lead to GetResponse master list"""
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Create name with source tracking
+    name_with_source = f"{name} ({source})"
+    
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": name_with_source
+    }
+    
+    # Add phone if provided
+    if phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": "phone",  # You'll need to create this custom field in GetResponse
+                "value": [phone]
+            }
+        ]
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Membership Mastery - {source})")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Digital Marketing Domination API Endpoint
+@app.route('/api/getresponse/digital-marketing-domination', methods=['POST', 'GET'])
+def digital_marketing_domination_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Digital Marketing Domination API is running",
+            "message": "Use POST to submit form data"
+        })
+    
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract form data
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        phone = data.get('phone', '').strip()
+        source = data.get('source', 'digital-marketing-domination')
+        
+        # Extract UTM parameters
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'digital-marketing-domination')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        
+        # Validate required fields
+        if not email or not name:
+            return jsonify({"error": "Email and name are required"}), 400
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with dmd tag
+        add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    'email': email,
+                    'name': name,
+                    'phone': phone,
+                    'source': source,
+                    'utm_source': utm_source,
+                    'utm_medium': utm_medium,
+                    'utm_campaign': utm_campaign,
+                    'utm_term': utm_term,
+                    'utm_content': utm_content,
+                    'submitted_at': 'now()'
+                }
+                
+                result = supabase.table('dmd_submissions').insert(submission_data).execute()
+                print(f"✅ Logged DMD submission to database: {email}")
+                
+            except Exception as db_error:
+                print(f"⚠️ Database logging failed: {db_error}")
+        
+        return jsonify({"success": True, "message": "Successfully submitted"})
+        
+    except Exception as e:
+        print(f"❌ Digital marketing domination submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add digital marketing domination lead to GetResponse master list"""
+    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Create name with source tracking
+    name_with_source = f"{name} ({source})"
+    
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": name_with_source
+    }
+    
+    # Add phone if provided
+    if phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": "phone",  # You'll need to create this custom field in GetResponse
+                "value": [phone]
+            }
+        ]
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Digital Marketing Domination - {source})")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
 
 if __name__ == '__main__':
 	app.run(debug=True, host='0.0.0.0', port=5001)
