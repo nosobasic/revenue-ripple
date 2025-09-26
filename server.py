@@ -46,13 +46,7 @@ def health_check():
 
 @app.after_request
 def after_request(response):
-    # Only add CORS headers if they're not already set by flask-cors
-    if 'Access-Control-Allow-Origin' not in response.headers:
-        response.headers.add('Access-Control-Allow-Origin', '*')
-    if 'Access-Control-Allow-Headers' not in response.headers:
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
-    if 'Access-Control-Allow-Methods' not in response.headers:
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    # Let flask-cors handle CORS headers - don't add duplicate headers
     return response
 
 @app.route('/create-payment-intent', methods=['POST'])
