@@ -82,7 +82,7 @@ const DMDVariation3 = () => {
         ...utmParams
       };
 
-      const response = await fetch('https://revenue-ripple.onrender.com/api/getresponse/digital-marketing-domination', {
+      const response = await fetch('https://revenue-ripple.onrender.com/api/getresponse/survival-playbook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
