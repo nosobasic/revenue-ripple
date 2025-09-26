@@ -990,7 +990,7 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         body["customFieldValues"] = [
             {
                 "customFieldId": "phone",
-                "value": phone.strip()
+                "value": [phone.strip()]  # GetResponse expects value as array
             }
         ]
     
@@ -1103,7 +1103,7 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         body["customFieldValues"] = [
             {
                 "customFieldId": "phone",
-                "value": phone.strip()
+                "value": [phone.strip()]  # GetResponse expects value as array
             }
         ]
     
