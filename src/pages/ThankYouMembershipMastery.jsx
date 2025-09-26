@@ -75,12 +75,14 @@ const ThankYouMembershipMastery = () => {
             <p className="text-lg mb-6 opacity-90">
               Download your Membership Mastery guide and start building your recurring income machine today.
             </p>
-            <Link 
-              to="/dlds/membershipmastery" 
+            <a 
+              href="https://www.revenueripple.org/dlds/MembershipMastery.pdf" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
               Download Membership Mastery Ebook
-            </Link>
+            </a>
           </div>
 
           {/* Revenue Ripple CTA Section */}
