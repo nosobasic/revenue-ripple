@@ -248,6 +248,83 @@ export default function DMDLanding() {
         </div>
       </section>
 
+      {/* Can't Wait Section */}
+      <section style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', padding: '3rem 0', marginTop: '2rem' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto' }}>
+            <h2 style={{ color: '#92400e', fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
+              ⏰ Can't Wait for the Free Lessons?
+            </h2>
+            <p style={{ color: '#92400e', fontSize: '1.25rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Get instant access to the complete Digital Marketing Domination ebook right now! 
+              Don't wait for lessons to arrive every 2 weeks - start implementing all 26 strategies today.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+              <Link 
+                to="/dlds/dmd" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(220, 38, 38, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(220, 38, 38, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(220, 38, 38, 0.2)';
+                }}
+              >
+                📖 Get Full Ebook Now - $7
+              </Link>
+              <Link 
+                to="/" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(37, 99, 235, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(37, 99, 235, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(37, 99, 235, 0.2)';
+                }}
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+            </div>
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              padding: '1rem', 
+              borderRadius: '8px',
+              display: 'inline-block'
+            }}>
+              <p style={{ margin: 0, color: '#92400e', fontWeight: 600, fontSize: '0.9rem' }}>
+                ✅ Instant download • 100% money-back guarantee • No waiting required
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <div className="content-section" style={{ background: 'white', marginTop: '2rem' }}>
         <h2 style={{ color: '#1e293b', fontWeight: 700, fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>

@@ -31,8 +31,28 @@ const ThankYouDMD = () => {
           </h1>
           
           <p className="text-xl text-gray-600 mb-8">
-            Your copy of <strong>Digital Marketing Domination</strong> is on its way to your inbox.
+            You're now signed up for your <strong>Digital Marketing Domination</strong> lessons!
           </p>
+
+          {/* Lesson Schedule Info */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white mb-6">
+            <h2 className="text-2xl font-bold mb-4">📅 Your Lesson Schedule</h2>
+            <div className="bg-white bg-opacity-20 rounded-xl p-6 mb-4">
+              <div className="flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-white bg-opacity-30 rounded-full flex items-center justify-center mr-4">
+                  <span className="text-2xl">📧</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Lessons Start Today!</h3>
+                  <p className="opacity-90">New lesson every 2 weeks</p>
+                </div>
+              </div>
+              <p className="text-lg opacity-90 text-center">
+                Your first lesson will arrive in your inbox within the next few minutes. 
+                After that, you'll receive a new lesson every 2 weeks for the next year.
+              </p>
+            </div>
+          </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">What's Next?</h2>
@@ -43,7 +63,7 @@ const ThankYouDMD = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Check Your Email</h3>
-                  <p className="text-gray-600">Look for your Digital Marketing Domination guide in your inbox (check spam folder too)</p>
+                  <p className="text-gray-600">Your first lesson is on its way! Check your inbox (and spam folder) for your Digital Marketing Domination lesson.</p>
                 </div>
               </div>
               
@@ -52,8 +72,8 @@ const ThankYouDMD = () => {
                   <span className="text-blue-600 text-sm font-bold">2</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Study the 26 Strategies</h3>
-                  <p className="text-gray-600">Learn the proven tactics that consistently drive traffic, leads, and sales</p>
+                  <h3 className="font-semibold text-gray-900">Study Each Lesson</h3>
+                  <p className="text-gray-600">Learn the 26 core strategies that consistently drive traffic, leads, and sales - delivered every 2 weeks.</p>
                 </div>
               </div>
               
@@ -63,25 +83,48 @@ const ThankYouDMD = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Implement & Dominate</h3>
-                  <p className="text-gray-600">Start applying the strategies to turn every click into a customer</p>
+                  <p className="text-gray-600">Start applying the strategies to turn every click into a customer and build campaigns that actually drive sales.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white mb-8">
-            <h3 className="text-2xl font-bold mb-4">Ready to Dominate Digital Marketing?</h3>
+          {/* Can't Wait CTA Section */}
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white mb-6">
+            <h3 className="text-2xl font-bold mb-4">⏰ Can't Wait for the Lessons?</h3>
             <p className="text-lg mb-6 opacity-90">
-              Get access to our complete training platform with advanced courses, 
-              tools, and expert guidance to accelerate your success.
+              Get instant access to the complete Digital Marketing Domination ebook right now! 
+              Don't wait a year - start implementing all 26 strategies today.
             </p>
             <Link 
-              to="/checkout" 
-              className="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+              to="/dlds/dmd" 
+              className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Join Revenue Ripple - $47/month
+              📖 Get Full Ebook Now - $7
             </Link>
+          </div>
+
+          {/* Revenue Ripple CTA Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white mb-8">
+            <h3 className="text-2xl font-bold mb-4">Want to Take Your Marketing to the Next Level?</h3>
+            <p className="text-lg mb-6 opacity-90">
+              Join Revenue Ripple and get access to 46+ comprehensive marketing tutorials, AI-powered strategies, 
+              and our exclusive affiliate program where you can earn $47/month per referral - sent straight to your PayPal!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                to="/" 
+                className="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+              <Link 
+                to="/reseller" 
+                className="inline-block bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                💰 Join Reseller Program
+              </Link>
+            </div>
           </div>
 
           {/* Additional Resources */}

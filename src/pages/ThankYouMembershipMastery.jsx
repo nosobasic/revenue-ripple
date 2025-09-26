@@ -69,19 +69,40 @@ const ThankYouMembershipMastery = () => {
             </div>
           </div>
 
-          {/* CTA Section */}
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white mb-8">
-            <h3 className="text-2xl font-bold mb-4">Ready to Take Your Business Further?</h3>
+          {/* Download CTA Section */}
+          <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-white mb-6">
+            <h3 className="text-2xl font-bold mb-4">📖 Your Ebook is Ready!</h3>
             <p className="text-lg mb-6 opacity-90">
-              Get access to our complete training platform with step-by-step courses, 
-              tools, and community support.
+              Download your Membership Mastery guide and start building your recurring income machine today.
             </p>
             <Link 
-              to="/checkout" 
-              className="inline-block bg-white text-purple-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+              to="/dlds/membershipmastery" 
+              className="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Join Revenue Ripple - $47/month
+              Download Membership Mastery Ebook
             </Link>
+          </div>
+
+          {/* Revenue Ripple CTA Section */}
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 text-white mb-8">
+            <h3 className="text-2xl font-bold mb-4">Want to Earn Recurring Revenue While You Learn?</h3>
+            <p className="text-lg mb-6 opacity-90">
+              Join Revenue Ripple and get access to 46+ comprehensive marketing tutorials, AI-powered strategies, and our exclusive affiliate program where you can earn $47/month per referral - sent straight to your PayPal!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                to="/" 
+                className="inline-block bg-white text-purple-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+              <Link 
+                to="/reseller" 
+                className="inline-block bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                💰 Join Reseller Program
+              </Link>
+            </div>
           </div>
 
           {/* Additional Resources */}
