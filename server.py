@@ -11,7 +11,7 @@ from datetime import datetime
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
-from insights.routes import insights_bp
+# from insights.routes import insights_bp  # Module not found - commented out
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
