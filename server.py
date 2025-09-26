@@ -30,7 +30,7 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
-CORS(app, origins="*")
+CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173"])
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -883,8 +883,12 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
 # Membership Mastery API Endpoint
-@app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET'])
+@app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET', 'OPTIONS'])
 def membership_mastery_submission():
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 200
+    
     # Handle GET requests for debugging
     if request.method == 'GET':
         return jsonify({
@@ -980,8 +984,12 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
 # Digital Marketing Domination API Endpoint
-@app.route('/api/getresponse/digital-marketing-domination', methods=['POST', 'GET'])
+@app.route('/api/getresponse/digital-marketing-domination', methods=['POST', 'GET', 'OPTIONS'])
 def digital_marketing_domination_submission():
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 200
+    
     # Handle GET requests for debugging
     if request.method == 'GET':
         return jsonify({
@@ -1075,174 +1083,6 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
             print(f"❌ GetResponse error {response.status_code}: {response.text}")
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
-
-# Digital Marketing Domination endpoint
-@app.route('/api/getresponse/digital-marketing-domination', methods=['POST', 'GET'])
-def digital_marketing_domination_submission():
-    # Handle GET requests for debugging
-    if request.method == 'GET':
-        return jsonify({
-            "status": "Digital Marketing Domination API is running",
-            "method": "GET",
-            "message": "This endpoint accepts POST requests for form submissions"
-        })
-    
-    # Handle POST requests
-    print(f"📥 Digital Marketing Domination submission received from {request.remote_addr}")
-    print(f"📥 Request method: {request.method}")
-    print(f"📥 Request headers: {dict(request.headers)}")
-    
-    try:
-        data = request.get_json()
-        print(f"📥 Request data: {data}")
-        name = data.get('name', '').strip()
-        email = data.get('email', '').strip().lower()
-        phone = data.get('phone', '').strip()
-        source = data.get('source', 'digital-marketing-domination')
-        ip_address = request.remote_addr
-        
-        # Rate limiting: max 3 attempts per IP per hour
-        current_time = time.time()
-        if ip_address in submission_attempts:
-            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
-            if len(attempts) >= 3:
-                return jsonify({"error": "Too many attempts. Please try again later."}), 429
-            submission_attempts[ip_address] = attempts
-        else:
-            submission_attempts[ip_address] = []
-        
-        # Record this attempt
-        submission_attempts[ip_address].append(current_time)
-        
-        # Validate input
-        if not name or not email:
-            return jsonify({"error": "Name and email are required"}), 400
-        
-        # Basic email validation
-        import re
-        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-        if not re.match(email_pattern, email):
-            return jsonify({"error": "Please enter a valid email address"}), 400
-        
-        # Check if email already exists in submissions
-        if supabase:
-            try:
-                # Check if email already exists in digital marketing domination submissions
-                existing = supabase.table("digital_marketing_domination_submissions").select("email").eq("email", email).execute()
-                if existing.data and len(existing.data) > 0:
-                    print(f"⚠️ Email {email} already submitted for Digital Marketing Domination")
-                    return jsonify({"error": "This email has already been submitted"}), 409
-            except Exception as db_error:
-                print(f"⚠️ Database check failed: {db_error}")
-        
-        # Add to GetResponse
-        add_digital_marketing_domination_to_getresponse(email, name, phone, source)
-        
-        # Log submission to database if available
-        if supabase:
-            try:
-                submission_data = {
-                    'email': email,
-                    'name': name,
-                    'phone': phone,
-                    'source': source,
-                    'ip_address': ip_address,
-                    'submitted_at': 'now()'
-                }
-                supabase.table("digital_marketing_domination_submissions").insert(submission_data).execute()
-                print(f"✅ Logged digital marketing domination submission for {email}")
-            except Exception as db_error:
-                print(f"❌ Failed to log digital marketing domination submission: {db_error}")
-        
-        return jsonify({"success": True, "message": "Thank you! Your submission has been received."})
-        
-    except Exception as e:
-        print(f"❌ Digital marketing domination submission error: {str(e)}")
-        return jsonify({"error": "Something went wrong. Please try again."}), 500
-
-# Membership Mastery endpoint
-@app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET'])
-def membership_mastery_submission():
-    # Handle GET requests for debugging
-    if request.method == 'GET':
-        return jsonify({
-            "status": "Membership Mastery API is running",
-            "method": "GET",
-            "message": "This endpoint accepts POST requests for form submissions"
-        })
-    
-    # Handle POST requests
-    print(f"📥 Membership Mastery submission received from {request.remote_addr}")
-    print(f"📥 Request method: {request.method}")
-    print(f"📥 Request headers: {dict(request.headers)}")
-    
-    try:
-        data = request.get_json()
-        print(f"📥 Request data: {data}")
-        name = data.get('name', '').strip()
-        email = data.get('email', '').strip().lower()
-        phone = data.get('phone', '').strip()
-        source = data.get('source', 'membership-mastery')
-        ip_address = request.remote_addr
-        
-        # Rate limiting: max 3 attempts per IP per hour
-        current_time = time.time()
-        if ip_address in submission_attempts:
-            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
-            if len(attempts) >= 3:
-                return jsonify({"error": "Too many attempts. Please try again later."}), 429
-            submission_attempts[ip_address] = attempts
-        else:
-            submission_attempts[ip_address] = []
-        
-        # Record this attempt
-        submission_attempts[ip_address].append(current_time)
-        
-        # Validate input
-        if not name or not email:
-            return jsonify({"error": "Name and email are required"}), 400
-        
-        # Basic email validation
-        import re
-        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-        if not re.match(email_pattern, email):
-            return jsonify({"error": "Please enter a valid email address"}), 400
-        
-        # Check if email already exists in submissions
-        if supabase:
-            try:
-                # Check if email already exists in membership mastery submissions
-                existing = supabase.table("membership_mastery_submissions").select("email").eq("email", email).execute()
-                if existing.data and len(existing.data) > 0:
-                    print(f"⚠️ Email {email} already submitted for Membership Mastery")
-                    return jsonify({"error": "This email has already been submitted"}), 409
-            except Exception as db_error:
-                print(f"⚠️ Database check failed: {db_error}")
-        
-        # Add to GetResponse
-        add_membership_mastery_to_getresponse(email, name, phone, source)
-        
-        # Log submission to database if available
-        if supabase:
-            try:
-                submission_data = {
-                    'email': email,
-                    'name': name,
-                    'phone': phone,
-                    'source': source,
-                    'ip_address': ip_address,
-                    'submitted_at': 'now()'
-                }
-                supabase.table("membership_mastery_submissions").insert(submission_data).execute()
-                print(f"✅ Logged membership mastery submission for {email}")
-            except Exception as db_error:
-                print(f"❌ Failed to log membership mastery submission: {db_error}")
-        
-        return jsonify({"success": True, "message": "Thank you! Your submission has been received."})
-        
-    except Exception as e:
-        print(f"❌ Membership mastery submission error: {str(e)}")
-        return jsonify({"error": "Something went wrong. Please try again."}), 500
 
 
 if __name__ == '__main__':
