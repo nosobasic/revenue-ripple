@@ -978,21 +978,21 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         print("❌ Could not get GetResponse campaign ID")
         return
     
-    # Body with email, campaign, and name (phone logging temporarily disabled)
+    # Body with email, campaign, name, and phone number
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
         "name": f"{name} (Membership Mastery)"
     }
     
-    # TODO: Add phone number as custom field once GetResponse custom field is set up
-    # if phone and phone.strip():
-    #     body["customFieldValues"] = [
-    #         {
-    #             "customFieldId": "phone",
-    #             "value": phone.strip()
-    #         }
-    #     ]
+    # Add phone number as custom field if provided
+    if phone and phone.strip():
+        body["customFieldValues"] = [
+            {
+                "customFieldId": "phone",
+                "value": phone.strip()
+            }
+        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
@@ -1091,21 +1091,21 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         print("❌ Could not get GetResponse campaign ID")
         return
     
-    # Body with email, campaign, and name (phone logging temporarily disabled)
+    # Body with email, campaign, name, and phone number
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
         "name": f"{name} (Digital Marketing Domination)"
     }
     
-    # TODO: Add phone number as custom field once GetResponse custom field is set up
-    # if phone and phone.strip():
-    #     body["customFieldValues"] = [
-    #         {
-    #             "customFieldId": "phone",
-    #             "value": phone.strip()
-    #         }
-    #     ]
+    # Add phone number as custom field if provided
+    if phone and phone.strip():
+        body["customFieldValues"] = [
+            {
+                "customFieldId": "phone",
+                "value": phone.strip()
+            }
+        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
