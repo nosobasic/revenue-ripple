@@ -7,6 +7,7 @@ import time
 import paypalrestsdk
 import json
 from datetime import datetime
+import re
 
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -735,6 +736,61 @@ def get_getresponse_campaign_id():
         return None
     return campaign_id
 
+# --- Phone normalization and custom field lookup for GetResponse ---
+def _normalize_phone_e164(raw: str) -> str:
+    """Best-effort E.164 normalizer. Keeps digits, assumes US +1 when 10 digits."""
+    if not raw:
+        return ""
+    digits = re.sub(r"[^0-9+]", "", str(raw)).lstrip()
+    # If already starts with '+', assume caller supplied full E.164
+    if digits.startswith('+'):
+        return digits.replace(' ', '')
+    # Strip any leading '+' that might have been removed by lstrip
+    digits = re.sub(r"[^0-9]", "", digits)
+    if len(digits) == 10:
+        return "+1" + digits
+    if len(digits) == 11 and digits.startswith('1'):
+        return "+" + digits
+    # Fallback: prefix '+' if user already included country code length >=11
+    return "+" + digits if digits else ""
+
+def get_phone_custom_field_id() -> str | None:
+    """Return the GetResponse custom field id for the phone field.
+    Uses env GETRESPONSE_PHONE_FIELD_ID if set, otherwise looks up by name.
+    """
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required to look up custom fields")
+        return None
+    env_id = os.getenv("GETRESPONSE_PHONE_FIELD_ID")
+    if env_id:
+        return env_id
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    try:
+        # Fetch all custom fields and locate a phone-type field by common names
+        resp = requests.get("https://api.getresponse.com/v3/custom-fields", headers=headers, timeout=10)
+        if resp.status_code != 200:
+            print(f"⚠️ Failed to fetch custom fields: {resp.status_code} {resp.text}")
+            return None
+        fields = resp.json() or []
+        wanted_names = {"phone", "phone_number", "phone number", "mobile", "mobile_phone"}
+        for f in fields:
+            name = (f.get("name") or "").strip().lower()
+            ftype = (f.get("type") or "").strip().lower()
+            if name in wanted_names or ftype == "phone":
+                cid = f.get("customFieldId") or f.get("id")
+                if cid:
+                    print(f"🔎 Using phone custom field id: {cid} (name: {name})")
+                    return cid
+        print("⚠️ No phone custom field found. Create one in GetResponse as type 'Phone'.")
+        return None
+    except Exception as e:
+        print(f"⚠️ Error looking up custom fields: {e}")
+        return None
+
 def add_book_giveaway_to_getresponse(email, name):
     """Add book giveaway lead to GetResponse master list"""
     api_key = os.getenv("GETRESPONSE_API_KEY")
@@ -918,6 +974,11 @@ def membership_mastery_submission():
         name = data.get('name', '').strip()
         phone = data.get('phone', '').strip()
         source = data.get('source', 'membership-mastery')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'membership-mastery')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
         
         # Validate required fields
         if not email or not name:
@@ -984,17 +1045,16 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         "campaign": {"campaignId": campaign_id},
         "name": f"{name} (Membership Mastery)"
     }
-    
-    # TODO: Add phone number as custom field once correct customFieldId is found
-    # The custom field ID "phone" was not found in GetResponse
-    # Need to get the actual custom field ID from GetResponse API
-    # if phone and phone.strip():
-    #     body["customFieldValues"] = [
-    #         {
-    #             "customFieldId": "ACTUAL_CUSTOM_FIELD_ID",
-    #             "value": [phone.strip()]
-    #         }
-    #     ]
+    # Attach phone as a custom field when available
+    phone_field_id = get_phone_custom_field_id()
+    norm_phone = _normalize_phone_e164(phone)
+    if phone_field_id and norm_phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": phone_field_id,
+                "value": [norm_phone]
+            }
+        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
@@ -1033,6 +1093,11 @@ def digital_marketing_domination_submission():
         name = data.get('name', '').strip()
         phone = data.get('phone', '').strip()
         source = data.get('source', 'digital-marketing-domination')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'digital-marketing-domination')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
         
         # Validate required fields
         if not email or not name:
@@ -1099,17 +1164,15 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         "campaign": {"campaignId": campaign_id},
         "name": f"{name} (Digital Marketing Domination)"
     }
-    
-    # TODO: Add phone number as custom field once correct customFieldId is found
-    # The custom field ID "phone" was not found in GetResponse
-    # Need to get the actual custom field ID from GetResponse API
-    # if phone and phone.strip():
-    #     body["customFieldValues"] = [
-    #         {
-    #             "customFieldId": "ACTUAL_CUSTOM_FIELD_ID",
-    #             "value": [phone.strip()]
-    #         }
-    #     ]
+    phone_field_id = get_phone_custom_field_id()
+    norm_phone = _normalize_phone_e164(phone)
+    if phone_field_id and norm_phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": phone_field_id,
+                "value": [norm_phone]
+            }
+        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
