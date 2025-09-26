@@ -334,7 +334,7 @@ def add_contact_to_getresponse(email, tag):
     }
 
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print("✔️ Successfully added to GetResponse.")
         else:
@@ -760,7 +760,7 @@ def add_book_giveaway_to_getresponse(email, name):
     }
     
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print(f"✅ Successfully added {email} to GetResponse (Book Giveaway)")
         elif response.status_code == 409:
@@ -882,7 +882,7 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
     }
     
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print(f"✅ Successfully added {email} to GetResponse (Survival Playbook)")
         elif response.status_code == 409:
@@ -986,7 +986,7 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
     }
     
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print(f"✅ Successfully added {email} to GetResponse (Membership Mastery - {source})")
         elif response.status_code == 409:
@@ -1090,7 +1090,7 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
     }
     
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print(f"✅ Successfully added {email} to GetResponse (Digital Marketing Domination - {source})")
         elif response.status_code == 409:
