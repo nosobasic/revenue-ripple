@@ -82,7 +82,7 @@ const MembershipVariation3 = () => {
         ...utmParams
       };
 
-      const response = await fetch('https://revenue-ripple.onrender.com/api/book-giveaway', {
+      const response = await fetch('https://revenue-ripple.onrender.com/api/getresponse/membership-mastery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
