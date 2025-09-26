@@ -985,14 +985,16 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         "name": f"{name} (Membership Mastery)"
     }
     
-    # Add phone number as custom field if provided
-    if phone and phone.strip():
-        body["customFieldValues"] = [
-            {
-                "customFieldId": "phone",
-                "value": [phone.strip()]  # GetResponse expects value as array
-            }
-        ]
+    # TODO: Add phone number as custom field once correct customFieldId is found
+    # The custom field ID "phone" was not found in GetResponse
+    # Need to get the actual custom field ID from GetResponse API
+    # if phone and phone.strip():
+    #     body["customFieldValues"] = [
+    #         {
+    #             "customFieldId": "ACTUAL_CUSTOM_FIELD_ID",
+    #             "value": [phone.strip()]
+    #         }
+    #     ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
@@ -1098,14 +1100,16 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         "name": f"{name} (Digital Marketing Domination)"
     }
     
-    # Add phone number as custom field if provided
-    if phone and phone.strip():
-        body["customFieldValues"] = [
-            {
-                "customFieldId": "phone",
-                "value": [phone.strip()]  # GetResponse expects value as array
-            }
-        ]
+    # TODO: Add phone number as custom field once correct customFieldId is found
+    # The custom field ID "phone" was not found in GetResponse
+    # Need to get the actual custom field ID from GetResponse API
+    # if phone and phone.strip():
+    #     body["customFieldValues"] = [
+    #         {
+    #             "customFieldId": "ACTUAL_CUSTOM_FIELD_ID",
+    #             "value": [phone.strip()]
+    #         }
+    #     ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
