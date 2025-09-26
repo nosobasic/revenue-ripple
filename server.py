@@ -983,22 +983,16 @@ def membership_mastery_submission():
     
     try:
         data = request.get_json()
+        print(f"📥 Membership Mastery submission data: {data}")
         
         if not data:
             return jsonify({"error": "No data provided"}), 400
         
-        # Extract form data
+        # Extract form data - simplified like book giveaway
         email = data.get('email', '').strip().lower()
         name = data.get('name', '').strip()
         phone = data.get('phone', '').strip()
         source = data.get('source', 'membership-mastery')
-        
-        # Extract UTM parameters
-        utm_source = data.get('utm_source', 'direct')
-        utm_medium = data.get('utm_medium', 'organic')
-        utm_campaign = data.get('utm_campaign', 'membership-mastery')
-        utm_term = data.get('utm_term', '')
-        utm_content = data.get('utm_content', '')
         
         # Validate required fields
         if not email or not name:
@@ -1010,8 +1004,8 @@ def membership_mastery_submission():
         if not re.match(email_pattern, email):
             return jsonify({"error": "Please enter a valid email address"}), 400
         
-        # Add to GetResponse with membership-mastery tag
-        add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        # Add to GetResponse with simplified tracking
+        add_membership_mastery_to_getresponse(email, name, phone, source, 'direct', 'organic', 'membership-mastery', '', '')
         
         # Log submission to database if available
         if supabase:
@@ -1042,7 +1036,7 @@ def membership_mastery_submission():
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
 def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
-    """Add membership mastery lead to GetResponse master list"""
+    """Add membership mastery lead to GetResponse master list - simplified like book giveaway"""
     api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
     
     headers = {
@@ -1056,23 +1050,12 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
         print("❌ Could not get GetResponse campaign ID")
         return
     
-    # Create name with source tracking
-    name_with_source = f"{name} ({source})"
-    
+    # Simple body like book giveaway - just email, campaign, and name with source tag
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": name_with_source
+        "name": f"{name} (Membership Mastery)"
     }
-    
-    # Add phone if provided
-    if phone:
-        body["customFieldValues"] = [
-            {
-                "customFieldId": "phone",  # You'll need to create this custom field in GetResponse
-                "value": [phone]
-            }
-        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
@@ -1097,22 +1080,16 @@ def digital_marketing_domination_submission():
     
     try:
         data = request.get_json()
+        print(f"📥 Digital Marketing Domination submission data: {data}")
         
         if not data:
             return jsonify({"error": "No data provided"}), 400
         
-        # Extract form data
+        # Extract form data - simplified like book giveaway
         email = data.get('email', '').strip().lower()
         name = data.get('name', '').strip()
         phone = data.get('phone', '').strip()
         source = data.get('source', 'digital-marketing-domination')
-        
-        # Extract UTM parameters
-        utm_source = data.get('utm_source', 'direct')
-        utm_medium = data.get('utm_medium', 'organic')
-        utm_campaign = data.get('utm_campaign', 'digital-marketing-domination')
-        utm_term = data.get('utm_term', '')
-        utm_content = data.get('utm_content', '')
         
         # Validate required fields
         if not email or not name:
@@ -1124,8 +1101,8 @@ def digital_marketing_domination_submission():
         if not re.match(email_pattern, email):
             return jsonify({"error": "Please enter a valid email address"}), 400
         
-        # Add to GetResponse with dmd tag
-        add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        # Add to GetResponse with simplified tracking
+        add_digital_marketing_domination_to_getresponse(email, name, phone, source, 'direct', 'organic', 'digital-marketing-domination', '', '')
         
         # Log submission to database if available
         if supabase:
@@ -1156,7 +1133,7 @@ def digital_marketing_domination_submission():
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
 def add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
-    """Add digital marketing domination lead to GetResponse master list"""
+    """Add digital marketing domination lead to GetResponse master list - simplified like book giveaway"""
     api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
     
     headers = {
@@ -1170,23 +1147,12 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         print("❌ Could not get GetResponse campaign ID")
         return
     
-    # Create name with source tracking
-    name_with_source = f"{name} ({source})"
-    
+    # Simple body like book giveaway - just email, campaign, and name with source tag
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": name_with_source
+        "name": f"{name} (Digital Marketing Domination)"
     }
-    
-    # Add phone if provided
-    if phone:
-        body["customFieldValues"] = [
-            {
-                "customFieldId": "phone",  # You'll need to create this custom field in GetResponse
-                "value": [phone]
-            }
-        ]
     
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
