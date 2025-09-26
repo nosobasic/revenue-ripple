@@ -729,11 +729,18 @@ def book_giveaway_submission():
 def get_getresponse_campaign_id():
     """Get the campaign ID for the master list from GetResponse"""
     # Use the campaign ID from environment variable or fallback to the provided one
-    return os.getenv("GETRESPONSE_CAMPAIGN_ID", "50yn9")
+    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
+    if not campaign_id:
+        print("❌ GETRESPONSE_CAMPAIGN_ID environment variable is required")
+        return None
+    return campaign_id
 
 def add_book_giveaway_to_getresponse(email, name):
     """Add book giveaway lead to GetResponse master list"""
-    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -850,7 +857,10 @@ def survival_playbook_submission():
 
 def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
     """Add survival playbook lead to GetResponse master list - simplified like book giveaway"""
-    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -952,7 +962,10 @@ def membership_mastery_submission():
 
 def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
     """Add membership mastery lead to GetResponse master list - simplified like book giveaway"""
-    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -1053,7 +1066,10 @@ def digital_marketing_domination_submission():
 
 def add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
     """Add digital marketing domination lead to GetResponse master list - simplified like book giveaway"""
-    api_key = os.getenv("GETRESPONSE_API_KEY", "tnkyixvg8dxdsmwks2ll69y8k31zd7qg")
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
     
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
