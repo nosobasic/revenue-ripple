@@ -8,6 +8,8 @@ import paypalrestsdk
 import json
 from datetime import datetime
 import re
+import hashlib
+import uuid
 
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -38,6 +40,11 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
+
+# Facebook Conversions API Configuration
+FACEBOOK_PIXEL_ID = "474617768829501"
+FACEBOOK_ACCESS_TOKEN = "EAAaorhtVhdIBPtZCpGyZBnDES7bo8KmhDbCXZAmhctKQcyyuhZCcivpkGu1QrV4kxahttmlzGI6ePE93GR0v28K8FOjt2cy1pZB9uCJ5h4KCvzOdv8BEZBRL1Ggb3gdL0IkahZCx73ipxZANHralNdKAtQN98gjINqlUCoyWCBz7xzORUY6hrAmpHfVQ37rKhwZDZD"
+CONVERSIONS_API_URL = f"https://graph.facebook.com/v23.0/{FACEBOOK_PIXEL_ID}/events"
 
 app.register_blueprint(ai_assistant_bp)
 
@@ -199,6 +206,16 @@ def stripe_webhook():
             add_contact_to_getresponse(customer_email, "tripwire")
             if referrer_username and referrer_username != 'none':
                 log_commission(referrer_username, customer_email, "tripwire", amount_total)
+            
+            # Send Purchase event to Facebook Conversions API
+            user_data = {'email': customer_email}
+            custom_data = {
+                'content_name': 'Digital Marketing Domination Book',
+                'content_category': 'Digital Product',
+                'value': amount_total,
+                'currency': 'USD'
+            }
+            send_conversion_event('Purchase', user_data, custom_data, "https://revenueripple.org/checkout")
 
         elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
             tier = product.replace("_subscription", "")
@@ -213,6 +230,16 @@ def stripe_webhook():
                 set_user_role(customer_email, "reseller")
             elif product == "pro_reseller_subscription":
                 set_user_role(customer_email, "pro_reseller")
+            
+            # Send Subscribe event to Facebook Conversions API
+            user_data = {'email': customer_email}
+            custom_data = {
+                'content_name': f'{tier.capitalize()} Subscription',
+                'content_category': 'Subscription',
+                'value': amount_total,
+                'currency': 'USD'
+            }
+            send_conversion_event('Subscribe', user_data, custom_data, "https://revenueripple.org/checkout")
 
     return jsonify({'status': 'success'})
 
@@ -948,6 +975,88 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
+# Facebook Conversions API Helper Functions
+def hash_email(email):
+    """Hash email for Conversions API using SHA256"""
+    if not email:
+        return None
+    return hashlib.sha256(email.lower().strip().encode('utf-8')).hexdigest()
+
+def hash_phone(phone):
+    """Hash phone number for Conversions API using SHA256"""
+    if not phone:
+        return None
+    # Remove all non-digit characters
+    phone_digits = re.sub(r'\D', '', phone)
+    return hashlib.sha256(phone_digits.encode('utf-8')).hexdigest()
+
+def send_conversion_event(event_name, user_data, custom_data=None, event_source_url=None):
+    """Send event to Facebook Conversions API"""
+    try:
+        # Generate event ID for deduplication
+        event_id = str(uuid.uuid4())
+        
+        # Prepare user data
+        user_data_dict = {}
+        if user_data.get('email'):
+            user_data_dict['em'] = hash_email(user_data['email'])
+        if user_data.get('phone'):
+            user_data_dict['ph'] = hash_phone(user_data['phone'])
+        if user_data.get('first_name'):
+            user_data_dict['fn'] = hashlib.sha256(user_data['first_name'].lower().strip().encode('utf-8')).hexdigest()
+        if user_data.get('last_name'):
+            user_data_dict['ln'] = hashlib.sha256(user_data['last_name'].lower().strip().encode('utf-8')).hexdigest()
+        
+        # Prepare event data
+        event_data = {
+            "data": [
+                {
+                    "event_name": event_name,
+                    "event_time": int(time.time()),
+                    "event_id": event_id,
+                    "action_source": "website",
+                    "user_data": user_data_dict,
+                    "event_source_url": event_source_url or "https://revenueripple.org"
+                }
+            ]
+        }
+        
+        # Add custom data if provided
+        if custom_data:
+            event_data["data"][0]["custom_data"] = custom_data
+        
+        # Add partner agent for attribution
+        event_data["data"][0]["partner_agent"] = "revenue_ripple_1_0"
+        
+        # Send to Conversions API
+        headers = {
+            "Authorization": f"Bearer {FACEBOOK_ACCESS_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.post(CONVERSIONS_API_URL, json=event_data, headers=headers, timeout=10)
+        
+        if response.status_code == 200:
+            print(f"✅ Successfully sent {event_name} event to Conversions API")
+            return True
+        else:
+            print(f"⚠️ Failed to send {event_name} event to Conversions API: {response.status_code} {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error sending {event_name} event to Conversions API: {str(e)}")
+        return False
+
+def get_user_ip():
+    """Get user IP address from request headers"""
+    # Check for forwarded IP first (for proxy/load balancer setups)
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    else:
+        return request.remote_addr
+
 # Membership Mastery API Endpoint
 @app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET', 'OPTIONS'])
 def membership_mastery_submission():
@@ -992,6 +1101,21 @@ def membership_mastery_submission():
         
         # Add to GetResponse with simplified tracking
         add_membership_mastery_to_getresponse(email, name, phone, source, 'direct', 'organic', 'membership-mastery', '', '')
+        
+        # Send Lead event to Facebook Conversions API
+        user_data = {
+            'email': email,
+            'phone': phone,
+            'first_name': name.split(' ')[0] if name else None,
+            'last_name': ' '.join(name.split(' ')[1:]) if name and len(name.split(' ')) > 1 else None
+        }
+        custom_data = {
+            'content_name': f'Membership Mastery {source}',
+            'content_category': 'Lead Generation',
+            'value': 7,
+            'currency': 'USD'
+        }
+        send_conversion_event('Lead', user_data, custom_data, f"https://revenueripple.org/{source}")
         
         # Log submission to database if available
         if supabase:
@@ -1111,6 +1235,21 @@ def digital_marketing_domination_submission():
         
         # Add to GetResponse with simplified tracking
         add_digital_marketing_domination_to_getresponse(email, name, phone, source, 'direct', 'organic', 'digital-marketing-domination', '', '')
+        
+        # Send Lead event to Facebook Conversions API
+        user_data = {
+            'email': email,
+            'phone': phone,
+            'first_name': name.split(' ')[0] if name else None,
+            'last_name': ' '.join(name.split(' ')[1:]) if name and len(name.split(' ')) > 1 else None
+        }
+        custom_data = {
+            'content_name': f'DMD {source}',
+            'content_category': 'Lead Generation',
+            'value': 7,
+            'currency': 'USD'
+        }
+        send_conversion_event('Lead', user_data, custom_data, f"https://revenueripple.org/{source}")
         
         # Log submission to database if available
         if supabase:
