@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaStar } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 export default function DMDLanding() {
+  useEffect(() => {
+    // Track page view with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView', {
+        content_name: 'Digital Marketing Domination Landing Page',
+        content_category: 'Landing Page',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  }, []);
+
+  const handlePurchaseClick = () => {
+    // Track purchase intent with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_name: 'Digital Marketing Domination',
+        content_category: 'Digital Product',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  };
+
   return (
     <div className="home">
       <style>{`
@@ -115,7 +139,12 @@ export default function DMDLanding() {
               4.9/5 from 238 readers
             </div>
           </div>
-          <Link to="/checkout?product=dmd" className="cta-button" aria-label="Purchase Digital Marketing Domination ebook for $7">
+          <Link 
+            to="/checkout?product=dmd" 
+            className="cta-button" 
+            aria-label="Purchase Digital Marketing Domination ebook for $7"
+            onClick={handlePurchaseClick}
+          >
             Get Instant Access for $7
           </Link>
           <div style={{marginTop: '0.75rem', animation: 'fadeInUp 0.8s ease-out 0.5s backwards'}}>
@@ -282,6 +311,7 @@ export default function DMDLanding() {
                   e.target.style.transform = 'translateY(0)';
                   e.target.style.boxShadow = '0 4px 6px rgba(220, 38, 38, 0.2)';
                 }}
+                onClick={handlePurchaseClick}
               >
                 📖 Get Full Ebook Now - $7
               </Link>

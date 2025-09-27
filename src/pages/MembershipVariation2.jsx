@@ -25,6 +25,16 @@ const MembershipVariation2 = () => {
     
     // Store UTM params in sessionStorage for the API call
     sessionStorage.setItem('utmParams', JSON.stringify(utmParams));
+
+    // Track page view with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView', {
+        content_name: 'Membership Mastery Variation 2',
+        content_category: 'Landing Page',
+        value: 0,
+        currency: 'USD'
+      });
+    }
   }, []);
 
   const handleInputChange = (e) => {
@@ -102,6 +112,18 @@ const MembershipVariation2 = () => {
         };
         
         sessionStorage.setItem('membershipMasterySubmission', JSON.stringify(submissionData));
+        
+        // Track lead event with Meta Pixel
+        if (typeof window !== 'undefined' && window.fbq) {
+          window.fbq('track', 'Lead', {
+            content_name: 'Membership Mastery Variation 2',
+            content_category: 'Lead Generation',
+            value: 7,
+            currency: 'USD',
+            email: formData.email,
+            name: formData.name
+          });
+        }
         
         // Redirect to thank you page
         navigate('/thank-you-membership-mastery');

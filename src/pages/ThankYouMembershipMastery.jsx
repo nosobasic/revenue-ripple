@@ -10,6 +10,16 @@ const ThankYouMembershipMastery = () => {
     if (data) {
       setSubmissionData(JSON.parse(data));
     }
+
+    // Track thank you page view with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView', {
+        content_name: 'Membership Mastery Thank You Page',
+        content_category: 'Thank You Page',
+        value: 0,
+        currency: 'USD'
+      });
+    }
   }, []);
 
   return (
@@ -80,6 +90,17 @@ const ThankYouMembershipMastery = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+              onClick={() => {
+                // Track download event with Meta Pixel
+                if (typeof window !== 'undefined' && window.fbq) {
+                  window.fbq('track', 'Lead', {
+                    content_name: 'Membership Mastery Download',
+                    content_category: 'Lead Conversion',
+                    value: 7,
+                    currency: 'USD'
+                  });
+                }
+              }}
             >
               Download Membership Mastery Ebook
             </a>
