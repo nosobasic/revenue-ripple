@@ -63,7 +63,8 @@ if not stripe.api_key:
 
 
 PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID")
-PAYPAL_SECRET = os.environ.get("PAYPAL_SECRET")
+PAYPAL_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET")
+print(PAYPAL_CLIENT_ID, PAYPAL_SECRET)
 PAYPAL_BASE = os.environ.get("PAYPAL_BASE", "https://api-m.sandbox.paypal.com")
 if not os.getenv("PAYPAL_CLIENT_ID"):
     print("Warning: PAYPAL_CLIENT_ID not set. PayPal functionality will not work.")
@@ -382,7 +383,7 @@ def create_membership_session():
 def create_paypal_payout():
     try:
         data = request.get_json()
-        recipient_email = data.get("recipient_email")
+        recipient_email = data.get("email")
         amount = data.get("amount")
         currency = data.get("currency", "USD")
 
@@ -595,8 +596,8 @@ def log_payout_to_supabase(user_email, amount, payout_batch_id, status):
             "amount": amount,
             "payout_batch_id": payout_batch_id,
             "status": status,
-            "created_at": "now()"
         }
+        print("log payout data ===============>", data)
         response = supabase.table("payouts").insert(data).execute()
         print("✅ Logged payout to Supabase:", response.data)
     except Exception as e:
