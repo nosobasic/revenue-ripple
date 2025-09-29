@@ -18,7 +18,7 @@ const AffiliateSupport = () => {
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     // Here you would integrate with your booking system (Calendly, Acuity, etc.)
-    const mailtoLink = `mailto:hello@revenueripple.org?subject=Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:support@revenueripple.org?subject=Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
     setShowBookingForm(false);
     setBookingData({
@@ -33,7 +33,7 @@ const AffiliateSupport = () => {
   };
 
   const handleEmailSupport = (topic) => {
-    const mailtoLink = `mailto:hello@revenueripple.org?subject=Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with: ${topic}%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:support@revenueripple.org?subject=Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with: ${topic}%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
   };
 
@@ -882,7 +882,7 @@ const AffiliateSupport = () => {
                   <span className="contact-icon">📧</span>
                   <div>
                     <strong style={{ color: '#333' }}>Email Support</strong>
-                    <div style={{ color: '#666', fontSize: '0.9rem' }}>hello@revenueripple.org</div>
+                    <div style={{ color: '#666', fontSize: '0.9rem' }}>support@revenueripple.org</div>
                     <div style={{ color: '#888', fontSize: '0.8rem' }}>Response within 24 hours</div>
                   </div>
                 </div>
