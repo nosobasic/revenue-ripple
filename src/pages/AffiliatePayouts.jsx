@@ -1,16 +1,29 @@
 import "../pages.css";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import PayPalPayoutButton from "../components/PayPalPayoutButton";
 import { useAuth } from "../context/AuthContext";
+import { supabase } from '../supabase/client';
+import moment from "moment";
 
 const AffiliatePayouts = () => {
   const { user } = useAuth();
   const [payoutSuccess, setPayoutSuccess] = useState(false);
   const [payoutError, setPayoutError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [lastPayout, setLastPayout] = useState()
+  const [payoutData, setPayoutData] = useState({
+    currentBalance: 0,
+    pendingBalance: 0,
+    totalEarned: 0
+  });
+
+  console.log("lastPayout-==-=-=",lastPayout)
+  console.log("payoutData",payoutData)
 
   const earningsData = {
     currentBalance: 1250.75,
@@ -78,6 +91,60 @@ const AffiliatePayouts = () => {
     },
   ];
 
+   useEffect(() => {
+      const fetchStats = async () => {
+        if (!user?.id) return;
+  
+        try {
+          setLoading(true);
+          setError(null);
+  
+          // Fetch payout
+          const { data: payout, error: payoutError } = await supabase
+          .from('payouts')
+          .select('*')
+          .eq('user_email', user.email);
+
+        if (payoutError) throw payoutError;
+        const totalPayoutAmount = payout.reduce((sum, row) => sum + row.amount, 0);
+        
+        console.log("payout=====",payout)
+        const mostRecentPayout = payout.reduce((latest, current) => {
+          return new Date(current.created_at) > new Date(latest.created_at) ? current : latest;
+        });
+        setLastPayout(mostRecentPayout)
+        console.log("mostRecent",mostRecentPayout)
+  
+  
+          // Fetch commissions
+          const { data: commissions, error: commissionsError } = await supabase
+            .from('commissions')
+            .select('*')
+            .eq('referrer_username', user.id);
+  
+          if (commissionsError) throw commissionsError;
+          console.log("commissions=====",commissions)
+  
+          const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
+
+          setPayoutData({
+            currentBalance:totalEarnings - totalPayoutAmount,
+            pendingBalance: totalEarnings - totalPayoutAmount,
+            totalEarned:totalEarnings
+          })
+  
+         
+        } catch (err) {
+          console.error('Error fetching data:', err);
+          // setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchStats();
+    }, [user]);
+
   return (
     <div className="dashboard">
       <Navbar />
@@ -104,7 +171,7 @@ const AffiliatePayouts = () => {
                   <h3>Current Balance</h3>
                   <div className="course-details">
                     <div className="earnings-amount">
-                      ${earningsData.currentBalance}
+                      ${payoutData?.currentBalance.toFixed(2)}
                     </div>
                     <p>Available for withdrawal</p>
                     <p
@@ -118,7 +185,7 @@ const AffiliatePayouts = () => {
                     </p>
                     <PayPalPayoutButton
                       userEmail={user?.email}
-                      amount={earningsData.currentBalance}
+                      amount={payoutData?.currentBalance}
                       onSuccess={handlePayoutSuccess}
                       onError={handlePayoutError}
                       disabled={
@@ -145,7 +212,7 @@ const AffiliatePayouts = () => {
                   <h3>Pending Balance</h3>
                   <div className="course-details">
                     <div className="earnings-amount">
-                      ${earningsData.pendingBalance}
+                      ${payoutData?.pendingBalance.toFixed(2)}
                     </div>
                     <p>Clearing in 30 days</p>
                   </div>
@@ -154,7 +221,7 @@ const AffiliatePayouts = () => {
                   <h3>Total Earned</h3>
                   <div className="course-details">
                     <div className="earnings-amount">
-                      ${earningsData.totalEarned}
+                      ${payoutData?.totalEarned.toFixed(2)}
                     </div>
                     <p>All-time earnings</p>
                   </div>
@@ -238,18 +305,18 @@ const AffiliatePayouts = () => {
               <div className="payout-details">
                 <div className="detail-group">
                   <strong>Date:</strong>
-                  <span>{earningsData.lastPayout.date}</span>
+                  <span>{moment(lastPayout?.created_at).format("DD-MM-YYYY")}</span>
                 </div>
                 <div className="detail-group">
                   <strong>Amount:</strong>
-                  <span>${earningsData.lastPayout.amount}</span>
+                  <span>${lastPayout?.amount}</span>
                 </div>
                 <div className="detail-group">
                   <strong>Status:</strong>
                   <span
                     className={`status ${earningsData.lastPayout.status.toLowerCase()}`}
                   >
-                    {earningsData.lastPayout.status}
+                    {lastPayout?.status}
                   </span>
                 </div>
               </div>
