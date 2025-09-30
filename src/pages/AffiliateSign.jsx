@@ -24,6 +24,38 @@ export default function AffiliateSign() {
     const ref = params.get('ref');
     if (ref) {
       localStorage.setItem('affiliate_ref', ref);
+
+      const updateVisitCount = async () => {
+        const { data, error } = await supabase
+        .from('affiliate_visits')
+        .select('id, count, ref_id')
+        .eq('ref_id', ref);
+      
+      console.log("QUERY RESULT:", data, error);
+      
+      if (error) {
+        console.error("Fetch error: ", error);
+        return;
+      }
+      
+      if (data && data.length > 0) {
+        const row = data[0];  // pehla record lo
+        await supabase
+          .from('affiliate_visits')
+          .update({ count: row.count + 1 })
+          .eq('id', row.id);
+      
+        console.log("Visit updated for", row.ref_id);
+      } else {
+        await supabase
+          .from('affiliate_visits')
+          .insert([{ ref_id: ref, count: 1 }]);
+      
+        console.log("New visit inserted for", ref);
+      }
+      };
+  
+      updateVisitCount();
     }
   }, []);
 
@@ -40,7 +72,7 @@ export default function AffiliateSign() {
     setError('');
     setLoading(true);
     const params = new URLSearchParams(window.location.search);
-    const role = params.get('role');
+    const role = params.get('role') || "affiliate";
     try {
       // Validate passwords match
       if (formData.password !== formData.confirmPassword) {
@@ -54,7 +86,8 @@ export default function AffiliateSign() {
         formData.password,
         formData.firstName,
         formData.lastName,
-        role
+        role,
+        formData.paypal
       );
 
 

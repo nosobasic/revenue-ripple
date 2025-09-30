@@ -11,7 +11,7 @@ const PayPalPayoutButton = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  console.log("amount==-=-=",amount)
+  console.log("amount==-=-=",userEmail)
 
   const handlePayoutRequest = async () => {
     // Validation
@@ -48,7 +48,7 @@ const PayPalPayoutButton = ({
         },
         body: JSON.stringify({
           email: userEmail,
-          amount: 10,
+          amount: amount,
           currency: "USD",
         }),
       });

@@ -15,15 +15,16 @@ const AffiliatePayouts = () => {
   const [payoutError, setPayoutError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [lastPayout, setLastPayout] = useState()
+  const [lastPayout, setLastPayout] = useState();
+  const [recentTransactions, setRecentTransaction] = useState([])
+  const [totalClicks, setTotalClicks] = useState(0)
+  const [conversion, setConversion] = useState(0)
   const [payoutData, setPayoutData] = useState({
     currentBalance: 0,
     pendingBalance: 0,
     totalEarned: 0
   });
 
-  console.log("lastPayout-==-=-=",lastPayout)
-  console.log("payoutData",payoutData)
 
   const earningsData = {
     currentBalance: 1250.75,
@@ -49,29 +50,29 @@ const AffiliatePayouts = () => {
     console.error("Payout error:", error);
   };
 
-  const recentTransactions = [
-    {
-      id: 1,
-      date: "2024-03-01",
-      type: "Commission",
-      amount: 250.75,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      date: "2024-02-28",
-      type: "Commission",
-      amount: 175.5,
-      status: "Pending",
-    },
-    {
-      id: 3,
-      date: "2024-02-15",
-      type: "Payout",
-      amount: -1200.0,
-      status: "Completed",
-    },
-  ];
+  // const recentTransactions = [
+  //   {
+  //     id: 1,
+  //     date: "2024-03-01",
+  //     type: "Commission",
+  //     amount: 250.75,
+  //     status: "Pending",
+  //   },
+  //   {
+  //     id: 2,
+  //     date: "2024-02-28",
+  //     type: "Commission",
+  //     amount: 175.5,
+  //     status: "Pending",
+  //   },
+  //   {
+  //     id: 3,
+  //     date: "2024-02-15",
+  //     type: "Payout",
+  //     amount: -1200.0,
+  //     status: "Completed",
+  //   },
+  // ];
 
   const performanceMetrics = [
     {
@@ -105,15 +106,16 @@ const AffiliatePayouts = () => {
           .select('*')
           .eq('user_email', user.email);
 
+          setRecentTransaction(payout)
+
+
         if (payoutError) throw payoutError;
         const totalPayoutAmount = payout.reduce((sum, row) => sum + row.amount, 0);
-        
-        console.log("payout=====",payout)
+
         const mostRecentPayout = payout.reduce((latest, current) => {
           return new Date(current.created_at) > new Date(latest.created_at) ? current : latest;
         });
         setLastPayout(mostRecentPayout)
-        console.log("mostRecent",mostRecentPayout)
   
   
           // Fetch commissions
@@ -123,15 +125,28 @@ const AffiliatePayouts = () => {
             .eq('referrer_username', user.id);
   
           if (commissionsError) throw commissionsError;
-          console.log("commissions=====",commissions)
   
           const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
+          const totalSales = commissions.length;
+          setConversion(totalSales)
 
           setPayoutData({
             currentBalance:totalEarnings - totalPayoutAmount,
             pendingBalance: totalEarnings - totalPayoutAmount,
             totalEarned:totalEarnings
           })
+
+          const { data:totalClicks, error:totalClicksError } = await supabase
+          .from('affiliate_visits')
+          .select('id, count, ref_id')
+          .eq('ref_id', user.id);
+        
+        setTotalClicks(totalClicks[0].count)
+        
+        if (totalClicksError) {
+          console.error("Fetch error: ", error);
+          return;
+        }
   
          
         } catch (err) {
@@ -184,7 +199,7 @@ const AffiliatePayouts = () => {
                       Minimum payout: $10.00
                     </p>
                     <PayPalPayoutButton
-                      userEmail={user?.email}
+                      userEmail={user?.paypal_email}
                       amount={payoutData?.currentBalance}
                       onSuccess={handlePayoutSuccess}
                       onError={handlePayoutError}
@@ -238,26 +253,26 @@ const AffiliatePayouts = () => {
             </div>
             <div className="section-content">
               <div className="transactions-list">
-                {recentTransactions.map((transaction) => (
+                {recentTransactions.length > 0 && recentTransactions.map((transaction) => (
                   <div key={transaction.id} className="transaction-item">
                     <div className="transaction-info">
                       <span className="transaction-type">
-                        {transaction.type}
+                        {/* {transaction.type} */}Commission
                       </span>
                       <span className="transaction-date">
-                        {transaction.date}
+                        {transaction?.date}
                       </span>
                     </div>
                     <div className="transaction-details">
                       <span
                         className={`transaction-amount ${
-                          transaction.amount < 0 ? "negative" : "positive"
+                          transaction?.amount < 0 ? "negative" : "positive"
                         }`}
                       >
-                        ${Math.abs(transaction.amount).toFixed(2)}
+                        ${Math.abs(transaction?.amount).toFixed(2)}
                       </span>
                       <span
-                        className={`transaction-status ${transaction.status.toLowerCase()}`}
+                        className={`transaction-status ${transaction?.status.toLowerCase()}`}
                       >
                         {transaction.status}
                       </span>
@@ -278,19 +293,41 @@ const AffiliatePayouts = () => {
             </div>
             <div className="section-content">
               <div className="stats-grid">
-                {performanceMetrics.map((metric, index) => (
-                  <div key={index} className="stat-card">
-                    <div className="stat-number">{metric.value}</div>
-                    <div className="stat-label">{metric.label}</div>
-                    <div
+                {/* {performanceMetrics.map((metric, index) => ( */}
+                  <div  className="stat-card">
+                    <div className="stat-number">{totalClicks}</div>
+                    <div className="stat-label">Total Clicks</div>
+                    {/* <div
                       className={`stat-change ${
                         metric.change.startsWith("+") ? "positive" : "negative"
                       }`}
                     >
                       {metric.change}
-                    </div>
+                    </div> */}
                   </div>
-                ))}
+                  <div  className="stat-card">
+                    <div className="stat-number">{conversion}</div>
+                    <div className="stat-label">Conversions</div>
+                    {/* <div
+                      className={`stat-change ${
+                        metric.change.startsWith("+") ? "positive" : "negative"
+                      }`}
+                    >
+                      {metric.change}
+                    </div> */}
+                  </div>
+                  <div  className="stat-card">
+                    <div className="stat-number">{(conversion / 100) *totalClicks} %</div>
+                    <div className="stat-label">Conversion Rate%</div>
+                    {/* <div
+                      className={`stat-change ${
+                        metric.change.startsWith("+") ? "positive" : "negative"
+                      }`}
+                    >
+                      {metric.change}
+                    </div> */}
+                  </div>
+                {/* ))} */}
               </div>
             </div>
           </section>
