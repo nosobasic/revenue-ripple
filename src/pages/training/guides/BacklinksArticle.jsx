@@ -56,7 +56,7 @@ const BacklinksArticle = () => {
                 </div>
 
                 <figure className="guide-image-block">
-                  <img src="/assets/images/images/backlinks.png" alt="Backlinks Overview" className="guide-image" />
+                  <img src="/assets/images/backlinks.png" alt="Backlinks Overview" className="guide-image" />
                   <figcaption>Understanding how backlinks work is crucial for SEO success.</figcaption>
                 </figure>
 
@@ -64,7 +64,7 @@ const BacklinksArticle = () => {
                   <h4>PageRank Explained</h4>
                   <p>PageRank measures how many other websites link to your page and how authoritative those sites are. A link from a blog no one knows won't help much. A link from a trusted, high-traffic site can do wonders for your ranking.</p>
                   <figure className="guide-image-block">
-                    <img src="/assets/images/images/backlinks02.png" alt="Backlinks Strategy" className="guide-image" />
+                    <img src="/assets/images/backlinks02.png" alt="Backlinks Strategy" className="guide-image" />
                     <figcaption>Strategic backlink building leads to better search rankings.</figcaption>
                   </figure>
                 </div>

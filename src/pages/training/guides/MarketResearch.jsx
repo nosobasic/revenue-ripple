@@ -51,10 +51,12 @@ const MarketResearch = () => {
 
                   <h3>Helpful Resources</h3>
                   <ul>
-                    <li><a href="https://www.google.com/trends">Google Trends</a></li>
-                    <li><a href="https://www.wordtracker.com">WordTracker</a></li>
-                    <li><a href="https://www.dmoz.org">DMOZ Directory</a></li>
-                    <li><a href="https://www.shopping.com/top_searches">Shopping.com - Top Searches</a></li>
+                    <li><a href="https://trends.google.com/trends/" target="_blank" rel="noopener noreferrer">Google Trends</a> - Track search interest over time</li>
+                    <li><a href="https://ahrefs.com/keyword-generator" target="_blank" rel="noopener noreferrer">Ahrefs Keyword Generator</a> - Find keyword opportunities</li>
+                    <li><a href="https://www.semrush.com/analytics/keywordoverview/" target="_blank" rel="noopener noreferrer">SEMrush Keyword Overview</a> - Comprehensive keyword research</li>
+                    <li><a href="https://www.amazon.com/bestsellers" target="_blank" rel="noopener noreferrer">Amazon Best Sellers</a> - See what's trending in e-commerce</li>
+                    <li><a href="https://www.reddit.com/r/entrepreneur/" target="_blank" rel="noopener noreferrer">Reddit Entrepreneur</a> - Community insights and trends</li>
+                    <li><a href="https://www.quora.com" target="_blank" rel="noopener noreferrer">Quora</a> - Find what people are asking about</li>
                   </ul>
 
                   <h3>Conclusion</h3>

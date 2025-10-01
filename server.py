@@ -1,15 +1,21 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, make_response
 from flask_cors import CORS
 import stripe
 import os
 import requests
+import time
 import paypalrestsdk
 import json
 from datetime import datetime
+import re
+import hashlib
 import uuid
+
+
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
+# from insights.routes import insights_bp  # Module not found - commented out
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -28,26 +34,19 @@ else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
 app = Flask(__name__)
-CORS(app, 
-     origins=[
-         "http://localhost:5173",
-         "http://localhost:3000", 
-         "http://localhost:4173",  # Vite preview port
-         "https://revenueripple.org",
-         "https://www.revenueripple.org",
-         "https://revenue-ripple.onrender.com",
-         "https://friendly-neat-walrus.ngrok-free.app"
-     ],
-     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     supports_credentials=True
-)
+CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173"])
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
+
+
+# Facebook Conversions API Configuration
+FACEBOOK_PIXEL_ID = "474617768829501"
+FACEBOOK_ACCESS_TOKEN = "EAAaorhtVhdIBPtZCpGyZBnDES7bo8KmhDbCXZAmhctKQcyyuhZCcivpkGu1QrV4kxahttmlzGI6ePE93GR0v28K8FOjt2cy1pZB9uCJ5h4KCvzOdv8BEZBRL1Ggb3gdL0IkahZCx73ipxZANHralNdKAtQN98gjINqlUCoyWCBz7xzORUY6hrAmpHfVQ37rKhwZDZD"
+CONVERSIONS_API_URL = f"https://graph.facebook.com/v23.0/{FACEBOOK_PIXEL_ID}/events"
 
 # PayPal configuration
 # PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID", "dummy_client_id")
@@ -69,6 +68,7 @@ PAYPAL_BASE = os.environ.get("PAYPAL_BASE", "https://api-m.sandbox.paypal.com")
 if not os.getenv("PAYPAL_CLIENT_ID"):
     print("Warning: PAYPAL_CLIENT_ID not set. PayPal functionality will not work.")
     print(f"PAYPAL_CLIENT_ID value: '{PAYPAL_CLIENT_ID}'")
+
 
 
 def get_paypal_access_token():
@@ -93,13 +93,7 @@ def health_check():
 
 @app.after_request
 def after_request(response):
-    # Only add CORS headers if they're not already set by flask-cors
-    if 'Access-Control-Allow-Origin' not in response.headers:
-        response.headers.add('Access-Control-Allow-Origin', '*')
-    if 'Access-Control-Allow-Headers' not in response.headers:
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With')
-    if 'Access-Control-Allow-Methods' not in response.headers:
-        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    # Let flask-cors handle CORS headers - don't add duplicate headers
     return response
 
 @app.route('/create-payment-intent', methods=['POST'])
@@ -223,6 +217,7 @@ def create_membership_session():
         return jsonify({'url': session.url})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
 
 # # PayPal Payout API Endpoints
 # @app.route('/paypal/create-payout', methods=['POST', 'OPTIONS'])
@@ -461,6 +456,16 @@ def stripe_webhook():
             add_contact_to_getresponse(customer_email, "tripwire")
             if referrer_username and referrer_username != 'none':
                 log_commission(referrer_username, customer_email, "tripwire", amount_total)
+            
+            # Send Purchase event to Facebook Conversions API
+            user_data = {'email': customer_email}
+            custom_data = {
+                'content_name': 'Digital Marketing Domination Book',
+                'content_category': 'Digital Product',
+                'value': amount_total,
+                'currency': 'USD'
+            }
+            send_conversion_event('Purchase', user_data, custom_data, "https://revenueripple.org/checkout")
 
         elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
             tier = product.replace("_subscription", "")
@@ -475,12 +480,124 @@ def stripe_webhook():
                 set_user_role(customer_email, "reseller")
             elif product == "pro_reseller_subscription":
                 set_user_role(customer_email, "pro_reseller")
+            
+            # Send Subscribe event to Facebook Conversions API
+            user_data = {'email': customer_email}
+            custom_data = {
+                'content_name': f'{tier.capitalize()} Subscription',
+                'content_category': 'Subscription',
+                'value': amount_total,
+                'currency': 'USD'
+            }
+            send_conversion_event('Subscribe', user_data, custom_data, "https://revenueripple.org/checkout")
 
     return jsonify({'status': 'success'})
 
+# Helper functions for webhook processing
+def log_webhook_event(event):
+    """Log webhook event to database for debugging"""
+    try:
+        supabase.table("webhook_logs").insert({
+            "source": "stripe",
+            "event_type": event['type'],
+            "event_data": event,
+            "processed": False,
+            "created_at": "now()"
+        }).execute()
+    except Exception as e:
+        print(f"❌ Failed to log webhook event: {e}")
+
+def log_webhook_error(event, error_message):
+    """Log webhook processing errors"""
+    try:
+        supabase.table("webhook_logs").insert({
+            "source": "stripe",
+            "event_type": event['type'],
+            "event_data": event,
+            "processed": False,
+            "error_message": error_message,
+            "created_at": "now()"
+        }).execute()
+    except Exception as e:
+        print(f"❌ Failed to log webhook error: {e}")
+
+def process_tripwire_purchase(customer_email, amount_total, referrer_username):
+    """Process tripwire purchase with better error handling"""
+    try:
+        print(f"Tripwire bought by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+        
+        # Log purchase
+        log_tripwire_purchase_to_supabase(customer_email, amount_total, referrer_username)
+        
+        # Add to email list
+        add_contact_to_getresponse(customer_email, "tripwire")
+        
+        # Log commission if there's a referrer
+        if referrer_username and referrer_username != 'none':
+            log_commission(referrer_username, customer_email, "tripwire", amount_total)
+            
+        # Mark webhook as processed
+        update_webhook_processed(customer_email, "tripwire_purchase")
+        
+    except Exception as e:
+        print(f"❌ Error processing tripwire purchase: {e}")
+        raise e
+
+def process_subscription_purchase(customer_email, amount_total, referrer_username, product):
+    """Process subscription purchase with role updates and error handling"""
+    try:
+        tier = product.replace("_subscription", "")
+        print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+        
+        # Log subscription
+        log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
+        
+        # Add to email list
+        add_contact_to_getresponse(customer_email, tier)
+        
+        # Log commission if there's a referrer
+        if referrer_username and referrer_username != 'none':
+            log_commission(referrer_username, customer_email, tier, amount_total)
+        
+        # Update user role based on subscription type
+        if product == "membership_subscription":
+            set_user_role(customer_email, "member")
+        elif product == "reseller_subscription":
+            set_user_role(customer_email, "reseller")
+        elif product == "pro_reseller_subscription":
+            set_user_role(customer_email, "pro_reseller")
+            
+        # Mark webhook as processed
+        update_webhook_processed(customer_email, f"{tier}_subscription")
+        
+    except Exception as e:
+        print(f"❌ Error processing subscription purchase: {e}")
+        raise e
+
+def update_subscription_status(customer_email, status):
+    """Update subscription status in database"""
+    try:
+        supabase.table("subscriptions").update({
+            "status": status,
+            "updated_at": "now()"
+        }).eq("email", customer_email).execute()
+        print(f"✅ Updated subscription status for {customer_email}: {status}")
+    except Exception as e:
+        print(f"❌ Failed to update subscription status: {e}")
+
+def update_webhook_processed(customer_email, event_type):
+    """Mark webhook as successfully processed"""
+    try:
+        supabase.table("webhook_logs").update({
+            "processed": True,
+            "processed_at": "now()"
+        }).eq("event_data->customer_details->email", customer_email).eq("event_type", "checkout.session.completed").execute()
+    except Exception as e:
+        print(f"❌ Failed to mark webhook as processed: {e}")
+
 def add_contact_to_getresponse(email, tag):
-    api_key = os.getenv("GETRESPONSE_API_KEY")
-    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
+    api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
+    campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
 
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -495,7 +612,7 @@ def add_contact_to_getresponse(email, tag):
     }
 
     try:
-        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers)
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
             print("✔️ Successfully added to GetResponse.")
         else:
@@ -800,6 +917,663 @@ def sync_commissions_to_devops():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Rate limiting storage (in production, use Redis or similar)
+submission_attempts = {}
+
+# Book Giveaway API Endpoint
+@app.route('/api/book-giveaway', methods=['POST', 'GET'])
+def book_giveaway_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Book Giveaway API is running",
+            "method": "GET",
+            "message": "This endpoint accepts POST requests for form submissions"
+        })
+    
+    # Handle POST requests
+    print(f"📥 Book giveaway submission received from {request.remote_addr}")
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Request data: {data}")
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        ip_address = request.remote_addr
+        
+        # Rate limiting: max 3 attempts per IP per hour
+        current_time = time.time()
+        if ip_address in submission_attempts:
+            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
+            if len(attempts) >= 3:
+                return jsonify({"error": "Too many attempts. Please try again later."}), 429
+            submission_attempts[ip_address] = attempts
+        else:
+            submission_attempts[ip_address] = []
+        
+        # Record this attempt
+        submission_attempts[ip_address].append(current_time)
+        
+        # Validate input
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        # Basic email validation
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Check for duplicate submissions (spam prevention)
+        if supabase:
+            try:
+                # Check if email already exists in book giveaway submissions
+                existing = supabase.table("book_giveaway_submissions").select("email").eq("email", email).execute()
+                if existing.data and len(existing.data) > 0:
+                    return jsonify({"error": "This email has already been used to claim a free book"}), 400
+            except Exception as db_error:
+                print(f"Warning: Could not check for duplicates: {db_error}")
+        
+        # Add to GetResponse
+        add_book_giveaway_to_getresponse(email, name)
+        
+        # Log submission to database
+        if supabase:
+            try:
+                submission_data = {
+                    "name": name,
+                    "email": email,
+                    "submitted_at": "now()",
+                    "ip_address": ip_address,
+                    "user_agent": request.headers.get('User-Agent', '')
+                }
+                supabase.table("book_giveaway_submissions").insert(submission_data).execute()
+                print(f"✅ Logged book giveaway submission for {email}")
+            except Exception as db_error:
+                print(f"❌ Failed to log book giveaway submission: {db_error}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Successfully submitted! Redirecting to your free book..."
+        })
+        
+    except Exception as e:
+        print(f"❌ Book giveaway submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def get_getresponse_campaign_id():
+    """Get the campaign ID for the master list from GetResponse"""
+    # Use the campaign ID from environment variable or fallback to the provided one
+    campaign_id = os.getenv("GETRESPONSE_CAMPAIGN_ID")
+    if not campaign_id:
+        print("❌ GETRESPONSE_CAMPAIGN_ID environment variable is required")
+        return None
+    return campaign_id
+
+# --- Phone normalization and custom field lookup for GetResponse ---
+def _normalize_phone_e164(raw: str) -> str:
+    """Best-effort E.164 normalizer. Keeps digits, assumes US +1 when 10 digits."""
+    if not raw:
+        return ""
+    digits = re.sub(r"[^0-9+]", "", str(raw)).lstrip()
+    # If already starts with '+', assume caller supplied full E.164
+    if digits.startswith('+'):
+        return digits.replace(' ', '')
+    # Strip any leading '+' that might have been removed by lstrip
+    digits = re.sub(r"[^0-9]", "", digits)
+    if len(digits) == 10:
+        return "+1" + digits
+    if len(digits) == 11 and digits.startswith('1'):
+        return "+" + digits
+    # Fallback: prefix '+' if user already included country code length >=11
+    return "+" + digits if digits else ""
+
+def get_phone_custom_field_id() -> str | None:
+    """Return the GetResponse custom field id for the phone field.
+    Uses env GETRESPONSE_PHONE_FIELD_ID if set, otherwise looks up by name.
+    """
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required to look up custom fields")
+        return None
+    env_id = os.getenv("GETRESPONSE_PHONE_FIELD_ID")
+    if env_id:
+        return env_id
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    try:
+        # Fetch all custom fields and locate a phone-type field by common names
+        resp = requests.get("https://api.getresponse.com/v3/custom-fields", headers=headers, timeout=10)
+        if resp.status_code != 200:
+            print(f"⚠️ Failed to fetch custom fields: {resp.status_code} {resp.text}")
+            return None
+        fields = resp.json() or []
+        wanted_names = {"phone", "phone_number", "phone number", "mobile", "mobile_phone"}
+        for f in fields:
+            name = (f.get("name") or "").strip().lower()
+            ftype = (f.get("type") or "").strip().lower()
+            if name in wanted_names or ftype == "phone":
+                cid = f.get("customFieldId") or f.get("id")
+                if cid:
+                    print(f"🔎 Using phone custom field id: {cid} (name: {name})")
+                    return cid
+        print("⚠️ No phone custom field found. Create one in GetResponse as type 'Phone'.")
+        return None
+    except Exception as e:
+        print(f"⚠️ Error looking up custom fields: {e}")
+        return None
+
+def add_book_giveaway_to_getresponse(email, name):
+    """Add book giveaway lead to GetResponse master list"""
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Book Giveaway)"
+    }
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Book Giveaway)")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Survival Playbook API Endpoint
+@app.route('/api/getresponse/survival-playbook', methods=['POST', 'GET'])
+def survival_playbook_submission():
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Survival Playbook API is running",
+            "method": "GET",
+            "message": "This endpoint accepts POST requests for form submissions"
+        })
+    
+    # Handle POST requests
+    print(f"📥 Survival playbook submission received from {request.remote_addr}")
+    print(f"📥 Request method: {request.method}")
+    print(f"📥 Request headers: {dict(request.headers)}")
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Request data: {data}")
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        source = data.get('source', 'direct')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'survival-playbook')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        ip_address = request.remote_addr
+        
+        # Rate limiting: max 3 attempts per IP per hour
+        current_time = time.time()
+        if ip_address in submission_attempts:
+            attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
+            if len(attempts) >= 3:
+                return jsonify({"error": "Too many attempts. Please try again later."}), 429
+            submission_attempts[ip_address] = attempts
+        else:
+            submission_attempts[ip_address] = []
+        
+        # Record this attempt
+        submission_attempts[ip_address].append(current_time)
+        
+        # Validate input
+        if not name or not email:
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        # Basic email validation
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with survival-playbook tag
+        add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    "name": name,
+                    "email": email,
+                    "source": source,
+                    "utm_source": utm_source,
+                    "utm_medium": utm_medium,
+                    "utm_campaign": utm_campaign,
+                    "utm_term": utm_term,
+                    "utm_content": utm_content,
+                    "submitted_at": "now()",
+                    "ip_address": ip_address,
+                    "user_agent": request.headers.get('User-Agent', '')
+                }
+                supabase.table("survival_playbook_submissions").insert(submission_data).execute()
+                print(f"✅ Logged survival playbook submission for {email}")
+            except Exception as db_error:
+                print(f"❌ Failed to log survival playbook submission: {db_error}")
+        
+        return jsonify({
+            "success": True,
+            "message": "Successfully submitted! Redirecting to your free guide..."
+        })
+        
+    except Exception as e:
+        print(f"❌ Survival playbook submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add survival playbook lead to GetResponse master list - simplified like book giveaway"""
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Simple body like book giveaway - just email, campaign, and name
+    # We'll add the tag in the name to identify survival playbook leads
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Survival Playbook)"
+    }
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Survival Playbook)")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Facebook Conversions API Helper Functions
+def hash_email(email):
+    """Hash email for Conversions API using SHA256"""
+    if not email:
+        return None
+    return hashlib.sha256(email.lower().strip().encode('utf-8')).hexdigest()
+
+def hash_phone(phone):
+    """Hash phone number for Conversions API using SHA256"""
+    if not phone:
+        return None
+    # Remove all non-digit characters
+    phone_digits = re.sub(r'\D', '', phone)
+    return hashlib.sha256(phone_digits.encode('utf-8')).hexdigest()
+
+def send_conversion_event(event_name, user_data, custom_data=None, event_source_url=None):
+    """Send event to Facebook Conversions API"""
+    try:
+        # Generate event ID for deduplication
+        event_id = str(uuid.uuid4())
+        
+        # Prepare user data
+        user_data_dict = {}
+        if user_data.get('email'):
+            user_data_dict['em'] = hash_email(user_data['email'])
+        if user_data.get('phone'):
+            user_data_dict['ph'] = hash_phone(user_data['phone'])
+        if user_data.get('first_name'):
+            user_data_dict['fn'] = hashlib.sha256(user_data['first_name'].lower().strip().encode('utf-8')).hexdigest()
+        if user_data.get('last_name'):
+            user_data_dict['ln'] = hashlib.sha256(user_data['last_name'].lower().strip().encode('utf-8')).hexdigest()
+        
+        # Prepare event data
+        event_data = {
+            "data": [
+                {
+                    "event_name": event_name,
+                    "event_time": int(time.time()),
+                    "event_id": event_id,
+                    "action_source": "website",
+                    "user_data": user_data_dict,
+                    "event_source_url": event_source_url or "https://revenueripple.org"
+                }
+            ]
+        }
+        
+        # Add custom data if provided
+        if custom_data:
+            event_data["data"][0]["custom_data"] = custom_data
+        
+        # Add partner agent for attribution
+        event_data["data"][0]["partner_agent"] = "revenue_ripple_1_0"
+        
+        # Send to Conversions API
+        headers = {
+            "Authorization": f"Bearer {FACEBOOK_ACCESS_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.post(CONVERSIONS_API_URL, json=event_data, headers=headers, timeout=10)
+        
+        if response.status_code == 200:
+            print(f"✅ Successfully sent {event_name} event to Conversions API")
+            return True
+        else:
+            print(f"⚠️ Failed to send {event_name} event to Conversions API: {response.status_code} {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error sending {event_name} event to Conversions API: {str(e)}")
+        return False
+
+def get_user_ip():
+    """Get user IP address from request headers"""
+    # Check for forwarded IP first (for proxy/load balancer setups)
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    elif request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP')
+    else:
+        return request.remote_addr
+
+# Membership Mastery API Endpoint
+@app.route('/api/getresponse/membership-mastery', methods=['POST', 'GET', 'OPTIONS'])
+def membership_mastery_submission():
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Membership Mastery API is running",
+            "message": "Use POST to submit form data"
+        })
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Membership Mastery submission data: {data}")
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract form data - simplified like book giveaway
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        phone = data.get('phone', '').strip()
+        source = data.get('source', 'membership-mastery')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'membership-mastery')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        
+        # Validate required fields
+        if not email or not name:
+            return jsonify({"error": "Email and name are required"}), 400
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with simplified tracking
+        add_membership_mastery_to_getresponse(email, name, phone, source, 'direct', 'organic', 'membership-mastery', '', '')
+        
+        # Send Lead event to Facebook Conversions API
+        user_data = {
+            'email': email,
+            'phone': phone,
+            'first_name': name.split(' ')[0] if name else None,
+            'last_name': ' '.join(name.split(' ')[1:]) if name and len(name.split(' ')) > 1 else None
+        }
+        custom_data = {
+            'content_name': f'Membership Mastery {source}',
+            'content_category': 'Lead Generation',
+            'value': 7,
+            'currency': 'USD'
+        }
+        send_conversion_event('Lead', user_data, custom_data, f"https://revenueripple.org/{source}")
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    'email': email,
+                    'name': name,
+                    'phone': phone,
+                    'source': source,
+                    'utm_source': utm_source,
+                    'utm_medium': utm_medium,
+                    'utm_campaign': utm_campaign,
+                    'utm_term': utm_term,
+                    'utm_content': utm_content,
+                    'submitted_at': 'now()'
+                }
+                
+                result = supabase.table('membership_mastery_submissions').insert(submission_data).execute()
+                print(f"✅ Logged membership mastery submission to database: {email}")
+                
+            except Exception as db_error:
+                print(f"⚠️ Database logging failed: {db_error}")
+        
+        return jsonify({"success": True, "message": "Successfully submitted"})
+        
+    except Exception as e:
+        print(f"❌ Membership mastery submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add membership mastery lead to GetResponse master list - simplified like book giveaway"""
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Body with email, campaign, name, and phone number
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Membership Mastery)"
+    }
+    # Attach phone as a custom field when available
+    phone_field_id = get_phone_custom_field_id()
+    norm_phone = _normalize_phone_e164(phone)
+    if phone_field_id and norm_phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": phone_field_id,
+                "value": [norm_phone]
+            }
+        ]
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Membership Mastery - {source})")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Digital Marketing Domination API Endpoint
+@app.route('/api/getresponse/digital-marketing-domination', methods=['POST', 'GET', 'OPTIONS'])
+def digital_marketing_domination_submission():
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    # Handle GET requests for debugging
+    if request.method == 'GET':
+        return jsonify({
+            "status": "Digital Marketing Domination API is running",
+            "message": "Use POST to submit form data"
+        })
+    
+    try:
+        data = request.get_json()
+        print(f"📥 Digital Marketing Domination submission data: {data}")
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract form data - simplified like book giveaway
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        phone = data.get('phone', '').strip()
+        source = data.get('source', 'digital-marketing-domination')
+        utm_source = data.get('utm_source', 'direct')
+        utm_medium = data.get('utm_medium', 'organic')
+        utm_campaign = data.get('utm_campaign', 'digital-marketing-domination')
+        utm_term = data.get('utm_term', '')
+        utm_content = data.get('utm_content', '')
+        
+        # Validate required fields
+        if not email or not name:
+            return jsonify({"error": "Email and name are required"}), 400
+        
+        # Validate email format
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, email):
+            return jsonify({"error": "Please enter a valid email address"}), 400
+        
+        # Add to GetResponse with simplified tracking
+        add_digital_marketing_domination_to_getresponse(email, name, phone, source, 'direct', 'organic', 'digital-marketing-domination', '', '')
+        
+        # Send Lead event to Facebook Conversions API
+        user_data = {
+            'email': email,
+            'phone': phone,
+            'first_name': name.split(' ')[0] if name else None,
+            'last_name': ' '.join(name.split(' ')[1:]) if name and len(name.split(' ')) > 1 else None
+        }
+        custom_data = {
+            'content_name': f'DMD {source}',
+            'content_category': 'Lead Generation',
+            'value': 7,
+            'currency': 'USD'
+        }
+        send_conversion_event('Lead', user_data, custom_data, f"https://revenueripple.org/{source}")
+        
+        # Log submission to database if available
+        if supabase:
+            try:
+                submission_data = {
+                    'email': email,
+                    'name': name,
+                    'phone': phone,
+                    'source': source,
+                    'utm_source': utm_source,
+                    'utm_medium': utm_medium,
+                    'utm_campaign': utm_campaign,
+                    'utm_term': utm_term,
+                    'utm_content': utm_content,
+                    'submitted_at': 'now()'
+                }
+                
+                result = supabase.table('dmd_submissions').insert(submission_data).execute()
+                print(f"✅ Logged DMD submission to database: {email}")
+                
+            except Exception as db_error:
+                print(f"⚠️ Database logging failed: {db_error}")
+        
+        return jsonify({"success": True, "message": "Successfully submitted"})
+        
+    except Exception as e:
+        print(f"❌ Digital marketing domination submission error: {str(e)}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+def add_digital_marketing_domination_to_getresponse(email, name, phone, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
+    """Add digital marketing domination lead to GetResponse master list - simplified like book giveaway"""
+    api_key = os.getenv("GETRESPONSE_API_KEY")
+    if not api_key:
+        print("❌ GETRESPONSE_API_KEY environment variable is required")
+        return
+    
+    headers = {
+        "X-Auth-Token": f"api-key {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Get the campaign ID
+    campaign_id = get_getresponse_campaign_id()
+    if not campaign_id:
+        print("❌ Could not get GetResponse campaign ID")
+        return
+    
+    # Body with email, campaign, name, and phone number
+    body = {
+        "email": email,
+        "campaign": {"campaignId": campaign_id},
+        "name": f"{name} (Digital Marketing Domination)"
+    }
+    phone_field_id = get_phone_custom_field_id()
+    norm_phone = _normalize_phone_e164(phone)
+    if phone_field_id and norm_phone:
+        body["customFieldValues"] = [
+            {
+                "customFieldId": phone_field_id,
+                "value": [norm_phone]
+            }
+        ]
+    
+    try:
+        response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
+        if response.status_code == 202:
+            print(f"✅ Successfully added {email} to GetResponse (Digital Marketing Domination - {source})")
+        elif response.status_code == 409:
+            print(f"⚠️ Contact {email} already exists in GetResponse")
+        else:
+            print(f"❌ GetResponse error {response.status_code}: {response.text}")
+    except Exception as e:
+        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

@@ -40,7 +40,7 @@ const Training = () => {
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     // Here you would integrate with your booking system (Calendly, Acuity, etc.)
-    const mailtoLink = `mailto:hello@revenueripple.org?subject=Training Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a training call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:support@revenueripple.org?subject=Training Call Booking Request - ${bookingData.topic}&body=Hi,%0D%0A%0D%0AI'd like to book a training call to discuss: ${bookingData.topic}%0D%0A%0D%0APreferred Date: ${bookingData.preferredDate}%0D%0APreferred Time: ${bookingData.preferredTime}%0D%0AUrgency: ${bookingData.urgency}%0D%0A%0D%0AName: ${bookingData.name}%0D%0AEmail: ${bookingData.email}%0D%0APhone: ${bookingData.phone}%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
     setShowBookingForm(false);
     setBookingData({
@@ -55,7 +55,7 @@ const Training = () => {
   };
 
   const handleEmailSupport = (topic) => {
-    const mailtoLink = `mailto:hello@revenueripple.org?subject=Training Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with training content: ${topic}%0D%0A%0D%0APlease provide details about your training question or issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
+    const mailtoLink = `mailto:support@revenueripple.org?subject=Training Support Request - ${topic}&body=Hi Support Team,%0D%0A%0D%0AI need help with training content: ${topic}%0D%0A%0D%0APlease provide details about your training question or issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!`;
     window.open(mailtoLink, '_blank');
   };
 
@@ -105,11 +105,11 @@ const Training = () => {
                   className={`course-item ${expandedSection === 'branding' ? 'expanded' : ''}`}
                   onClick={() => toggleSection('branding')}
                 >
-                  <h3>Bulletproof Branding</h3>
+                                      <h3>Mindset Mastery</h3>
                   {expandedSection === 'branding' && (
-                    <div className="course-details">
-                      <p>Your brand is your reputation. Learn how to build one that hits hard and sticks with people long after they scroll past.</p>
-                      <Link to="/training/videos/bulletproof-branding" className="cta-link">
+                                          <div className="course-details">
+                        <p>Master the mental game of entrepreneurship. Learn how to develop the mindset, habits, and mental frameworks that separate successful entrepreneurs from the rest.</p>
+                      <Link to="/training/videos/mindset-mastery" className="cta-link">
                         Watch Now →
                       </Link>
                     </div>

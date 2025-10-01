@@ -14,7 +14,15 @@ services:
         fromEnvVar: STRIPE_SECRET_KEY
       - key: STRIPE_WEBHOOK_SECRET
         fromEnvVar: STRIPE_WEBHOOK_SECRET
+      # Book Giveaway GetResponse Integration
       - key: GETRESPONSE_API_KEY
         fromEnvVar: GETRESPONSE_API_KEY
       - key: GETRESPONSE_CAMPAIGN_ID
         fromEnvVar: GETRESPONSE_CAMPAIGN_ID
+      # Tripwire GetResponse Integration
+      - key: GET_RESPONSE_TRIPWIRE_KEY
+        fromEnvVar: GET_RESPONSE_TRIPWIRE_KEY
+      - key: GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID
+        fromEnvVar: GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID
+      - key: OPENAI_API_KEY
+        fromEnvVar: OPENAI_API_KEY

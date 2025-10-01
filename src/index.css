@@ -141,29 +141,34 @@ button:focus-visible {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
   max-width: 1280px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .stat-card {
   background-color: white;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
+  padding: 2.5rem 2rem;
+  border-radius: 0.75rem;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
 }
 
 .stat-number {
-  font-size: 1.875rem;
+  font-size: 2rem;
   font-weight: bold;
   color: #2563eb;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
 }
 
 .stat-label {
   color: #4b5563;
-  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
 }
 
 /* Features Section */

@@ -44,14 +44,6 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
 
-  // Debug logging
-  console.log("ProtectedRoute:", {
-    user,
-    loading,
-    requireAdmin,
-    path: location.pathname,
-  });
-
   // Show a loading spinner while auth state is loading
   if (loading) {
     return <LoadingSpinner message="Checking authentication..." />;
@@ -59,49 +51,40 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
 
   // Redirect to login if not authenticated
   if (!token) {
-    console.log("No user found, redirecting to login");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // Check if user has required role
-  if (requireAdmin) {
-    console.log("Checking admin role:", {
-      userRole: user?.role,
-      isAdmin: user?.role === "admin",
-    });
-
-    if (user?.role !== "admin") {
-      console.log("User is not admin, showing access denied");
-      return (
-        <div style={{ 
-          color: "red", 
-          padding: 20, 
-          textAlign: "center",
-          minHeight: "50vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column"
-        }}>
-          <h2>Access Denied</h2>
-          <p>You do not have admin privileges to access this page.</p>
-          <button 
-            onClick={() => window.history.back()}
-            style={{
-              marginTop: 16,
-              padding: "8px 16px",
-              background: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer"
-            }}
-          >
-            Go Back
-          </button>
-        </div>
-      );
-    }
+  if (requireAdmin && user?.role !== "admin") {
+    return (
+      <div style={{ 
+        color: "red", 
+        padding: 20, 
+        textAlign: "center",
+        minHeight: "50vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column"
+      }}>
+        <h2>Access Denied</h2>
+        <p>You do not have admin privileges to access this page.</p>
+        <button 
+          onClick={() => window.history.back()}
+          style={{
+            marginTop: 16,
+            padding: "8px 16px",
+            background: "#3b82f6",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer"
+          }}
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   // Wrap children in error boundary for safety

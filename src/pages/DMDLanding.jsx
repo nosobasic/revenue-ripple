@@ -1,9 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaStar } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 export default function DMDLanding() {
+  useEffect(() => {
+    // Hotjar Tracking Code for Revenue Ripple
+    (function(h,o,t,j,a,r){
+      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+      h._hjSettings={hjid:6531289,hjsv:6};
+      a=o.getElementsByTagName('head')[0];
+      r=o.createElement('script');r.async=1;
+      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+      a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+  }, []);
+  useEffect(() => {
+    // Track page view with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView', {
+        content_name: 'Digital Marketing Domination Landing Page',
+        content_category: 'Landing Page',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  }, []);
+
+  const handlePurchaseClick = () => {
+    // Track purchase intent with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_name: 'Digital Marketing Domination',
+        content_category: 'Digital Product',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  };
+
   return (
     <div className="home">
       <style>{`
@@ -115,11 +150,29 @@ export default function DMDLanding() {
               4.9/5 from 238 readers
             </div>
           </div>
-          <Link to="/checkout?product=dmd" className="cta-button" aria-label="Purchase Digital Marketing Domination ebook for $7">
+          <Link 
+            to="/checkout?product=dmd" 
+            className="cta-button" 
+            aria-label="Purchase Digital Marketing Domination ebook for $7"
+            onClick={handlePurchaseClick}
+          >
             Get Instant Access for $7
           </Link>
           <div style={{marginTop: '0.75rem', animation: 'fadeInUp 0.8s ease-out 0.5s backwards'}}>
-            <img src="/assets/images/icons/trust-seal.png" alt="Trusted by marketers worldwide" style={{height: 32}} />
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)'
+            }}>
+              <span style={{marginRight: '0.5rem'}}>✓</span>
+              Trusted by 1,000+ Marketers
+            </div>
           </div>
         </div>
       </section>
@@ -235,6 +288,84 @@ export default function DMDLanding() {
         </div>
       </section>
 
+      {/* Can't Wait Section */}
+      <section style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', padding: '3rem 0', marginTop: '2rem' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto' }}>
+            <h2 style={{ color: '#92400e', fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
+              ⏰ Can't Wait for the Free Lessons?
+            </h2>
+            <p style={{ color: '#92400e', fontSize: '1.25rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Get instant access to the complete Digital Marketing Domination ebook right now! 
+              Don't wait for lessons to arrive every 2 weeks - start implementing all 26 strategies today.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+              <Link 
+                to="/dlds/dmd" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(220, 38, 38, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(220, 38, 38, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(220, 38, 38, 0.2)';
+                }}
+                onClick={handlePurchaseClick}
+              >
+                📖 Get Full Ebook Now - $7
+              </Link>
+              <Link 
+                to="/" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(37, 99, 235, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(37, 99, 235, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(37, 99, 235, 0.2)';
+                }}
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+            </div>
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              padding: '1rem', 
+              borderRadius: '8px',
+              display: 'inline-block'
+            }}>
+              <p style={{ margin: 0, color: '#92400e', fontWeight: 600, fontSize: '0.9rem' }}>
+                ✅ Instant download • 100% money-back guarantee • No waiting required
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <div className="content-section" style={{ background: 'white', marginTop: '2rem' }}>
         <h2 style={{ color: '#1e293b', fontWeight: 700, fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
@@ -278,7 +409,21 @@ export default function DMDLanding() {
           </p>
           
           <div style={{ marginTop: '1rem' }}>
-            <img src="/assets/images/icons/trust-seal.png" alt="Trusted by marketers worldwide" style={{ height: 32, margin: '0 auto' }} />
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '20px',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.2)',
+              margin: '0 auto'
+            }}>
+              <span style={{marginRight: '0.5rem'}}>✓</span>
+              Trusted by 1,000+ Marketers
+            </div>
           </div>
           
           <div style={{ marginTop: '1rem', background: '#fffde7', display: 'inline-block', padding: '0.5rem 1rem', borderRadius: '4px', color: '#166534', fontWeight: 600 }}>

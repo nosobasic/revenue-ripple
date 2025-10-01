@@ -1,63 +1,87 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
-import Dashboard from './pages/Dashboard';
-import Training from './pages/Training';
+import { STORAGE_KEYS, logger } from './config/constants';
+
+// Immediate load components (critical path)
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Home from './pages/Home';
-import Admin from './pages/Admin';
-import Checkout from './pages/Checkout';
-import ThankYou from './pages/ThankYou';
-import AffiliateSign from './pages/AffiliateSign';
-import AffiliateLogin from './pages/AffiliateLogin';
-import AffiliateCentre from './pages/AffiliateCentre';
-import AffiliateTools from './pages/AffiliateTools';
-import AffiliateTraining from './pages/AffiliateTraining';
-import AffiliatePayouts from './pages/AffiliatePayouts';
-import AffiliateSupport from './pages/AffiliateSupport';
-import CourseOverview from './pages/CourseOverview';
-import CourseModule from './pages/CourseModule';
-import Courses from './pages/Courses';
-import Reseller from './pages/Reseller';
-import TripwireSuccess from './pages/TripwireSuccess';
-import ResellerSuccess from './pages/ResellerSuccess';
-import ProResellerUpsell from './pages/ProResellerUpsell';
-import ThreeMonthsFreeUpsell from './pages/ThreeMonthsFreeUpsell';
-import Profile from './pages/Profile';
-import DMDLanding from './pages/DMDLanding';
-import SpecialInvite from './pages/SpecialInvite';
-import ResellerCheckout from './pages/ResellerCheckout';
-import ResellerTrial from './pages/ResellerTrial';
-import EntrepreneurialBrainstorming from './pages/training/videos/EntrepreneurialBrainstorming';
-import BulletproofBranding from './pages/training/videos/BulletproofBranding';
-import ShoestringStartups from './pages/training/videos/ShoestringStartups';
-import AdwordsQualityScore from './pages/training/guides/AdwordsQualityScore';
-import AnalyzingData from './pages/training/guides/AnalyzingData';
-import ArticleMarketing from './pages/training/guides/ArticleMarketing';
-import BuildingMailingList from './pages/training/guides/BuildingMailingList';
-import KeywordTechnique from './pages/training/guides/KeywordTechnique';
-import LandingComponents from './pages/training/guides/LandingComponents';
-import PurchaseCycle from './pages/training/guides/PurchaseCycle';
-import BacklinksSocial from './pages/training/guides/BacklinksSocial';
-import BacklinksArticle from './pages/training/guides/BacklinksArticle';
-import LandingOptimization from './pages/training/guides/LandingOptimization';
-import MenGuide from './pages/training/guides/MenGuide';
-import MarketResearch from './pages/training/guides/MarketResearch';
-import KeywordResearch from './pages/training/guides/KeywordResearch';
-import PPCStart from './pages/training/guides/PPCStart';
-import SEOGoogle from './pages/training/guides/SEOGoogle';
-import TargetAudiences from './pages/training/guides/TargetAudiences';
-import MarketingMistakes from './pages/training/guides/MarketingMistakes';
-import UnderstandingRelevance from './pages/training/guides/UnderstandingRelevance';
-import WritingAdCopy from './pages/training/guides/WritingAdCopy';
-import SalesCopy from './pages/training/guides/SalesCopy';
-import CommandCenter from './pages/CommandCenter';
-import ResetPassword from './pages/ResetPassword';
-import ProResellerSuccess from './pages/ProResellerSuccess';
+// Lazy load heavy components
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Training = lazy(() => import('./pages/Training'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const ThankYou = lazy(() => import('./pages/ThankYou'));
+const AffiliateSign = lazy(() => import('./pages/AffiliateSign'));
+const AffiliateLogin = lazy(() => import('./pages/AffiliateLogin'));
+const AffiliateCentre = lazy(() => import('./pages/AffiliateCentre'));
+const AffiliateTools = lazy(() => import('./pages/AffiliateTools'));
+const AffiliateTraining = lazy(() => import('./pages/AffiliateTraining'));
+const AffiliatePayouts = lazy(() => import('./pages/AffiliatePayouts'));
+const AffiliateSupport = lazy(() => import('./pages/AffiliateSupport'));
+const CourseOverview = lazy(() => import('./pages/CourseOverview'));
+const CourseModule = lazy(() => import('./pages/CourseModule'));
+const Courses = lazy(() => import('./pages/Courses'));
+const Reseller = lazy(() => import('./pages/Reseller'));
+const TripwireSuccess = lazy(() => import('./pages/TripwireSuccess'));
+const ResellerSuccess = lazy(() => import('./pages/ResellerSuccess'));
+const ProResellerUpsell = lazy(() => import('./pages/ProResellerUpsell'));
+const ThreeMonthsFreeUpsell = lazy(() => import('./pages/ThreeMonthsFreeUpsell'));
+const Profile = lazy(() => import('./pages/Profile'));
+const DMDLanding = lazy(() => import('./pages/DMDLanding'));
+const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
+const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
+const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
+const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
+const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
+const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
+const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
+// New landing page components
+const MembershipVariation1 = lazy(() => import('./pages/MembershipVariation1'));
+const MembershipVariation2 = lazy(() => import('./pages/MembershipVariation2'));
+const MembershipVariation3 = lazy(() => import('./pages/MembershipVariation3'));
+const DMDVariation1 = lazy(() => import('./pages/DMDVariation1'));
+const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
+const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
+const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
+const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
+const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+// Lazy load training components
+const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
+const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
+const ShoestringStartups = lazy(() => import('./pages/training/videos/ShoestringStartups'));
+const AdwordsQualityScore = lazy(() => import('./pages/training/guides/AdwordsQualityScore'));
+const AnalyzingData = lazy(() => import('./pages/training/guides/AnalyzingData'));
+const ArticleMarketing = lazy(() => import('./pages/training/guides/ArticleMarketing'));
+const BuildingMailingList = lazy(() => import('./pages/training/guides/BuildingMailingList'));
+const KeywordTechnique = lazy(() => import('./pages/training/guides/KeywordTechnique'));
+const LandingComponents = lazy(() => import('./pages/training/guides/LandingComponents'));
+const PurchaseCycle = lazy(() => import('./pages/training/guides/PurchaseCycle'));
+const BacklinksSocial = lazy(() => import('./pages/training/guides/BacklinksSocial'));
+const BacklinksArticle = lazy(() => import('./pages/training/guides/BacklinksArticle'));
+const LandingOptimization = lazy(() => import('./pages/training/guides/LandingOptimization'));
+const MenGuide = lazy(() => import('./pages/training/guides/MenGuide'));
+const MarketResearch = lazy(() => import('./pages/training/guides/MarketResearch'));
+const KeywordResearch = lazy(() => import('./pages/training/guides/KeywordResearch'));
+const PPCStart = lazy(() => import('./pages/training/guides/PPCStart'));
+const SEOGoogle = lazy(() => import('./pages/training/guides/SEOGoogle'));
+const TargetAudiences = lazy(() => import('./pages/training/guides/TargetAudiences'));
+const MarketingMistakes = lazy(() => import('./pages/training/guides/MarketingMistakes'));
+const UnderstandingRelevance = lazy(() => import('./pages/training/guides/UnderstandingRelevance'));
+const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
+const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+);
 
 const UnprotectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem('revenue-ripple-auth-token');
+  const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 
@@ -68,11 +92,13 @@ const App = () => {
     fetch('/meta.json')
       .then(res => res.json())
       .then(meta => {
-        const lastVersion = localStorage.getItem('app_version');
+        const lastVersion = localStorage.getItem(STORAGE_KEYS.APP_VERSION);
         if (lastVersion && lastVersion !== meta.build) setShowReload(true);
-        localStorage.setItem('app_version', meta.build);
+        localStorage.setItem(STORAGE_KEYS.APP_VERSION, meta.build);
       })
-      .catch(() => {});
+      .catch((error) => {
+        logger.warn('Could not fetch app version:', error);
+      });
   }, []);
 
   return (
@@ -82,7 +108,8 @@ const App = () => {
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>
         </div>
       )}
-      <Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
@@ -121,7 +148,7 @@ const App = () => {
         </ProtectedRoute>} />
 
         <Route path="/training/videos/entrepreneurial" element={<ProtectedRoute><EntrepreneurialBrainstorming /></ProtectedRoute>} />
-        <Route path="/training/videos/bulletproof-branding" element={<ProtectedRoute><BulletproofBranding /></ProtectedRoute>} />
+        <Route path="/training/videos/mindset-mastery" element={<ProtectedRoute><MindsetMastery /></ProtectedRoute>} />
         <Route path="/training/videos/shoestring-startups" element={<ProtectedRoute><ShoestringStartups/></ProtectedRoute>} />
         <Route path="/training/guides/adwords-quality" element={<ProtectedRoute><AdwordsQualityScore /></ProtectedRoute>} />
         <Route path="/training/guides/analyzing-data" element={<ProtectedRoute><AnalyzingData /></ProtectedRoute>} />
@@ -145,9 +172,30 @@ const App = () => {
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/command-center" element={<CommandCenter />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        
+        {/* Book Giveaway Routes */}
+        <Route path="/book-giveaway" element={<BookGiveaway />} />
+        <Route path="/book-giveaway-thank-you" element={<BookGiveawayThankYou />} />
+        
+        {/* Survival Playbook Routes */}
+        <Route path="/survival-playbook" element={<SurvivalPlaybook />} />
+        <Route path="/thank-you-survival-playbook" element={<ThankYouSurvivalPlaybook />} />
+        
+        {/* Membership Mastery Landing Page Routes */}
+        <Route path="/membership-variation-1" element={<MembershipVariation1 />} />
+        <Route path="/membership-variation-2" element={<MembershipVariation2 />} />
+        <Route path="/membership-variation-3" element={<MembershipVariation3 />} />
+        <Route path="/thank-you-membership-mastery" element={<ThankYouMembershipMastery />} />
+        
+        {/* Digital Marketing Domination Landing Page Routes */}
+        <Route path="/dmd-variation-1" element={<DMDVariation1 />} />
+        <Route path="/dmd-variation-2" element={<DMDVariation2 />} />
+        <Route path="/dmd-variation-3" element={<DMDVariation3 />} />
+        <Route path="/thank-you-dmd" element={<ThankYouDMD />} />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };

@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import '../pages.css';
 import { FaCheckCircle } from 'react-icons/fa';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,6 +15,18 @@ export default function Reseller() {
 
   console.log("USER=======", user)
   
+  // Add Hotjar tracking
+  useEffect(() => {
+    // Hotjar Tracking Code for Revenue Ripple
+    (function(h,o,t,j,a,r){
+      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+      h._hjSettings={hjid:6531289,hjsv:6};
+      a=o.getElementsByTagName('head')[0];
+      r=o.createElement('script');r.async=1;
+      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+      a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+  }, []);
 
   // Helper to get referrer from URL or localStorage
   // const getReferrer = () => {
@@ -127,7 +139,70 @@ export default function Reseller() {
         </div>
       </section>
 
-     
+      {/* Want to Earn Recurring Revenue CTA */}
+      <section style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', padding: '3rem 0', marginTop: '0' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{ color: 'white', fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
+              Want to Earn Recurring Revenue While You Learn?
+            </h2>
+            <p style={{ color: '#e2e8f0', fontSize: '1.25rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Join Revenue Ripple and get access to 46+ comprehensive marketing tutorials, AI-powered strategies, 
+              and our exclusive affiliate program where you can earn $47/month per referral - sent straight to your PayPal!
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link 
+                to="/" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+              <Link 
+                to="/reseller" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              >
+                💰 Join Reseller Program
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="container">
         <div className="content-section" style={{ background: 'white', marginTop: '-2rem' }}>
