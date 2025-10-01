@@ -11,7 +11,6 @@ const PayPalPayoutButton = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  console.log("amount==-=-=",userEmail)
 
   const handlePayoutRequest = async () => {
     // Validation
@@ -54,7 +53,6 @@ const PayPalPayoutButton = ({
       });
 
       const data = await response.json();
-      console.log("DATA", data)
 
       if (data.ok) {
         onSuccess?.(data);
