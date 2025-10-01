@@ -11,6 +11,7 @@ const PayPalPayoutButton = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  console.log("amount==-=-=",userEmail)
 
   const handlePayoutRequest = async () => {
     // Validation
@@ -40,25 +41,26 @@ const PayPalPayoutButton = ({
     setError(null);
 
     try {
-      const response = await fetch(`/paypal/create-payout`, {
+      const response = await fetch(`http://127.0.0.1:5000/paypal/payout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_email: userEmail,
+          email: userEmail,
           amount: amount,
-          note: "Affiliate Commission Payout",
+          currency: "USD",
         }),
       });
 
       const data = await response.json();
+      console.log("DATA", data)
 
-      if (data.success) {
+      if (data.ok) {
         onSuccess?.(data);
         // Show success message
         alert(
-          `Payout request submitted successfully! Batch ID: ${data.payout_batch_id}`
+          `Payout request submitted successfully! Batch ID: ${data.batch_id}`
         );
       } else {
         throw new Error(data.error || "Failed to process payout request");

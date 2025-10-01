@@ -11,6 +11,7 @@ import re
 import hashlib
 import uuid
 
+
 from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
@@ -41,10 +42,48 @@ if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
 
+
 # Facebook Conversions API Configuration
 FACEBOOK_PIXEL_ID = "474617768829501"
 FACEBOOK_ACCESS_TOKEN = "EAAaorhtVhdIBPtZCpGyZBnDES7bo8KmhDbCXZAmhctKQcyyuhZCcivpkGu1QrV4kxahttmlzGI6ePE93GR0v28K8FOjt2cy1pZB9uCJ5h4KCvzOdv8BEZBRL1Ggb3gdL0IkahZCx73ipxZANHralNdKAtQN98gjINqlUCoyWCBz7xzORUY6hrAmpHfVQ37rKhwZDZD"
 CONVERSIONS_API_URL = f"https://graph.facebook.com/v23.0/{FACEBOOK_PIXEL_ID}/events"
+
+# PayPal configuration
+# PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID", "dummy_client_id")
+# PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET", "dummy_client_secret")
+# PAYPAL_MODE = os.getenv("PAYPAL_ENVIRONMENT", "sandbox")  # 'sandbox' or 'live'
+
+# # Configure PayPal SDK
+# paypalrestsdk.configure({
+#     "mode": PAYPAL_MODE,
+#     "client_id": PAYPAL_CLIENT_ID,
+#     "client_secret": PAYPAL_CLIENT_SECRET
+# })
+
+
+PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET")
+print(PAYPAL_CLIENT_ID, PAYPAL_SECRET)
+PAYPAL_BASE = os.environ.get("PAYPAL_BASE", "https://api-m.sandbox.paypal.com")
+if not os.getenv("PAYPAL_CLIENT_ID"):
+    print("Warning: PAYPAL_CLIENT_ID not set. PayPal functionality will not work.")
+    print(f"PAYPAL_CLIENT_ID value: '{PAYPAL_CLIENT_ID}'")
+
+
+
+def get_paypal_access_token():
+    token_url = f"{PAYPAL_BASE}/v1/oauth2/token"
+    resp = requests.post(
+        token_url,
+        auth=(PAYPAL_CLIENT_ID, PAYPAL_SECRET),
+        headers={
+            "Accept": "application/json",
+            "Accept-Language": "en_US",
+        },
+        data={"grant_type": "client_credentials"},
+    )
+    resp.raise_for_status()
+    return resp.json()["access_token"]
 
 app.register_blueprint(ai_assistant_bp)
 
@@ -180,6 +219,217 @@ def create_membership_session():
         return jsonify({'error': str(e)}), 400
 
 
+# # PayPal Payout API Endpoints
+# @app.route('/paypal/create-payout', methods=['POST', 'OPTIONS'])
+# def create_paypal_payout():
+#     if request.method == 'OPTIONS':
+#         return '', 200
+    
+#     try:
+#         data = request.get_json()
+#         user_email = data.get('user_email')
+#         amount = data.get('amount')
+#         payout_note = data.get('note', 'Affiliate Commission Payout')
+        
+#         if not user_email or not amount:
+#             return jsonify({'error': 'user_email and amount are required'}), 400
+        
+#         # Validate amount
+#         try:
+#             amount_float = float(amount)
+#             if amount_float <= 0:
+#                 return jsonify({'error': 'Amount must be greater than 0'}), 400
+#         except ValueError:
+#             return jsonify({'error': 'Invalid amount format'}), 400
+        
+#         # Check if we're in development mode with dummy credentials
+#         print(f"DEBUG: PAYPAL_CLIENT_ID = '{PAYPAL_CLIENT_ID}'")
+#         if PAYPAL_CLIENT_ID == "dummy_client_id":
+#             print("DEBUG: Using development mode")
+#             fake_batch_id = f"dev_payout_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#             log_payout_to_supabase(user_email, amount_float, fake_batch_id, "pending")
+#             return jsonify({
+#                 'success': True,
+#                 'payout_batch_id': fake_batch_id,
+#                 'message': 'Payout request submitted successfully (Development Mode - PayPal credentials not configured)',
+#                 'dev_mode': True
+#             })
+        
+#         # Create payout batch
+#         payout = paypalrestsdk.Payout({
+#             "sender_batch_header": {
+#                 "sender_batch_id": f"payout_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{user_email}",
+#                 "email_subject": "You have a payout!",
+#                 "email_message": f"Your affiliate commission payout of ${amount} has been processed."
+#             },
+#             "items": [
+#                 {
+#                     "recipient_type": "EMAIL",
+#                     "amount": {
+#                         "value": str(amount_float),
+#                         "currency": "USD"
+#                     },
+#                     "receiver": user_email,
+#                     "note": payout_note,
+#                     "sender_item_id": f"item_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#                 }
+#             ]
+#         })
+        
+#         if payout.create():
+#             # Log payout to database
+#             log_payout_to_supabase(user_email, amount_float, payout.batch_header.payout_batch_id, "pending")
+            
+#             return jsonify({
+#                 'success': True,
+#                 'payout_batch_id': payout.batch_header.payout_batch_id,
+#                 'message': 'Payout request submitted successfully'
+#             })
+#         else:
+#             # Handle PayPal authentication errors gracefully
+#             error_message = 'Failed to create payout'
+#             if hasattr(payout, 'error') and payout.error:
+#                 if 'invalid_client' in str(payout.error):
+#                     error_message = 'PayPal credentials not configured. Please set up your PayPal API credentials in the environment variables.'
+#                 else:
+#                     error_message = f'PayPal error: {payout.error}'
+            
+#             return jsonify({
+#                 'error': error_message,
+#                 'details': payout.error if hasattr(payout, 'error') else 'Unknown error'
+#             }), 400
+            
+#     except Exception as e:
+#         # Handle any other exceptions, including PayPal SDK exceptions
+#         error_str = str(e)
+#         if 'invalid_client' in error_str or 'Client Authentication failed' in error_str:
+#             # In development mode, simulate a successful payout
+#             if PAYPAL_CLIENT_ID == "dummy_client_id":
+#                 fake_batch_id = f"dev_payout_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+#                 log_payout_to_supabase(user_email, amount_float, fake_batch_id, "pending")
+#                 return jsonify({
+#                     'success': True,
+#                     'payout_batch_id': fake_batch_id,
+#                     'message': 'Payout request submitted successfully (Development Mode - PayPal credentials not configured)',
+#                     'dev_mode': True
+#                 })
+#             else:
+#                 return jsonify({
+#                     'error': 'PayPal credentials not configured. Please set up your PayPal API credentials in the environment variables.',
+#                     'details': error_str
+#                 }), 400
+#         else:
+#             return jsonify({'error': str(e)}), 500
+
+# @app.route('/paypal/payout-status/<payout_batch_id>', methods=['GET', 'OPTIONS'])
+# def get_payout_status(payout_batch_id):
+#     if request.method == 'OPTIONS':
+#         return '', 200
+#     try:
+#         payout = paypalrestsdk.Payout.find(payout_batch_id)
+        
+#         if payout:
+#             return jsonify({
+#                 'success': True,
+#                 'batch_header': {
+#                     'payout_batch_id': payout.batch_header.payout_batch_id,
+#                     'batch_status': payout.batch_header.batch_status,
+#                     'time_created': payout.batch_header.time_created,
+#                     'time_completed': payout.batch_header.time_completed
+#                 },
+#                 'items': [
+#                     {
+#                         'payout_item_id': item.payout_item_id,
+#                         'transaction_status': item.transaction_status,
+#                         'transaction_id': item.transaction_id,
+#                         'amount': item.amount,
+#                         'receiver': item.receiver
+#                     } for item in payout.items
+#                 ]
+#             })
+#         else:
+#             return jsonify({'error': 'Payout not found'}), 404
+            
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+# @app.route('/paypal/webhook', methods=['POST', 'OPTIONS'])
+# def paypal_webhook():
+#     if request.method == 'OPTIONS':
+#         return '', 200
+#     try:
+#         # PayPal webhook verification would go here
+#         # For now, we'll just log the webhook data
+#         webhook_data = request.get_json()
+#         print(f"PayPal webhook received: {webhook_data}")
+        
+#         # Handle payout completion webhook
+#         if webhook_data.get('event_type') == 'PAYMENT.PAYOUTSBATCH.COMPLETED':
+#             batch_id = webhook_data.get('resource', {}).get('batch_header', {}).get('payout_batch_id')
+#             if batch_id:
+#                 update_payout_status_in_supabase(batch_id, "completed")
+        
+#         return jsonify({'status': 'success'})
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/paypal/payout', methods=['POST'])
+def create_paypal_payout():
+    try:
+        data = request.get_json()
+        recipient_email = data.get("email")
+        amount = data.get("amount")
+        currency = data.get("currency", "USD")
+
+        if not recipient_email or not amount:
+            return jsonify({"error": "recipient_email and amount are required"}), 400
+
+        # Step 1: Get PayPal access token
+        access_token = get_paypal_access_token()
+
+        # Step 2: Build payout payload
+        sender_batch_id = str(uuid.uuid4())
+        payout_payload = {
+            "sender_batch_header": {
+                "sender_batch_id": sender_batch_id,
+                "email_subject": "You have a payout!",
+            },
+            "items": [
+                {
+                    "recipient_type": "EMAIL",
+                    "amount": {"value": f"{float(amount):.2f}", "currency": currency},
+                    "receiver": recipient_email,
+                    "note": "Thanks for your work!",
+                    "sender_item_id": str(uuid.uuid4()),
+                }
+            ],
+        }
+
+        # Step 3: Send payout request
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}",
+            "PayPal-Request-Id": sender_batch_id,  # idempotency
+        }
+        resp = requests.post(f"{PAYPAL_BASE}/v1/payments/payouts", 
+                             json=payout_payload, headers=headers)
+
+        # Step 4: Handle response
+        if resp.status_code not in (200, 201, 202):
+            log_payout_to_supabase(recipient_email, amount, sender_batch_id, "failed")
+            return jsonify({"error": "paypal_failed", "detail": resp.text}), 502
+
+        res_json = resp.json()
+        batch_id = res_json.get("batch_header", {}).get("payout_batch_id")
+
+        # Step 5: Log to Supabase as "submitted"
+        log_payout_to_supabase(recipient_email, amount, batch_id, "submitted")
+
+        return jsonify({"ok": True, "batch_id": batch_id, "paypal": res_json})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 @app.route('/webhook', methods=['POST'])
@@ -463,8 +713,8 @@ def log_payout_to_supabase(user_email, amount, payout_batch_id, status):
             "amount": amount,
             "payout_batch_id": payout_batch_id,
             "status": status,
-            "created_at": "now()"
         }
+        print("log payout data ===============>", data)
         response = supabase.table("payouts").insert(data).execute()
         print("✅ Logged payout to Supabase:", response.data)
     except Exception as e:
