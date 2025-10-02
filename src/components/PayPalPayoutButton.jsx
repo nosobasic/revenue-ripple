@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_ENDPOINTS } from "../config/constants";
 
 const PayPalPayoutButton = ({
   userEmail,
@@ -8,6 +9,7 @@ const PayPalPayoutButton = ({
   disabled = false,
   className = "cta-button",
   minimumAmount = 10.0,
+  setUpdatePayouts
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -41,7 +43,7 @@ const PayPalPayoutButton = ({
     setError(null);
 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/paypal/payout`, {
+      const response = await fetch(`${API_ENDPOINTS.BASE_URL}/paypal/payout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,6 +64,7 @@ const PayPalPayoutButton = ({
         alert(
           `Payout request submitted successfully! Batch ID: ${data.batch_id}`
         );
+        setUpdatePayouts(true)
       } else {
         throw new Error(data.error || "Failed to process payout request");
       }
