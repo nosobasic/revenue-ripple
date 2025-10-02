@@ -19,6 +19,7 @@ const AffiliatePayouts = () => {
   const [recentTransactions, setRecentTransaction] = useState([])
   const [totalClicks, setTotalClicks] = useState(0)
   const [conversion, setConversion] = useState(0)
+  const [updatePayouts, setUpdatePayouts] = useState(false)
   const [payoutData, setPayoutData] = useState({
     currentBalance: 0,
     pendingBalance: 0,
@@ -148,7 +149,7 @@ const AffiliatePayouts = () => {
           return;
         }
   
-         
+         setUpdatePayouts(false)
         } catch (err) {
           console.error('Error fetching data:', err);
           // setError(err.message);
@@ -158,7 +159,7 @@ const AffiliatePayouts = () => {
       };
   
       fetchStats();
-    }, [user]);
+    }, [user, updatePayouts]);
 
   return (
     <div className="dashboard">
@@ -207,6 +208,7 @@ const AffiliatePayouts = () => {
                         !user?.email || earningsData.currentBalance <= 0
                       }
                       minimumAmount={10.0}
+                      setUpdatePayouts= {setUpdatePayouts}
                     />
                     {payoutSuccess && (
                       <div
