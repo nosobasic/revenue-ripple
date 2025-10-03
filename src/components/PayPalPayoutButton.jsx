@@ -56,7 +56,6 @@ const PayPalPayoutButton = ({
       });
 
       const data = await response.json();
-      console.log("DATA", data)
 
       if (data.ok) {
         onSuccess?.(data);

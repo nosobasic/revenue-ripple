@@ -153,7 +153,7 @@ def create_pro_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
+                'price': 'price_1SE8O22Ku9STqdAd92gDwXse',  # Pro Reseller $97/month Price ID
                 'quantity': 1,
             }],
             mode='subscription',

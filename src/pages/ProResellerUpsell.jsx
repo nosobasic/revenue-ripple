@@ -7,24 +7,26 @@ import { useEffect } from 'react';
 export default function ProResellerUpsell() {
   const navigate = useNavigate();
 
-  const handleProResellerUpgrade = async () => {
+  const handleProResellerUpgrade = async (e) => {
+    e.preventDefault()
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })
     });
     const data = await res.json();
-    window.location.href = data.url;
+    console.log("proDAta", data)
+    // window.location.href = data.url;
   };
 
-  useEffect(() => {
-    // Redirect to 3 months free offer after 3 seconds
-    const timer = setTimeout(() => {
-      navigate('/three-months-free-upsell');
-    }, 3000);
+  // useEffect(() => {
+  //   // Redirect to 3 months free offer after 3 seconds
+  //   const timer = setTimeout(() => {
+  //     navigate('/three-months-free-upsell');
+  //   }, 3000);
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
 
   return (
     <div className="home">
