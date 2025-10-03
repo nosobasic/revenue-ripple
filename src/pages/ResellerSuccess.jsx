@@ -1,12 +1,12 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { supabase } from '../supabase/client';
+import { useAuth } from '../context/AuthContext';
 
 export default function ResellerSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  console.log(",m,m", user.id)
 
   // useEffect(() => {
   //   // Redirect to Pro Reseller upsell after 3 seconds
