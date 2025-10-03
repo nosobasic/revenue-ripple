@@ -124,6 +124,7 @@ const Dashboard = () => {
   const [courseProgress, setCourseProgress] = useState({});
 
 
+
   // Check for first-time user onboarding
   useEffect(() => {
     const hasOnboarded = localStorage.getItem('hasOnboarded');
@@ -325,6 +326,7 @@ const Dashboard = () => {
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
                       <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+                        {user.role === "member" &&
                         <button 
                           // href="/affiliate/sign-up"
                           className="cta-link"
@@ -354,6 +356,7 @@ const Dashboard = () => {
                         >
                           <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
                         </button>
+}
                         <Link 
                           to="/affiliate-centre/tools" 
                           className="cta-link"
