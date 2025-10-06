@@ -2,7 +2,7 @@
 
 export const STRIPE_CONFIG = {
   PRICES: {
-    TRIPWIRE: 'price_1RKIXE2Ku9STqdAdktgTsVDf',
+    TRIPWIRE: 'price_1RKIXE2Ku9STqdAdktgTsVDf', // TODO: Replace with test mode price ID if using test keys
     RESELLER: 'price_1RKNYL2Ku9STqdAd5spylthl', 
     PRO_RESELLER: 'price_1RKNpS2Ku9STqdAdLoP8qgb4',
     MEMBERSHIP: 'price_1RKP5i2Ku9STqdAdEkkGTxet'

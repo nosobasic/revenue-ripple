@@ -47,6 +47,8 @@ export default function Checkout() {
             setClientSecret(null);
             setIsLoading(false);
             logger.error('Failed to create checkout session:', data.error);
+            // Show user-friendly error message
+            alert('Unable to process payment at this time. Please try again or use PayPal below.');
           }
         } else {
           // For other products, use payment intent

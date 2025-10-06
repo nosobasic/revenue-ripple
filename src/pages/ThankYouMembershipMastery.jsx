@@ -134,12 +134,12 @@ const ThankYouMembershipMastery = () => {
               Need help getting started? We're here to support you.
             </p>
             <div className="flex justify-center space-x-4">
-              <Link 
-                to="/support" 
+              <a 
+                href="mailto:support@revenueripple.org?subject=Support Request - Membership Mastery&body=Hi Support Team,%0D%0A%0D%0AI need help with my Membership Mastery guide.%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!"
                 className="text-purple-600 hover:text-purple-700 font-semibold"
               >
                 Get Support
-              </Link>
+              </a>
               <span className="text-gray-400">•</span>
               <Link 
                 to="/" 

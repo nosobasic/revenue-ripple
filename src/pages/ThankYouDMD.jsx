@@ -133,12 +133,12 @@ const ThankYouDMD = () => {
               Need help implementing these strategies? We're here to support you.
             </p>
             <div className="flex justify-center space-x-4">
-              <Link 
-                to="/support" 
+              <a 
+                href="mailto:support@revenueripple.org?subject=Support Request - Digital Marketing Domination&body=Hi Support Team,%0D%0A%0D%0AI need help with my Digital Marketing Domination lessons.%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!"
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Get Support
-              </Link>
+              </a>
               <span className="text-gray-400">•</span>
               <Link 
                 to="/" 
