@@ -1,6 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import MilestoneCheckIn from './components/MilestoneCheckIn';
 import { STORAGE_KEYS, logger } from './config/constants';
 
 // Immediate load components (critical path)
@@ -108,6 +109,7 @@ const App = () => {
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>
         </div>
       )}
+      <MilestoneCheckIn />
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />

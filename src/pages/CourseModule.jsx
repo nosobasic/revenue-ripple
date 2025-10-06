@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
 import AIAssistantWidget from '../components/AIAssistantWidget';
-import ConfettiAnimation from '../components/ConfettiAnimation';
+import ModuleCompletionFeedback from '../components/ModuleCompletionFeedback';
+import { triggerMilestone } from '../components/MilestoneCheckIn';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
 import '../styles/courses.css';
@@ -16,7 +17,7 @@ const CourseModule = () => {
   const [error, setError] = useState(null);
   const [completed, setCompleted] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showCompletionFeedback, setShowCompletionFeedback] = useState(false);
 
   const course = courses.find(c => c.slug === courseSlug);
   const moduleNumber = parseInt(moduleId.split('-')[1]);
@@ -69,8 +70,8 @@ const CourseModule = () => {
     await recalculateProgress();
     setButtonLoading(false);
     
-    // Trigger confetti animation
-    setShowConfetti(true);
+    // Show completion feedback
+    setShowCompletionFeedback(true);
   };
 
   // Recalculate course progress for this user
@@ -98,10 +99,39 @@ const CourseModule = () => {
           last_updated: new Date().toISOString(),
         }
       ], { onConflict: ['user_id', 'course_id'] });
+
+    // Check if this is the user's first completed course
+    if (percentDone === 100) {
+      const { data: allCourses } = await supabase
+        .from('user_progress')
+        .select('course_id')
+        .eq('user_id', user.id)
+        .eq('status', 'completed');
+      
+      if (allCourses && allCourses.length === 1) {
+        // This is their first completed course!
+        await triggerMilestone(user.id, 'first_course_completed', courseSlug);
+      }
+    }
+
+    // Check for 50% education milestone
+    const { data: allProgress } = await supabase
+      .from('user_progress')
+      .select('percent_done');
+    
+    if (allProgress) {
+      const totalCourses = courses.length;
+      const completedCount = allProgress.filter(p => p.percent_done === 100).length;
+      const halfwayPoint = Math.floor(totalCourses / 2);
+      
+      if (completedCount === halfwayPoint) {
+        await triggerMilestone(user.id, 'halfway_education', `${completedCount}/${totalCourses}`);
+      }
+    }
   };
 
-  const handleConfettiComplete = () => {
-    setShowConfetti(false);
+  const handleCloseFeedback = () => {
+    setShowCompletionFeedback(false);
   };
 
   if (isLoading) {
@@ -137,11 +167,16 @@ const CourseModule = () => {
         pageContext={`Module: ${module.title} in ${course.title} - ${module.description || 'Learning module content'}`}
       />
       
-      {/* Confetti Animation */}
-      <ConfettiAnimation 
-        isActive={showConfetti} 
-        onComplete={handleConfettiComplete}
-      />
+      {/* Module Completion Feedback */}
+      {showCompletionFeedback && (
+        <ModuleCompletionFeedback 
+          courseSlug={courseSlug}
+          moduleId={moduleId}
+          nextModule={nextModule}
+          courseTitle={course.title}
+          onClose={handleCloseFeedback}
+        />
+      )}
       
       <div className="course-breadcrumb">
         <Link to="/dashboard">Dashboard</Link>
