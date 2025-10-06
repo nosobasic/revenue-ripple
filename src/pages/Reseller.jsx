@@ -58,13 +58,14 @@ export default function Reseller() {
   // };
 
   const handleResellerCheckout = () => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-          navigate(`/reseller-success?session_id=${user?.id}`);
-          setLoading(false);
-        }, 2000);
+    // setLoading(true);
+    // const timer = setTimeout(() => {
+    //       navigate(`/reseller-success?session_id=${user?.id}`);
+    //       setLoading(false);
+    //     }, 2000);
     
-        return () => clearTimeout(timer);
+    //     return () => clearTimeout(timer);
+    navigate(`/reseller-checkout`);
   }
 
   return (

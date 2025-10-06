@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio,paypal_email"
         )
         .eq("id", authUser.id)
         .single();
@@ -91,7 +91,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  async function signup(email, password, firstName, lastName ,role) {
+  async function signup(email, password, firstName, lastName ,role, paypal) {
     try {
       setLoading(true);
       
@@ -115,7 +115,8 @@ export function AuthProvider({ children }) {
             phone: "",
             company: "",
             bio: "",
-            plan: ""
+            plan: "",
+            paypal_email:paypal
           },
         ]);
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_ENDPOINTS } from "../config/constants";
 
 const PayPalPayoutButton = ({
   userEmail,
@@ -8,9 +9,11 @@ const PayPalPayoutButton = ({
   disabled = false,
   className = "cta-button",
   minimumAmount = 10.0,
+  setUpdatePayouts
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  console.log("amount==-=-=",userEmail)
 
   const handlePayoutRequest = async () => {
     // Validation
@@ -40,26 +43,27 @@ const PayPalPayoutButton = ({
     setError(null);
 
     try {
-      const response = await fetch(`/paypal/create-payout`, {
+      const response = await fetch(`${API_ENDPOINTS.BASE_URL}/paypal/payout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_email: userEmail,
+          email: userEmail,
           amount: amount,
-          note: "Affiliate Commission Payout",
+          currency: "USD",
         }),
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.ok) {
         onSuccess?.(data);
         // Show success message
         alert(
-          `Payout request submitted successfully! Batch ID: ${data.payout_batch_id}`
+          `Payout request submitted successfully! Batch ID: ${data.batch_id}`
         );
+        setUpdatePayouts(true)
       } else {
         throw new Error(data.error || "Failed to process payout request");
       }
