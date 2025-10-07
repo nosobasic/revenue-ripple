@@ -75,23 +75,23 @@ const AffiliatePayouts = () => {
   //   },
   // ];
 
-  const performanceMetrics = [
-    {
-      label: "Total Clicks",
-      value: "2,450",
-      change: "+15%",
-    },
-    {
-      label: "Conversions",
-      value: "45",
-      change: "+8%",
-    },
-    {
-      label: "Conversion Rate",
-      value: "1.84%",
-      change: "+0.5%",
-    },
-  ];
+  // const performanceMetrics = [
+  //   {
+  //     label: "Total Clicks",
+  //     value: "2,450",
+  //     change: "+15%",
+  //   },
+  //   {
+  //     label: "Conversions",
+  //     value: "45",
+  //     change: "+8%",
+  //   },
+  //   {
+  //     label: "Conversion Rate",
+  //     value: "1.84%",
+  //     change: "+0.5%",
+  //   },
+  // ];
 
    useEffect(() => {
       const fetchStats = async () => {
@@ -105,15 +105,15 @@ const AffiliatePayouts = () => {
           const { data: payout, error: payoutError } = await supabase
           .from('payouts')
           .select('*')
-          .eq('user_email', user.email);
+          .eq('user_email', user.paypal_email);
 
           setRecentTransaction(payout)
 
-
+console.log()
         if (payoutError) throw payoutError;
-        const totalPayoutAmount = payout.reduce((sum, row) => sum + row.amount, 0);
+        const totalPayoutAmount = payout.reduce((sum, row) => sum + row.amount, 0) || 0;
 
-        const mostRecentPayout = payout.reduce((latest, current) => {
+        const mostRecentPayout = payout.length > 0 && payout.reduce((latest, current) => {
           return new Date(current.created_at) > new Date(latest.created_at) ? current : latest;
         });
         setLastPayout(mostRecentPayout)
@@ -124,8 +124,10 @@ const AffiliatePayouts = () => {
             .from('commissions')
             .select('*')
             .eq('referrer_username', user.id);
-  
+            console.log("commissionsError=======", commissionsError)
           if (commissionsError) throw commissionsError;
+
+          console.log("commissions=======", commissions)
   
           const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
           const totalSales = commissions.length;

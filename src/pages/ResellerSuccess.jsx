@@ -4,8 +4,8 @@ import { supabase } from '../supabase/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function ResellerSuccess() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
   const { user } = useAuth();
 
   // useEffect(() => {
@@ -45,7 +45,7 @@ export default function ResellerSuccess() {
     };
 
     handleUpdateRole();
-  }, [location]);
+  }, [user]);
 
   return (
     <div className="frontend-container">
