@@ -1,10 +1,13 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { supabase } from '../supabase/client';
+import { useAuth } from '../context/AuthContext';
 
 export default function ProResellerSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+
 
   // useEffect(() => {
   //   // Redirect to Pro Reseller upsell after 3 seconds
@@ -18,19 +21,20 @@ export default function ProResellerSuccess() {
   useEffect(() => {
     const handleUpdateRole = async () => {
       try {
-        const queryParams = new URLSearchParams(location.search);
-        const userId = queryParams.get("session_id");
+        // const queryParams = new URLSearchParams(location.search);
+        // const userId = queryParams.get("session_id");
 
-        if (!userId) {
-          console.error("No session_id found in URL");
-          return;
-        }
+        // if (!userId) {
+        //   console.error("No session_id found in URL");
+        //   return;
+        // }
         const { data, error } = await supabase
           .from("users")
           .update({ role: "pro_reseller" })   // 👈 new role
-          .eq("id", userId)
+          .eq("id", user.id)
           .select();
 
+          console.log("dataaaaa", data)
         if (error) {
           console.error("Supabase update error:", error);
         } else {
@@ -42,7 +46,7 @@ export default function ProResellerSuccess() {
     };
 
     handleUpdateRole();
-  }, [location]);
+  }, [user]);
 
   return (
     <div className="frontend-container">
