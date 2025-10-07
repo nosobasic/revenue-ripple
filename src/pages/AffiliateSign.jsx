@@ -21,6 +21,8 @@ export default function AffiliateSign() {
   // 👇 Grab ref from URL and save to localStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
+    localStorage.setItem('refUserRole', role);
     const ref = params.get('ref');
     if (ref) {
       localStorage.setItem('affiliate_ref', ref);

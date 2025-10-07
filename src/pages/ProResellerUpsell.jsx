@@ -15,6 +15,11 @@ export default function ProResellerUpsell() {
       body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })
     });
     const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Error creating checkout session.');
+    }
     console.log("proDAta", data)
     // window.location.href = data.url;
   };
