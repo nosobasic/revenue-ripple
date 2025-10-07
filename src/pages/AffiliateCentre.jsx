@@ -60,7 +60,7 @@ export default function AffiliateCentre() {
         setStats({
           totalEarnings: `$${totalEarnings.toFixed(2)}`,
           totalSales,
-          commissionRate: `${userData.commission_rate || 50}%`
+          commissionRate: user.role === "pro_reseller"? `${100}%`: `${50}%`
         });
 
         const recentActivity = commissions
