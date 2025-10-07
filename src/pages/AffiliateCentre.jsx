@@ -18,6 +18,7 @@ export default function AffiliateCentre() {
   const [error, setError] = useState(null);
 
   const baseUrl = "https://www.revenueripple.org/affiliate/sign-up";
+  // const baseUrl = "http://localhost:5173/affiliate/sign-up"
   const affiliateLink = `${baseUrl}/?ref=${user?.id}&role=${user?.role}`;
 
   const copyAffiliateLink = () => {
@@ -60,7 +61,7 @@ export default function AffiliateCentre() {
         setStats({
           totalEarnings: `$${totalEarnings.toFixed(2)}`,
           totalSales,
-          commissionRate: `${userData.commission_rate || 50}%`
+          commissionRate: user.role === "pro_reseller"? `${100}%`: `${50}%`
         });
 
         const recentActivity = commissions

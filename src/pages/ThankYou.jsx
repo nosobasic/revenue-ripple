@@ -9,10 +9,7 @@ export default function ThankYou() {
   const memberRole = localStorage.getItem('memberRole');
   const memberId = localStorage.getItem('memberId');
   const customerEmail = localStorage.getItem('customerEmail')
-
-  const commissionPercent = 0.5; // 0.5%
-  const baseAmount = 47;
-  const amount = (commissionPercent / 100) * baseAmount;
+  
 
   // const commission = (0.5 / 100) * 47;
 
@@ -61,9 +58,10 @@ export default function ThankYou() {
 
   const saveCommission = async () => {
     if (status !== "succeeded" || !refUserId) return;
+    const refRole= localStorage.getItem("refUserRole")
   
-    const commissionPercent = 0.5;   // 0.5%
-    const baseAmount = 47;
+    const commissionPercent = refRole ==="pro_reseller" ? 100 : 50;   // 0.5%
+    const baseAmount = refRole ==="pro_reseller" ? 97 : 47;
     const addAmount = (commissionPercent / 100) * baseAmount;
   
     // READ (will return row only if SELECT policy allows)

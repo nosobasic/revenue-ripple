@@ -78,12 +78,13 @@ const AffiliateTools = () => {
 
   const handleProResellerUpgrade = () => {
     setLoading(true);
-    const timer = setTimeout(() => {
-          navigate(`/pro-reseller-success?session_id=${user?.id}`);
-          setLoading(false);
-        }, 2000);
+    // const timer = setTimeout(() => {
+    //       navigate(`/pro-reseller-success?session_id=${user?.id}`);
+    //       setLoading(false);
+    //     }, 2000);
     
-        return () => clearTimeout(timer);
+    //     return () => clearTimeout(timer);
+    navigate(`/pro-reseller-upsell`)
   }
 
   const marketingMaterials = [
@@ -237,7 +238,7 @@ const AffiliateTools = () => {
           </section>
 
           {/* Link Generator Section */}
-          <section className="section">
+          {/* <section className="section">
             <div className="section-header affiliate">
               <div className="section-icon">🔗</div>
               <h2>Link Generator</h2>
@@ -263,12 +264,12 @@ const AffiliateTools = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
         </div>
 
         <div className="side-content">
           {/* Quick Stats */}
-          <section className="section">
+          {/* <section className="section">
             <div className="section-header digital">
               <div className="section-icon">📊</div>
               <h2>Quick Stats</h2>
@@ -289,7 +290,7 @@ const AffiliateTools = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
 
           {/* Navigation */}
           <section className="section">

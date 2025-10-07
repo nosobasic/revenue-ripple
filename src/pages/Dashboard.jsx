@@ -198,10 +198,28 @@ const Dashboard = () => {
     }
   };
 
-  const handleJoinAffiliate = (role) => {
-    navigate("/checkout")
-    localStorage.setItem("memberRole", role)
-    localStorage.setItem("memberId", user.id)
+  const handleJoinAffiliate = async(role) => {
+    // navigate("/checkout")
+    // localStorage.setItem("memberRole", role)
+    // localStorage.setItem("memberId", user.id)
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .update({ role: "affiliate" })   // 👈 new role
+        .eq("id", user.id)
+        .select();
+
+      if (error) {
+        console.error("Supabase update error:", error);
+      } else {
+        console.log("User role updated:", data);
+        alert(
+          `Your role has been successfully upgraded from "Member" to "Affiliate."`
+        );
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
   }
 
   return (
@@ -296,6 +314,7 @@ const Dashboard = () => {
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
             <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2>
             {/* Affiliate Program Section */}
+            {user.role === "member" &&
             <div className="section mb-8">
               <div className="section-header affiliate">
                 <FaMoneyBillWave className="section-icon" />
@@ -354,9 +373,9 @@ const Dashboard = () => {
                             e.target.style.transform = 'translateY(0)';
                           }}
                         >
-                          <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
+                          <span><FaUserPlus style={{ marginRight: '8px' }} /> Join Affiliate Program</span>
                         </button>
-}
+                          }
                         <Link 
                           to="/affiliate-centre/tools" 
                           className="cta-link"
@@ -370,9 +389,10 @@ const Dashboard = () => {
                 </div>
                 <hr className="section-divider" />
               </div>
-            </div>
+            </div>}
             
             {/*Reseller Program Section*/}
+            {user.role === "affiliate" && 
             <div className="section mb-8">
               <div className="section-header reseller">
                 <FaShoppingCart className="section-icon" />
@@ -418,7 +438,7 @@ const Dashboard = () => {
                 </div>
                 <hr className="section-divider" />
               </div>
-            </div>
+            </div>}
             
             {/* Learning Paths Section */}
             <div className="section mb-8">
