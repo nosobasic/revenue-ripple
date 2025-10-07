@@ -61,52 +61,72 @@ export default function ThankYou() {
 
   const saveCommission = async () => {
     if (status !== "succeeded" || !refUserId) return;
-    const refRole= localStorage.getItem("refUserRole")
   
-    const commissionPercent = refRole ==="pro_reseller" ? 100 : 50;   
-    const baseAmount = refRole ==="pro_reseller" ? 97 : 47;
+    const refRole = localStorage.getItem("refUserRole");
+    const commissionPercent = refRole === "pro_reseller" ? 100 : 50;   
+    const baseAmount = refRole === "pro_reseller" ? 97 : 47;
     const addAmount = (commissionPercent / 100) * baseAmount;
   
-    // READ (will return row only if SELECT policy allows)
-    // const { data: existing, error: selErr } = await supabase
-    //   .from("commissions")
-    //   .select("id, amount, commission")
-    //   .eq("referrer_username", refUserId)
-    //   .maybeSingle();
-  
-    // if (selErr) {
-    //   console.error("Select error:", selErr);
-    //   return;
-    // }
-  
-    // if (existing) {
-    //   // UPDATE
-    //   const { error: updErr } = await supabase
-    //     .from("commissions")
-    //     .update({
-    //       amount: Number(existing.amount ?? 0) + addAmount.toFixed(2),
-    //       commission: Number(existing.commission ?? 0) + addAmount.toFixed(2),
-    //       status: "active",
-    //     })
-    //     .eq("id", existing.id);
-  
-    //   if (updErr) console.error("Update error:", updErr);
-    // } else {
-      // INSERT
-      const { error: insErr } = await supabase
+    try {
+      // 1️⃣ Count how many unique emails this referrer already referred
+      const { count, error: countError } = await supabase
         .from("commissions")
-        .insert({
-          referrer_username: refUserId,
-          amount: addAmount.toFixed(2),
-          commission: addAmount.toFixed(2),
-          tier: "membership",
-          email: customerEmail, 
-          status: "active",
-        });
+        .select("*", { count: "exact", head: true })
+        .eq("referrer_username", refUserId);
+
+        console.log("Count------", count)
   
-      if (insErr) console.error("Insert error:", insErr);
-    // }
+      if (countError) {
+        console.error("Count error:", countError);
+        return;
+      }
+  
+      // 2️⃣ Calculate the new referral number
+      const newCount = (count ?? 0) + 1;
+  
+      // 3️⃣ Only give commission every 2nd, 4th, 6th... referral
+      if (newCount % 2 === 0) {
+        const { error: insErr } = await supabase
+          .from("commissions")
+          .insert({
+            referrer_username: refUserId,
+            amount: addAmount.toFixed(2),
+            commission: addAmount.toFixed(2),
+            tier: "membership",
+            email: customerEmail,
+            status: "active",
+          });
+  
+        if (insErr) {
+          console.error("Insert error:", insErr);
+        } else {
+          console.log(`🎉 Commission granted after ${newCount}th referral`);
+        }
+      } else {
+        console.log(`Referral #${newCount}: not yet eligible for commission`);
+        const { error: insErr } = await supabase
+          .from("commissions")
+          .insert({
+            referrer_username: refUserId,
+            amount: 0,
+            commission: 0,
+            tier: "membership",
+            email: customerEmail,
+            status: "active",
+          });
+  
+        if (insErr) {
+          console.error("Insert error:", insErr);
+        } else {
+          console.log(`🎉 Commission granted after ${newCount}th referral`);
+        }
+      }
+  
+    } catch (err) {
+      console.error("Unexpected error:", err);
+    }
   };
+  
 
   return (
     <div className="checkout-container">

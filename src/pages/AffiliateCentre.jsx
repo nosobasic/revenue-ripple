@@ -17,7 +17,8 @@ export default function AffiliateCentre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const baseUrl = "https://www.revenueripple.org/affiliate/sign-up";
+  // const baseUrl = "https://www.revenueripple.org/affiliate/sign-up";
+  const baseUrl = "http://localhost:5173/affiliate/sign-up";
   const affiliateLink = `${baseUrl}/?ref=${user?.id}&role=${user?.role}`;
 
   const copyAffiliateLink = () => {
