@@ -74,6 +74,7 @@ const MarketingMistakes = lazy(() => import('./pages/training/guides/MarketingMi
 const UnderstandingRelevance = lazy(() => import('./pages/training/guides/UnderstandingRelevance'));
 const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
 const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
+const ThankYouMemberToAffiliate = lazy(() => import('./pages/ThankyouMemberToAffiliate'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -188,6 +189,7 @@ const App = () => {
         <Route path="/membership-variation-2" element={<MembershipVariation2 />} />
         <Route path="/membership-variation-3" element={<MembershipVariation3 />} />
         <Route path="/thank-you-membership-mastery" element={<ThankYouMembershipMastery />} />
+        <Route path="/thank-you-member-to-affiliate" element={<ThankYouMemberToAffiliate />} />
         
         {/* Digital Marketing Domination Landing Page Routes */}
         <Route path="/dmd-variation-1" element={<DMDVariation1 />} />

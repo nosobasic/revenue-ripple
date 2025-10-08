@@ -122,6 +122,9 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
+  const reload = localStorage.getItem("reloadPage")
+
+  console.log("reee", typeof(reload))
 
 
 
@@ -162,6 +165,7 @@ const Dashboard = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
+      // window.location.reload();
     }, 1000);
   }, []);
 
@@ -197,6 +201,14 @@ const Dashboard = () => {
       console.error('Error signing out:', error);
     }
   };
+  useEffect(() => {
+
+    
+    if(reload === "true") {
+      window.location.reload();
+      localStorage.setItem("reloadPage", false)
+    }
+   },[reload])
 
   const handleJoinAffiliate = async(role) => {
     // navigate("/checkout")
@@ -213,9 +225,11 @@ const Dashboard = () => {
         console.error("Supabase update error:", error);
       } else {
         console.log("User role updated:", data);
-        alert(
-          `Your role has been successfully upgraded from "Member" to "Affiliate."`
-        );
+        navigate('/thank-you-member-to-affiliate')
+        // alert(
+        //   `Your role has been successfully upgraded from "Member" to "Affiliate."`
+        // );
+
       }
     } catch (err) {
       console.error("Unexpected error:", err);
@@ -312,7 +326,7 @@ const Dashboard = () => {
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
-            <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2>
+            {/* <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2> */}
             {/* Affiliate Program Section */}
             {user.role === "member" &&
             <div className="section mb-8">

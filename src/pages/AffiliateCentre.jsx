@@ -44,7 +44,6 @@ export default function AffiliateCentre() {
 
         if (userError) throw userError;
 
-        console.log("userData=====",userData)
 
         // Fetch commissions
         const { data: commissions, error: commissionsError } = await supabase
@@ -53,7 +52,7 @@ export default function AffiliateCentre() {
           .eq('referrer_username', user.id);
 
         if (commissionsError) throw commissionsError;
-        console.log("commissions=====",commissions)
+      
 
         const totalEarnings = commissions.reduce((sum, row) => sum + row.commission, 0);
         const totalSales = commissions.length;
@@ -65,13 +64,15 @@ export default function AffiliateCentre() {
         });
 
         const recentActivity = commissions
-          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-          .slice(0, 5)
-          .map((entry) => ({
-            type: "commission",
-            message: `Commission earned: $${entry.commission.toFixed(2)} from ${entry.tier.toUpperCase()}`,
-            timestamp: new Date(entry.created_at).toLocaleString()
-          }));
+        .filter(entry => entry.commission > 0)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .slice(0, 5)
+        .map(entry => ({
+          type: "commission",
+          message: `Commission earned: $${entry.commission.toFixed(2)} from ${entry.tier.toUpperCase()}`,
+          timestamp: new Date(entry.created_at).toLocaleString(),
+        }));
+
 
         setActivity(recentActivity);
       } catch (err) {
@@ -172,9 +173,10 @@ export default function AffiliateCentre() {
             <div className="section-content">
               <div className="grid-layout">
                 <div className="course-item">
-                  <h3>Generate Affiliate Link</h3>
+                  <h3>Generate {user.role === "affiliate"?"Affiliate": user.role === "reseller"? "Reseller": "Pro Reseller"} Link</h3>
                   <div className="course-details">
-                    <p>Create and copy your unique affiliate link to start promoting.</p>
+                    
+                    <p>Create and copy your unique {user.role === "affiliate"?"affiliate": user.role === "reseller"? "reseller": "pro reseller"} link to start promoting.</p>
                     <button className="cta-button" onClick={copyAffiliateLink}>Copy Link</button>
                   </div>
                 </div>
