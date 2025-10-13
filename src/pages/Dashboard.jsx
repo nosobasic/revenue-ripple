@@ -7,6 +7,7 @@ import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
+import MemberRoleUpdateModal from '../components/MemberRoleUpdateModal.jsx';
 import '../pages.css';
 
 // Add styles for the learning path options and progress bars
@@ -112,6 +113,7 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userIntent, setUserIntent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [stats, setStats] = useState({
     totalRevenue: 0,
     totalOrders: 0,
@@ -210,30 +212,9 @@ const Dashboard = () => {
     }
    },[reload])
 
-  const handleJoinAffiliate = async(role) => {
-    // navigate("/checkout")
-    // localStorage.setItem("memberRole", role)
-    // localStorage.setItem("memberId", user.id)
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .update({ role: "affiliate" })   // 👈 new role
-        .eq("id", user.id)
-        .select();
-
-      if (error) {
-        console.error("Supabase update error:", error);
-      } else {
-        console.log("User role updated:", data);
-        navigate('/thank-you-member-to-affiliate')
-        // alert(
-        //   `Your role has been successfully upgraded from "Member" to "Affiliate."`
-        // );
-
-      }
-    } catch (err) {
-      console.error("Unexpected error:", err);
-    }
+  const handleJoinAffiliate = () => {
+    setIsModalOpen(true)
+   
   }
 
   return (
@@ -387,7 +368,7 @@ const Dashboard = () => {
                             e.target.style.transform = 'translateY(0)';
                           }}
                         >
-                          <span><FaUserPlus style={{ marginRight: '8px' }} /> Go to the affiliate signup page</span>
+                          <span><FaUserPlus style={{ marginRight: '8px' }} /> Join Our Affiliate Program</span>
                         </button>
 }
                         <Link 
@@ -1261,6 +1242,9 @@ const Dashboard = () => {
           onSkip={handleOnboardingSkip}
         />
       )}
+      {isModalOpen &&
+        <MemberRoleUpdateModal  setIsModalOpen={setIsModalOpen}/>
+      }
     </div>
   );
 };

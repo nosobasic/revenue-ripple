@@ -44,6 +44,8 @@ export default function AffiliateCentre() {
 
         if (userError) throw userError;
 
+        console.log("CCCCCC", userData)
+
 
         // Fetch commissions
         const { data: commissions, error: commissionsError } = await supabase
