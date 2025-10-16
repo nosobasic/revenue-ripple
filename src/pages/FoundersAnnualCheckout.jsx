@@ -131,38 +131,23 @@ export default function FoundersAnnualCheckout() {
             <div className="quick-link-card">
               <h3>📅 Schedule Your Onboarding</h3>
               <p>Book your 1-on-1 call after checkout</p>
-              <a 
-                href={FOUNDERS_ANNUAL_CONFIG.CALENDLY_LINK} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="preview-link"
-              >
-                Preview Calendar →
-              </a>
+              <div className="preview-placeholder">
+                🔒 Available after purchase
+              </div>
             </div>
             <div className="quick-link-card">
               <h3>💬 Join the Discord</h3>
               <p>Connect with other founders</p>
-              <a 
-                href={FOUNDERS_ANNUAL_CONFIG.DISCORD_LINK} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="preview-link"
-              >
-                Preview Community →
-              </a>
+              <div className="preview-placeholder">
+                🔒 Private invite sent after purchase
+              </div>
             </div>
             <div className="quick-link-card">
               <h3>📚 Access the Vault</h3>
               <p>4 playbooks for business growth</p>
-              <a 
-                href={FOUNDERS_ANNUAL_CONFIG.VAULT_LINK} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="preview-link"
-              >
-                Preview Resources →
-              </a>
+              <div className="preview-placeholder">
+                🔒 Exclusive access after purchase
+              </div>
             </div>
           </div>
 
@@ -343,16 +328,15 @@ export default function FoundersAnnualCheckout() {
           margin-bottom: 0.75rem;
         }
 
-        .preview-link {
-          color: #667eea;
-          text-decoration: none;
+        .preview-placeholder {
+          color: #6b7280;
           font-weight: 600;
           font-size: 0.875rem;
-          transition: color 0.2s;
-        }
-
-        .preview-link:hover {
-          color: #764ba2;
+          background: #f3f4f6;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          text-align: center;
+          border: 1px solid #e5e7eb;
         }
 
         .checkout-cta-section {

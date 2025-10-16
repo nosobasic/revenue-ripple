@@ -245,7 +245,6 @@ def create_founders_annual_session():
     try:
         data = request.get_json()
         referrer_username = data.get('referrer_username')
-        customer_email = data.get('email')
         timer_started_at = data.get('timer_started_at')
 
         session = stripe.checkout.Session.create(
@@ -261,8 +260,7 @@ def create_founders_annual_session():
                 'referrer_username': referrer_username or 'none',
                 'product': 'founders_annual_subscription',
                 'timer_started_at': timer_started_at or ''
-            },
-            customer_email=customer_email if customer_email else None
+            }
         )
         return jsonify({'url': session.url})
     except Exception as e:
