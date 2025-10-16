@@ -239,6 +239,42 @@ def stripe_test():
     except Exception as e:
         return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
 
+@app.route('/stripe-prices-test', methods=['GET'])
+def stripe_prices_test():
+    """Test which price IDs exist in Stripe"""
+    try:
+        # List of price IDs used in the code
+        price_ids = [
+            'price_1RKIXE2Ku9STqdAdktgTsVDf',  # Tripwire $7
+            'price_1SE8O22Ku9STqdAd92gDwXse',  # Pro Reseller $97/month
+            'price_1S5iln2Ku9STqdAdi0Z2zX3w',  # Reseller $47/month
+            'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47/month
+            'price_1SBguk2Ku9STqdAdNBuZcJst'   # Founders Annual $470/year
+        ]
+        
+        results = {}
+        for price_id in price_ids:
+            try:
+                price = stripe.Price.retrieve(price_id)
+                results[price_id] = {
+                    'exists': True,
+                    'amount': price.unit_amount,
+                    'currency': price.currency,
+                    'recurring': price.recurring is not None
+                }
+            except stripe.error.InvalidRequestError:
+                results[price_id] = {'exists': False, 'error': 'Price not found'}
+            except Exception as e:
+                results[price_id] = {'exists': False, 'error': str(e)}
+        
+        return jsonify({
+            'mode': 'test' if 'test' in stripe.api_key else 'live',
+            'api_key_prefix': stripe.api_key[:7] + '...',
+            'price_ids': results
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
+
 @app.route('/founders-spots-remaining', methods=['GET', 'OPTIONS'])
 def founders_spots_simple():
     """Get remaining founder spots - simplified endpoint"""
