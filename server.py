@@ -224,6 +224,21 @@ def founders_test_simple():
     """Simple test endpoint for Founders Annual"""
     return jsonify({'status': 'Founders endpoints active', 'timestamp': datetime.now().isoformat()})
 
+@app.route('/stripe-test', methods=['GET'])
+def stripe_test():
+    """Test Stripe configuration"""
+    try:
+        # Test if we can create a simple product
+        products = stripe.Product.list(limit=1)
+        return jsonify({
+            'status': 'Stripe connected',
+            'mode': 'test' if 'test' in stripe.api_key else 'live',
+            'products_count': len(products.data),
+            'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
+
 @app.route('/founders-spots-remaining', methods=['GET', 'OPTIONS'])
 def founders_spots_simple():
     """Get remaining founder spots - simplified endpoint"""
