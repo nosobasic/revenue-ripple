@@ -17,7 +17,7 @@ export default function FoundersSpotCounter({ className = '' }) {
 
   const fetchSpotsRemaining = async () => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.FOUNDERS.SPOTS_REMAINING}`);
+      const response = await fetch(`${API_ENDPOINTS.BASE_URL}/founders-spots-remaining`);
       const data = await response.json();
       
       setSpotsRemaining(data.spots_remaining);
