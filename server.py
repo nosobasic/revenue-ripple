@@ -89,7 +89,7 @@ app.register_blueprint(ai_assistant_bp)
 
 @app.route('/', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
+    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active', 'version': '2.0.1'})
 
 @app.after_request
 def after_request(response):
