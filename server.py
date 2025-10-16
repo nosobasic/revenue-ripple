@@ -1814,7 +1814,7 @@ def founders_timer_start():
             })
         else:
             # Create new timer (3 days from now)
-            from datetime import datetime, timedelta
+            from datetime import timedelta
             now = datetime.now()
             expires = now + timedelta(days=3)
             
