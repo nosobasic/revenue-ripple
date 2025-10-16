@@ -224,6 +224,31 @@ def founders_test_simple():
     """Simple test endpoint for Founders Annual"""
     return jsonify({'status': 'Founders endpoints active', 'timestamp': datetime.now().isoformat()})
 
+@app.route('/founders-checkout-test', methods=['POST'])
+def founders_checkout_test():
+    """Test Founders Annual checkout with correct price ID"""
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username', 'test')
+        
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/founders-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/founders-checkout',
+            metadata={
+                'referrer_username': referrer_username,
+                'product': 'founders_annual_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 @app.route('/stripe-test', methods=['GET'])
 def stripe_test():
     """Test Stripe configuration"""
