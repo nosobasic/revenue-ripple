@@ -322,4 +322,70 @@
   .mobile-nav-link {
     padding: 1rem;
   }
+}
+
+/* Founders CTA Button Styles */
+.founders-cta-btn,
+.founders-cta-btn-guest {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1f2937;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+  white-space: nowrap;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.founders-cta-btn:hover,
+.founders-cta-btn-guest:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(251, 191, 36, 0.6);
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.7);
+  }
+}
+
+.mobile-founders-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  margin: 1rem;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1f2937;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+}
+
+.mobile-founders-cta:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(251, 191, 36, 0.6);
+}
+
+@media (max-width: 768px) {
+  .founders-cta-btn,
+  .founders-cta-btn-guest {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.25rem;
+  }
 } 

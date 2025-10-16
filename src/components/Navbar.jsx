@@ -89,6 +89,13 @@ const Navbar = React.memo(() => {
                 <span>Support</span>
               </Link>
 
+              {/* Founders CTA - Only show if not already a founder */}
+              {!user?.is_founder && (
+                <Link to="/founders-checkout" className="founders-cta-btn" onClick={closeMobileMenu}>
+                  🚀 Join Founders Circle
+                </Link>
+              )}
+              
               {/* Profile Link */}
               <Link to="/profile" className="navbar-link" onClick={closeMobileMenu}>
                 <FaUser className="nav-icon" />
@@ -99,6 +106,9 @@ const Navbar = React.memo(() => {
             <>
               <Link to="/login" className="navbar-link" onClick={closeMobileMenu}>Member Sign In</Link>
               <Link to="/affiliate-login" className="navbar-link" onClick={closeMobileMenu}>Affiliates & Resellers</Link>
+              <Link to="/founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
+                🚀 Founders Circle
+              </Link>
             </>
           )}
         </div>
@@ -154,6 +164,13 @@ const Navbar = React.memo(() => {
                   </Link>
 
                   <div className="mobile-menu-divider"></div>
+                  
+                  {/* Founders CTA - Mobile */}
+                  {!user?.is_founder && (
+                    <Link to="/founders-checkout" className="mobile-founders-cta" onClick={closeMobileMenu}>
+                      🚀 Join Founders Circle
+                    </Link>
+                  )}
                   
                   <Link to="/profile" className="mobile-nav-link" onClick={closeMobileMenu}>
                     <FaUser className="mobile-nav-icon" />

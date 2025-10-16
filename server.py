@@ -218,6 +218,62 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/create-founders-annual-session', methods=['POST'])
+def create_founders_annual_session():
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+        customer_email = data.get('email')
+        timer_started_at = data.get('timer_started_at')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/founders-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/founders-checkout',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'founders_annual_subscription',
+                'timer_started_at': timer_started_at or ''
+            },
+            customer_email=customer_email if customer_email else None
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/create-founders-monthly-session', methods=['POST'])
+def create_founders_monthly_session():
+    """Fallback monthly option on Founders checkout page"""
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+        customer_email = data.get('email')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47/month
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/founders-checkout',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'membership_subscription',
+                'source': 'founders_page_monthly_option'
+            },
+            customer_email=customer_email if customer_email else None
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 
 # # PayPal Payout API Endpoints
 # @app.route('/paypal/create-payout', methods=['POST', 'OPTIONS'])
@@ -467,6 +523,35 @@ def stripe_webhook():
             }
             send_conversion_event('Purchase', user_data, custom_data, "https://revenueripple.org/checkout")
 
+        elif product == "founders_annual_subscription":
+            print(f"🚀 Founders Annual subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
+            
+            # Log to founders_annual_members table
+            log_founders_annual_purchase(customer_email, amount_total, referrer_username, session)
+            
+            # Update user with founder status
+            set_user_as_founder(customer_email)
+            
+            # Add to GetResponse with founder tag
+            add_contact_to_getresponse(customer_email, "founders_annual")
+            
+            # Log commission if there's a referrer
+            if referrer_username and referrer_username != 'none':
+                log_commission(referrer_username, customer_email, "founders_annual", amount_total)
+            
+            # Trigger founder bonus emails
+            send_founders_welcome_emails(customer_email)
+            
+            # Send Subscribe event to Facebook Conversions API
+            user_data = {'email': customer_email}
+            custom_data = {
+                'content_name': 'Founders Annual Subscription',
+                'content_category': 'Subscription',
+                'value': amount_total,
+                'currency': 'USD'
+            }
+            send_conversion_event('Subscribe', user_data, custom_data, "https://revenueripple.org/founders-checkout")
+
         elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
             tier = product.replace("_subscription", "")
             print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
@@ -704,6 +789,112 @@ def set_user_role(email, role):
                 print(f"❌ Failed to create auth user for {email}")
     except Exception as e:
         print(f"❌ Failed to set role: {str(e)}")
+
+def log_founders_annual_purchase(email, amount, referrer_username, session):
+    """Log Founders Annual purchase to database"""
+    try:
+        # Get user_id from email
+        user_response = supabase.table("users").select("id").eq("email", email).execute()
+        user_id = user_response.data[0]['id'] if user_response.data else None
+        
+        # Extract timer_started_at from metadata if available
+        timer_started_at = session['metadata'].get('timer_started_at')
+        
+        data = {
+            "user_id": user_id,
+            "email": email,
+            "stripe_customer_id": session.get('customer'),
+            "stripe_subscription_id": session.get('subscription'),
+            "amount_paid": amount,
+            "referrer_username": referrer_username,
+            "timer_started_at": timer_started_at if timer_started_at else None,
+            "purchased_at": "now()",
+            "is_active": True
+        }
+        
+        response = supabase.table("founders_annual_members").insert(data).execute()
+        print(f"✅ Logged Founders Annual purchase to database: {response.data}")
+    except Exception as e:
+        print(f"❌ Failed to log Founders Annual purchase: {str(e)}")
+
+def set_user_as_founder(email):
+    """Update user record with founder status"""
+    try:
+        response = supabase.table("users").select("id").eq("email", email).execute()
+        if response.data and len(response.data) > 0:
+            # Update existing user
+            supabase.table("users").update({
+                "is_founder": True,
+                "subscription_type": "annual",
+                "role": "member",
+                "plan": "founders_annual",
+                "founder_benefits": {
+                    "vault_access": True,
+                    "discord_access": True,
+                    "onboarding_call": True,
+                    "early_access": True,
+                    "locked_pricing": True
+                },
+                "updated_at": "now()"
+            }).eq("email", email).execute()
+            print(f"✅ Set founder status for {email}")
+        else:
+            # Create user with founder status
+            auth_response = supabase.auth.admin.create_user({
+                "email": email,
+                "email_confirm": True,
+                "user_metadata": {
+                    "is_founder": True,
+                    "role": "member"
+                }
+            })
+            
+            if auth_response.user:
+                user_id = auth_response.user.id
+                supabase.table("users").insert({
+                    "id": user_id,
+                    "email": email,
+                    "is_founder": True,
+                    "subscription_type": "annual",
+                    "role": "member",
+                    "plan": "founders_annual",
+                    "status": "active",
+                    "founder_benefits": {
+                        "vault_access": True,
+                        "discord_access": True,
+                        "onboarding_call": True,
+                        "early_access": True,
+                        "locked_pricing": True
+                    },
+                    "created_at": "now()"
+                }).execute()
+                print(f"✅ Created founder user for {email}")
+    except Exception as e:
+        print(f"❌ Failed to set founder status: {str(e)}")
+
+def send_founders_welcome_emails(email):
+    """Trigger founder welcome email sequence"""
+    try:
+        # Mark welcome email as sent
+        supabase.table("founders_annual_members").update({
+            "bonuses_delivered": {
+                "welcome_email": True,
+                "discord_invite": False,
+                "vault_access": False,
+                "onboarding_scheduled": False,
+                "reminder_sent": False
+            }
+        }).eq("email", email).execute()
+        
+        # Note: Actual email sending will be handled by GetResponse automation
+        # or you can integrate with an email service here
+        print(f"✅ Triggered founder welcome emails for {email}")
+        print(f"   - Welcome email (immediate)")
+        print(f"   - Discord invite (5 min)")
+        print(f"   - Vault access (2 hours)")
+        print(f"   - Onboarding reminder (24 hours)")
+    except Exception as e:
+        print(f"❌ Failed to trigger founder emails: {str(e)}")
 
 def log_payout_to_supabase(user_email, amount, payout_batch_id, status):
     """Log payout request to Supabase"""
@@ -1573,6 +1764,115 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
             print(f"❌ GetResponse error {response.status_code}: {response.text}")
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+# Founders Annual API Endpoints
+@app.route('/api/founders-spots-remaining', methods=['GET', 'OPTIONS'])
+def founders_spots_remaining():
+    """Get remaining founder spots (20 total - marketing scarcity)"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        # Count active founders
+        result = supabase.table("founders_annual_members").select("id", count="exact").eq("is_active", True).execute()
+        count = result.count if result.count is not None else 0
+        
+        spots_remaining = max(0, 20 - count)
+        
+        return jsonify({
+            'spots_remaining': spots_remaining,
+            'total_spots': 20,
+            'spots_taken': count
+        })
+    except Exception as e:
+        print(f"❌ Error getting founder spots: {str(e)}")
+        return jsonify({'spots_remaining': 15, 'total_spots': 20}), 200  # Fallback
+
+@app.route('/api/founders-timer-start', methods=['POST', 'OPTIONS'])
+def founders_timer_start():
+    """Record when a user first visits the founders page"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        data = request.get_json()
+        user_identifier = data.get('identifier')  # email or anonymous ID
+        
+        if not user_identifier:
+            return jsonify({'error': 'identifier required'}), 400
+        
+        # Check if timer already exists for this identifier
+        existing = supabase.table("founders_timer_tracking").select("*").eq("user_identifier", user_identifier).execute()
+        
+        if existing.data and len(existing.data) > 0:
+            # Return existing timer
+            timer_data = existing.data[0]
+            return jsonify({
+                'timer_started_at': timer_data['timer_started_at'],
+                'expires_at': timer_data['expires_at'],
+                'already_exists': True
+            })
+        else:
+            # Create new timer (3 days from now)
+            from datetime import datetime, timedelta
+            now = datetime.now()
+            expires = now + timedelta(days=3)
+            
+            new_timer = {
+                'user_identifier': user_identifier,
+                'timer_started_at': now.isoformat(),
+                'expires_at': expires.isoformat(),
+                'page_visits': 1,
+                'converted': False
+            }
+            
+            result = supabase.table("founders_timer_tracking").insert(new_timer).execute()
+            
+            return jsonify({
+                'timer_started_at': now.isoformat(),
+                'expires_at': expires.isoformat(),
+                'created': True
+            })
+    except Exception as e:
+        print(f"❌ Error starting founder timer: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/founders-timer-check', methods=['POST', 'OPTIONS'])
+def founders_timer_check():
+    """Check timer status for a user"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        data = request.get_json()
+        user_identifier = data.get('identifier')
+        
+        if not user_identifier:
+            return jsonify({'error': 'identifier required'}), 400
+        
+        # Get timer data
+        result = supabase.table("founders_timer_tracking").select("*").eq("user_identifier", user_identifier).execute()
+        
+        if result.data and len(result.data) > 0:
+            timer_data = result.data[0]
+            
+            # Update page visit count
+            supabase.table("founders_timer_tracking").update({
+                'page_visits': timer_data['page_visits'] + 1,
+                'updated_at': 'now()'
+            }).eq("user_identifier", user_identifier).execute()
+            
+            return jsonify({
+                'timer_started_at': timer_data['timer_started_at'],
+                'expires_at': timer_data['expires_at'],
+                'converted': timer_data['converted'],
+                'exists': True
+            })
+        else:
+            return jsonify({'exists': False})
+    except Exception as e:
+        print(f"❌ Error checking founder timer: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

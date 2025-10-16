@@ -75,6 +75,9 @@ const UnderstandingRelevance = lazy(() => import('./pages/training/guides/Unders
 const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
 const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
 const ThankYouMemberToAffiliate = lazy(() => import('./pages/ThankyouMemberToAffiliate'));
+// Founders Annual components
+const FoundersAnnualCheckout = lazy(() => import('./pages/FoundersAnnualCheckout'));
+const FoundersSuccess = lazy(() => import('./pages/FoundersSuccess'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -131,6 +134,10 @@ const App = () => {
         <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
         <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
+        
+        {/* Founders Annual Routes */}
+        <Route path="/founders-checkout" element={<FoundersAnnualCheckout />} />
+        <Route path="/founders-success" element={<FoundersSuccess />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
