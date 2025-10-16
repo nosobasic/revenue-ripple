@@ -89,7 +89,7 @@ app.register_blueprint(ai_assistant_bp)
 
 @app.route('/', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active', 'version': '2.0.1'})
+    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
 
 @app.after_request
 def after_request(response):
@@ -153,7 +153,7 @@ def create_pro_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1SE8O22Ku9STqdAd92gDwXse',  # Pro Reseller $97/month Price ID
+                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
                 'quantity': 1,
             }],
             mode='subscription',
@@ -179,7 +179,7 @@ def create_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1S5iln2Ku9STqdAdi0Z2zX3w',  # Replace with your Reseller $47/month Price ID
+                'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Replace with your Reseller $47/month Price ID
                 'quantity': 1,
             }],
             mode='subscription',
@@ -203,7 +203,7 @@ def create_membership_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet', 
+                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS', 
                 'quantity': 1,
             }],
             mode='subscription',
@@ -224,31 +224,6 @@ def founders_test_simple():
     """Simple test endpoint for Founders Annual"""
     return jsonify({'status': 'Founders endpoints active', 'timestamp': datetime.now().isoformat()})
 
-@app.route('/founders-checkout-test', methods=['POST'])
-def founders_checkout_test():
-    """Test Founders Annual checkout with correct price ID"""
-    try:
-        data = request.get_json()
-        referrer_username = data.get('referrer_username', 'test')
-        
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
-                'quantity': 1,
-            }],
-            mode='subscription',
-            success_url='https://revenueripple.org/founders-success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://revenueripple.org/founders-checkout',
-            metadata={
-                'referrer_username': referrer_username,
-                'product': 'founders_annual_subscription'
-            }
-        )
-        return jsonify({'url': session.url})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-
 @app.route('/stripe-test', methods=['GET'])
 def stripe_test():
     """Test Stripe configuration"""
@@ -260,42 +235,6 @@ def stripe_test():
             'mode': 'test' if 'test' in stripe.api_key else 'live',
             'products_count': len(products.data),
             'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
-
-@app.route('/stripe-prices-test', methods=['GET'])
-def stripe_prices_test():
-    """Test which price IDs exist in Stripe"""
-    try:
-        # List of price IDs used in the code
-        price_ids = [
-            'price_1RKIXE2Ku9STqdAdktgTsVDf',  # Tripwire $7
-            'price_1SE8O22Ku9STqdAd92gDwXse',  # Pro Reseller $97/month
-            'price_1S5iln2Ku9STqdAdi0Z2zX3w',  # Reseller $47/month
-            'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47/month
-            'price_1SBguk2Ku9STqdAdNBuZcJst'   # Founders Annual $470/year
-        ]
-        
-        results = {}
-        for price_id in price_ids:
-            try:
-                price = stripe.Price.retrieve(price_id)
-                results[price_id] = {
-                    'exists': True,
-                    'amount': price.unit_amount,
-                    'currency': price.currency,
-                    'recurring': price.recurring is not None
-                }
-            except stripe.error.InvalidRequestError:
-                results[price_id] = {'exists': False, 'error': 'Price not found'}
-            except Exception as e:
-                results[price_id] = {'exists': False, 'error': str(e)}
-        
-        return jsonify({
-            'mode': 'test' if 'test' in stripe.api_key else 'live',
-            'api_key_prefix': stripe.api_key[:7] + '...',
-            'price_ids': results
         })
     except Exception as e:
         return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
@@ -323,11 +262,12 @@ def create_founders_annual_session():
         referrer_username = data.get('referrer_username')
         timer_started_at = data.get('timer_started_at')
 
-        # Founders Annual subscription - $470/year
+        # Create a custom price for Founders Annual ($470/year = $39.17/month)
+        # For now, we'll use the monthly price but adjust the quantity to simulate annual pricing
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
+                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47 price
                 'quantity': 1,
             }],
             mode='subscription',
@@ -336,7 +276,8 @@ def create_founders_annual_session():
             metadata={
                 'referrer_username': referrer_username or 'none',
                 'product': 'founders_annual_subscription',
-                'timer_started_at': timer_started_at or ''
+                'timer_started_at': timer_started_at or '',
+                'note': 'TEMPORARY: Using monthly price until Founders Annual price ID is created'
             }
         )
         return jsonify({'url': session.url})
