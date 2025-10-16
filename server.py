@@ -298,12 +298,11 @@ def create_founders_annual_session():
         referrer_username = data.get('referrer_username')
         timer_started_at = data.get('timer_started_at')
 
-        # Create a custom price for Founders Annual ($470/year = $39.17/month)
-        # For now, we'll use the monthly price but adjust the quantity to simulate annual pricing
+        # Founders Annual subscription - $470/year
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47 price
+                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
                 'quantity': 1,
             }],
             mode='subscription',
