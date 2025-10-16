@@ -218,6 +218,28 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+# Founders Annual Endpoints - moved here for immediate deployment
+@app.route('/founders-test', methods=['GET'])
+def founders_test_simple():
+    """Simple test endpoint for Founders Annual"""
+    return jsonify({'status': 'Founders endpoints active', 'timestamp': datetime.now().isoformat()})
+
+@app.route('/founders-spots-remaining', methods=['GET', 'OPTIONS'])
+def founders_spots_simple():
+    """Get remaining founder spots - simplified endpoint"""
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    try:
+        # For now, return a static response until database is set up
+        return jsonify({
+            'spots_remaining': 15,
+            'total_spots': 20,
+            'spots_taken': 5
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/create-founders-annual-session', methods=['POST'])
 def create_founders_annual_session():
     try:
