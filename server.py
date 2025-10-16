@@ -336,8 +336,7 @@ def create_founders_annual_session():
             metadata={
                 'referrer_username': referrer_username or 'none',
                 'product': 'founders_annual_subscription',
-                'timer_started_at': timer_started_at or '',
-                'note': 'TEMPORARY: Using monthly price until Founders Annual price ID is created'
+                'timer_started_at': timer_started_at or ''
             }
         )
         return jsonify({'url': session.url})
