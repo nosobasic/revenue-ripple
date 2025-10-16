@@ -250,7 +250,7 @@ def create_founders_annual_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
+                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet',  # TEMP: Using monthly price for testing - need to create test mode Founders Annual price
                 'quantity': 1,
             }],
             mode='subscription',
