@@ -1766,6 +1766,11 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
 
 # Founders Annual API Endpoints
+@app.route('/api/founders-test', methods=['GET'])
+def founders_test():
+    """Test endpoint to verify Founders Annual routes are working"""
+    return jsonify({'status': 'Founders Annual endpoints are active', 'timestamp': datetime.now().isoformat()})
+
 @app.route('/api/founders-spots-remaining', methods=['GET', 'OPTIONS'])
 def founders_spots_remaining():
     """Get remaining founder spots (20 total - marketing scarcity)"""
