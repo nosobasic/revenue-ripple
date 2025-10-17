@@ -38,9 +38,12 @@ CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org",
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+print(f"🔍 DEBUG: STRIPE_SECRET_KEY value: {stripe.api_key[:10] + '...' if stripe.api_key else 'None'}")
 if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
+else:
+    print("✅ STRIPE_SECRET_KEY loaded successfully")
 
 
 # Facebook Conversions API Configuration
@@ -525,6 +528,7 @@ def create_paypal_payout():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+print(f"🔍 DEBUG: STRIPE_WEBHOOK_SECRET value: {'SET' if endpoint_secret else 'NOT SET'}")
 
 @app.route('/webhook', methods=['POST'])
 def stripe_webhook():
