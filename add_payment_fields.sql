@@ -38,6 +38,16 @@ WHERE email IN (
 CREATE INDEX IF NOT EXISTS idx_users_payment_status ON users(payment_status);
 CREATE INDEX IF NOT EXISTS idx_users_has_paid ON users(has_paid);
 
+-- Ensure admin users always have access (bypass payment requirement)
+UPDATE users 
+SET has_paid = TRUE, payment_status = 'admin_access'
+WHERE role = 'admin';
+
+-- Specifically ensure donte97@gmail.com has admin access
+UPDATE users 
+SET has_paid = TRUE, payment_status = 'admin_access', role = 'admin'
+WHERE email = 'donte97@gmail.com';
+
 -- Show the results
 SELECT 
   email, 

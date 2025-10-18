@@ -54,8 +54,8 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check payment status if required
-  if (requirePayment && user && !user.has_paid) {
+  // Check payment status if required (but allow admin access)
+  if (requirePayment && user && !user.has_paid && user.role !== 'admin') {
     return <Navigate to="/checkout" state={{ from: location }} replace />;
   }
 
