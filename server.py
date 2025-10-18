@@ -156,7 +156,7 @@ def create_pro_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month Price ID
+                'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month
                 'quantity': 1,
             }],
             mode='subscription',
@@ -173,6 +173,30 @@ def create_pro_reseller_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/create-pro-reseller-trial-session', methods=['POST'])
+def create_pro_reseller_trial_session():
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RRdNV2Ku9STqdAduqGfLBpt',  # Pro Reseller Trial
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/pro-reseller-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/pro-reseller-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'pro_reseller_trial_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 @app.route('/create-reseller-session', methods=['POST'])
 def create_reseller_session():
     try:
@@ -182,7 +206,7 @@ def create_reseller_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Replace with your Reseller $47/month Price ID
+                'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Reseller $47/month
                 'quantity': 1,
             }],
             mode='subscription',
@@ -191,6 +215,30 @@ def create_reseller_session():
             metadata={
                 'referrer_username': referrer_username or 'none',
                 'product': 'reseller_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/create-reseller-trial-session', methods=['POST'])
+def create_reseller_trial_session():
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': 'price_1RRdWt2Ku9STqdAd78kUUnEE',  # Reseller Trial
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/reseller-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/reseller-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'reseller_trial_subscription'
             }
         )
         return jsonify({'url': session.url})
@@ -206,7 +254,7 @@ def create_membership_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS', 
+                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Revenue Ripple Membership
                 'quantity': 1,
             }],
             mode='subscription',
@@ -299,7 +347,7 @@ def create_founders_monthly_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RKP5i2Ku9STqdAdEkkGTxet',  # Monthly $47/month
+                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Revenue Ripple Membership $47/month
                 'quantity': 1,
             }],
             mode='subscription',
@@ -595,7 +643,7 @@ def stripe_webhook():
             }
             send_conversion_event('Subscribe', user_data, custom_data, "https://revenueripple.org/founders-checkout")
 
-        elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription"]:
+        elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription", "reseller_trial_subscription", "pro_reseller_trial_subscription"]:
             tier = product.replace("_subscription", "")
             print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
             log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
@@ -607,6 +655,10 @@ def stripe_webhook():
             elif product == "reseller_subscription":
                 set_user_role(customer_email, "reseller")
             elif product == "pro_reseller_subscription":
+                set_user_role(customer_email, "pro_reseller")
+            elif product == "reseller_trial_subscription":
+                set_user_role(customer_email, "reseller")
+            elif product == "pro_reseller_trial_subscription":
                 set_user_role(customer_email, "pro_reseller")
             
             # Send Subscribe event to Facebook Conversions API
