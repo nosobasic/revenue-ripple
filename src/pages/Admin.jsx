@@ -251,6 +251,124 @@ const KPITracker = () => {
   );
 };
 
+// Add User Modal Component
+const AddUserModal = ({ isOpen, onClose, onAddUser }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'member',
+    status: 'active',
+    has_paid: false,
+    payment_status: 'pending'
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onAddUser(formData);
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      role: 'member',
+      status: 'active',
+      has_paid: false,
+      payment_status: 'pending'
+    });
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2>Add New User</h2>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              placeholder="Leave empty for auto-generated password"
+            />
+          </div>
+          <div className="form-group">
+            <label>Role</label>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData({...formData, role: e.target.value})}
+            >
+              <option value="member">Member</option>
+              <option value="affiliate">Affiliate</option>
+              <option value="reseller">Reseller</option>
+              <option value="pro_reseller">Pro Reseller</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({...formData, status: e.target.value})}
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={formData.has_paid}
+                onChange={(e) => setFormData({...formData, has_paid: e.target.checked})}
+              />
+              Has Paid
+            </label>
+          </div>
+          <div className="form-group">
+            <label>Payment Status</label>
+            <select
+              value={formData.payment_status}
+              onChange={(e) => setFormData({...formData, payment_status: e.target.value})}
+            >
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="admin_access">Admin Access</option>
+            </select>
+          </div>
+          <div className="modal-actions">
+            <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
+            <button type="submit" className="btn-primary">Add User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // Dashboard Overview Component
 const DashboardOverview = ({ stats, recentActivity }) => (
   <>
@@ -346,7 +464,7 @@ const EditUserModal = ({ user, isOpen, onClose, onSave }) => {
 };
 
 // User Management Component
-const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFilterStatus, handleRoleChange, handleStatusChange, onEditUser }) => (
+const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFilterStatus, handleRoleChange, handleStatusChange, handleDeleteUser, onEditUser, onAddUser }) => (
   <>
     <header className="admin-header">
       <h1 className="admin-title">User Management</h1>
@@ -377,7 +495,7 @@ const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFil
               <option value="inactive">Inactive</option>
             </select>
           </div>
-          <button className="add-user-btn">
+          <button className="add-user-btn" onClick={onAddUser}>
             <RiUserAddLine />
             Add User
           </button>
@@ -426,7 +544,7 @@ const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFil
                 <td>
                   <div className="user-actions">
                     <button className="action-btn edit-btn" onClick={() => onEditUser(user)}>Edit</button>
-                    <button className="action-btn delete-btn">Delete</button>
+                    <button className="action-btn delete-btn" onClick={() => handleDeleteUser(user.id)}>Delete</button>
                   </div>
                 </td>
               </tr>
@@ -1523,6 +1641,7 @@ const Admin = () => {
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   // DevOps API Key state and generator
@@ -1755,9 +1874,78 @@ const Admin = () => {
     fetchFilteredUsers();
   };
 
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      try {
+        const { error } = await supabase
+          .from('users')
+          .delete()
+          .eq('id', userId);
+        
+        if (error) throw error;
+        
+        // Also delete from auth.users if possible
+        try {
+          await supabase.auth.admin.deleteUser(userId);
+        } catch (authError) {
+          console.log('Auth user deletion failed (may not exist):', authError);
+        }
+        
+        fetchFilteredUsers();
+        alert('User deleted successfully');
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Error deleting user: ' + error.message);
+      }
+    }
+  };
+
+  const handleAddUser = async (userData) => {
+    try {
+      // Create auth user first
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: userData.email,
+        password: userData.password || 'TempPassword123!',
+        email_confirm: true,
+        user_metadata: {
+          name: userData.name,
+          role: userData.role
+        }
+      });
+
+      if (authError) throw authError;
+
+      // Create user record
+      const { error: userError } = await supabase
+        .from('users')
+        .insert({
+          id: authData.user.id,
+          name: userData.name,
+          email: userData.email,
+          role: userData.role,
+          status: userData.status || 'active',
+          has_paid: userData.has_paid || false,
+          payment_status: userData.payment_status || 'pending',
+          created_at: new Date().toISOString()
+        });
+
+      if (userError) throw userError;
+
+      fetchFilteredUsers();
+      alert('User added successfully');
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert('Error adding user: ' + error.message);
+    }
+  };
+
   const handleEditUser = (user) => {
     setEditUser(user);
     setIsEditModalOpen(true);
+  };
+
+  const handleAddUserClick = () => {
+    setIsAddUserModalOpen(true);
   };
 
   const handleSaveUser = async (updatedUser) => {
@@ -1935,13 +2123,20 @@ const Admin = () => {
                 setFilterStatus={setFilterStatus}
                 handleRoleChange={handleRoleChange}
                 handleStatusChange={handleStatusChange}
+                handleDeleteUser={handleDeleteUser}
                 onEditUser={handleEditUser}
+                onAddUser={handleAddUserClick}
               />
               <EditUserModal
                 user={editUser}
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
                 onSave={handleSaveUser}
+              />
+              <AddUserModal
+                isOpen={isAddUserModalOpen}
+                onClose={() => setIsAddUserModalOpen(false)}
+                onAddUser={handleAddUser}
               />
             </>
           } />
