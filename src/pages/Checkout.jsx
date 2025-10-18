@@ -30,6 +30,12 @@ export default function Checkout() {
       requestBody = {
         referrer_username: localStorage.getItem('ref_id') || 'none'
       };
+    } else {
+      // For membership, use the membership session endpoint
+      endpoint = API_ENDPOINTS.MEMBERSHIP_SESSION;
+      requestBody = {
+        referrer_username: localStorage.getItem('ref_id') || 'none'
+      };
     }
 
     fetch(`${API_ENDPOINTS.BASE_URL}${endpoint}`, {
@@ -39,8 +45,8 @@ export default function Checkout() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (productParam === 'dmd') {
-          // For DMD, redirect to Stripe checkout session
+        if (productParam === 'dmd' || productParam === 'membership') {
+          // For DMD and membership, redirect to Stripe checkout session
           if (data.url) {
             window.location.href = data.url;
           } else {

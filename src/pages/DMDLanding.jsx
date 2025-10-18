@@ -61,11 +61,16 @@ export default function DMDLanding() {
         }
         .hero {
           background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-          padding: 4rem 0 !important;
+          padding: 2rem 1rem !important;
           color: white !important;
           position: relative !important;
           z-index: 1 !important;
           margin-top: 0 !important;
+        }
+        @media (min-width: 768px) {
+          .hero {
+            padding: 4rem 0 !important;
+          }
         }
         .hero::before {
           display: none !important;
@@ -76,11 +81,18 @@ export default function DMDLanding() {
           -webkit-background-clip: unset !important;
           -webkit-text-fill-color: unset !important;
           animation: fadeInUp 0.8s ease-out;
-          font-size: 2.5rem !important;
+          font-size: 1.75rem !important;
           font-weight: 700 !important;
           text-align: center !important;
-          margin-bottom: 1.5rem !important;
+          margin-bottom: 1rem !important;
           opacity: 1 !important;
+          line-height: 1.2 !important;
+        }
+        @media (min-width: 768px) {
+          .hero-title {
+            font-size: 2.5rem !important;
+            margin-bottom: 1.5rem !important;
+          }
         }
         .hero-subtitle {
           color: #e2e8f0 !important;
@@ -88,26 +100,43 @@ export default function DMDLanding() {
           -webkit-background-clip: unset !important;
           -webkit-text-fill-color: unset !important;
           animation: fadeInUp 0.8s ease-out 0.2s backwards;
-          font-size: 1.25rem !important;
+          font-size: 1rem !important;
           font-weight: 500 !important;
           text-align: center !important;
-          margin-bottom: 1.5rem !important;
+          margin-bottom: 1rem !important;
           opacity: 1 !important;
+          line-height: 1.4 !important;
+        }
+        @media (min-width: 768px) {
+          .hero-subtitle {
+            font-size: 1.25rem !important;
+            margin-bottom: 1.5rem !important;
+          }
         }
         .cta-button {
           display: inline-block !important;
-          padding: 1rem 2rem !important;
+          padding: 0.75rem 1.5rem !important;
           background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%) !important;
           color: white !important;
           text-decoration: none !important;
           border-radius: 0.5rem !important;
           font-weight: 600 !important;
-          font-size: 1.1rem !important;
+          font-size: 1rem !important;
           transition: all 0.3s ease !important;
           border: none !important;
           cursor: pointer !important;
           animation: fadeInUp 0.8s ease-out 0.4s backwards;
-          margin: 1rem 0 !important;
+          margin: 0.5rem 0 !important;
+          width: 100% !important;
+          text-align: center !important;
+        }
+        @media (min-width: 768px) {
+          .cta-button {
+            padding: 1rem 2rem !important;
+            font-size: 1.1rem !important;
+            margin: 1rem 0 !important;
+            width: auto !important;
+          }
         }
         .cta-button:hover {
           background: linear-gradient(90deg, #1d4ed8 0%, #3730a3 100%) !important;
@@ -126,6 +155,30 @@ export default function DMDLanding() {
         .testimonial-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .hero-flex {
+          display: flex !important;
+          gap: 1rem !important;
+          align-items: flex-start !important;
+          flex-wrap: wrap !important;
+          flex-direction: column !important;
+        }
+        @media (min-width: 768px) {
+          .hero-flex {
+            gap: 2.5rem !important;
+            flex-direction: row !important;
+          }
+        }
+        .stats-grid {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 1rem !important;
+        }
+        @media (min-width: 768px) {
+          .stats-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 1.5rem !important;
+          }
         }
       `}</style>
       <Navbar />
@@ -178,7 +231,7 @@ export default function DMDLanding() {
       </section>
 
       <div className="container">
-        <div className="hero-flex" style={{ display: 'flex', gap: '2.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div className="hero-flex">
           {/* Left Side: Book Cover */}
           <div className="hero-side" style={{ flex: 1, minWidth: 280, display: 'flex', justifyContent: 'center', animation: 'fadeInUp 0.8s ease-out 0.6s backwards' }}>
             <div style={{ position: 'relative' }}>
