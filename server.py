@@ -92,7 +92,7 @@ app.register_blueprint(ai_assistant_bp)
 
 @app.route('/', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active'})
+    return jsonify({'status': 'Server is running', 'message': 'Revenue Ripple API is active', 'version': '1.0.1'})
 
 @app.after_request
 def after_request(response):
@@ -1923,4 +1923,8 @@ def founders_timer_check():
 
 
 if __name__ == '__main__':
+    print("🚀 Starting Revenue Ripple API Server v1.0.1")
+    print("🔍 DEBUG: Checking environment variables...")
+    print(f"🔍 STRIPE_SECRET_KEY: {'SET' if os.getenv('STRIPE_SECRET_KEY') else 'NOT SET'}")
+    print(f"🔍 STRIPE_WEBHOOK_SECRET: {'SET' if os.getenv('STRIPE_WEBHOOK_SECRET') else 'NOT SET'}")
     app.run(debug=True, host='0.0.0.0', port=5001)
