@@ -1979,6 +1979,46 @@ def founders_timer_check():
         return jsonify({'error': str(e)}), 500
 
 
+# --- Admin Routes ---
+@app.route('/admin/delete-user', methods=['POST'])
+def admin_delete_user():
+    """Admin endpoint to delete a user from both auth and database"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # First, delete the user from the users table
+        try:
+            delete_response = supabase.table("users").delete().eq("id", user_id).execute()
+            print(f"✅ Deleted user from users table: {user_id}")
+        except Exception as db_error:
+            print(f"❌ Error deleting from users table: {str(db_error)}")
+            return jsonify({'error': f'Failed to delete user from database: {str(db_error)}'}), 500
+        
+        # Then try to delete from auth (this requires service role key)
+        try:
+            # Using Supabase admin API to delete auth user
+            supabase.auth.admin.delete_user(user_id)
+            print(f"✅ Deleted user from auth: {user_id}")
+        except Exception as auth_error:
+            # Auth deletion may fail if user doesn't exist in auth, but that's okay
+            print(f"⚠️ Warning: Could not delete from auth (user may not exist): {str(auth_error)}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'User deleted successfully'
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error in admin_delete_user: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     print("🚀 Starting Revenue Ripple API Server v1.0.1")
     print("🔍 DEBUG: Checking environment variables...")

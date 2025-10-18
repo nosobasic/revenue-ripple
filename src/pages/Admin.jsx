@@ -1877,20 +1877,25 @@ const Admin = () => {
   const handleDeleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
       try {
-        const { error } = await supabase
-          .from('users')
-          .delete()
-          .eq('id', userId);
+        // Use the backend API to delete user
+        const apiUrl = process.env.NODE_ENV === 'development' 
+          ? '/admin/delete-user' 
+          : 'https://revenue-ripple.onrender.com/admin/delete-user';
         
-        if (error) throw error;
-        
-        // Also delete from auth.users if possible
-        try {
-          await supabase.auth.admin.deleteUser(userId);
-        } catch (authError) {
-          console.log('Auth user deletion failed (may not exist):', authError);
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userId })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to delete user');
         }
-        
+
         fetchFilteredUsers();
         alert('User deleted successfully');
       } catch (error) {
