@@ -347,7 +347,7 @@ def create_founders_monthly_session():
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Revenue Ripple Membership $47/month
+                'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Regular Membership $47/month
                 'quantity': 1,
             }],
             mode='subscription',
