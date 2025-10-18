@@ -232,12 +232,14 @@ def stripe_test():
     """Test Stripe configuration"""
     try:
         # Test if we can create a simple product
-        products = stripe.Product.list(limit=1)
+        products = stripe.Product.list(limit=5)
+        prices = stripe.Price.list(limit=5)
         return jsonify({
             'status': 'Stripe connected',
             'mode': 'test' if 'test' in stripe.api_key else 'live',
-            'products_count': len(products.data),
-            'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'
+            'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None',
+            'products': [{'id': p.id, 'name': p.name} for p in products.data],
+            'prices': [{'id': p.id, 'amount': p.unit_amount, 'currency': p.currency} for p in prices.data]
         })
     except Exception as e:
         return jsonify({'error': str(e), 'api_key_prefix': stripe.api_key[:7] + '...' if stripe.api_key else 'None'})
