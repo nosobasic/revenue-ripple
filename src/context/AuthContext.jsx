@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio,paypal_email"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio, paypal_email, has_paid, payment_status"
         )
         .eq("id", authUser.id)
         .single();
@@ -64,7 +64,9 @@ export function AuthProvider({ children }) {
         setUser({
           ...authUser,
           role: 'member', // default role
-          status: 'active'
+          status: 'active',
+          has_paid: false,
+          payment_status: 'pending'
         });
         return;
       }
@@ -78,7 +80,9 @@ export function AuthProvider({ children }) {
         setUser({
           ...authUser,
           role: 'member',
-          status: 'active'
+          status: 'active',
+          has_paid: false,
+          payment_status: 'pending'
         });
       }
     } catch (error) {
@@ -86,7 +90,9 @@ export function AuthProvider({ children }) {
       setUser({
         ...authUser,
         role: 'member',
-        status: 'active'
+        status: 'active',
+        has_paid: false,
+        payment_status: 'pending'
       });
     }
   };
@@ -116,7 +122,9 @@ export function AuthProvider({ children }) {
             company: "",
             bio: "",
             plan: "",
-            paypal_email:paypal
+            paypal_email: paypal,
+            has_paid: false,
+            payment_status: "pending"
           },
         ]);
 

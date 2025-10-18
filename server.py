@@ -856,6 +856,8 @@ def set_user_role(email, role):
             supabase.table("users").update({
                 "role": role,
                 "plan": role,
+                "has_paid": True,
+                "payment_status": "completed",
                 "updated_at": "now()"
             }).eq("email", email).execute()
             print(f"✅ Updated role and plan to '{role}' for {email}")
@@ -877,6 +879,8 @@ def set_user_role(email, role):
                     "email": email,
                     "role": role,
                     "plan": role,
+                    "has_paid": True,
+                    "payment_status": "completed",
                     "created_at": "now()"
                 }).execute()
                 print(f"✅ Created user with role and plan '{role}' for {email}")

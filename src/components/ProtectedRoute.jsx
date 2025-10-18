@@ -39,7 +39,7 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
   </div>
 );
 
-export default function ProtectedRoute({ children, requireAdmin = false }) {
+export default function ProtectedRoute({ children, requireAdmin = false, requirePayment = false }) {
   const { user, loading } = useAuth();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
@@ -52,6 +52,11 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   // Redirect to login if not authenticated
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Check payment status if required
+  if (requirePayment && user && !user.has_paid) {
+    return <Navigate to="/checkout" state={{ from: location }} replace />;
   }
 
   // Check if user has required role
