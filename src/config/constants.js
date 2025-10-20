@@ -8,7 +8,7 @@ export const STRIPE_CONFIG = {
     MEMBERSHIP: 'price_1RKP5i2Ku9STqdAdEkkGTxet',
     FOUNDERS_ANNUAL: 'price_1SBguk2Ku9STqdAdNBuZcJst' // Founders Annual $470/year
   },
-  PUBLIC_KEY: 'pk_test_51RHozW2Ku9STqdAdSpODYq05ZmIegKu1er3DKtwqDs3SMPMWxK9mjFBEV1CdcfWXzq9jUY8z9LwrPwLY30c2Xs7M00VolIBrBK',
+  PUBLIC_KEY: 'pk_live_51RHozW2Ku9STqdAd7SjnK80bA8oxhPHCPybzZijyDi0wnpyO1siIK4cZRHOXxTNf5t2BKamwVluDpyyehhGUaxWO00oVepQ2bf',
   AMOUNTS: {
     TRIPWIRE: 700, // $7.00 in cents
     MEMBERSHIP: 4700, // $47.00 in cents

@@ -112,7 +112,7 @@ export default function AffiliateSign() {
 
       // Redirect to special invite page
       // alert('Registration successful! Please check your email for verification.');
-      navigate('/checkout');
+      navigate('/checkout?product=membership');
     } catch (err) {
       setError(err.message);
     } finally {
