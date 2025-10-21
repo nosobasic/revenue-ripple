@@ -777,7 +777,15 @@ def update_webhook_processed(customer_email, event_type):
 
 def add_contact_to_getresponse(email, tag):
     api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
-    campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
+    
+    # Use Founders List for founders_annual purchases, otherwise use default campaign
+    if tag == "founders_annual":
+        # Founders List token
+        campaign_id = "im9O1"
+        name = "Founder Member"
+    else:
+        campaign_id = os.getenv("GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID")
+        name = f"{tag.capitalize()} Buyer"
 
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -787,14 +795,14 @@ def add_contact_to_getresponse(email, tag):
     body = {
         "email": email,
         "campaign": { "campaignId": campaign_id },
-        "name": f"{tag.capitalize()} Buyer",
+        "name": name,
         "tags": [tag]
     }
 
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
-            print("✔️ Successfully added to GetResponse.")
+            print(f"✔️ Successfully added {email} to GetResponse list: {campaign_id} with tag: {tag}")
         else:
             print(f"❌ GetResponse error {response.status_code}: {response.text}")
     except Exception as e:

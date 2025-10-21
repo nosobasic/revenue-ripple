@@ -136,8 +136,8 @@ const App = () => {
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
         
         {/* Founders Annual Routes */}
-        <Route path="/founders-checkout" element={<FoundersAnnualCheckout />} />
-        <Route path="/founders-success" element={<FoundersSuccess />} />
+        <Route path="/founders-checkout" element={<ProtectedRoute><FoundersAnnualCheckout /></ProtectedRoute>} />
+        <Route path="/founders-success" element={<ProtectedRoute><FoundersSuccess /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />

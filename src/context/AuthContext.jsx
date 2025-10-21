@@ -272,6 +272,13 @@ async function resetPassword(email) {
 }
 
 
+  // Function to refresh user data from database
+  const refreshUserData = async () => {
+    if (session?.user) {
+      await fetchUserData(session.user);
+    }
+  };
+
   const value = {
     user,
     session,
@@ -281,6 +288,7 @@ async function resetPassword(email) {
     logout,
     updateUserProfile,
     resetPassword,
+    refreshUserData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

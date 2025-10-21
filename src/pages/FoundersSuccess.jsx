@@ -1,13 +1,17 @@
 import { useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { FOUNDERS_ANNUAL_CONFIG } from '../config/constants';
 import { FaCheckCircle, FaDiscord, FaCalendarAlt, FaBook, FaRocket } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase/client';
 
 export default function FoundersSuccess() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const { user, refreshUserData } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Mark timer as converted
@@ -20,6 +24,41 @@ export default function FoundersSuccess() {
     // Clear timer from localStorage since they've purchased
     localStorage.removeItem('founders_timer_start');
   }, []);
+
+  useEffect(() => {
+    // Update user role to founder member after successful purchase
+    const updateUserRole = async () => {
+      if (!user?.id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .update({ 
+            role: 'member',
+            plan: 'founders_annual',
+            is_founder: true,
+            has_paid: true,
+            payment_status: 'active'
+          })
+          .eq('id', user.id)
+          .select();
+
+        if (error) {
+          console.error('Error updating user role:', error);
+        } else {
+          console.log('User updated with founder status:', data);
+          // Refresh the user data in AuthContext to reflect the changes
+          if (refreshUserData) {
+            await refreshUserData();
+          }
+        }
+      } catch (err) {
+        console.error('Unexpected error updating user:', err);
+      }
+    };
+
+    updateUserRole();
+  }, [user, refreshUserData]);
 
   const nextSteps = [
     {
