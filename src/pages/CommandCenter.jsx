@@ -19,7 +19,8 @@ export default function CommandCenter() {
 
   const checkFeatureStatus = async () => {
     try {
-      const response = await fetch('/api/command-center/health');
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+      const response = await fetch(`${apiBaseUrl}/api/command-center/health`);
       const data = await response.json();
       setFeatureEnabled(data.feature_enabled);
     } catch (error) {
@@ -31,12 +32,14 @@ export default function CommandCenter() {
 
   const loadData = async () => {
     try {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+      
       // Load agent catalog
-      const catalogResponse = await fetch('/api/agents/catalog');
+      const catalogResponse = await fetch(`${apiBaseUrl}/api/agents/catalog`);
       const catalogData = await catalogResponse.json();
       
       // Load user instances
-      const instancesResponse = await fetch('/api/agents/list', {
+      const instancesResponse = await fetch(`${apiBaseUrl}/api/agents/list`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
@@ -44,7 +47,7 @@ export default function CommandCenter() {
       const instancesData = await instancesResponse.json();
       
       // Load recent runs
-      const runsResponse = await fetch('/api/agents/runs/list', {
+      const runsResponse = await fetch(`${apiBaseUrl}/api/agents/runs/list`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ page: 1, limit: 10 })
@@ -61,7 +64,8 @@ export default function CommandCenter() {
 
   const handleRunAgent = async (instanceId) => {
     try {
-      const response = await fetch('/api/agents/run', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+      const response = await fetch(`${apiBaseUrl}/api/agents/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ instance_id: instanceId })
@@ -89,7 +93,8 @@ export default function CommandCenter() {
 
   const handleSaveCredentials = async (credentials) => {
     try {
-      const response = await fetch('/api/credentials/upsert', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+      const response = await fetch(`${apiBaseUrl}/api/credentials/upsert`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
