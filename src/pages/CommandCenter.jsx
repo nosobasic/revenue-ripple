@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { FaRobot, FaPlay, FaCog, FaHistory, FaPlus, FaTrash } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 export default function CommandCenter() {
+  const { user, session } = useAuth();
   const [featureEnabled, setFeatureEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [agents, setAgents] = useState([]);
@@ -16,6 +18,19 @@ export default function CommandCenter() {
     checkFeatureStatus();
     loadData();
   }, []);
+
+  // Helper function to get authentication headers
+  const getAuthHeaders = () => {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+    
+    return headers;
+  };
 
   const checkFeatureStatus = async () => {
     try {
@@ -41,7 +56,7 @@ export default function CommandCenter() {
       // Load user instances
       const instancesResponse = await fetch(`${apiBaseUrl}/api/agents/list`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({})
       });
       const instancesData = await instancesResponse.json();
@@ -49,7 +64,7 @@ export default function CommandCenter() {
       // Load recent runs
       const runsResponse = await fetch(`${apiBaseUrl}/api/agents/runs/list`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ page: 1, limit: 10 })
       });
       const runsData = await runsResponse.json();
@@ -67,7 +82,7 @@ export default function CommandCenter() {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
       const response = await fetch(`${apiBaseUrl}/api/agents/run`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ instance_id: instanceId })
       });
       
@@ -96,7 +111,7 @@ export default function CommandCenter() {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
       const response = await fetch(`${apiBaseUrl}/api/credentials/upsert`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           instance_id: selectedInstance.id,
           credential_type: credentials.type,

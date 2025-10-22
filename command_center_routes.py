@@ -24,13 +24,13 @@ def is_write_mode_enabled():
 
 def get_user_from_request(request):
     """Extract user ID from request (implement auth middleware)"""
-    # TODO: Implement proper auth middleware
-    # For now, return mock user ID for development
     auth_header = request.headers.get('Authorization')
-    if not auth_header:
+    if not auth_header or not auth_header.startswith('Bearer '):
         return None
     
-    # Mock implementation - replace with real JWT validation
+    # For now, return mock user ID for development
+    # TODO: Implement proper Supabase JWT validation
+    # In production, you would validate the JWT token with Supabase
     return 'mock-user-id'
 
 def require_auth(f):
