@@ -12,6 +12,7 @@ export default function CommandCenter() {
   const [instances, setInstances] = useState([]);
   const [runs, setRuns] = useState([]);
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [showCreateAgentModal, setShowCreateAgentModal] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState(null);
 
   useEffect(() => {
@@ -104,6 +105,35 @@ export default function CommandCenter() {
   const handleConnectCredentials = (instance) => {
     setSelectedInstance(instance);
     setShowCredentialsModal(true);
+  };
+
+  const handleCreateAgent = () => {
+    setShowCreateAgentModal(true);
+  };
+
+  const handleCreateAgentSubmit = async (agentData) => {
+    try {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+      const response = await fetch(`${apiBaseUrl}/api/agents/create`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(agentData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Reload data to show the new agent
+        await loadData();
+        setShowCreateAgentModal(false);
+        alert('Agent created successfully!');
+      } else {
+        alert('Error creating agent: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error creating agent:', error);
+      alert('Error creating agent');
+    }
   };
 
   const handleSaveCredentials = async (credentials) => {
@@ -214,7 +244,10 @@ export default function CommandCenter() {
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Your Agents</h2>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={handleCreateAgent}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
                   <FaPlus className="inline mr-2" />
                   Create Agent
                 </button>
@@ -227,7 +260,10 @@ export default function CommandCenter() {
                   <FaRobot className="text-gray-400 text-6xl mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No agents configured</h3>
                   <p className="text-gray-500 mb-6">Create your first agent to get started with automation</p>
-                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                  <button 
+                    onClick={handleCreateAgent}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
                     Create Your First Agent
                   </button>
                 </div>
@@ -324,6 +360,15 @@ export default function CommandCenter() {
           onClose={() => setShowCredentialsModal(false)}
         />
       )}
+
+      {/* Create Agent Modal */}
+      {showCreateAgentModal && (
+        <CreateAgentModal
+          agents={agents}
+          onSubmit={handleCreateAgentSubmit}
+          onClose={() => setShowCreateAgentModal(false)}
+        />
+      )}
     </div>
   );
 }
@@ -382,6 +427,101 @@ function CredentialsModal({ instance, onSave, onClose }) {
               className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Save Credentials
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// Create Agent Modal Component
+function CreateAgentModal({ agents, onSubmit, onClose }) {
+  const [agentData, setAgentData] = useState({
+    name: '',
+    catalog_id: '',
+    config: {}
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(agentData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Create New Agent
+        </h3>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Agent Name
+            </label>
+            <input
+              type="text"
+              value={agentData.name}
+              onChange={(e) => setAgentData({...agentData, name: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              placeholder="My Daily Pulse"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Agent Type
+            </label>
+            <select
+              value={agentData.catalog_id}
+              onChange={(e) => setAgentData({...agentData, catalog_id: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              required
+            >
+              <option value="">Select an agent type</option>
+              {agents.map((agent) => (
+                <option key={agent.id} value={agent.id}>
+                  {agent.name} - {agent.description}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Configuration (JSON)
+            </label>
+            <textarea
+              value={JSON.stringify(agentData.config, null, 2)}
+              onChange={(e) => {
+                try {
+                  const config = JSON.parse(e.target.value);
+                  setAgentData({...agentData, config});
+                } catch (err) {
+                  // Invalid JSON, keep the text but don't update config
+                }
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              rows="4"
+              placeholder='{"metrics": ["revenue", "conversions"], "frequency": "daily"}'
+            />
+          </div>
+          
+          <div className="flex space-x-3">
+            <button
+              type="submit"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create Agent
             </button>
             <button
               type="button"
