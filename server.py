@@ -120,7 +120,7 @@ def create_tripwire_session():
         referrer_username = data.get('referrer_username')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RKIXE2Ku9STqdAdktgTsVDf',  # $7 Tripwire price
                 'quantity': 1,
@@ -156,7 +156,7 @@ def create_pro_reseller_session():
             )
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RKNpS2Ku9STqdAdLoP8qgb4',  # Pro Reseller $97/month
                 'quantity': 1,
@@ -182,7 +182,7 @@ def create_pro_reseller_trial_session():
         referrer_username = data.get('referrer_username')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RRdNV2Ku9STqdAduqGfLBpt',  # Pro Reseller Trial
                 'quantity': 1,
@@ -206,7 +206,7 @@ def create_reseller_session():
         referrer_username = data.get('referrer_username')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RKNYL2Ku9STqdAd5spylthl',  # Reseller $47/month
                 'quantity': 1,
@@ -230,7 +230,7 @@ def create_reseller_trial_session():
         referrer_username = data.get('referrer_username')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RRdWt2Ku9STqdAd78kUUnEE',  # Reseller Trial
                 'quantity': 1,
@@ -254,7 +254,7 @@ def create_membership_session():
         referrer_username = data.get('referrer_username')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Revenue Ripple Membership
                 'quantity': 1,
@@ -319,7 +319,7 @@ def create_founders_annual_session():
 
         # Create Founders Annual checkout session ($470/year)
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1SBguk2Ku9STqdAdNBuZcJst',  # Founders Annual $470/year
                 'quantity': 1,
@@ -347,7 +347,7 @@ def create_founders_monthly_session():
         customer_email = data.get('email')
 
         session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
+            payment_method_types=['card', 'apple_pay', 'google_pay'],
             line_items=[{
                 'price': 'price_1RI8Me2Ku9STqdAdhTw4iWhS',  # Regular Membership $47/month
                 'quantity': 1,

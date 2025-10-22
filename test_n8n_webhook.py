@@ -109,3 +109,4 @@ if __name__ == "__main__":
     print("1. Configure your n8n workflow with the credentials above")
     print("2. Set the webhook secret in your backend environment")
     print("3. Test the full workflow from Command Center")
+
