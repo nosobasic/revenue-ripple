@@ -1,484 +1,378 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import '../pages.css';
-import './CommandCenter.css';
-import { 
-  FaRocket, 
-  FaBrain, 
-  FaTools, 
-  FaFlask, 
-  FaCheckCircle, 
-  FaShieldAlt, 
-  FaUsers, 
-  FaQuoteLeft,
-  FaPlay,
-  FaArrowRight,
-  FaStar,
-  FaClock,
-  FaGift,
-  FaHeadset,
-  FaFire,
-  FaCrown,
-  FaBolt,
-  FaEye,
-  FaChartLine,
-  FaExclamationTriangle
-} from 'react-icons/fa';
+import { FaRobot, FaPlay, FaCog, FaHistory, FaPlus, FaTrash } from 'react-icons/fa';
 
-const CommandCenter = () => {
-  const [showVideo, setShowVideo] = useState(false);
-  const [spotsLeft, setSpotsLeft] = useState(100);
-  const [isVisible, setIsVisible] = useState(false);
+export default function CommandCenter() {
+  const [featureEnabled, setFeatureEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [agents, setAgents] = useState([]);
+  const [instances, setInstances] = useState([]);
+  const [runs, setRuns] = useState([]);
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [selectedInstance, setSelectedInstance] = useState(null);
 
   useEffect(() => {
-    setIsVisible(true);
-    // Simulate spots being taken
-    const interval = setInterval(() => {
-      setSpotsLeft(prev => Math.max(prev - Math.floor(Math.random() * 3), 67));
-    }, 30000); // Update every 30 seconds
-
-    return () => clearInterval(interval);
+    checkFeatureStatus();
+    loadData();
   }, []);
 
-  const handleJoinNow = () => {
-    // TODO: Implement checkout logic
-    alert('Command Center checkout coming soon!');
+  const checkFeatureStatus = async () => {
+    try {
+      const response = await fetch('/api/command-center/health');
+      const data = await response.json();
+      setFeatureEnabled(data.feature_enabled);
+    } catch (error) {
+      console.error('Error checking feature status:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="command-center">
-      {/* Animated Background Elements */}
-      <div className="animated-background">
-        <div className="bg-element bg-purple"></div>
-        <div className="bg-element bg-blue"></div>
-        <div className="bg-element bg-pink"></div>
-      </div>
+  const loadData = async () => {
+    try {
+      // Load agent catalog
+      const catalogResponse = await fetch('/api/agents/catalog');
+      const catalogData = await catalogResponse.json();
+      
+      // Load user instances
+      const instancesResponse = await fetch('/api/agents/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      const instancesData = await instancesResponse.json();
+      
+      // Load recent runs
+      const runsResponse = await fetch('/api/agents/runs/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: 1, limit: 10 })
+      });
+      const runsData = await runsResponse.json();
+      
+      setAgents(catalogData.data || []);
+      setInstances(instancesData.data || []);
+      setRuns(runsData.data || []);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  };
 
+  const handleRunAgent = async (instanceId) => {
+    try {
+      const response = await fetch('/api/agents/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instance_id: instanceId })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Show success toast
+        alert('Agent execution started! (Simulated)');
+        loadData(); // Refresh data
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error running agent:', error);
+      alert('Error running agent');
+    }
+  };
+
+  const handleConnectCredentials = (instance) => {
+    setSelectedInstance(instance);
+    setShowCredentialsModal(true);
+  };
+
+  const handleSaveCredentials = async (credentials) => {
+    try {
+      const response = await fetch('/api/credentials/upsert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instance_id: selectedInstance.id,
+          credential_type: credentials.type,
+          data: credentials.data
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Credentials saved successfully! (Simulated)');
+        setShowCredentialsModal(false);
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error saving credentials:', error);
+      alert('Error saving credentials');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Command Center...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!featureEnabled) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Command Center</h1>
+            <p className="text-gray-600 mb-8">This feature is currently disabled.</p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <p className="text-yellow-800">
+                To enable Command Center, set <code>REVRIPPLE_COMMAND_CENTER_ENABLED=true</code> in your environment variables.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      {/* Urgency Banner */}
-      <div className="urgency-banner">
-        <FaFire className="fire-icon" />
-        🔥 LIMITED TIME: Only {spotsLeft} Founding Member Spots Left! 🔥
-      </div>
-      
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-          <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
-            <div className="founding-member-badge">
-              <FaCrown className="crown-icon" />
-              FOUNDING MEMBER ACCESS
-            </div>
-            <h1 className="hero-title">
-              Fix What's Broken. Launch With Confidence.
-            </h1>
-            <h2 className="hero-subtitle">
-              AI-Powered DevOps Dashboard for Online Business Owners
-            </h2>
-            <p className="hero-description">
-              Sick of broken automations, email flows that ghost leads, and funnels that flop with no warning?
-              <br />
-              <span className="highlight-text">
-                This is the all-in-one control panel built by an entrepreneur who got tired of guessing.
-              </span>
-            </p>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Command Center</h1>
+            <p className="text-gray-600">Manage your AI agents and automate your business processes</p>
           </div>
 
-          {/* Hero CTA Buttons */}
-          <div className="hero-cta">
-            <button 
-              onClick={() => setShowVideo(true)}
-              className="demo-button"
-            >
-              <FaPlay className="play-icon" /> Watch Demo
-            </button>
-            <div className="join-button-container">
-              <button 
-                onClick={handleJoinNow}
-                className="join-button"
-              >
-                <FaRocket className="rocket-icon" /> 
-                <span className="join-text">
-                  <span>Join Now</span>
-                  <span className="price">$997 Early Access</span>
-                </span>
-              </button>
-              <div className="hot-badge">
-                HOT
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <FaRobot className="text-blue-600 text-2xl mr-3" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Active Agents</p>
+                  <p className="text-2xl font-bold text-gray-900">{instances.length}</p>
+                </div>
               </div>
             </div>
-            <div className="spots-left-badge">
-              <FaExclamationTriangle className="warning-icon" />
-              Only {spotsLeft} spots left
-            </div>
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="trust-indicators">
-            <div className="trust-item guarantee">
-              <FaCheckCircle className="check-icon" />
-              <span>30-Day Guarantee</span>
-            </div>
-            <div className="trust-item access">
-              <FaUsers className="users-icon" />
-              <span>Founding Member Access</span>
-            </div>
-            <div className="trust-item support">
-              <FaHeadset className="headset-icon" />
-              <span>Setup Support Included</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What You Get Section */}
-      <section className="features-section">
-        <div className="container">
-          <div className="section-header">
-            <div className="section-badge">
-              <FaBolt className="bolt-icon" />
-              POWERFUL FEATURES
-            </div>
-            <h2 className="section-title">
-              What You Get
-            </h2>
-            <p className="section-description">
-              Everything you need to take control of your business operations and never worry about broken automations again.
-            </p>
-          </div>
-          
-          <div className="features-grid">
-            {/* AI-Powered Monitoring */}
-            <div className="feature-card monitoring">
-              <div className="feature-icon">
-                <FaBrain />
-              </div>
-              <h3 className="feature-title">AI-Powered Monitoring</h3>
-              <p className="feature-description">
-                Your funnels, emails, webhooks, and automations—tracked in real-time. Get GPT summaries like:
-              </p>
-              <div className="feature-example">
-                <p className="example-text">
-                  "Your webinar flow hasn't triggered since July 18th. Suggest checking Zap #4."
-                </p>
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <FaHistory className="text-green-600 text-2xl mr-3" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Total Runs</p>
+                  <p className="text-2xl font-bold text-gray-900">{runs.length}</p>
+                </div>
               </div>
             </div>
-
-            {/* Built-In Agent Toolkit */}
-            <div className="feature-card toolkit">
-              <div className="feature-icon">
-                <FaTools />
-              </div>
-              <h3 className="feature-title">Built-In Agent Toolkit</h3>
-              <p className="feature-description">
-                3+ ready-to-use AI Agents that work 24/7:
-              </p>
-              <ul className="agent-list">
-                <li className="agent-item">
-                  <FaCheckCircle className="check-icon" />
-                  <span>Broken Flow Detector</span>
-                </li>
-                <li className="agent-item">
-                  <FaCheckCircle className="check-icon" />
-                  <span>Lead Falloff Catcher</span>
-                </li>
-                <li className="agent-item">
-                  <FaCheckCircle className="check-icon" />
-                  <span>Failed Webhook Auto-Retry</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Funnel Validator */}
-            <div className="feature-card validator">
-              <div className="feature-icon">
-                <FaFlask />
-              </div>
-              <h3 className="feature-title">Funnel Validator</h3>
-              <p className="feature-description">
-                Test your funnel before launch. Know what's missing, broken, or misfiring before you waste another ad dollar.
-              </p>
-              <div className="feature-benefit">
-                <p className="benefit-text">
-                  🎯 Save thousands on failed launches
-                </p>
-              </div>
-            </div>
-
-            {/* DFY Setup */}
-            <div className="feature-card setup">
-              <div className="feature-icon">
-                <FaHeadset />
-              </div>
-              <h3 className="feature-title">Optional DFY Setup</h3>
-              <p className="feature-description">
-                We'll help you set it up + audit your funnel stack for max impact.
-              </p>
-              <div className="premium-badge">
-                <FaCrown className="crown-icon" />
-                Included in Premium
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Bonuses Section */}
-      <section className="bonuses-section">
-        <div className="container">
-          <div className="section-header">
-            <div className="section-badge bonuses">
-              <FaGift className="gift-icon" />
-              FREE BONUSES
-            </div>
-            <h2 className="section-title">
-              🧲 Bonuses
-            </h2>
-            <p className="section-description">
-              These bonuses alone are worth over $2,000. Yours FREE when you join today.
-            </p>
-          </div>
-          
-          <div className="bonuses-grid">
-            <div className="bonus-card lite">
-              <div className="bonus-emoji">🎓</div>
-              <h3 className="bonus-title">Revenue Ripple Lite</h3>
-              <p className="bonus-description">
-                Marketing automations crash course
-              </p>
-              <div className="bonus-value">
-                <p>Value: $497</p>
-              </div>
-            </div>
-            
-            <div className="bonus-card templates">
-              <div className="bonus-emoji">🧠</div>
-              <h3 className="bonus-title">Agent Templates</h3>
-              <p className="bonus-description">
-                Plug-and-play GPT workflows for business ops
-              </p>
-              <div className="bonus-value">
-                <p>Value: $997</p>
-              </div>
-            </div>
-            
-            <div className="bonus-card digest">
-              <div className="bonus-emoji">💬</div>
-              <h3 className="bonus-title">Slack-Style Daily Digest</h3>
-              <p className="bonus-description">
-                Get an update every morning on what's changed in your stack
-              </p>
-              <div className="bonus-value">
-                <p>Value: $297</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="total-bonus">
-            <FaGift className="gift-icon" />
-            Total Bonus Value: $1,791
-          </div>
-        </div>
-      </section>
-
-      {/* Limited Offer Section */}
-      <section className="limited-offer-section">
-        <div className="container">
-          <div className="limited-banner">
-            <FaExclamationTriangle className="warning-icon" />
-            <span>LIMITED TIME OFFER</span>
-          </div>
-          <h2 className="limited-title">
-            🔒 Limited Offer
-          </h2>
-          <p className="limited-description">
-            Only {spotsLeft} founding members get this deal:
-          </p>
-          
-          <div className="offer-grid">
-            <div className="offer-item">
-              <div className="offer-emoji">✅</div>
-              <h3 className="offer-title">Lifetime Premium Access</h3>
-              <p className="offer-description">Never pay monthly fees again</p>
-              <div className="offer-savings">
-                SAVE $2,400/year
-              </div>
-            </div>
-            <div className="offer-item">
-              <div className="offer-emoji">✅</div>
-              <h3 className="offer-title">3 AI Agents Pre-Installed</h3>
-              <p className="offer-description">Ready to use immediately</p>
-              <div className="offer-value">
-                VALUE $1,500
-              </div>
-            </div>
-            <div className="offer-item">
-              <div className="offer-emoji">✅</div>
-              <h3 className="offer-title">Setup Support + Onboarding</h3>
-              <p className="offer-description">We'll get you up and running</p>
-              <div className="offer-value">
-                VALUE $500
-              </div>
-            </div>
-            <div className="offer-item">
-              <div className="offer-emoji">✅</div>
-              <h3 className="offer-title">Future Updates Locked In</h3>
-              <p className="offer-description">All new features included</p>
-              <div className="offer-value">
-                LIFETIME VALUE
-              </div>
-            </div>
-          </div>
-          
-          <div className="pricing-card">
-            <h3 className="pricing-title">Total Value: $6,791</h3>
-            <p className="pricing-price">Your Price: $997</p>
-            <p className="pricing-savings">You Save: $5,794 (85% OFF)</p>
-          </div>
-          
-          <button 
-            onClick={handleJoinNow}
-            className="final-cta-button"
-          >
-            <FaRocket className="rocket-icon" /> 
-            <span className="cta-text">
-              <span>Join Now for $997</span>
-              <span className="cta-subtext">Limited Time Offer</span>
-            </span>
-          </button>
-        </div>
-      </section>
-
-      {/* Guarantee Section */}
-      <section className="guarantee-section">
-        <div className="container">
-          <div className="guarantee-card">
-            <h2 className="guarantee-title">
-              🔁 30-Day "I Got You" Guarantee
-            </h2>
-            <p className="guarantee-text">
-              If you don't feel 100% more in control of your ops and funnels in 30 days, we'll refund you. Period.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Who It's For Section */}
-      <section className="audience-section">
-        <div className="container">
-          <h2 className="audience-title">
-            🤝 Who It's For
-          </h2>
-          
-          <div className="audience-grid">
-            <div className="audience-item">
-              <div className="audience-emoji">👨‍💼</div>
-              <h3 className="audience-name">Online Business Owners</h3>
-              <p className="audience-description">
-                Course creators, and marketers who need reliable automation
-              </p>
-            </div>
-            <div className="audience-item">
-              <div className="audience-emoji">🚀</div>
-              <h3 className="audience-name">Solo Founders</h3>
-              <p className="audience-description">
-                Juggling too many tools and need everything in one place
-              </p>
-            </div>
-            <div className="audience-item">
-              <div className="audience-emoji">💻</div>
-              <h3 className="audience-name">SaaS Developers</h3>
-              <p className="audience-description">
-                Who hate getting blindsided by broken integrations
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="testimonials-section">
-        <div className="container">
-          <h2 className="testimonials-title">
-            💬 What Founders Are Saying
-          </h2>
-          
-          <div className="testimonial-card">
-            <div className="testimonial-content">
-              <FaQuoteLeft className="quote-icon" />
-              <div className="testimonial-text">
-                <p className="testimonial-quote">
-                  "This dashboard told me I had 3 broken flows… and I had no idea. I fixed it in 30 minutes and saved my launch."
-                </p>
-                <div className="testimonial-author">
-                  <div className="author-avatar">
-                    JD
-                  </div>
-                  <div className="author-info">
-                    <p className="author-name">John Doe</p>
-                    <p className="author-title">Early Access Member</p>
-                  </div>
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex items-center">
+                <FaCog className="text-purple-600 text-2xl mr-3" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Available Agents</p>
+                  <p className="text-2xl font-bold text-gray-900">{agents.length}</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Final CTA Section */}
-      <section className="final-cta-section">
-        <div className="container">
-          <h2 className="final-cta-title">
-            Ready to Take Control?
-          </h2>
-          <p className="final-cta-description">
-            Join the 100 founding members and never worry about broken automations again.
-          </p>
-          
-          <div className="final-cta-buttons">
-            <button 
-              onClick={handleJoinNow}
-              className="final-join-button"
-            >
-              <FaRocket /> Join Now – $997 Early Access
-            </button>
-            <div className="spots-remaining">
-              Only 100 spots available
-            </div>
-          </div>
-          
-          <p className="final-cta-footer">
-            🔒 Secure checkout • 30-day guarantee • Lifetime access
-          </p>
-        </div>
-      </section>
-
-      {/* Video Modal */}
-      {showVideo && (
-        <div className="video-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3 className="modal-title">Command Center Demo</h3>
-              <button 
-                onClick={() => setShowVideo(false)}
-                className="modal-close"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="video-placeholder">
-              <div className="video-content">
-                <FaPlay className="play-placeholder" />
-                <p className="video-text">Demo video coming soon!</p>
+          {/* Agent Instances */}
+          <div className="bg-white rounded-lg shadow mb-8">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Your Agents</h2>
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  <FaPlus className="inline mr-2" />
+                  Create Agent
+                </button>
               </div>
             </div>
+            
+            <div className="p-6">
+              {instances.length === 0 ? (
+                <div className="text-center py-12">
+                  <FaRobot className="text-gray-400 text-6xl mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No agents configured</h3>
+                  <p className="text-gray-500 mb-6">Create your first agent to get started with automation</p>
+                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    Create Your First Agent
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {instances.map((instance) => (
+                    <div key={instance.id} className="border border-gray-200 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-medium text-gray-900">{instance.name}</h3>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          instance.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {instance.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                      </div>
+                      
+                      <p className="text-gray-600 text-sm mb-4">
+                        {agents.find(a => a.id === instance.catalog_id)?.description || 'Agent description'}
+                      </p>
+                      
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleRunAgent(instance.id)}
+                          className="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors"
+                        >
+                          <FaPlay className="inline mr-1" />
+                          Run Now
+                        </button>
+                        <button
+                          onClick={() => handleConnectCredentials(instance)}
+                          className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
+                        >
+                          <FaCog className="inline mr-1" />
+                          Connect
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+
+          {/* Recent Runs */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Recent Runs</h2>
+            </div>
+            
+            <div className="p-6">
+              {runs.length === 0 ? (
+                <div className="text-center py-8">
+                  <FaHistory className="text-gray-400 text-4xl mx-auto mb-4" />
+                  <p className="text-gray-500">No runs yet. Create and run your first agent!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {runs.map((run) => (
+                    <div key={run.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center">
+                        <div className={`w-3 h-3 rounded-full mr-3 ${
+                          run.status === 'completed' ? 'bg-green-500' :
+                          run.status === 'failed' ? 'bg-red-500' :
+                          run.status === 'running' ? 'bg-yellow-500' : 'bg-gray-500'
+                        }`}></div>
+                        <div>
+                          <p className="font-medium text-gray-900">Run #{run.id}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(run.started_at).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        run.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        run.status === 'failed' ? 'bg-red-100 text-red-800' :
+                        run.status === 'running' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {run.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Credentials Modal */}
+      {showCredentialsModal && (
+        <CredentialsModal
+          instance={selectedInstance}
+          onSave={handleSaveCredentials}
+          onClose={() => setShowCredentialsModal(false)}
+        />
       )}
     </div>
   );
-};
+}
 
-export default CommandCenter; 
+// Credentials Modal Component
+function CredentialsModal({ instance, onSave, onClose }) {
+  const [credentials, setCredentials] = useState({
+    type: 'api_key',
+    data: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(credentials);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Connect Credentials for {instance?.name}
+        </h3>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Credential Type
+            </label>
+            <select
+              value={credentials.type}
+              onChange={(e) => setCredentials({...credentials, type: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+            >
+              <option value="api_key">API Key</option>
+              <option value="oauth">OAuth Token</option>
+              <option value="username_password">Username/Password</option>
+            </select>
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Credential Data
+            </label>
+            <textarea
+              value={credentials.data}
+              onChange={(e) => setCredentials({...credentials, data: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              rows="3"
+              placeholder="Enter your credentials..."
+            />
+          </div>
+          
+          <div className="flex space-x-3">
+            <button
+              type="submit"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Save Credentials
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

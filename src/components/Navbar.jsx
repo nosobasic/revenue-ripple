@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot } from 'react-icons/fa';
 import { logger } from '../config/constants';
 import './Navbar.css';
 
@@ -46,12 +46,21 @@ const Navbar = React.memo(() => {
   }, []);
 
   // Memoize navigation items
-  const navItems = useMemo(() => [
-    { path: '/progress', icon: FaChartLine, label: 'Progress' },
-    { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
-    { path: '/earn', icon: FaDollarSign, label: 'Earn' },
-    { path: '/support', icon: FaQuestionCircle, label: 'Support' }
-  ], []);
+  const navItems = useMemo(() => {
+    const items = [
+      { path: '/progress', icon: FaChartLine, label: 'Progress' },
+      { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
+      { path: '/earn', icon: FaDollarSign, label: 'Earn' },
+      { path: '/support', icon: FaQuestionCircle, label: 'Support' }
+    ];
+    
+    // Add Command Center for authenticated users
+    if (user) {
+      items.push({ path: '/command-center', icon: FaRobot, label: 'Command Center' });
+    }
+    
+    return items;
+  }, [user]);
 
   return (
     <nav className="navbar">

@@ -49,7 +49,6 @@ const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
 const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
 const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
 const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
-const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -78,6 +77,8 @@ const ThankYouMemberToAffiliate = lazy(() => import('./pages/ThankyouMemberToAff
 // Founders Annual components
 const FoundersAnnualCheckout = lazy(() => import('./pages/FoundersAnnualCheckout'));
 const FoundersSuccess = lazy(() => import('./pages/FoundersSuccess'));
+// Command Center components
+const CommandCenter = lazy(() => import('./pages/CommandCenter'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -138,6 +139,9 @@ const App = () => {
         {/* Founders Annual Routes */}
         <Route path="/founders-checkout" element={<ProtectedRoute><FoundersAnnualCheckout /></ProtectedRoute>} />
         <Route path="/founders-success" element={<ProtectedRoute><FoundersSuccess /></ProtectedRoute>} />
+
+        {/* Command Center Routes */}
+        <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
