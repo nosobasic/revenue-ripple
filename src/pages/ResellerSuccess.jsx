@@ -1,17 +1,51 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { supabase } from '../supabase/client';
+import { useAuth } from '../context/AuthContext';
 
 export default function ResellerSuccess() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  const { user } = useAuth();
+
+  // useEffect(() => {
+  //   // Redirect to Pro Reseller upsell after 3 seconds
+  //   const timer = setTimeout(() => {
+  //     navigate('/pro-reseller-upsell');
+  //   }, 3000);
+
+  //   return () => clearTimeout(timer);
+  // }, [navigate]);
 
   useEffect(() => {
-    // Redirect to Pro Reseller upsell after 3 seconds
-    const timer = setTimeout(() => {
-      navigate('/pro-reseller-upsell');
-    }, 3000);
+    const handleUpdateRole = async () => {
+      try {
+        // const queryParams = new URLSearchParams(location.search);
+        // const userId = queryParams.get("session_id");
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+        // if (!userId) {
+        //   console.error("No session_id found in URL");
+        //   return;
+        // }
+        const { data, error } = await supabase
+          .from("users")
+          .update({ role: "reseller" })   // 👈 new role
+          .eq("id", user.id)
+          .select();
+
+          console.log("dataaaaa", data)
+        if (error) {
+          console.error("Supabase update error:", error);
+        } else {
+          console.log("User role updated:", data);
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    };
+
+    handleUpdateRole();
+  }, [user]);
 
   return (
     <div className="frontend-container">

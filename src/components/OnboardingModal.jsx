@@ -1,19 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaGraduationCap, FaDollarSign, FaRocket, FaTimes, FaChevronRight, FaArrowLeft } from 'react-icons/fa';
+import { 
+  FaGraduationCap, 
+  FaDollarSign, 
+  FaRocket, 
+  FaTimes, 
+  FaChevronRight, 
+  FaArrowLeft,
+  FaRobot,
+  FaUserTie,
+  FaBook,
+  FaChartLine,
+  FaEye,
+  FaStar
+} from 'react-icons/fa';
+import { supabase } from '../supabase/client';
+import { useAuth } from '../context/AuthContext';
 
 const OnboardingModal = ({ onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedGoal, setSelectedGoal] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const totalSteps = 6;
 
   const handleGoalSelect = (goal) => {
     setSelectedGoal(goal);
     setCurrentStep(2);
   };
 
-  const handleComplete = () => {
-    // Save user intent and onboarding status
+  const handleComplete = async () => {
+    // Save to Supabase
+    if (user) {
+      await supabase
+        .from('user_onboarding')
+        .upsert([
+          {
+            user_id: user.id,
+            has_completed: true,
+            completed_at: new Date().toISOString(),
+            selected_goal: selectedGoal,
+          }
+        ], { onConflict: ['user_id'] });
+    }
+
+    // Fallback to localStorage for non-authenticated users
     localStorage.setItem('userIntent', selectedGoal);
     localStorage.setItem('hasOnboarded', 'true');
     
@@ -37,9 +69,34 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
     navigate(redirectPath);
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    if (user) {
+      await supabase
+        .from('user_onboarding')
+        .upsert([
+          {
+            user_id: user.id,
+            has_completed: true,
+            completed_at: new Date().toISOString(),
+            selected_goal: 'skipped',
+          }
+        ], { onConflict: ['user_id'] });
+    }
     localStorage.setItem('hasOnboarded', 'true');
     onSkip();
+  };
+
+  const handleJoinWaitlist = async (featureName) => {
+    if (user) {
+      await supabase
+        .from('feature_waitlist')
+        .upsert([
+          {
+            user_id: user.id,
+            feature_name: featureName,
+          }
+        ], { onConflict: ['user_id', 'feature_name'] });
+    }
   };
 
   const getGoalDisplay = (goal) => {
@@ -56,395 +113,404 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000,
-      animation: 'fadeIn 0.3s ease-out',
-      padding: '1rem'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '16px',
-        padding: 'min(2rem, 1.5rem)',
-        maxWidth: '500px',
-        width: '100%',
-        maxHeight: '90vh',
-        position: 'relative',
-        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
-        animation: 'slideUp 0.3s ease-out',
-        overflowY: 'auto'
-      }}>
-        {/* Close Button - Mobile Optimized */}
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[10000] animate-fadeIn p-4">
+      <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] relative shadow-2xl animate-slideUp overflow-y-auto">
+        {/* Progress indicator */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-gray-600">Step {currentStep} of {totalSteps}</span>
+            <button
+              onClick={handleSkip}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Skip onboarding"
+            >
+              Skip
+            </button>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Close Button */}
         <button
           onClick={handleSkip}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            background: 'none',
-            border: 'none',
-            fontSize: '1.5rem',
-            color: '#6b7280',
-            cursor: 'pointer',
-            borderRadius: '50%',
-            width: '48px',
-            height: '48px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#f3f4f6';
-            e.target.style.color = '#374151';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = 'transparent';
-            e.target.style.color = '#6b7280';
-          }}
+          className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-all"
+          aria-label="Close"
         >
-          <FaTimes />
+          <FaTimes className="text-xl" />
         </button>
 
         {/* Step 1: Welcome */}
         {currentStep === 1 && (
-          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
-            <div style={{
-              backgroundColor: '#dbeafe',
-              borderRadius: '50%',
-              width: 'min(80px, 15vw)',
-              height: 'min(80px, 15vw)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.5rem',
-              fontSize: 'min(2rem, 8vw)',
-              color: '#2563eb'
-            }}>
+          <div className="text-center pt-2">
+            <div className="bg-blue-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 text-4xl text-blue-600">
               <FaRocket />
             </div>
             
-            <h2 style={{
-              fontSize: 'clamp(1.5rem, 5vw, 2rem)',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              marginBottom: '1rem',
-              lineHeight: '1.2'
-            }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Welcome to Revenue Ripple! 🎉
             </h2>
             
-            <p style={{
-              fontSize: 'clamp(1rem, 3.5vw, 1.1rem)',
-              color: '#6b7280',
-              marginBottom: '2rem',
-              lineHeight: '1.6',
-              paddingLeft: '0.5rem',
-              paddingRight: '0.5rem'
-            }}>
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
               Let's get you started on your marketing journey. What's your main goal today?
             </p>
 
-            {/* Goal Options - Mobile Optimized */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* Goal Options */}
+            <div className="flex flex-col gap-4">
               <button
                 onClick={() => handleGoalSelect('learn')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '1.25rem 1rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
-                  fontWeight: '500',
-                  minHeight: '72px',
-                  width: '100%'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = '#2563eb';
-                  e.target.style.backgroundColor = '#f8fafc';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.backgroundColor = 'white';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }}
+                className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl bg-white hover:border-blue-500 hover:bg-blue-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 text-left"
               >
-                <div style={{
-                  backgroundColor: '#dbeafe',
-                  borderRadius: '8px',
-                  padding: '0.875rem',
-                  color: '#2563eb',
-                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
-                  minWidth: '48px',
-                  minHeight: '48px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <div className="bg-blue-100 rounded-lg p-4 text-blue-600 text-2xl min-w-[64px] min-h-[64px] flex items-center justify-center">
                   <FaGraduationCap />
                 </div>
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Learn Marketing Skills</div>
-                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Master digital marketing through our courses</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900 mb-1">Learn Marketing Skills</div>
+                  <div className="text-sm text-gray-600">Master digital marketing through our courses</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
+                <FaChevronRight className="text-gray-400" />
               </button>
 
               <button
                 onClick={() => handleGoalSelect('earn')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '1.25rem 1rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
-                  fontWeight: '500',
-                  minHeight: '72px',
-                  width: '100%'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = '#059669';
-                  e.target.style.backgroundColor = '#f0fdf4';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.backgroundColor = 'white';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }}
+                className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl bg-white hover:border-green-500 hover:bg-green-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 text-left"
               >
-                <div style={{
-                  backgroundColor: '#d1fae5',
-                  borderRadius: '8px',
-                  padding: '0.875rem',
-                  color: '#059669',
-                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
-                  minWidth: '48px',
-                  minHeight: '48px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <div className="bg-green-100 rounded-lg p-4 text-green-600 text-2xl min-w-[64px] min-h-[64px] flex items-center justify-center">
                   <FaDollarSign />
                 </div>
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Earn with Affiliates</div>
-                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Start earning commissions as an affiliate</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900 mb-1">Earn with Affiliates</div>
+                  <div className="text-sm text-gray-600">Start earning commissions as an affiliate</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
+                <FaChevronRight className="text-gray-400" />
               </button>
 
               <button
                 onClick={() => handleGoalSelect('both')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '1.25rem 1rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '12px',
-                  backgroundColor: 'white',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
-                  fontWeight: '500',
-                  minHeight: '72px',
-                  width: '100%'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = '#7c3aed';
-                  e.target.style.backgroundColor = '#faf5ff';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(124, 58, 237, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.backgroundColor = 'white';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }}
+                className="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl bg-white hover:border-purple-500 hover:bg-purple-50 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 text-left"
               >
-                <div style={{
-                  backgroundColor: '#ede9fe',
-                  borderRadius: '8px',
-                  padding: '0.875rem',
-                  color: '#7c3aed',
-                  fontSize: 'clamp(1.1rem, 4vw, 1.2rem)',
-                  minWidth: '48px',
-                  minHeight: '48px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <div className="bg-purple-100 rounded-lg p-4 text-purple-600 text-2xl min-w-[64px] min-h-[64px] flex items-center justify-center">
                   <FaRocket />
                 </div>
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '600', color: '#1f2937', marginBottom: '0.25rem' }}>Both - Learn & Earn</div>
-                  <div style={{ fontSize: 'clamp(0.85rem, 3vw, 0.9rem)', color: '#6b7280' }}>Master marketing while building income</div>
+                <div className="flex-1">
+                  <div className="font-semibold text-gray-900 mb-1">Both - Learn & Earn</div>
+                  <div className="text-sm text-gray-600">Master marketing while building income</div>
                 </div>
-                <FaChevronRight style={{ color: '#9ca3af', fontSize: '1rem' }} />
+                <FaChevronRight className="text-gray-400" />
               </button>
             </div>
-
-            <button
-              onClick={handleSkip}
-              style={{
-                marginTop: '1.5rem',
-                color: '#6b7280',
-                background: 'none',
-                border: 'none',
-                fontSize: 'clamp(0.85rem, 3vw, 0.9rem)',
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                padding: '0.75rem 1rem'
-              }}
-            >
-              Skip for now
-            </button>
           </div>
         )}
 
-        {/* Step 2: Confirmation & Next Steps */}
+        {/* Step 2: Three Pillars */}
         {currentStep === 2 && (
-          <div style={{ textAlign: 'center', paddingTop: '0.5rem' }}>
-            <div style={{
-              backgroundColor: '#dcfce7',
-              borderRadius: '50%',
-              width: 'min(80px, 15vw)',
-              height: 'min(80px, 15vw)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.5rem',
-              fontSize: 'min(2rem, 8vw)'
-            }}>
-              ✅
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 text-4xl text-white">
+              <FaStar />
             </div>
             
-            <h2 style={{
-              fontSize: 'clamp(1.4rem, 4.5vw, 1.8rem)',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              marginBottom: '1rem',
-              lineHeight: '1.2'
-            }}>
-              Perfect! Let's get started
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Your Success Framework
             </h2>
             
-            <p style={{
-              fontSize: 'clamp(1rem, 3.5vw, 1.1rem)',
-              color: '#6b7280',
-              marginBottom: '1.5rem',
-              lineHeight: '1.6',
-              paddingLeft: '0.5rem',
-              paddingRight: '0.5rem'
-            }}>
-              You selected: <strong style={{ color: '#2563eb' }}>{getGoalDisplay(selectedGoal)}</strong>
+            <p className="text-lg text-gray-600 mb-8">
+              Three powerful pillars to accelerate your growth
             </p>
 
-            <p style={{
-              fontSize: 'clamp(0.95rem, 3vw, 1rem)',
-              color: '#6b7280',
-              marginBottom: '2rem',
-              lineHeight: '1.6',
-              paddingLeft: '0.5rem',
-              paddingRight: '0.5rem'
-            }}>
-              We'll take you to the perfect starting point for your journey. You can always explore other sections later!
-            </p>
+            {/* Three Pillars */}
+            <div className="space-y-4 mb-8">
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-xl text-left border border-blue-200">
+                <div className="flex items-start gap-4">
+                  <div className="bg-blue-500 rounded-lg p-3 text-white text-2xl">
+                    <FaBook />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2">📚 Education Hub</h3>
+                    <p className="text-sm text-gray-700">
+                      Access 30+ marketing courses covering everything from SEO to paid traffic. 
+                      Learn at your own pace with actionable tutorials.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <div style={{ 
-              display: 'flex', 
-              gap: '0.75rem', 
-              justifyContent: 'center',
-              flexDirection: window.innerWidth < 400 ? 'column' : 'row'
-            }}>
+              <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-5 rounded-xl text-left border border-purple-200">
+                <div className="flex items-start gap-4">
+                  <div className="bg-purple-500 rounded-lg p-3 text-white text-2xl">
+                    <FaRobot />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2">🤖 Ripple AI Chatbot</h3>
+                    <p className="text-sm text-gray-700">
+                      Get instant answers to your marketing questions. Your AI-powered consultant 
+                      is available 24/7 to guide you through any challenge.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-5 rounded-xl text-left border border-amber-200">
+                <div className="flex items-start gap-4">
+                  <div className="bg-amber-500 rounded-lg p-3 text-white text-2xl">
+                    <FaUserTie />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2">💼 Work with Donte</h3>
+                    <p className="text-sm text-gray-700">
+                      Need personalized strategy? Get 1-on-1 consulting, custom workflow builds, 
+                      or dev work tailored to your business.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
               <button
                 onClick={() => setCurrentStep(1)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.875rem 1.5rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '8px',
-                  backgroundColor: 'white',
-                  color: '#6b7280',
-                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  minHeight: '48px',
-                  flex: window.innerWidth < 400 ? '1' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = '#d1d5db';
-                  e.target.style.backgroundColor = '#f9fafb';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.backgroundColor = 'white';
-                }}
+                className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all"
               >
                 <FaArrowLeft />
                 Back
               </button>
+              <button
+                onClick={() => setCurrentStep(3)}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                Continue
+                <FaChevronRight />
+              </button>
+            </div>
+          </div>
+        )}
 
+        {/* Step 3: Meet Donte (White Glove) */}
+        {currentStep === 3 && (
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 text-4xl text-white">
+              <FaUserTie />
+            </div>
+            
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              Meet Your Guide
+            </h2>
+            
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 mb-6 border border-gray-200">
+              <div className="flex items-start gap-5 mb-4">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+                  DW
+                </div>
+                <div className="flex-1 text-left">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">Donte Willis</h3>
+                  <p className="text-sm text-gray-600 mb-3">Founder & Marketing Strategist</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    "I built Revenue Ripple to give you the unfair advantage I wish I had starting out. 
+                    You're not doing this alone. I'm here to help you win."
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-4 mb-4">
+                <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-lg">🎯</span>
+                  How I Can Help You:
+                </h4>
+                <ul className="text-left space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">✓</span>
+                    <span><strong>Strategy Calls:</strong> Personalized marketing roadmaps for your business</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">✓</span>
+                    <span><strong>Workflow Builds:</strong> Custom automation and systems setup</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">✓</span>
+                    <span><strong>Dev Work:</strong> Landing pages, funnels, integrations built for you</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">✓</span>
+                    <span><strong>Course Support:</strong> Questions about any training material</span>
+                  </li>
+                </ul>
+              </div>
+
+              <a 
+                href="mailto:support@revenueripple.org?subject=Strategy Call Request&body=Hi Donte,%0D%0A%0D%0AI'd like to discuss strategy for my business.%0D%0A%0D%0AThanks!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                📞 Book a Strategy Call
+              </a>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCurrentStep(2)}
+                className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all"
+              >
+                <FaArrowLeft />
+                Back
+              </button>
+              <button
+                onClick={() => setCurrentStep(4)}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                Continue
+                <FaChevronRight />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Future Features Teaser */}
+        {currentStep === 4 && (
+          <div className="text-center">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 text-4xl text-white">
+              <FaEye />
+            </div>
+            
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              What's Coming Next
+            </h2>
+            
+            <p className="text-lg text-gray-600 mb-8">
+              Get early access to game-changing features
+            </p>
+
+            {/* Future Features */}
+            <div className="space-y-4 mb-8">
+              <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 p-6 rounded-xl text-left border-2 border-indigo-200 relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Coming Soon
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-indigo-600 rounded-lg p-3 text-white text-2xl">
+                    <FaEye />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2 text-lg">🔍 AI Visibility Dashboard</h3>
+                    <p className="text-sm text-gray-700 mb-3">
+                      Real-time analytics powered by AI. See exactly what's working, what's not, 
+                      and what to do next—explained in plain English.
+                    </p>
+                    <ul className="text-xs text-gray-600 space-y-1">
+                      <li>• Predictive performance insights</li>
+                      <li>• Competitor monitoring & gap analysis</li>
+                      <li>• Automated opportunity alerts</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-xl text-left border-2 border-purple-200 relative overflow-hidden">
+                <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Coming Soon
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-purple-600 rounded-lg p-3 text-white text-2xl">
+                    <FaChartLine />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-2 text-lg">🎮 Command Center</h3>
+                    <p className="text-sm text-gray-700 mb-3">
+                      Your mission control for all marketing campaigns. Manage ads, content, 
+                      and workflows from one unified dashboard.
+                    </p>
+                    <ul className="text-xs text-gray-600 space-y-1">
+                      <li>• Multi-platform campaign management</li>
+                      <li>• AI-powered optimization suggestions</li>
+                      <li>• One-click deployment & scaling</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={async () => {
+                await handleJoinWaitlist('AI Visibility & Command Center');
+                setCurrentStep(5);
+              }}
+              className="w-full px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-bold text-lg hover:shadow-xl hover:-translate-y-0.5 transition-all mb-4"
+            >
+              🚀 Join Early Access Waitlist
+            </button>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCurrentStep(3)}
+                className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all"
+              >
+                <FaArrowLeft />
+                Back
+              </button>
+              <button
+                onClick={() => setCurrentStep(5)}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-all"
+              >
+                Skip
+                <FaChevronRight />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Final Confirmation */}
+        {currentStep === 5 && (
+          <div className="text-center">
+            <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6 text-5xl">
+              ✅
+            </div>
+            
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              You're All Set!
+            </h2>
+            
+            <p className="text-lg text-gray-600 mb-2">
+              You selected: <strong className="text-blue-600">{getGoalDisplay(selectedGoal)}</strong>
+            </p>
+
+            <p className="text-base text-gray-600 mb-8">
+              We'll take you to the perfect starting point. Remember, you're not alone on this journey.
+            </p>
+
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-8 border border-blue-200">
+              <h3 className="font-bold text-gray-900 mb-4 text-lg">✨ Quick Reminders:</h3>
+              <ul className="text-left space-y-3 text-sm text-gray-700">
+                <li className="flex items-start gap-3">
+                  <span className="text-blue-500 text-xl mt-0.5">💪</span>
+                  <span>Most people quit at the first obstacle. You're different. Keep pushing.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-purple-500 text-xl mt-0.5">🎯</span>
+                  <span>Progress over perfection. Complete modules, track your wins.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-amber-500 text-xl mt-0.5">🤝</span>
+                  <span>Stuck? Use the AI chatbot or reach out to Donte directly.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCurrentStep(4)}
+                className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all"
+              >
+                <FaArrowLeft />
+                Back
+              </button>
               <button
                 onClick={handleComplete}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  padding: '0.875rem 2rem',
-                  border: 'none',
-                  borderRadius: '8px',
-                  backgroundColor: '#2563eb',
-                  color: 'white',
-                  fontSize: 'clamp(0.95rem, 3.5vw, 1rem)',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  minHeight: '48px',
-                  flex: window.innerWidth < 400 ? '1' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#1d4ed8';
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#2563eb';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold text-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
               >
-                Let's Go!
+                Let's Go! 🚀
                 <FaChevronRight />
               </button>
             </div>
@@ -452,8 +518,7 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
         )}
       </div>
 
-      <style>
-        {`
+      <style jsx>{`
           @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -470,20 +535,14 @@ const OnboardingModal = ({ onComplete, onSkip }) => {
             }
           }
 
-          /* Mobile-specific optimizations */
-          @media (max-width: 480px) {
-            /* Ensure touch targets are accessible */
-            button {
-              min-height: 48px;
-            }
-            
-            /* Improve readability on small screens */
-            div[style*="textAlign: center"] p {
-              line-height: 1.7 !important;
-            }
-          }
-        `}
-      </style>
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };

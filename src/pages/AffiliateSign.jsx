@@ -21,10 +21,43 @@ export default function AffiliateSign() {
   // 👇 Grab ref from URL and save to localStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const role = params.get('role');
+    localStorage.setItem('refUserRole', role);
     const ref = params.get('ref');
-    console.log("ref===", ref)
     if (ref) {
       localStorage.setItem('affiliate_ref', ref);
+
+      const updateVisitCount = async () => {
+        const { data, error } = await supabase
+        .from('affiliate_visits')
+        .select('id, count, ref_id')
+        .eq('ref_id', ref);
+      
+      console.log("QUERY RESULT:", data, error);
+      
+      if (error) {
+        console.error("Fetch error: ", error);
+        return;
+      }
+      
+      if (data && data.length > 0) {
+        const row = data[0];  // pehla record lo
+        await supabase
+          .from('affiliate_visits')
+          .update({ count: row.count + 1 })
+          .eq('id', row.id);
+      
+        console.log("Visit updated for", row.ref_id);
+      } else {
+        await supabase
+          .from('affiliate_visits')
+          .insert([{ ref_id: ref, count: 1 }]);
+      
+        console.log("New visit inserted for", ref);
+      }
+      };
+  
+      updateVisitCount();
     }
   }, []);
 
@@ -40,12 +73,14 @@ export default function AffiliateSign() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role') || "affiliate";
     try {
       // Validate passwords match
       if (formData.password !== formData.confirmPassword) {
         throw new Error('Passwords do not match');
       }
+      localStorage.setItem("customerEmail",formData.email )
 
       // Create user account
       const { data: authData, error: authError } = await signup(
@@ -53,7 +88,8 @@ export default function AffiliateSign() {
         formData.password,
         formData.firstName,
         formData.lastName,
-        "affiliate"
+        role,
+        formData.paypal
       );
 
 
@@ -76,7 +112,7 @@ export default function AffiliateSign() {
 
       // Redirect to special invite page
       // alert('Registration successful! Please check your email for verification.');
-      navigate('/checkout');
+      navigate('/checkout?product=membership');
     } catch (err) {
       setError(err.message);
     } finally {

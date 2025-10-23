@@ -1,13 +1,13 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import MilestoneCheckIn from './components/MilestoneCheckIn';
 import { STORAGE_KEYS, logger } from './config/constants';
 
 // Immediate load components (critical path)
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -31,21 +31,24 @@ const ProResellerUpsell = lazy(() => import('./pages/ProResellerUpsell'));
 const ThreeMonthsFreeUpsell = lazy(() => import('./pages/ThreeMonthsFreeUpsell'));
 const Profile = lazy(() => import('./pages/Profile'));
 const DMDLanding = lazy(() => import('./pages/DMDLanding'));
-const DFY = lazy(() => import('./pages/DFY'));
 const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
-<<<<<<< HEAD
-const FoundersCheckout = lazy(() => import('./pages/FoundersCheckout'));
-const FoundersWaitlist = lazy(() => import('./pages/FoundersWaitlist'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-=======
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
 const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
+// New landing page components
+const MembershipVariation1 = lazy(() => import('./pages/MembershipVariation1'));
+const MembershipVariation2 = lazy(() => import('./pages/MembershipVariation2'));
+const MembershipVariation3 = lazy(() => import('./pages/MembershipVariation3'));
+const DMDVariation1 = lazy(() => import('./pages/DMDVariation1'));
+const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
+const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
+const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
+const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -70,11 +73,13 @@ const MarketingMistakes = lazy(() => import('./pages/training/guides/MarketingMi
 const UnderstandingRelevance = lazy(() => import('./pages/training/guides/UnderstandingRelevance'));
 const WritingAdCopy = lazy(() => import('./pages/training/guides/WritingAdCopy'));
 const SalesCopy = lazy(() => import('./pages/training/guides/SalesCopy'));
+const ThankYouMemberToAffiliate = lazy(() => import('./pages/ThankyouMemberToAffiliate'));
+// Founders Annual components
+const FoundersAnnualCheckout = lazy(() => import('./pages/FoundersAnnualCheckout'));
+const FoundersSuccess = lazy(() => import('./pages/FoundersSuccess'));
+// Command Center components
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
-const InsightsPage = lazy(() => import('./pages/Insights'));
-const Onboarding = lazy(() => import('./pages/Onboarding'));
 
-// Loading component for lazy loaded routes
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -109,6 +114,7 @@ const App = () => {
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>
         </div>
       )}
+      <MilestoneCheckIn />
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
         <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
@@ -117,28 +123,33 @@ const App = () => {
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
 
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-        <Route path="/founders" element={<ProtectedRoute><FoundersCheckout /></ProtectedRoute>} />
-        <Route path="/founders-waitlist" element={<UnprotectedRoute><FoundersWaitlist /></UnprotectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
         <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
+        <Route path="/pro-reseller-success" element={<ProtectedRoute><ProResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
         <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
         <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
         <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
         <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
+        
+        {/* Founders Annual Routes */}
+        <Route path="/founders-checkout" element={<ProtectedRoute><FoundersAnnualCheckout /></ProtectedRoute>} />
+        <Route path="/founders-success" element={<ProtectedRoute><FoundersSuccess /></ProtectedRoute>} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-        <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
+        {/* Command Center Routes */}
+        <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
+
+        <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
+        <Route path="/training" element={<ProtectedRoute requirePayment={true}><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
-                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-         <Route path="/dfy" element={<ProtectedRoute><DFY /></ProtectedRoute>} />
-<Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug" element={<ProtectedRoute requirePayment={true}><CourseOverview /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute requirePayment={true}><CourseModule /></ProtectedRoute>} />
 
         <Route path="/affiliate-centre/*" element={<ProtectedRoute>
           <Routes>
@@ -173,15 +184,6 @@ const App = () => {
         <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-<<<<<<< HEAD
-                 {import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' && (
-           <>
-             <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
-             <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
-           </>
-         )}
-         <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-=======
         <Route path="/command-center" element={<CommandCenter />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         
@@ -192,7 +194,19 @@ const App = () => {
         {/* Survival Playbook Routes */}
         <Route path="/survival-playbook" element={<SurvivalPlaybook />} />
         <Route path="/thank-you-survival-playbook" element={<ThankYouSurvivalPlaybook />} />
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+        
+        {/* Membership Mastery Landing Page Routes */}
+        <Route path="/membership-variation-1" element={<MembershipVariation1 />} />
+        <Route path="/membership-variation-2" element={<MembershipVariation2 />} />
+        <Route path="/membership-variation-3" element={<MembershipVariation3 />} />
+        <Route path="/thank-you-membership-mastery" element={<ThankYouMembershipMastery />} />
+        <Route path="/thank-you-member-to-affiliate" element={<ThankYouMemberToAffiliate />} />
+        
+        {/* Digital Marketing Domination Landing Page Routes */}
+        <Route path="/dmd-variation-1" element={<DMDVariation1 />} />
+        <Route path="/dmd-variation-2" element={<DMDVariation2 />} />
+        <Route path="/dmd-variation-3" element={<DMDVariation3 />} />
+        <Route path="/thank-you-dmd" element={<ThankYouDMD />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

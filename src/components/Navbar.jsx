@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { NavigationUtils } from '../utils/navigationUtils';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot } from 'react-icons/fa';
 import { logger } from '../config/constants';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaLightbulb, FaFlask } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = React.memo(() => {
@@ -47,14 +46,21 @@ const Navbar = React.memo(() => {
   }, []);
 
   // Memoize navigation items
-  const navItems = useMemo(() => [
-    { path: '/progress', icon: FaChartLine, label: 'Progress' },
-    { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
-    ...(import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' ? [{ path: '/insights', icon: FaLightbulb, label: 'Insights' }] : []),
-    ...(import.meta.env.VITE_USE_FLASK_INSIGHTS === 'true' ? [{ path: '/command-center', icon: FaFlask, label: 'Command' }] : []),
-    { path: '/earn', icon: FaDollarSign, label: 'Earn' },
-    { path: '/support', icon: FaQuestionCircle, label: 'Support' }
-  ], []);
+  const navItems = useMemo(() => {
+    const items = [
+      { path: '/progress', icon: FaChartLine, label: 'Progress' },
+      { path: '/learn', icon: FaGraduationCap, label: 'Learn' },
+      { path: '/earn', icon: FaDollarSign, label: 'Earn' },
+      { path: '/support', icon: FaQuestionCircle, label: 'Support' }
+    ];
+    
+    // Add Command Center for authenticated users
+    if (user) {
+      items.push({ path: '/command-center', icon: FaRobot, label: 'Command Center' });
+    }
+    
+    return items;
+  }, [user]);
 
   return (
     <nav className="navbar">
@@ -92,23 +98,13 @@ const Navbar = React.memo(() => {
                 <span>Support</span>
               </Link>
 
-              {/* Insights Link */}
-              <Link to="/insights" className={getNavLinkClass('/insights')} onClick={closeMobileMenu}>
-                <FaLightbulb className="nav-icon" />
-                <span>Insights</span>
-                <span style={{ 
-                  background: "#f59e0b", 
-                  color: "white", 
-                  fontSize: "0.7rem", 
-                  padding: "2px 6px", 
-                  borderRadius: "10px", 
-                  marginLeft: "4px",
-                  fontWeight: "bold"
-                }}>
-                  NEW
-                </span>
-              </Link>
-
+              {/* Founders CTA - Only show if not already a founder */}
+              {!user?.is_founder && (
+                <Link to="/founders-checkout" className="founders-cta-btn" onClick={closeMobileMenu}>
+                  🚀 Join Founders Circle
+                </Link>
+              )}
+              
               {/* Profile Link */}
               <Link to="/profile" className="navbar-link" onClick={closeMobileMenu}>
                 <FaUser className="nav-icon" />
@@ -119,6 +115,9 @@ const Navbar = React.memo(() => {
             <>
               <Link to="/login" className="navbar-link" onClick={closeMobileMenu}>Member Sign In</Link>
               <Link to="/affiliate-login" className="navbar-link" onClick={closeMobileMenu}>Affiliates & Resellers</Link>
+              <Link to="/founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
+                🚀 Founders Circle
+              </Link>
             </>
           )}
         </div>
@@ -172,24 +171,15 @@ const Navbar = React.memo(() => {
                     <FaQuestionCircle className="mobile-nav-icon" />
                     <span>Support</span>
                   </Link>
-                  
-                  <Link to="/insights" className={`mobile-nav-link ${getNavLinkClass('/insights')}`} onClick={closeMobileMenu}>
-                    <FaLightbulb className="mobile-nav-icon" />
-                    <span>Insights</span>
-                    <span style={{ 
-                      background: "#f59e0b", 
-                      color: "white", 
-                      fontSize: "0.7rem", 
-                      padding: "2px 6px", 
-                      borderRadius: "10px", 
-                      marginLeft: "4px",
-                      fontWeight: "bold"
-                    }}>
-                      NEW
-                    </span>
-                  </Link>
 
                   <div className="mobile-menu-divider"></div>
+                  
+                  {/* Founders CTA - Mobile */}
+                  {!user?.is_founder && (
+                    <Link to="/founders-checkout" className="mobile-founders-cta" onClick={closeMobileMenu}>
+                      🚀 Join Founders Circle
+                    </Link>
+                  )}
                   
                   <Link to="/profile" className="mobile-nav-link" onClick={closeMobileMenu}>
                     <FaUser className="mobile-nav-icon" />

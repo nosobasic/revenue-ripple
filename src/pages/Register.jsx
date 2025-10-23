@@ -10,6 +10,7 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  // const [paypalEmail, setPaypalEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -33,9 +34,10 @@ export default function Register() {
     }
 
     try {
-      await signup(email, password, firstName, lastName,"member");
+      await signup(email, password, firstName, lastName,"member",null);
       // alert('Registration successful! Please check your email for verification.');
-      navigate('/login');
+      // navigate('/login');
+      navigate('/checkout?product=membership');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -114,6 +116,19 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
+          {/* <div className="form-group">
+                <label htmlFor="paypal">PayPal Email</label>
+                <input
+                  type="email"
+                  id="paypal"
+                  name="paypal"
+                  className="form-input"
+                  placeholder="Paypal Email"
+                  value={paypalEmail}
+                  onChange={(e) => setPaypalEmail(e.target.value)}
+                  required
+                />
+              </div> */}
 
           <div className="form-group">
             <label htmlFor="password">

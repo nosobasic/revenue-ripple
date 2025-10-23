@@ -714,7 +714,7 @@ export const courses = [
         title: 'Choosing the Right Type with Click Funnels',  
         description: 'How to choose the right type of funnel for your business.',
         video: {
-          vimeoId: '1089118712',
+          vimeoId: '1089118691',
           duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
         }

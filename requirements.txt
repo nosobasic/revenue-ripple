@@ -8,3 +8,4 @@ supabase
 PyJWT
 gunicorn
 openai
+paypalrestsdk

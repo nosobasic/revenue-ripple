@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -59,53 +59,58 @@ export default defineConfig({
   },
   
   server: {
-    allowedHosts: ['friendly-neat-walrus.ngrok-free.app'],
+    allowedHosts: ["friendly-neat-walrus.ngrok-free.app"],
     proxy: {
-      '/devops': {
-        target: 'http://localhost:5001',
+      "/devops": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/api': {
-        target: 'http://localhost:5001',
+      "/api": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/create-payment-intent': {
-        target: 'http://localhost:5001',
+      "/create-payment-intent": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/create-tripwire-session': {
-        target: 'http://localhost:5001',
+      "/create-tripwire-session": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/create-pro-reseller-session': {
-        target: 'http://localhost:5001',
+      "/create-pro-reseller-session": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/create-reseller-session': {
-        target: 'http://localhost:5001',
+      "/create-reseller-session": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/create-membership-session': {
-        target: 'http://localhost:5001',
+      "/create-membership-session": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/webhook': {
-        target: 'http://localhost:5001',
+      "/webhook": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
-      '/your-existing-api': {
-        target: 'http://localhost:5001',
+      "/your-existing-api": {
+        target: "http://localhost:5001",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/paypal": {
+        target: "http://localhost:5001",
         changeOrigin: true,
         secure: false,
       },
     },
   },
-})
+});

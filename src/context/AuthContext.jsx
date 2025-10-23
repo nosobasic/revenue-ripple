@@ -48,7 +48,7 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio, paypal_email, has_paid, payment_status"
         )
         .eq("id", authUser.id)
         .single();
@@ -59,7 +59,9 @@ export function AuthProvider({ children }) {
         setUser({
           ...authUser,
           role: 'member', // default role
-          status: 'active'
+          status: 'active',
+          has_paid: false,
+          payment_status: 'pending'
         });
         return;
       }
@@ -71,7 +73,9 @@ export function AuthProvider({ children }) {
         setUser({
           ...authUser,
           role: 'member',
-          status: 'active'
+          status: 'active',
+          has_paid: false,
+          payment_status: 'pending'
         });
       }
     } catch (error) {
@@ -79,12 +83,14 @@ export function AuthProvider({ children }) {
       setUser({
         ...authUser,
         role: 'member',
-        status: 'active'
+        status: 'active',
+        has_paid: false,
+        payment_status: 'pending'
       });
     }
   };
 
-  async function signup(email, password, firstName, lastName ,role) {
+  async function signup(email, password, firstName, lastName ,role, paypal) {
     try {
       setLoading(true);
 <<<<<<< HEAD
@@ -112,7 +118,10 @@ export function AuthProvider({ children }) {
             phone: "",
             company: "",
             bio: "",
-            plan: ""
+            plan: "",
+            paypal_email: paypal,
+            has_paid: false,
+            payment_status: "pending"
           },
         ]);
 
@@ -282,6 +291,13 @@ async function resetPassword(email) {
 }
 
 
+  // Function to refresh user data from database
+  const refreshUserData = async () => {
+    if (session?.user) {
+      await fetchUserData(session.user);
+    }
+  };
+
   const value = {
     user,
     session,
@@ -291,6 +307,7 @@ async function resetPassword(email) {
     logout,
     updateUserProfile,
     resetPassword,
+    refreshUserData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

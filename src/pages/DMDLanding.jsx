@@ -1,9 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaStar } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 
 export default function DMDLanding() {
+  useEffect(() => {
+    // Hotjar Tracking Code for Revenue Ripple
+    (function(h,o,t,j,a,r){
+      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+      h._hjSettings={hjid:6531289,hjsv:6};
+      a=o.getElementsByTagName('head')[0];
+      r=o.createElement('script');r.async=1;
+      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+      a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+  }, []);
+  useEffect(() => {
+    // Track page view with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView', {
+        content_name: 'Digital Marketing Domination Landing Page',
+        content_category: 'Landing Page',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  }, []);
+
+  const handlePurchaseClick = () => {
+    // Track purchase intent with Meta Pixel
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_name: 'Digital Marketing Domination',
+        content_category: 'Digital Product',
+        value: 7,
+        currency: 'USD'
+      });
+    }
+  };
+
   return (
     <div className="home">
       <style>{`
@@ -26,11 +61,16 @@ export default function DMDLanding() {
         }
         .hero {
           background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-          padding: 4rem 0 !important;
+          padding: 2rem 1rem !important;
           color: white !important;
           position: relative !important;
           z-index: 1 !important;
           margin-top: 0 !important;
+        }
+        @media (min-width: 768px) {
+          .hero {
+            padding: 4rem 0 !important;
+          }
         }
         .hero::before {
           display: none !important;
@@ -41,11 +81,18 @@ export default function DMDLanding() {
           -webkit-background-clip: unset !important;
           -webkit-text-fill-color: unset !important;
           animation: fadeInUp 0.8s ease-out;
-          font-size: 2.5rem !important;
+          font-size: 1.75rem !important;
           font-weight: 700 !important;
           text-align: center !important;
-          margin-bottom: 1.5rem !important;
+          margin-bottom: 1rem !important;
           opacity: 1 !important;
+          line-height: 1.2 !important;
+        }
+        @media (min-width: 768px) {
+          .hero-title {
+            font-size: 2.5rem !important;
+            margin-bottom: 1.5rem !important;
+          }
         }
         .hero-subtitle {
           color: #e2e8f0 !important;
@@ -53,26 +100,43 @@ export default function DMDLanding() {
           -webkit-background-clip: unset !important;
           -webkit-text-fill-color: unset !important;
           animation: fadeInUp 0.8s ease-out 0.2s backwards;
-          font-size: 1.25rem !important;
+          font-size: 1rem !important;
           font-weight: 500 !important;
           text-align: center !important;
-          margin-bottom: 1.5rem !important;
+          margin-bottom: 1rem !important;
           opacity: 1 !important;
+          line-height: 1.4 !important;
+        }
+        @media (min-width: 768px) {
+          .hero-subtitle {
+            font-size: 1.25rem !important;
+            margin-bottom: 1.5rem !important;
+          }
         }
         .cta-button {
           display: inline-block !important;
-          padding: 1rem 2rem !important;
+          padding: 0.75rem 1.5rem !important;
           background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%) !important;
           color: white !important;
           text-decoration: none !important;
           border-radius: 0.5rem !important;
           font-weight: 600 !important;
-          font-size: 1.1rem !important;
+          font-size: 1rem !important;
           transition: all 0.3s ease !important;
           border: none !important;
           cursor: pointer !important;
           animation: fadeInUp 0.8s ease-out 0.4s backwards;
-          margin: 1rem 0 !important;
+          margin: 0.5rem 0 !important;
+          width: 100% !important;
+          text-align: center !important;
+        }
+        @media (min-width: 768px) {
+          .cta-button {
+            padding: 1rem 2rem !important;
+            font-size: 1.1rem !important;
+            margin: 1rem 0 !important;
+            width: auto !important;
+          }
         }
         .cta-button:hover {
           background: linear-gradient(90deg, #1d4ed8 0%, #3730a3 100%) !important;
@@ -91,6 +155,30 @@ export default function DMDLanding() {
         .testimonial-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .hero-flex {
+          display: flex !important;
+          gap: 1rem !important;
+          align-items: flex-start !important;
+          flex-wrap: wrap !important;
+          flex-direction: column !important;
+        }
+        @media (min-width: 768px) {
+          .hero-flex {
+            gap: 2.5rem !important;
+            flex-direction: row !important;
+          }
+        }
+        .stats-grid {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 1rem !important;
+        }
+        @media (min-width: 768px) {
+          .stats-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 1.5rem !important;
+          }
         }
       `}</style>
       <Navbar />
@@ -115,7 +203,12 @@ export default function DMDLanding() {
               4.9/5 from 238 readers
             </div>
           </div>
-          <Link to="/checkout?product=dmd" className="cta-button" aria-label="Purchase Digital Marketing Domination ebook for $7">
+          <Link 
+            to="/checkout?product=dmd" 
+            className="cta-button" 
+            aria-label="Purchase Digital Marketing Domination ebook for $7"
+            onClick={handlePurchaseClick}
+          >
             Get Instant Access for $7
           </Link>
           <div style={{marginTop: '0.75rem', animation: 'fadeInUp 0.8s ease-out 0.5s backwards'}}>
@@ -138,7 +231,7 @@ export default function DMDLanding() {
       </section>
 
       <div className="container">
-        <div className="hero-flex" style={{ display: 'flex', gap: '2.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div className="hero-flex">
           {/* Left Side: Book Cover */}
           <div className="hero-side" style={{ flex: 1, minWidth: 280, display: 'flex', justifyContent: 'center', animation: 'fadeInUp 0.8s ease-out 0.6s backwards' }}>
             <div style={{ position: 'relative' }}>
@@ -243,6 +336,84 @@ export default function DMDLanding() {
                 Clear, concise, and full of real-world examples. I wish I had this years ago!
               </div>
               <div style={{ marginTop: '1rem', fontWeight: 500, color: '#6b7280' }}>— Linda G.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Can't Wait Section */}
+      <section style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', padding: '3rem 0', marginTop: '2rem' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto' }}>
+            <h2 style={{ color: '#92400e', fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>
+              ⏰ Can't Wait for the Free Lessons?
+            </h2>
+            <p style={{ color: '#92400e', fontSize: '1.25rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Get instant access to the complete Digital Marketing Domination ebook right now! 
+              Don't wait for lessons to arrive every 2 weeks - start implementing all 26 strategies today.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+              <Link 
+                to="/dlds/dmd" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(220, 38, 38, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(220, 38, 38, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(220, 38, 38, 0.2)';
+                }}
+                onClick={handlePurchaseClick}
+              >
+                📖 Get Full Ebook Now - $7
+              </Link>
+              <Link 
+                to="/" 
+                style={{
+                  display: 'inline-block',
+                  padding: '1rem 2rem',
+                  background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 6px rgba(37, 99, 235, 0.2)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 12px rgba(37, 99, 235, 0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 6px rgba(37, 99, 235, 0.2)';
+                }}
+              >
+                🚀 Explore Revenue Ripple
+              </Link>
+            </div>
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.8)', 
+              padding: '1rem', 
+              borderRadius: '8px',
+              display: 'inline-block'
+            }}>
+              <p style={{ margin: 0, color: '#92400e', fontWeight: 600, fontSize: '0.9rem' }}>
+                ✅ Instant download • 100% money-back guarantee • No waiting required
+              </p>
             </div>
           </div>
         </div>

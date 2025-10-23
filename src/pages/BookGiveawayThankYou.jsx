@@ -223,7 +223,7 @@ const BookGiveawayThankYou = () => {
           {/* Footer */}
           <div className="text-center mt-12">
             <p className="text-gray-500 text-sm">
-              Questions? Contact us at <a href="mailto:hello@revenueripple.org" className="text-blue-600 hover:text-blue-800 underline">hello@revenueripple.org</a>
+              Questions? Contact us at <a href="mailto:support@revenueripple.org" className="text-blue-600 hover:text-blue-800 underline">support@revenueripple.org</a>
             </p>
             <div className="mt-4">
               <button

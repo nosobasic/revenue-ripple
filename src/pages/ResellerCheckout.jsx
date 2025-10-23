@@ -55,7 +55,7 @@ export default function ResellerCheckout() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-300">Reseller Program Fee</span>
-                    <span className="text-xl font-semibold">$997</span>
+                    <span className="text-xl font-semibold">$47</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-300">Setup & Training</span>
@@ -68,7 +68,7 @@ export default function ResellerCheckout() {
                   <div className="border-t border-gray-600 my-4"></div>
                   <div className="flex justify-between items-center text-xl font-bold">
                     <span>Total</span>
-                    <span>$997</span>
+                    <span>$47</span>
                   </div>
                 </div>
               </div>

@@ -200,8 +200,8 @@ const ThankYouSurvivalPlaybook = () => {
           <div className="text-center">
             <p className="text-gray-500 text-sm mb-4">
               Questions about the playbook? Contact us at{' '}
-              <a href="mailto:hello@revenueripple.org" className="text-orange-600 hover:text-orange-800 underline">
-                hello@revenueripple.org
+              <a href="mailto:support@revenueripple.org" className="text-orange-600 hover:text-orange-800 underline">
+                support@revenueripple.org
               </a>
             </p>
             <div className="space-x-4">
