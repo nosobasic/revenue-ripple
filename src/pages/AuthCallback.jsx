@@ -7,41 +7,85 @@ export default function AuthCallback() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [hasRedirected, setHasRedirected] = useState(false);
+  const [debugInfo, setDebugInfo] = useState('Initializing...');
 
   useEffect(() => {
+    console.log('🔵 AuthCallback mounted');
+    console.log('Current URL:', window.location.href);
+    console.log('User:', user);
+    console.log('Loading:', loading);
+    
     const handleCallback = async () => {
-      if (hasRedirected) return;
+      if (hasRedirected) {
+        console.log('⚠️ Already redirected, skipping');
+        return;
+      }
       
       try {
+        setDebugInfo('Waiting for auth to settle...');
+        console.log('⏳ Waiting 1.5 seconds for Supabase to process...');
+        
         // Wait a moment for Supabase to fully process the OAuth callback
         await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        setDebugInfo('Checking session...');
+        console.log('🔍 Checking for session...');
         
         // Check if we have a session
         const { data: { session }, error } = await supabase.auth.getSession();
         
+        console.log('Session result:', { session: !!session, error });
+        
         if (error) {
-          console.error('Error getting session:', error);
+          console.error('❌ Error getting session:', error);
+          setDebugInfo('Error: ' + error.message);
           navigate('/login', { replace: true });
           return;
         }
 
         if (session) {
           // Get the stored redirect path or default to checkout
-          const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
+          const storedPath = localStorage.getItem('oauth-redirect-path');
+          const redirectPath = storedPath || '/checkout?product=membership';
+          
+          console.log('✅ Session found!');
+          console.log('📍 Stored redirect path:', storedPath);
+          console.log('📍 Final redirect path:', redirectPath);
+          console.log('👤 Session user:', session.user.email);
+          
+          setDebugInfo('Redirecting to: ' + redirectPath);
           localStorage.removeItem('oauth-redirect-path');
           
-          console.log('OAuth callback - redirecting to:', redirectPath);
           setHasRedirected(true);
           
           // Navigate to the intended destination
+          console.log('🚀 Navigating to:', redirectPath);
           navigate(redirectPath, { replace: true });
         } else if (!loading) {
           // No session and not loading anymore - something went wrong
-          console.error('No session found after OAuth callback');
-          navigate('/register', { replace: true });
+          console.error('❌ No session found after OAuth callback');
+          console.log('Loading state:', loading);
+          console.log('User state:', user);
+          setDebugInfo('No session found - redirecting to register');
+          
+          // Wait a bit longer and try one more time
+          console.log('🔄 Trying one more time after 2 seconds...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          
+          if (retrySession) {
+            console.log('✅ Got session on retry!');
+            const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
+            localStorage.removeItem('oauth-redirect-path');
+            navigate(redirectPath, { replace: true });
+          } else {
+            console.log('❌ Still no session, giving up');
+            navigate('/register', { replace: true });
+          }
         }
       } catch (error) {
-        console.error('Error in OAuth callback:', error);
+        console.error('💥 Error in OAuth callback:', error);
+        setDebugInfo('Error: ' + error.message);
         navigate('/register', { replace: true });
       }
     };
@@ -85,9 +129,17 @@ export default function AuthCallback() {
         <p style={{ 
           color: '#6b7280', 
           fontSize: '1rem',
-          margin: 0
+          margin: '0 0 1rem 0'
         }}>
           This will only take a moment...
+        </p>
+        <p style={{ 
+          color: '#9ca3af', 
+          fontSize: '0.875rem',
+          fontFamily: 'monospace',
+          margin: 0
+        }}>
+          {debugInfo}
         </p>
       </div>
       <style>{`
