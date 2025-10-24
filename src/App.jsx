@@ -9,6 +9,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AuthCallback from './pages/AuthCallback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import DataDeletion from './pages/DataDeletion';
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -123,6 +125,10 @@ const App = () => {
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        
+        {/* Public legal pages */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/data-deletion" element={<DataDeletion />} />
 
         {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
         <Route path="/checkout" element={<Checkout />} />
