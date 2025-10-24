@@ -24,46 +24,60 @@ export default function AuthCallback() {
     let authSubscription;
 
     const handleCallback = async () => {
+      console.log('▶️ handleCallback START');
+      
       if (hasRedirected) {
         console.log('⚠️ Already redirected, skipping');
         return;
       }
 
       try {
+        console.log('📝 Setting debugInfo to: Detecting OAuth session...');
         setDebugInfo('Detecting OAuth session...');
-        console.log('👂 Setting up auth state listener...');
-
-        // Listen for auth state changes - this is more reliable than checking session
+        
+        console.log('👂 About to set up auth state listener...');
         authSubscription = supabase.auth.onAuthStateChange((event, session) => {
-          console.log('🔔 Auth state change:', event);
-          console.log('Session:', !!session);
+          console.log('🔔 AUTH STATE CHANGE EVENT:', event);
+          console.log('📦 Session exists?', !!session);
+          if (session) {
+            console.log('👤 User in session:', session.user?.email);
+          }
           
           if (event === 'SIGNED_IN' && session && mounted && !hasRedirected) {
-            console.log('✅ User signed in via OAuth!');
+            console.log('✅✅✅ SIGNED_IN EVENT DETECTED!');
             console.log('👤 User email:', session.user.email);
+            console.log('🔒 Mounted?', mounted);
+            console.log('🔓 hasRedirected?', hasRedirected);
             
             setHasRedirected(true);
             
-            // Get the stored redirect path or default to checkout
             const storedPath = localStorage.getItem('oauth-redirect-path');
             const redirectPath = storedPath || '/checkout?product=membership';
             
-            console.log('📍 Redirect path:', redirectPath);
+            console.log('📍 Stored path from localStorage:', storedPath);
+            console.log('📍 Final redirect path:', redirectPath);
             setDebugInfo('Success! Redirecting...');
             
             localStorage.removeItem('oauth-redirect-path');
             
-            // Small delay to ensure state is saved
             setTimeout(() => {
-              console.log('🚀 Navigating to:', redirectPath);
+              console.log('🚀🚀🚀 NAVIGATING TO:', redirectPath);
               navigate(redirectPath, { replace: true });
             }, 500);
+          } else {
+            console.log('⏸️ Not redirecting because:', {
+              isSignedInEvent: event === 'SIGNED_IN',
+              hasSession: !!session,
+              isMounted: mounted,
+              notYetRedirected: !hasRedirected
+            });
           }
         });
+        console.log('✅ Auth state listener set up');
 
-        // Also do an immediate check in case the session is already there
-        console.log('🔍 Checking for existing session...');
+        console.log('🔍 Now checking for EXISTING session...');
         const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('📊 getSession result - error?', !!error, 'session?', !!session);
         
         if (error) {
           console.error('❌❌❌ ERROR getting session:', error);
@@ -130,18 +144,24 @@ export default function AuthCallback() {
           }, 5000); // 5 second timeout
         }
       } catch (error) {
-        console.error('💥 Error in OAuth callback:', error);
+        console.error('💥💥💥 EXCEPTION in OAuth callback:', error);
+        console.error('Error stack:', error.stack);
         setDebugInfo('Error: ' + error.message);
-        setTimeout(() => navigate('/register', { replace: true }), 2000);
+        setTimeout(() => {
+          console.log('🔄 Redirecting to /register after exception');
+          navigate('/register', { replace: true });
+        }, 3000);
       }
     };
 
+    console.log('🏃 Calling handleCallback...');
     handleCallback();
 
-    // Cleanup
     return () => {
+      console.log('🧹 Cleanup - unmounting');
       mounted = false;
       if (authSubscription) {
+        console.log('🔕 Unsubscribing from auth listener');
         authSubscription.subscription?.unsubscribe();
       }
     };
