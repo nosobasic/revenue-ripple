@@ -13,6 +13,8 @@ export default function AuthCallback() {
   const [hasRedirected, setHasRedirected] = useState(false);
   const [debugInfo, setDebugInfo] = useState('Processing authentication...');
   const [debugLogs, setDebugLogs] = useState(['Component rendered at ' + new Date().toISOString()]);
+  const [showManualContinue, setShowManualContinue] = useState(false);
+  const [manualRedirectPath, setManualRedirectPath] = useState('/register');
   
   const addLog = (message) => {
     console.log(message);
@@ -77,10 +79,9 @@ export default function AuthCallback() {
         if (error) {
           addLog('❌ ERROR: ' + error.message);
           setDebugInfo('Error: ' + error.message);
-          setTimeout(() => {
-            addLog('🔄 Redirecting to /register (error)');
-            navigate('/register', { replace: true });
-          }, 3000);
+          setManualRedirectPath('/register');
+          setShowManualContinue(true);
+          addLog('⏸️ Auto-redirect disabled. Review logs above.');
           return;
         }
 
@@ -109,7 +110,7 @@ export default function AuthCallback() {
           // Fallback timeout if auth state change doesn't fire
           setTimeout(() => {
             if (!hasRedirected && mounted) {
-              addLog('⏰ TIMEOUT (5s) - Final check...');
+              addLog('⏰ TIMEOUT (10s) - Final check...');
               supabase.auth.getSession().then(({ data: { session: finalSession }, error: finalError }) => {
                 addLog('🔍 Final: session=' + !!finalSession + ' error=' + !!finalError);
                 if (finalSession && !hasRedirected) {
@@ -117,25 +118,27 @@ export default function AuthCallback() {
                   const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
                   localStorage.removeItem('oauth-redirect-path');
                   addLog('🚀 Final redirect: ' + redirectPath);
-                  navigate(redirectPath, { replace: true });
+                  setManualRedirectPath(redirectPath);
+                  setShowManualContinue(true);
                 } else {
                   addLog('❌ NO SESSION after timeout');
-                  setDebugInfo('Timeout - no session');
-                  navigate('/register', { replace: true });
+                  setDebugInfo('Timeout - no session detected');
+                  setManualRedirectPath('/register');
+                  setShowManualContinue(true);
+                  addLog('⏸️ Auto-redirect disabled. Review logs above.');
                 }
               });
             } else {
               addLog('⏰ Timeout but already handled');
             }
-          }, 5000);
+          }, 10000); // Increased to 10 seconds
         }
       } catch (error) {
         addLog('💥 EXCEPTION: ' + error.message);
         setDebugInfo('Error: ' + error.message);
-        setTimeout(() => {
-          addLog('🔄 Redirect to /register (exception)');
-          navigate('/register', { replace: true });
-        }, 3000);
+        setManualRedirectPath('/register');
+        setShowManualContinue(true);
+        addLog('⏸️ Auto-redirect disabled. Review logs above.');
       }
     };
 
@@ -150,6 +153,11 @@ export default function AuthCallback() {
       }
     };
   }, [navigate, hasRedirected, addLog]);
+  
+  const handleManualContinue = () => {
+    addLog('👆 Manual continue clicked, navigating to: ' + manualRedirectPath);
+    navigate(manualRedirectPath, { replace: true });
+  };
 
   return (
     <div style={{
@@ -195,11 +203,33 @@ export default function AuthCallback() {
           color: '#9ca3af', 
           fontSize: '0.875rem',
           fontFamily: 'monospace',
-          margin: '0 0 1.5rem 0',
+          margin: '0 0 1rem 0',
           fontWeight: '600'
         }}>
           {debugInfo}
         </p>
+        
+        {showManualContinue && (
+          <button
+            onClick={handleManualContinue}
+            style={{
+              background: '#2563eb',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '0.75rem 1.5rem',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              marginBottom: '1rem',
+              transition: 'background 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.background = '#1d4ed8'}
+            onMouseOut={(e) => e.target.style.background = '#2563eb'}
+          >
+            Continue to {manualRedirectPath === '/register' ? 'Register' : 'Checkout'}
+          </button>
+        )}
         
         {/* ON-SCREEN DEBUG LOGS */}
         <div style={{
