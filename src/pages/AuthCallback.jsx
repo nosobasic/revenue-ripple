@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 
+// This will run when the file loads
+alert('🟢 AuthCallback FILE LOADED');
 console.log('🟢 AuthCallback component file loaded');
 
 export default function AuthCallback() {
+  // This will run when the component renders
+  alert('🟡 COMPONENT RENDERING - URL: ' + window.location.href);
   console.log('🟡 AuthCallback component rendering');
   console.log('URL at render:', window.location.href);
   console.log('Hash at render:', window.location.hash);
@@ -13,9 +17,11 @@ export default function AuthCallback() {
   const [hasRedirected, setHasRedirected] = useState(false);
   const [debugInfo, setDebugInfo] = useState('Processing authentication...');
   
+  alert('🟠 STATE INITIALIZED');
   console.log('🟠 State initialized, hasRedirected:', hasRedirected);
 
   useEffect(() => {
+    alert('🔵 USE EFFECT RUNNING!');
     console.log('🔵 AuthCallback mounted');
     console.log('Current URL:', window.location.href);
     console.log('Hash:', window.location.hash);
