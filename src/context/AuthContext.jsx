@@ -13,9 +13,14 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
+    // Check if we're in the middle of OAuth callback
+    const isOAuthCallback = window.location.pathname === '/auth/callback' || 
+                            window.location.hash.includes('access_token');
+    
     const token = localStorage.getItem("revenue-ripple-auth-token");
 
-    if (!token) {
+    // Don't force signOut during OAuth flow - let Supabase handle it
+    if (!token && !isOAuthCallback) {
       supabase.auth.signOut().finally(() => {
         setUser(null);
         setSession(null);
