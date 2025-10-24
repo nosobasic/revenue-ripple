@@ -115,7 +115,7 @@ const Navbar = React.memo(() => {
             <>
               <Link to="/login" className="navbar-link" onClick={closeMobileMenu}>Member Sign In</Link>
               <Link to="/affiliate-login" className="navbar-link" onClick={closeMobileMenu}>Affiliates & Resellers</Link>
-              <Link to="/founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
+              <Link to="/register?redirect=founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
                 🚀 Founders Circle
               </Link>
             </>

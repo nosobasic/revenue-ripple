@@ -100,7 +100,7 @@ export default function Reseller() {
           <div style={{ marginBottom: '0.5rem', fontWeight: 500, color: '#0f766e' }}>
             Trusted by 1,000+ Resellers Earning Monthly
           </div>
-          <Link to="/reseller-checkout" className="cta-button" aria-label="Join the Reseller Program and Start Earning Now">
+          <Link to={user ? "/reseller-checkout" : "/register?redirect=reseller-checkout"} className="cta-button" aria-label="Join the Reseller Program and Start Earning Now">
             Claim Your Spot — Start Earning Today
           </Link>
           <div style={{marginTop: '0.75rem'}}>
@@ -177,7 +177,7 @@ export default function Reseller() {
                 🚀 Explore Revenue Ripple
               </Link>
               <Link 
-                to="/reseller-checkout" 
+                to={user ? "/reseller-checkout" : "/register?redirect=reseller-checkout"}
                 style={{
                   display: 'inline-block',
                   padding: '1rem 2rem',

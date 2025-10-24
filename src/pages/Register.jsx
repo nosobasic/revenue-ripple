@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../pages.css';
 import Navbar from '../components/Navbar';
@@ -15,6 +15,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { signup } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -36,8 +37,15 @@ export default function Register() {
     try {
       await signup(email, password, firstName, lastName,"member",null);
       // alert('Registration successful! Please check your email for verification.');
-      // navigate('/login');
-      navigate('/checkout?product=membership');
+      // Check if there's a redirect parameter
+      const redirectTo = searchParams.get('redirect');
+      if (redirectTo === 'founders-checkout') {
+        navigate('/founders-checkout');
+      } else if (redirectTo === 'reseller-checkout') {
+        navigate('/reseller-checkout');
+      } else {
+        navigate('/checkout?product=membership');
+      }
     } catch (error) {
       setError(error.message);
     } finally {

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
 import PayPalButton from '../components/PayPalButton';
 import { STRIPE_CONFIG, API_ENDPOINTS, logger } from '../config/constants';
+import { useAuth } from '../context/AuthContext';
 import './checkout.css';
 
 // Initialize Stripe
@@ -15,10 +16,19 @@ export default function Checkout() {
   const [clientSecret, setClientSecret] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const productParam = searchParams.get('product');
     setProduct(productParam);
+    
+    // DMD is a tripwire product - no authentication required
+    // For all other products, require authentication
+    if (productParam !== 'dmd' && !user) {
+      navigate('/register');
+      return;
+    }
     
     // Determine which endpoint to use based on product
     let endpoint = API_ENDPOINTS.PAYMENT_INTENT; // Default to membership
@@ -67,7 +77,7 @@ export default function Checkout() {
         setIsLoading(false);
         logger.error('Stripe error:', error);
       });
-  }, [searchParams]);
+  }, [searchParams, user, navigate]);
 
   const appearance = {
     theme: 'stripe',

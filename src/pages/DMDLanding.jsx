@@ -204,7 +204,7 @@ export default function DMDLanding() {
             </div>
           </div>
           <Link 
-            to="/checkout?product=dmd" 
+            to="/checkout?product=dmd"
             className="cta-button" 
             aria-label="Purchase Digital Marketing Domination ebook for $7"
             onClick={handlePurchaseClick}

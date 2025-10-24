@@ -122,18 +122,23 @@ const App = () => {
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
 
-        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
-        <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
+        
+        {/* Public landing pages for new customer acquisition */}
+        <Route path="/special" element={<Reseller />} />
+        <Route path="/DMD" element={<DMDLanding />} />
+        
+        {/* Protected checkout and success pages */}
+        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-success" element={<ProtectedRoute><ProResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
         <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
-        <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
         <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
-        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
         
         {/* Founders Annual Routes */}

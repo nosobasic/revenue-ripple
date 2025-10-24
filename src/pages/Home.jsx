@@ -554,7 +554,7 @@ export default function Home() {
           }}>
             {!user && (
               <Link 
-                to="/checkout" 
+                to="/register" 
                 className="cta-button"
                 style={{
                   background: '#2563eb',
@@ -719,7 +719,7 @@ export default function Home() {
                 </div>
               </div>
               <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <Link to="/checkout" className="cta-button">
+                <Link to={user ? "/checkout" : "/register"} className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
                   Start Your 30-Day Journey - $47/month
                 </Link>
@@ -822,7 +822,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta">Start This Path</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
             </div>
 
             {/* Scale Your Business Path */}
@@ -862,7 +862,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta">Start This Path</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
             </div>
 
             {/* Master AI Marketing Path */}
@@ -903,7 +903,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta featured">Start AI Mastery</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta featured">Start AI Mastery</Link>
             </div>
           </div>
 
@@ -957,7 +957,7 @@ export default function Home() {
 
           <div className="ai-cta-container">
             <Link 
-              to="/checkout" 
+              to={user ? "/checkout" : "/register"}
               className="cta-button"
               style={{
                 background: '#2563eb',
@@ -1241,7 +1241,7 @@ export default function Home() {
             Access Revenue Ripple Today.
           </p>
           <div className="no-free-trial-cta">
-            <Link to="/checkout" className="cta-button">
+            <Link to={user ? "/checkout" : "/register"} className="cta-button">
               Join Now for Only $47/month
             </Link>
           </div>
@@ -1263,7 +1263,7 @@ export default function Home() {
           </p>
         
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link to="/checkout" className="cta-button">
+            <Link to={user ? "/checkout" : "/register"} className="cta-button">
               Join Now for Only $47/month
             </Link>
           </div>
