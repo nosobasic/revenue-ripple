@@ -2,10 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 
+console.log('🟢 AuthCallback component file loaded');
+
 export default function AuthCallback() {
+  console.log('🟡 AuthCallback component rendering');
+  console.log('URL at render:', window.location.href);
+  console.log('Hash at render:', window.location.hash);
+  
   const navigate = useNavigate();
   const [hasRedirected, setHasRedirected] = useState(false);
   const [debugInfo, setDebugInfo] = useState('Processing authentication...');
+  
+  console.log('🟠 State initialized, hasRedirected:', hasRedirected);
 
   useEffect(() => {
     console.log('🔵 AuthCallback mounted');
