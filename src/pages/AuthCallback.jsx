@@ -2,13 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 
-// This will run when the file loads
-alert('🟢 AuthCallback FILE LOADED');
 console.log('🟢 AuthCallback component file loaded');
 
 export default function AuthCallback() {
-  // This will run when the component renders
-  alert('🟡 COMPONENT RENDERING - URL: ' + window.location.href);
   console.log('🟡 AuthCallback component rendering');
   console.log('URL at render:', window.location.href);
   console.log('Hash at render:', window.location.hash);
@@ -17,12 +13,10 @@ export default function AuthCallback() {
   const [hasRedirected, setHasRedirected] = useState(false);
   const [debugInfo, setDebugInfo] = useState('Processing authentication...');
   
-  alert('🟠 STATE INITIALIZED');
   console.log('🟠 State initialized, hasRedirected:', hasRedirected);
 
   useEffect(() => {
-    alert('🔵 USE EFFECT RUNNING!');
-    console.log('🔵 AuthCallback mounted');
+    console.log('🔵 AuthCallback mounted - useEffect START');
     console.log('Current URL:', window.location.href);
     console.log('Hash:', window.location.hash);
     
@@ -72,50 +66,66 @@ export default function AuthCallback() {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('❌ Error getting session:', error);
-          setDebugInfo('Authentication error');
-          setTimeout(() => navigate('/register', { replace: true }), 2000);
+          console.error('❌❌❌ ERROR getting session:', error);
+          console.error('Error details:', JSON.stringify(error, null, 2));
+          setDebugInfo('Authentication error: ' + error.message);
+          setTimeout(() => {
+            console.log('🔄 Redirecting to /register after error');
+            navigate('/register', { replace: true });
+          }, 3000);
           return;
         }
 
         if (session && mounted && !hasRedirected) {
-          console.log('✅ Session already exists!');
+          console.log('✅✅✅ SESSION ALREADY EXISTS!');
           console.log('👤 User email:', session.user.email);
+          console.log('🔐 Access token exists?', !!session.access_token);
           
           setHasRedirected(true);
           
           const storedPath = localStorage.getItem('oauth-redirect-path');
           const redirectPath = storedPath || '/checkout?product=membership';
           
+          console.log('📍 Stored path:', storedPath);
           console.log('📍 Redirect path:', redirectPath);
           setDebugInfo('Success! Redirecting...');
           
           localStorage.removeItem('oauth-redirect-path');
+          console.log('🗑️ Cleared oauth-redirect-path from localStorage');
           
           setTimeout(() => {
-            console.log('🚀 Navigating to:', redirectPath);
+            console.log('🚀🚀🚀 NAVIGATING TO:', redirectPath);
             navigate(redirectPath, { replace: true });
           }, 500);
         } else {
-          console.log('⏳ No session yet, waiting for auth state change...');
+          console.log('⏳ No session yet, will wait for auth state change');
+          console.log('   - session exists?', !!session);
+          console.log('   - mounted?', mounted);
+          console.log('   - hasRedirected?', hasRedirected);
           setDebugInfo('Waiting for authentication...');
           
           // Fallback timeout if auth state change doesn't fire
           setTimeout(() => {
             if (!hasRedirected && mounted) {
-              console.log('⏰ Timeout reached, checking one last time...');
-              supabase.auth.getSession().then(({ data: { session: finalSession } }) => {
+              console.log('⏰⏰⏰ 5 SECOND TIMEOUT REACHED - checking one last time...');
+              supabase.auth.getSession().then(({ data: { session: finalSession }, error: finalError }) => {
+                console.log('🔍 Final check result - session?', !!finalSession, 'error?', !!finalError);
                 if (finalSession && !hasRedirected) {
                   console.log('✅ Found session on final check!');
+                  console.log('👤 User:', finalSession.user?.email);
                   const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
                   localStorage.removeItem('oauth-redirect-path');
+                  console.log('🚀 Final redirect to:', redirectPath);
                   navigate(redirectPath, { replace: true });
                 } else {
-                  console.log('❌ No session after timeout, redirecting to register');
-                  setDebugInfo('Authentication timeout');
+                  console.log('❌❌❌ NO SESSION AFTER 5 SECOND TIMEOUT');
+                  console.log('Redirecting to /register');
+                  setDebugInfo('Authentication timeout - no session detected');
                   navigate('/register', { replace: true });
                 }
               });
+            } else {
+              console.log('⏰ Timeout reached but already redirected or unmounted');
             }
           }, 5000); // 5 second timeout
         }
