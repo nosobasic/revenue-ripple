@@ -229,7 +229,6 @@ const Dashboard = () => {
           { to: '/support', label: 'Support', icon: <FaUserTie /> }
         ]}
       />
-      <TestimonialCarousel />
       <AIAssistantWidget />
 
       {/* User Intent Welcome Message */}
@@ -1236,6 +1235,10 @@ const Dashboard = () => {
         </div>
       </div>
       )}
+      
+      {/* Testimonial Carousel at bottom */}
+      <TestimonialCarousel />
+      
       {showOnboarding && (
         <OnboardingModal
           onComplete={handleOnboardingComplete}
