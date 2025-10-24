@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import AuthCallback from './pages/AuthCallback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import DataDeletion from './pages/DataDeletion';
+import OAuthTest from './pages/OAuthTest';
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -125,6 +126,7 @@ const App = () => {
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/oauth-test" element={<OAuthTest />} />
         
         {/* Public legal pages */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />

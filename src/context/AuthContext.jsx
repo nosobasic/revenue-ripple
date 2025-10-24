@@ -309,13 +309,21 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
   try {
     setLoading(true);
     
+    console.log('🔵 Starting OAuth flow for:', provider);
+    console.log('📍 Origin:', window.location.origin);
+    console.log('📍 Redirect path to save:', redirectPath);
+    
     // Store redirect path in localStorage so we can use it after OAuth callback
     localStorage.setItem('oauth-redirect-path', redirectPath);
+    console.log('💾 Saved to localStorage:', localStorage.getItem('oauth-redirect-path'));
+    
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    console.log('🔗 OAuth redirectTo URL:', redirectUrl);
     
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: provider, // 'google', 'facebook', or 'apple'
+      provider: provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -323,10 +331,17 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
       }
     });
 
-    if (error) throw error;
+    console.log('OAuth response:', { data, error });
+    
+    if (error) {
+      console.error('❌ OAuth error:', error);
+      throw error;
+    }
+    
+    console.log('✅ OAuth initiated successfully');
     return data;
   } catch (error) {
-    console.error(`OAuth ${provider} error:`, error);
+    console.error(`💥 OAuth ${provider} error:`, error);
     throw error;
   } finally {
     setLoading(false);
