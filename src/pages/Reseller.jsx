@@ -103,8 +103,21 @@ export default function Reseller() {
           <Link to={user ? "/reseller-checkout" : "/register?redirect=reseller-checkout"} className="cta-button" aria-label="Join the Reseller Program and Start Earning Now">
             Claim Your Spot — Start Earning Today
           </Link>
-          <div style={{marginTop: '0.75rem'}}>
-            <img src="/assets/icons/paypal-trust-badge.png" alt="PayPal Trusted" style={{height: 32}} />
+          <div style={{marginTop: '0.75rem', textAlign: 'center'}}>
+            <a 
+              href="https://www.paypal.com/digital-wallet/ways-to-pay/add-payment-method" 
+              title="How PayPal Works" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.open('https://www.paypal.com/digital-wallet/ways-to-pay/add-payment-method', 'WIPaypal', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700');
+              }}
+            >
+              <img 
+                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" 
+                alt="PayPal Logo" 
+                style={{border: 0, height: 23}}
+              />
+            </a>
           </div>
         </div>
         <div className="container">
