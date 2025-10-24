@@ -12,160 +12,144 @@ export default function AuthCallback() {
   const navigate = useNavigate();
   const [hasRedirected, setHasRedirected] = useState(false);
   const [debugInfo, setDebugInfo] = useState('Processing authentication...');
+  const [debugLogs, setDebugLogs] = useState(['Component rendered at ' + new Date().toISOString()]);
+  
+  const addLog = (message) => {
+    console.log(message);
+    setDebugLogs(prev => [...prev, message]);
+  };
   
   console.log('🟠 State initialized, hasRedirected:', hasRedirected);
 
   useEffect(() => {
-    console.log('🔵 AuthCallback mounted - useEffect START');
-    console.log('Current URL:', window.location.href);
-    console.log('Hash:', window.location.hash);
+    addLog('🔵 useEffect START - ' + new Date().toISOString());
+    addLog('Current URL: ' + window.location.href);
+    addLog('Hash: ' + window.location.hash);
     
     let mounted = true;
     let authSubscription;
 
     const handleCallback = async () => {
-      console.log('▶️ handleCallback START');
+      addLog('▶️ handleCallback START');
       
       if (hasRedirected) {
-        console.log('⚠️ Already redirected, skipping');
+        addLog('⚠️ Already redirected, skipping');
         return;
       }
 
       try {
-        console.log('📝 Setting debugInfo to: Detecting OAuth session...');
         setDebugInfo('Detecting OAuth session...');
+        addLog('📝 Setting up auth listener...');
         
-        console.log('👂 About to set up auth state listener...');
         authSubscription = supabase.auth.onAuthStateChange((event, session) => {
-          console.log('🔔 AUTH STATE CHANGE EVENT:', event);
-          console.log('📦 Session exists?', !!session);
+          addLog('🔔 AUTH EVENT: ' + event + ' | Has session: ' + !!session);
           if (session) {
-            console.log('👤 User in session:', session.user?.email);
+            addLog('👤 User: ' + session.user?.email);
           }
           
           if (event === 'SIGNED_IN' && session && mounted && !hasRedirected) {
-            console.log('✅✅✅ SIGNED_IN EVENT DETECTED!');
-            console.log('👤 User email:', session.user.email);
-            console.log('🔒 Mounted?', mounted);
-            console.log('🔓 hasRedirected?', hasRedirected);
+            addLog('✅ SIGNED_IN detected! User: ' + session.user.email);
             
             setHasRedirected(true);
             
             const storedPath = localStorage.getItem('oauth-redirect-path');
             const redirectPath = storedPath || '/checkout?product=membership';
             
-            console.log('📍 Stored path from localStorage:', storedPath);
-            console.log('📍 Final redirect path:', redirectPath);
-            setDebugInfo('Success! Redirecting...');
+            addLog('📍 Redirect to: ' + redirectPath);
+            setDebugInfo('Success! Redirecting to ' + redirectPath);
             
             localStorage.removeItem('oauth-redirect-path');
             
             setTimeout(() => {
-              console.log('🚀🚀🚀 NAVIGATING TO:', redirectPath);
+              addLog('🚀 NAVIGATING NOW to: ' + redirectPath);
               navigate(redirectPath, { replace: true });
             }, 500);
           } else {
-            console.log('⏸️ Not redirecting because:', {
-              isSignedInEvent: event === 'SIGNED_IN',
-              hasSession: !!session,
-              isMounted: mounted,
-              notYetRedirected: !hasRedirected
-            });
+            addLog('⏸️ Not redirecting: event=' + event + ' session=' + !!session + ' mounted=' + mounted + ' hasRedirected=' + hasRedirected);
           }
         });
-        console.log('✅ Auth state listener set up');
+        addLog('✅ Listener set up');
 
-        console.log('🔍 Now checking for EXISTING session...');
+        addLog('🔍 Checking existing session...');
         const { data: { session }, error } = await supabase.auth.getSession();
-        console.log('📊 getSession result - error?', !!error, 'session?', !!session);
+        addLog('📊 getSession: error=' + !!error + ' session=' + !!session);
         
         if (error) {
-          console.error('❌❌❌ ERROR getting session:', error);
-          console.error('Error details:', JSON.stringify(error, null, 2));
-          setDebugInfo('Authentication error: ' + error.message);
+          addLog('❌ ERROR: ' + error.message);
+          setDebugInfo('Error: ' + error.message);
           setTimeout(() => {
-            console.log('🔄 Redirecting to /register after error');
+            addLog('🔄 Redirecting to /register (error)');
             navigate('/register', { replace: true });
           }, 3000);
           return;
         }
 
         if (session && mounted && !hasRedirected) {
-          console.log('✅✅✅ SESSION ALREADY EXISTS!');
-          console.log('👤 User email:', session.user.email);
-          console.log('🔐 Access token exists?', !!session.access_token);
+          addLog('✅ SESSION EXISTS! User: ' + session.user.email);
           
           setHasRedirected(true);
           
           const storedPath = localStorage.getItem('oauth-redirect-path');
           const redirectPath = storedPath || '/checkout?product=membership';
           
-          console.log('📍 Stored path:', storedPath);
-          console.log('📍 Redirect path:', redirectPath);
-          setDebugInfo('Success! Redirecting...');
+          addLog('📍 Redirect: ' + redirectPath);
+          setDebugInfo('Success! Redirecting to ' + redirectPath);
           
           localStorage.removeItem('oauth-redirect-path');
-          console.log('🗑️ Cleared oauth-redirect-path from localStorage');
           
           setTimeout(() => {
-            console.log('🚀🚀🚀 NAVIGATING TO:', redirectPath);
+            addLog('🚀 NAVIGATING to: ' + redirectPath);
             navigate(redirectPath, { replace: true });
           }, 500);
         } else {
-          console.log('⏳ No session yet, will wait for auth state change');
-          console.log('   - session exists?', !!session);
-          console.log('   - mounted?', mounted);
-          console.log('   - hasRedirected?', hasRedirected);
+          addLog('⏳ No session yet. Waiting for auth state change...');
+          addLog('   session=' + !!session + ' mounted=' + mounted + ' hasRedirected=' + hasRedirected);
           setDebugInfo('Waiting for authentication...');
           
           // Fallback timeout if auth state change doesn't fire
           setTimeout(() => {
             if (!hasRedirected && mounted) {
-              console.log('⏰⏰⏰ 5 SECOND TIMEOUT REACHED - checking one last time...');
+              addLog('⏰ TIMEOUT (5s) - Final check...');
               supabase.auth.getSession().then(({ data: { session: finalSession }, error: finalError }) => {
-                console.log('🔍 Final check result - session?', !!finalSession, 'error?', !!finalError);
+                addLog('🔍 Final: session=' + !!finalSession + ' error=' + !!finalError);
                 if (finalSession && !hasRedirected) {
-                  console.log('✅ Found session on final check!');
-                  console.log('👤 User:', finalSession.user?.email);
+                  addLog('✅ Session found! User: ' + finalSession.user?.email);
                   const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
                   localStorage.removeItem('oauth-redirect-path');
-                  console.log('🚀 Final redirect to:', redirectPath);
+                  addLog('🚀 Final redirect: ' + redirectPath);
                   navigate(redirectPath, { replace: true });
                 } else {
-                  console.log('❌❌❌ NO SESSION AFTER 5 SECOND TIMEOUT');
-                  console.log('Redirecting to /register');
-                  setDebugInfo('Authentication timeout - no session detected');
+                  addLog('❌ NO SESSION after timeout');
+                  setDebugInfo('Timeout - no session');
                   navigate('/register', { replace: true });
                 }
               });
             } else {
-              console.log('⏰ Timeout reached but already redirected or unmounted');
+              addLog('⏰ Timeout but already handled');
             }
-          }, 5000); // 5 second timeout
+          }, 5000);
         }
       } catch (error) {
-        console.error('💥💥💥 EXCEPTION in OAuth callback:', error);
-        console.error('Error stack:', error.stack);
+        addLog('💥 EXCEPTION: ' + error.message);
         setDebugInfo('Error: ' + error.message);
         setTimeout(() => {
-          console.log('🔄 Redirecting to /register after exception');
+          addLog('🔄 Redirect to /register (exception)');
           navigate('/register', { replace: true });
         }, 3000);
       }
     };
 
-    console.log('🏃 Calling handleCallback...');
+    addLog('🏃 Calling handleCallback...');
     handleCallback();
 
     return () => {
-      console.log('🧹 Cleanup - unmounting');
+      addLog('🧹 Cleanup/unmount');
       mounted = false;
       if (authSubscription) {
-        console.log('🔕 Unsubscribing from auth listener');
         authSubscription.subscription?.unsubscribe();
       }
     };
-  }, [navigate, hasRedirected]);
+  }, [navigate, hasRedirected, addLog]);
 
   return (
     <div style={{
@@ -211,10 +195,44 @@ export default function AuthCallback() {
           color: '#9ca3af', 
           fontSize: '0.875rem',
           fontFamily: 'monospace',
-          margin: 0
+          margin: '0 0 1.5rem 0',
+          fontWeight: '600'
         }}>
           {debugInfo}
         </p>
+        
+        {/* ON-SCREEN DEBUG LOGS */}
+        <div style={{
+          maxHeight: '300px',
+          overflowY: 'auto',
+          background: '#f9fafb',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          padding: '1rem',
+          textAlign: 'left'
+        }}>
+          <h3 style={{ 
+            fontSize: '0.75rem', 
+            color: '#6b7280', 
+            margin: '0 0 0.5rem 0',
+            textTransform: 'uppercase',
+            fontWeight: '600'
+          }}>
+            Debug Log:
+          </h3>
+          {debugLogs.map((log, i) => (
+            <div key={i} style={{
+              fontSize: '0.75rem',
+              fontFamily: 'monospace',
+              color: '#374151',
+              marginBottom: '0.25rem',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word'
+            }}>
+              {log}
+            </div>
+          ))}
+        </div>
       </div>
       <style>{`
         @keyframes spin {
