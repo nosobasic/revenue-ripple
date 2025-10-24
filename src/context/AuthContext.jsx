@@ -58,12 +58,46 @@ export function AuthProvider({ children }) {
         .eq("id", authUser.id)
         .single();
 
-      if (error) {
-        console.error("Error fetching user data:", error);
-        // If user doesn't exist in users table, create basic user object
+      if (error && error.code === 'PGRST116') {
+        // User doesn't exist in users table - create one (common with OAuth signups)
+        console.log("Creating user record for OAuth user:", authUser.id);
+        
+        const newUser = {
+          id: authUser.id,
+          email: authUser.email,
+          name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email.split('@')[0],
+          role: 'member',
+          status: 'active',
+          created_at: new Date().toISOString(),
+          phone: authUser.user_metadata?.phone || '',
+          company: '',
+          bio: '',
+          plan: '',
+          paypal_email: null,
+          has_paid: false,
+          payment_status: 'pending'
+        };
+
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([newUser]);
+
+        if (insertError) {
+          console.error("Error creating user record:", insertError);
+        }
+
         setUser({
           ...authUser,
-          role: 'member', // default role
+          ...newUser,
+        });
+        return;
+      }
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        setUser({
+          ...authUser,
+          role: 'member',
           status: 'active',
           has_paid: false,
           payment_status: 'pending'
@@ -271,6 +305,34 @@ async function resetPassword(email) {
   }
 }
 
+async function signInWithOAuth(provider, redirectPath = '/checkout?product=membership') {
+  try {
+    setLoading(true);
+    
+    // Store redirect path in localStorage so we can use it after OAuth callback
+    localStorage.setItem('oauth-redirect-path', redirectPath);
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: provider, // 'google', 'facebook', or 'apple'
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error(`OAuth ${provider} error:`, error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   // Function to refresh user data from database
   const refreshUserData = async () => {
@@ -289,6 +351,7 @@ async function resetPassword(email) {
     updateUserProfile,
     resetPassword,
     refreshUserData,
+    signInWithOAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -2164,3 +2164,93 @@ button:hover {
     padding: 1rem;
   }
 }
+/* Social Login Styles */
+.social-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  gap: 1rem;
+}
+
+.social-divider-line {
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.social-divider-text {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.social-auth-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.social-auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 0;
+}
+
+.social-auth-button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.social-auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.social-auth-button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.social-auth-button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments for social buttons */
+@media (max-width: 768px) {
+  .social-auth-buttons {
+    flex-direction: column;
+  }
+  
+  .social-auth-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .social-auth-button span {
+    display: none;
+  }
+  
+  .social-auth-button {
+    padding: 0.75rem;
+    justify-content: center;
+  }
+}
