@@ -57,15 +57,13 @@ export default function AuthCallback() {
             const storedPath = localStorage.getItem('oauth-redirect-path');
             const redirectPath = storedPath || '/checkout?product=membership';
             
-            addLog('📍 Redirect to: ' + redirectPath);
-            setDebugInfo('Success! Redirecting to ' + redirectPath);
+            addLog('📍 Will redirect to: ' + redirectPath);
+            setDebugInfo('Success! Ready to redirect to ' + redirectPath);
+            setManualRedirectPath(redirectPath);
+            setShowManualContinue(true);
             
             localStorage.removeItem('oauth-redirect-path');
-            
-            setTimeout(() => {
-              addLog('🚀 NAVIGATING NOW to: ' + redirectPath);
-              navigate(redirectPath, { replace: true });
-            }, 500);
+            addLog('⏸️ Auto-redirect disabled. Click button to continue.');
           } else {
             addLog('⏸️ Not redirecting: event=' + event + ' session=' + !!session + ' mounted=' + mounted + ' hasRedirected=' + hasRedirected);
           }
@@ -93,15 +91,13 @@ export default function AuthCallback() {
           const storedPath = localStorage.getItem('oauth-redirect-path');
           const redirectPath = storedPath || '/checkout?product=membership';
           
-          addLog('📍 Redirect: ' + redirectPath);
-          setDebugInfo('Success! Redirecting to ' + redirectPath);
+          addLog('📍 Will redirect to: ' + redirectPath);
+          setDebugInfo('Success! Ready to redirect to ' + redirectPath);
+          setManualRedirectPath(redirectPath);
+          setShowManualContinue(true);
           
           localStorage.removeItem('oauth-redirect-path');
-          
-          setTimeout(() => {
-            addLog('🚀 NAVIGATING to: ' + redirectPath);
-            navigate(redirectPath, { replace: true });
-          }, 500);
+          addLog('⏸️ Auto-redirect disabled. Click button to continue.');
         } else {
           addLog('⏳ No session yet. Waiting for auth state change...');
           addLog('   session=' + !!session + ' mounted=' + mounted + ' hasRedirected=' + hasRedirected);
