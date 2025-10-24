@@ -8,6 +8,7 @@ export default function AuthCallback() {
   console.log('🟡 AuthCallback component rendering');
   console.log('URL at render:', window.location.href);
   console.log('Hash at render:', window.location.hash);
+  console.log('🚨🚨🚨 AUTO-REDIRECT IS DISABLED - MANUAL BUTTON ONLY 🚨🚨🚨');
   
   const navigate = useNavigate();
   const [hasRedirected, setHasRedirected] = useState(false);
@@ -15,11 +16,21 @@ export default function AuthCallback() {
   const [debugLogs, setDebugLogs] = useState(['Component rendered at ' + new Date().toISOString()]);
   const [showManualContinue, setShowManualContinue] = useState(false);
   const [manualRedirectPath, setManualRedirectPath] = useState('/register');
+  const [buttonClickAllowed, setButtonClickAllowed] = useState(false);
   
   const addLog = (message) => {
     console.log(message);
     setDebugLogs(prev => [...prev, message]);
   };
+  
+  // Enable button after 2 seconds to ensure user sees logs
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setButtonClickAllowed(true);
+      addLog('✅ Manual navigation button enabled');
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
   
   console.log('🟠 State initialized, hasRedirected:', hasRedirected);
 
@@ -148,10 +159,16 @@ export default function AuthCallback() {
         authSubscription.subscription?.unsubscribe();
       }
     };
-  }, [navigate, hasRedirected, addLog]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, hasRedirected]); // addLog is stable since it only uses setState
   
   const handleManualContinue = () => {
+    if (!buttonClickAllowed) {
+      addLog('⚠️ Button clicked too soon, waiting...');
+      return;
+    }
     addLog('👆 Manual continue clicked, navigating to: ' + manualRedirectPath);
+    console.log('🚀 MANUAL NAVIGATION INITIATED TO:', manualRedirectPath);
     navigate(manualRedirectPath, { replace: true });
   };
 
@@ -159,17 +176,36 @@ export default function AuthCallback() {
     <div style={{
       minHeight: '100vh',
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     }}>
+      {/* VISIBLE DEBUG BANNER */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        background: '#ff0000',
+        color: 'white',
+        padding: '10px',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '14px',
+        zIndex: 9999
+      }}>
+        🔴 DEBUG MODE: AUTO-REDIRECT DISABLED - v{Date.now()} 🔴
+      </div>
+      
       <div style={{ 
         textAlign: 'center',
         background: 'white',
         padding: '3rem 2rem',
         borderRadius: '16px',
         boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-        maxWidth: '400px'
+        maxWidth: '400px',
+        marginTop: '60px'
       }}>
         <div style={{
           width: '60px',
@@ -208,22 +244,30 @@ export default function AuthCallback() {
         {showManualContinue && (
           <button
             onClick={handleManualContinue}
+            disabled={!buttonClickAllowed}
             style={{
-              background: '#2563eb',
+              background: buttonClickAllowed ? '#2563eb' : '#9ca3af',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
               padding: '0.75rem 1.5rem',
               fontSize: '0.875rem',
               fontWeight: '600',
-              cursor: 'pointer',
+              cursor: buttonClickAllowed ? 'pointer' : 'not-allowed',
               marginBottom: '1rem',
-              transition: 'background 0.2s'
+              transition: 'background 0.2s',
+              opacity: buttonClickAllowed ? 1 : 0.6
             }}
-            onMouseOver={(e) => e.target.style.background = '#1d4ed8'}
-            onMouseOut={(e) => e.target.style.background = '#2563eb'}
+            onMouseOver={(e) => {
+              if (buttonClickAllowed) e.target.style.background = '#1d4ed8';
+            }}
+            onMouseOut={(e) => {
+              if (buttonClickAllowed) e.target.style.background = '#2563eb';
+            }}
           >
-            Continue to {manualRedirectPath === '/register' ? 'Register' : 'Checkout'}
+            {buttonClickAllowed 
+              ? `Continue to ${manualRedirectPath === '/register' ? 'Register' : 'Checkout'}`
+              : 'Please wait... (reading logs)'}
           </button>
         )}
         
