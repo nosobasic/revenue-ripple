@@ -151,8 +151,8 @@ const App = () => {
         <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
         
-        {/* Founders Annual Routes */}
-        <Route path="/founders-checkout" element={<ProtectedRoute><FoundersAnnualCheckout /></ProtectedRoute>} />
+        {/* Founders Annual Routes - Landing page is public */}
+        <Route path="/founders-checkout" element={<FoundersAnnualCheckout />} />
         <Route path="/founders-success" element={<ProtectedRoute><FoundersSuccess /></ProtectedRoute>} />
 
         {/* Command Center Routes */}
