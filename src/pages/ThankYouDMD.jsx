@@ -12,6 +12,33 @@ const ThankYouDMD = () => {
     }
   }, []);
 
+  const testimonials = [
+    {
+      name: "Matthew Mckinley",
+      role: "Business Owner",
+      quote: "My guy Donte made a my work flow that perfectly handles my YouTube video summary automation",
+      avatar: "https://i.pravatar.cc/100?img=11"
+    },
+    {
+      name: "Dorian Morgan",
+      role: "Entrepreneur",
+      quote: "I've been learning so much about marketing and leads on revenue ripple, I seriously can't thank you enough! Applying the knowledge ive gained from the site, I've been able to generate and convert way more leads for my business 💪🔥",
+      avatar: "https://i.pravatar.cc/100?img=32"
+    },
+    {
+      name: "Alex R.",
+      role: "Agency Owner",
+      quote: "Applied the first lesson and closed 3 clients in 10 days.",
+      avatar: "https://i.pravatar.cc/100?img=23"
+    }
+  ];
+
+  const hjEvent = (name) => {
+    if (typeof window !== "undefined" && window.hj) {
+      window.hj("event", name);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-12">
@@ -33,6 +60,24 @@ const ThankYouDMD = () => {
           <p className="text-xl text-gray-600 mb-8">
             You're now signed up for your <strong>Digital Marketing Domination</strong> lessons!
           </p>
+
+          {/* Founder Welcome Video */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8 text-left">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Quick welcome from Donte</h2>
+            <p className="text-gray-600 mb-4">
+              Here is how to get the most value from your lessons and the next step when you are ready.
+            </p>
+            <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingTop: "56.25%" }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://player.vimeo.com/video/1130948032?title=0&byline=0&portrait=0"
+                title="Welcome"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
 
           {/* Lesson Schedule Info */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white mb-6">
@@ -93,15 +138,18 @@ const ThankYouDMD = () => {
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white mb-6">
             <h3 className="text-2xl font-bold mb-4">⏰ Can't Wait for the Lessons?</h3>
             <p className="text-lg mb-6 opacity-90">
-              Get instant access to the complete Digital Marketing Domination ebook right now! 
-              Don't wait a year - start implementing all 26 strategies today.
+              Get instant access to the complete Digital Marketing Domination ebook right now. 
+              Skip the schedule and implement all 26 strategies today.
             </p>
             <Link 
               to="/dlds/dmd" 
+              onClick={() => hjEvent("dmd_get_full_ebook_click")}
               className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
               📖 Get Full Ebook Now - $7
             </Link>
+            <p className="mt-3 text-sm opacity-90">Bonus: walkthrough video and 3 plug-and-play templates.</p>
+            <p className="text-sm opacity-80">7-day refund, no questions asked.</p>
           </div>
 
           {/* Revenue Ripple CTA Section */}
@@ -114,16 +162,37 @@ const ThankYouDMD = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/" 
+                onClick={() => hjEvent("dmd_explore_revenue_ripple_click")}
                 className="inline-block bg-white text-blue-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
               >
                 🚀 Explore Revenue Ripple
               </Link>
               <Link 
                 to="/reseller" 
+                onClick={() => hjEvent("dmd_join_reseller_click")}
                 className="inline-block bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition-colors"
               >
                 💰 Join Reseller Program
               </Link>
+            </div>
+          </div>
+
+          {/* Social Proof / Testimonials */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 text-left">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Real people, real momentum</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {testimonials.map((t, idx) => (
+                <div key={idx} className="border border-gray-100 rounded-xl p-5">
+                  <div className="flex items-center mb-3">
+                    <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full mr-3" />
+                    <div>
+                      <p className="font-semibold text-gray-900">{t.name}</p>
+                      <p className="text-sm text-gray-500">{t.role}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">&ldquo;{t.quote}&rdquo;</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -134,7 +203,8 @@ const ThankYouDMD = () => {
             </p>
             <div className="flex justify-center space-x-4">
               <a 
-                href="mailto:support@revenueripple.org?subject=Support Request - Digital Marketing Domination&body=Hi Support Team,%0D%0A%0D%0AI need help with my Digital Marketing Domination lessons.%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!"
+                onClick={() => hjEvent("dmd_support_click")}
+                href="mailto:support@revenueripple.org?subject=Support Request - Digital Marketing Domination&amp;body=Hi Support Team,%0D%0A%0D%0AI need help with my Digital Marketing Domination lessons.%0D%0A%0D%0APlease provide details about your issue below:%0D%0A%0D%0A%0D%0A%0D%0AThanks!"
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Get Support
