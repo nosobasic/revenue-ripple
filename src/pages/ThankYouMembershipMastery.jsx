@@ -152,11 +152,11 @@ const ThankYouMembershipMastery = () => {
               Let us build your membership funnel while you focus on your content.
             </p>
             <Link 
-              to="/reseller" 
+              to="/dfy-funnel-consultation" 
               onClick={() => hjEvent("membership_mastery_dfy_consult_click")}
               className="inline-block bg-white text-green-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              💼 DFY Funnel Consult - $27
+              💼 DFY Funnel Consult - $197
             </Link>
             <p className="mt-3 text-sm opacity-90">Includes custom funnel design and setup.</p>
             <p className="text-sm opacity-80">7-day refund, no questions asked.</p>

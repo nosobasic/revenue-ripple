@@ -53,6 +53,7 @@ const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
 const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
 const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
 const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
+const DFYFunnelConsultation = lazy(() => import('./pages/DFYFunnelConsultation'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -140,6 +141,7 @@ const App = () => {
         {/* Public landing pages for new customer acquisition */}
         <Route path="/special" element={<Reseller />} />
         <Route path="/DMD" element={<DMDLanding />} />
+        <Route path="/dfy-funnel-consultation" element={<DFYFunnelConsultation />} />
         
         {/* Protected checkout and success pages */}
         <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
