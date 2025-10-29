@@ -142,7 +142,7 @@ const ThankYouDMD = () => {
               Skip the schedule and implement all 26 strategies today.
             </p>
             <Link 
-              to="/dlds/dmd" 
+              to="/checkout?product=dmd" 
               onClick={() => hjEvent("dmd_get_full_ebook_click")}
               className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
             >
