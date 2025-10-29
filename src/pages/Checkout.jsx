@@ -17,6 +17,7 @@ export default function Checkout() {
   const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [checkoutError, setCheckoutError] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -77,6 +78,7 @@ export default function Checkout() {
           // For DMD and membership, redirect to Stripe checkout session
           if (data.url) {
             window.location.href = data.url;
+            return; // Exit early - redirecting away
           } else {
             throw new Error(data.error || 'No checkout URL received');
           }
@@ -88,21 +90,42 @@ export default function Checkout() {
       } catch (error) {
         console.error(`Checkout API attempt ${attempt + 1} failed:`, error);
         
-        // Retry if we haven't exceeded max retries
-        if (attempt < maxRetries) {
-          const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
-          console.log(`Retrying in ${delay}ms...`);
-          setRetryCount(attempt + 1);
-          
-          setTimeout(() => {
-            attemptFetch(attempt + 1);
-          }, delay);
+        // For dmd and membership products, we MUST use Stripe Checkout Session - never show PayPal fallback
+        if (productParam === 'dmd' || productParam === 'membership') {
+          // Retry if we haven't exceeded max retries
+          if (attempt < maxRetries) {
+            const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
+            console.log(`Retrying in ${delay}ms...`);
+            setRetryCount(attempt + 1);
+            
+            setTimeout(() => {
+              attemptFetch(attempt + 1);
+            }, delay);
+          } else {
+            // All retries failed - show error, NEVER show PayPal fallback
+            setIsLoading(false);
+            setCheckoutError('Unable to connect to payment processor. Please refresh the page and try again.');
+            logger.error('All checkout attempts failed:', error);
+            console.error('Failed to create checkout session after', maxRetries, 'attempts');
+          }
         } else {
-          // All retries failed
-          setClientSecret(null);
-          setIsLoading(false);
-          logger.error('All checkout attempts failed:', error);
-          console.error('Failed to create checkout session after', maxRetries, 'attempts');
+          // For other products (payment intent), can show PayPal fallback
+          // Retry if we haven't exceeded max retries
+          if (attempt < maxRetries) {
+            const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s
+            console.log(`Retrying in ${delay}ms...`);
+            setRetryCount(attempt + 1);
+            
+            setTimeout(() => {
+              attemptFetch(attempt + 1);
+            }, delay);
+          } else {
+            // All retries failed - show PayPal fallback for non-session products
+            setClientSecret(null);
+            setIsLoading(false);
+            logger.error('All checkout attempts failed:', error);
+            console.error('Failed to create checkout session after', maxRetries, 'attempts');
+          }
         }
       }
     };
@@ -158,11 +181,40 @@ export default function Checkout() {
               </div>
             )}
           </div>
+        ) : checkoutError ? (
+          // Error state for dmd/membership products (Stripe Checkout Session required)
+          <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+            <div style={{ marginBottom: '1.5rem', color: '#dc2626', fontWeight: 600 }}>
+              {checkoutError}
+            </div>
+            <button
+              onClick={() => {
+                setCheckoutError(null);
+                setIsLoading(true);
+                setRetryCount(0);
+                window.location.reload();
+              }}
+              className="cta-button"
+              style={{
+                background: 'linear-gradient(90deg, #2563eb 0%, #4f46e5 100%)',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: '600',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              Retry Payment
+            </button>
+          </div>
         ) : clientSecret ? (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
         ) : (
+          // PayPal fallback ONLY for non-session products (payment intent)
           <div style={{ margin: '2rem 0', textAlign: 'center' }}>
             <div style={{ marginBottom: '1.5rem', color: '#2563eb', fontWeight: 600 }}>
               Stripe checkout is temporarily unavailable. Please use PayPal below.
