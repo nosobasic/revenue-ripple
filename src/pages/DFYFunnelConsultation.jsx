@@ -73,14 +73,14 @@ const DFYFunnelConsultation = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">Why This Works</h2>
             <div className="relative w-full rounded-xl overflow-hidden mb-6" style={{ paddingTop: "56.25%" }}>
-              <div className="absolute top-0 left-0 w-full h-full bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                  <p className="text-gray-500">Quick intro video coming soon</p>
-                </div>
-              </div>
+              <iframe
+                src="https://player.vimeo.com/video/1131714866?title=0&byline=0&portrait=0&badge=0&autopause=0"
+                className="absolute top-0 left-0 w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                allowFullScreen
+                title="Why This Works"
+              />
             </div>
             <p className="text-gray-600 text-center">
               See how I've helped entrepreneurs build profitable funnels that convert visitors into customers
