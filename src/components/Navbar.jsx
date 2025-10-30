@@ -150,12 +150,7 @@ const Navbar = React.memo(() => {
                 )}
               </div>
 
-              {/* Founders CTA - Only show if not already a founder */}
-              {!user?.is_founder && (
-                <Link to="/founders-checkout" className="founders-cta-btn" onClick={closeMobileMenu}>
-                  🚀 Join Founders Circle
-                </Link>
-              )}
+              {/* Founders CTA moved out of navbar for signed-in users */}
               
               {/* Profile Link */}
               <Link to="/profile" className="navbar-link" onClick={closeMobileMenu}>
@@ -260,12 +255,7 @@ const Navbar = React.memo(() => {
 
                   <div className="mobile-menu-divider"></div>
                   
-                  {/* Founders CTA - Mobile */}
-                  {!user?.is_founder && (
-                    <Link to="/founders-checkout" className="mobile-founders-cta" onClick={closeMobileMenu}>
-                      🚀 Join Founders Circle
-                    </Link>
-                  )}
+                  {/* Founders CTA moved out of navbar for signed-in users (mobile) */}
                   
                   <Link to="/profile" className="mobile-nav-link" onClick={closeMobileMenu}>
                     <FaUser className="mobile-nav-icon" />

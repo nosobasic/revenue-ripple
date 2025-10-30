@@ -11,6 +11,13 @@ const ThankYouMembershipMastery = () => {
       setSubmissionData(JSON.parse(data));
     }
 
+    // Always start at top so users read instructions in order
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
     // Track thank you page view with Meta Pixel
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', 'PageView', {

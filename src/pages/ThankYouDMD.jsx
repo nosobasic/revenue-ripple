@@ -11,6 +11,13 @@ const ThankYouDMD = () => {
     if (data) {
       setSubmissionData(JSON.parse(data));
     }
+    // Always start at top so users read instructions in order
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      // Fallback for some browsers
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
   }, []);
 
   const testimonials = [
