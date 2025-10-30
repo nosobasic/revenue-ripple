@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import GuaranteeBlock from '../components/GuaranteeBlock';
+import TrustBadges from '../components/TrustBadges';
+import FAQAccordion from '../components/FAQAccordion';
 
 const ThankYouMembershipMastery = () => {
   const [submissionData, setSubmissionData] = useState(null);
@@ -167,6 +170,12 @@ const ThankYouMembershipMastery = () => {
             </Link>
             <p className="mt-3 text-sm opacity-90">Includes custom funnel design and setup.</p>
             <p className="text-sm opacity-80">7-day refund, no questions asked.</p>
+            <div className="mt-4 bg-white/10 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 text-gray-800">
+                <TrustBadges />
+                <GuaranteeBlock title="7-Day Money-Back Guarantee" points={["No questions asked refund within 7 days","Fast support from our team","Keep your downloaded materials"]} />
+              </div>
+            </div>
           </div>
 
           {/* Revenue Ripple CTA Section */}
@@ -192,6 +201,13 @@ const ThankYouMembershipMastery = () => {
                 💰 Join Reseller Program
               </Link>
             </div>
+            <FAQAccordion
+              faqs={[
+                { q: 'How do I access the guide?', a: 'Your download link appears on this page and is also sent to your email.' },
+                { q: 'Can I get help implementing?', a: 'Yes—our support team and community are available, and coaching is optional.' },
+                { q: 'Do you offer refunds?', a: 'Yes, there is a 7-day money-back guarantee for this product.' }
+              ]}
+            />
           </div>
 
           {/* Social Proof / Testimonials */}

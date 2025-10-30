@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import StickyCTA from '../components/StickyCTA';
+import GuaranteeBlock from '../components/GuaranteeBlock';
+import TrustBadges from '../components/TrustBadges';
+import FAQAccordion from '../components/FAQAccordion';
+import OfferComparison from '../components/OfferComparison';
 import ReferralTracker from '../components/ReferralTracker.js';
 import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook, FaQuoteLeft, FaRobot, FaBrain, FaCode } from 'react-icons/fa';
 import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
@@ -543,15 +548,7 @@ export default function Home() {
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
           
-          <div style={{ 
-            marginTop: isMobile ? '1rem' : '2rem', 
-            display: 'flex', 
-            gap: '1rem', 
-            justifyContent: 'center',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: 'center',
-            padding: isMobile ? '0 2rem' : '0'
-          }}>
+          <div className={`mt-${isMobile ? '4' : '8'} flex gap-4 justify-center ${isMobile ? 'flex-col px-8' : 'flex-row'}`}>
             {!user && (
               <Link 
                 to="/register" 
@@ -576,6 +573,10 @@ export default function Home() {
                 <FaRocket /> Begin Checkout - $47/month
               </Link>
             )}
+          </div>
+          <div className="max-w-xl mx-auto">
+            <GuaranteeBlock />
+            <TrustBadges />
           </div>
         </div>
       </motion.section>
@@ -718,11 +719,12 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+              <div className="text-center mt-8">
                 <Link to={user ? "/checkout" : "/register"} className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
                   Start Your 30-Day Journey - $47/month
                 </Link>
+                <div className="max-w-xl mx-auto"><GuaranteeBlock /><TrustBadges /></div>
               </div>
             </div>
             <div className="content-image">
@@ -914,6 +916,7 @@ export default function Home() {
               <p className="total-value">Total Value: <span className="strikethrough">$2,758</span></p>
               <p className="membership-price">Your Price: <span className="highlight">$47/month</span></p>
             </div>
+            <OfferComparison />
           </div>
         </div>
       </motion.section>

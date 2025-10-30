@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/constants';
+import GuaranteeBlock from '../components/GuaranteeBlock';
+import TrustBadges from '../components/TrustBadges';
+import FAQAccordion from '../components/FAQAccordion';
 
 const ThankYouDMD = () => {
   const [submissionData, setSubmissionData] = useState(null);
@@ -190,6 +193,12 @@ const ThankYouDMD = () => {
             </button>
             <p className="mt-3 text-sm opacity-90">Bonus: walkthrough video and 3 plug-and-play templates.</p>
             <p className="text-sm opacity-80">7-day refund, no questions asked.</p>
+            <div className="mt-4 bg-white/10 rounded-lg p-4">
+              <div className="bg-white rounded-lg p-4 text-gray-800">
+                <TrustBadges />
+                <GuaranteeBlock title="7-Day Money-Back Guarantee" points={["No questions asked refund within 7 days","Instant revocation of access upon refund","Keep your downloaded materials"]} />
+              </div>
+            </div>
           </div>
 
           {/* Revenue Ripple CTA Section */}
@@ -258,6 +267,13 @@ const ThankYouDMD = () => {
               </Link>
             </div>
           </div>
+          <FAQAccordion
+            faqs={[
+              { q: 'Do I get the ebook instantly?', a: 'Yes, the Stripe checkout redirects you immediately to the ebook access page.' },
+              { q: 'Is there support if I get stuck?', a: 'You can email support and join the community for help implementing the strategies.' },
+              { q: 'What if the ebook isn’t for me?', a: 'We offer a 7-day money-back guarantee. Just contact support for a full refund.' }
+            ]}
+          />
         </div>
       </div>
     </div>
