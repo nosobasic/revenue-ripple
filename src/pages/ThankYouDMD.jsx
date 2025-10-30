@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/constants';
 
 const ThankYouDMD = () => {
   const [submissionData, setSubmissionData] = useState(null);
@@ -36,6 +37,38 @@ const ThankYouDMD = () => {
   const hjEvent = (name) => {
     if (typeof window !== "undefined" && window.hj) {
       window.hj("event", name);
+    }
+  };
+
+  const [startingCheckout, setStartingCheckout] = useState(false);
+
+  const startDmdCheckout = async () => {
+    try {
+      setStartingCheckout(true);
+      hjEvent("dmd_get_full_ebook_click");
+
+      const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.TRIPWIRE_SESSION}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          referrer_username: localStorage.getItem('ref_id') || 'none'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'No checkout URL received');
+      }
+    } catch (err) {
+      console.error('Failed to start DMD checkout:', err);
+      alert('Unable to start checkout right now. Please refresh and try again.');
+      setStartingCheckout(false);
     }
   };
 
@@ -141,13 +174,13 @@ const ThankYouDMD = () => {
               Get instant access to the complete Digital Marketing Domination ebook right now. 
               Skip the schedule and implement all 26 strategies today.
             </p>
-            <Link 
-              to="/checkout?product=dmd" 
-              onClick={() => hjEvent("dmd_get_full_ebook_click")}
-              className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors"
+            <button
+              onClick={startDmdCheckout}
+              disabled={startingCheckout}
+              className="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-75"
             >
-              📖 Get Full Ebook Now - $7
-            </Link>
+              {startingCheckout ? 'Starting checkout…' : '📖 Get Full Ebook Now - $7'}
+            </button>
             <p className="mt-3 text-sm opacity-90">Bonus: walkthrough video and 3 plug-and-play templates.</p>
             <p className="text-sm opacity-80">7-day refund, no questions asked.</p>
           </div>

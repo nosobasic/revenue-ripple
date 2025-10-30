@@ -1219,6 +1219,103 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* Community Section */}
+      <motion.section 
+        className="community-section"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="container">
+          <div className="community-header">
+            <h2 className="section-title">Join Our Thriving Community</h2>
+            <p className="community-subtitle">
+              Connect with fellow entrepreneurs, share wins, and get the support you need to succeed.
+            </p>
+          </div>
+          
+          <div className="community-grid">
+            <div className="community-card">
+              <div className="community-card-icon">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h3 className="community-card-title">Community Forum</h3>
+              <p className="community-card-description">
+                Ask questions, share solutions, and get peer feedback from fellow entrepreneurs building successful businesses.
+              </p>
+              <div className="community-features">
+                <span className="community-feature">Ask coding questions</span>
+                <span className="community-feature">Share solutions</span>
+                <span className="community-feature">Get peer feedback</span>
+                <span className="community-feature">Vote on helpful answers</span>
+              </div>
+              <Link to="/community/forum" className="community-card-button">
+                Join Forum Discussion
+              </Link>
+            </div>
+
+            <div className="community-card">
+              <div className="community-card-icon">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <h3 className="community-card-title">Success Stories</h3>
+              <p className="community-card-description">
+                Share your wins and get inspired by others who have built successful businesses and achieved their goals.
+              </p>
+              <div className="community-features">
+                <span className="community-feature">Share your wins</span>
+                <span className="community-feature">Get inspired</span>
+                <span className="community-feature">Case studies</span>
+                <span className="community-feature">Motivation</span>
+              </div>
+              <Link to="/community/success-stories" className="community-card-button">
+                View Success Stories
+              </Link>
+            </div>
+
+            <div className="community-card discord-card">
+              <div className="community-card-icon">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+              </div>
+              <h3 className="community-card-title">Discord Community</h3>
+              <p className="community-card-description">
+                Real-time chat, live discussions, and instant support from our active community of entrepreneurs.
+              </p>
+              <div className="community-features">
+                <span className="community-feature">Live discussions</span>
+                <span className="community-feature">Real-time support</span>
+                <span className="community-feature">Expert tips</span>
+                <span className="community-feature">Success stories</span>
+              </div>
+              <a 
+                href="https://discord.gg/q2b6BDtsyr" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="community-card-button discord-button"
+              >
+                Join Discord Community
+              </a>
+            </div>
+          </div>
+
+          <div className="community-cta">
+            <h3 className="community-cta-title">Ready to Connect?</h3>
+            <p className="community-cta-description">
+              Join thousands of entrepreneurs who are building the future of digital business together.
+            </p>
+            <Link to="/community" className="community-main-button">
+              Explore Community
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+
       {/* No Free Trial Section */}
       <motion.section 
         className="no-free-trial-section"

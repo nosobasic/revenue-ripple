@@ -1,6 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer';
 import MilestoneCheckIn from './components/MilestoneCheckIn';
 import { STORAGE_KEYS, logger } from './config/constants';
 
@@ -84,6 +85,13 @@ const FoundersAnnualCheckout = lazy(() => import('./pages/FoundersAnnualCheckout
 const FoundersSuccess = lazy(() => import('./pages/FoundersSuccess'));
 // Command Center components
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+// Community components
+const Community = lazy(() => import('./pages/Community'));
+const CommunityForum = lazy(() => import('./pages/CommunityForum'));
+const NewPost = lazy(() => import('./pages/NewPost'));
+const ForumPost = lazy(() => import('./pages/ForumPost'));
+const SuccessStories = lazy(() => import('./pages/SuccessStories'));
+const SubmitStory = lazy(() => import('./pages/SubmitStory'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -160,6 +168,14 @@ const App = () => {
         {/* Command Center Routes */}
         <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
 
+        {/* Community Routes */}
+        <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+        <Route path="/community/forum" element={<ProtectedRoute><CommunityForum /></ProtectedRoute>} />
+        <Route path="/community/forum/new" element={<ProtectedRoute><NewPost /></ProtectedRoute>} />
+        <Route path="/community/forum/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />
+        <Route path="/community/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
+        <Route path="/community/submit-story" element={<ProtectedRoute><SubmitStory /></ProtectedRoute>} />
+
         <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute requirePayment={true}><Training /></ProtectedRoute>} />
@@ -227,6 +243,7 @@ const App = () => {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <Footer />
       </Suspense>
     </>
   );

@@ -212,11 +212,7 @@ export default function Login() {
           </form>
         )}
       </div>
-      <footer className="footer">
-        <div className="container">
-          <p>&copy; 2025 Revenue Ripple. All rights reserved.</p>
-        </div>
-      </footer>
+      {/* Global footer is rendered in App.jsx */}
     </div>
   );
 }
