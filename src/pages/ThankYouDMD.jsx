@@ -151,7 +151,7 @@ const ThankYouDMD = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">Check Your Email</h3>
-                  <p className="text-gray-600">Your first lesson is on its way! Check your inbox (and spam folder) for your Digital Marketing Domination lesson.</p>
+                  <p className="text-gray-600">Your first lesson is on its way! Check your inbox <strong>and spam folder</strong> for your Digital Marketing Domination lesson.</p>
                 </div>
               </div>
               
