@@ -2,24 +2,177 @@ import { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 
 const DFYFunnelConsultation = () => {
-  const [isCalendlyLoaded, setIsCalendlyLoaded] = useState(false);
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxE01UFnH4v_Haw2raFox3WC8Lk1SSiGlKf2ybZkbKiYFApjPrOrMHUT9fz4YgMgGVpvQ/exec';
+  const CALENDLY_URL = 'https://calendly.com/donte-binrichmediagroup/30min';
+
+  const initialFormData = {
+    fullName: '',
+    email: '',
+    businessName: '',
+    website: '',
+    industry: '',
+    offerDescription: '',
+    funnelGoal: '',
+    funnelProblem: '',
+    offerPromoting: '',
+    offerPrice: '',
+    hasAssets: '',
+    assetsLink: '',
+    idealCustomer: '',
+    customerPain: '',
+    acquisitionChannels: '',
+    funnelType: '',
+    copyPreference: '',
+    designPreferences: '',
+    currentTools: '',
+    domainSetup: '',
+    needPayments: '',
+    launchTimeline: '',
+    budgetRange: '',
+    callTopics: '',
+    referralSource: ''
+  };
+
+  const funnelGoalOptions = [
+    'Generate leads',
+    'Sell a product',
+    'Book calls',
+    'Grow email list',
+    'Launch offer',
+    'Onboard clients',
+    'Other'
+  ];
+
+  const funnelTypeOptions = [
+    'Lead generation funnel',
+    'Sales page funnel',
+    'Webinar funnel',
+    'Application funnel',
+    'Tripwire funnel',
+    'Challenge funnel',
+    'Other / Not sure'
+  ];
+
+  const copyPreferenceOptions = [
+    'You write the copy',
+    "I’ll provide the copy",
+    'Mix of both'
+  ];
+
+  const budgetOptions = [
+    'Under $1k',
+    '$1k - $3k',
+    '$3k - $5k',
+    '$5k - $10k',
+    '$10k+',
+    'Not sure yet'
+  ];
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [statusType, setStatusType] = useState('');
 
   useEffect(() => {
-    // Load Calendly script
-    const script = document.createElement('script');
-    script.src = 'https://assets.calendly.com/assets/external/widget.js';
-    script.async = true;
-    script.onload = () => setIsCalendlyLoaded(true);
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      const existingScript = document.querySelector('script[src="https://assets.calendly.com/assets/external/widget.js"]');
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-    };
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
   }, []);
+
+  const requiredFields = [
+    'fullName',
+    'email',
+    'businessName',
+    'industry',
+    'offerDescription',
+    'funnelGoal',
+    'offerPromoting',
+    'offerPrice',
+    'funnelType',
+    'copyPreference',
+    'launchTimeline',
+    'budgetRange'
+  ];
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    requiredFields.forEach((field) => {
+      if (!formData[field]?.trim()) {
+        newErrors[field] = 'This field is required';
+      }
+    });
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Enter a valid email address';
+    }
+
+    if (formData.website && !/^https?:\/\//i.test(formData.website)) {
+      newErrors.website = 'Include http:// or https://';
+    }
+
+    if (formData.assetsLink && !/^https?:\/\//i.test(formData.assetsLink)) {
+      newErrors.assetsLink = 'Include http:// or https://';
+    }
+
+    return newErrors;
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatusMessage('');
+    setStatusType('');
+
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setIsSubmitting(true);
+
+    try {
+      const payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        payload.append(key, value);
+      });
+
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: payload
+      });
+
+      hjEvent('dfy_consultation_form_submit');
+
+      setStatusMessage("Thanks! Redirecting you to pick a time on Calendly…");
+      setStatusType('success');
+      setFormData(initialFormData);
+
+      setTimeout(() => {
+        window.location.href = CALENDLY_URL;
+      }, 1200);
+    } catch (error) {
+      console.error('Failed to submit intake form:', error);
+      setStatusMessage('Something went wrong while submitting. Please refresh and try again.');
+      setStatusType('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const testimonials = [
     {
@@ -158,27 +311,504 @@ const DFYFunnelConsultation = () => {
 
           {/* Calendly Booking Section */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h2>
-              <p className="text-xl text-gray-600 mb-6">
-                Book your DFY Funnel Strategy Session and let's build something amazing together
-              </p>
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white mb-6">
-                <h3 className="text-2xl font-bold mb-2">Investment: $197</h3>
-                <p className="opacity-90">
-                  Includes 60-min strategy session + funnel blueprint + implementation roadmap
+            <form onSubmit={handleSubmit} className="space-y-10">
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h2>
+                <p className="text-xl text-gray-600 mb-6">
+                  Complete this short intake so we can prepare for your call and quote a fair price.
                 </p>
-                <p className="text-sm opacity-80 mt-2">
-                  Bonus: $97 credit toward full DFY funnel setup if you decide to move forward
+                <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white mb-6">
+                  <h3 className="text-2xl font-bold mb-2">Investment: $197</h3>
+                  <p className="opacity-90">
+                    Includes 60-min strategy session + funnel blueprint + implementation roadmap.
+                  </p>
+                  <p className="text-sm opacity-80 mt-2">
+                    Bonus: $97 credit toward full DFY funnel setup if you decide to move forward.
+                  </p>
+                </div>
+                <p className="text-sm text-gray-500">
+                  We&apos;ll send your answers to Google Sheets and then send you to Calendly to book your call.
                 </p>
               </div>
-            </div>
 
-            {/* Calendly Widget */}
-            <div className="calendly-inline-widget" 
-                 data-url="https://calendly.com/donte-binrichmediagroup/30min"
-                 style={{ minWidth: '320px', height: '700px' }}>
-            </div>
+              {statusMessage && (
+                <div
+                  className={`rounded-lg p-4 text-sm ${
+                    statusType === 'success'
+                      ? 'bg-green-50 text-green-700 border border-green-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}
+                >
+                  {statusMessage}
+                </div>
+              )}
+
+              {/* Business Background */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">1. Business Background</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="fullName">
+                      Your name *
+                    </label>
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      type="text"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Jane Doe"
+                    />
+                    {errors.fullName && <p className="text-sm text-red-600">{errors.fullName}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+                      Email *
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="you@business.com"
+                    />
+                    {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="businessName">
+                      Business name *
+                    </label>
+                    <input
+                      id="businessName"
+                      name="businessName"
+                      type="text"
+                      value={formData.businessName}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Acme Marketing Co."
+                    />
+                    {errors.businessName && <p className="text-sm text-red-600">{errors.businessName}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="website">
+                      Website
+                    </label>
+                    <input
+                      id="website"
+                      name="website"
+                      type="url"
+                      value={formData.website}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="https://yourwebsite.com"
+                    />
+                    {errors.website && <p className="text-sm text-red-600">{errors.website}</p>}
+                  </div>
+                </div>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="industry">
+                      Industry or niche *
+                    </label>
+                    <input
+                      id="industry"
+                      name="industry"
+                      type="text"
+                      value={formData.industry}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Coaching, SaaS, eCommerce, service business..."
+                    />
+                    {errors.industry && <p className="text-sm text-red-600">{errors.industry}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="offerDescription">
+                      What do you sell? *
+                    </label>
+                    <textarea
+                      id="offerDescription"
+                      name="offerDescription"
+                      value={formData.offerDescription}
+                      onChange={handleChange}
+                      rows={4}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Brief description of your product/service/offer."
+                    />
+                    {errors.offerDescription && <p className="text-sm text-red-600">{errors.offerDescription}</p>}
+                  </div>
+                </div>
+              </section>
+
+              {/* Funnel Goal */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">2. Funnel Goal</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="funnelGoal">
+                      What&apos;s the primary goal for this funnel? *
+                    </label>
+                    <select
+                      id="funnelGoal"
+                      name="funnelGoal"
+                      value={formData.funnelGoal}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select a goal</option>
+                      {funnelGoalOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.funnelGoal && <p className="text-sm text-red-600">{errors.funnelGoal}</p>}
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="funnelProblem">
+                      What problem are you trying to solve with this funnel?
+                    </label>
+                    <textarea
+                      id="funnelProblem"
+                      name="funnelProblem"
+                      value={formData.funnelProblem}
+                      onChange={handleChange}
+                      rows={4}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Share a few sentences about the challenge you want to fix."
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Offer Details */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">3. Offer Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="offerPromoting">
+                      What are you promoting in this funnel? *
+                    </label>
+                    <input
+                      id="offerPromoting"
+                      name="offerPromoting"
+                      type="text"
+                      value={formData.offerPromoting}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Course, coaching, product, event, etc."
+                    />
+                    {errors.offerPromoting && <p className="text-sm text-red-600">{errors.offerPromoting}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="offerPrice">
+                      Price point *
+                    </label>
+                    <input
+                      id="offerPrice"
+                      name="offerPrice"
+                      type="text"
+                      value={formData.offerPrice}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="$197, $1,997, etc."
+                    />
+                    {errors.offerPrice && <p className="text-sm text-red-600">{errors.offerPrice}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="hasAssets">
+                      Do you already have an offer page or assets?
+                    </label>
+                    <select
+                      id="hasAssets"
+                      name="hasAssets"
+                      value={formData.hasAssets}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select an option</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                      <option value="In progress">In progress</option>
+                    </select>
+                  </div>
+                  {formData.hasAssets === 'Yes' && (
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700" htmlFor="assetsLink">
+                        Link to assets or folder
+                      </label>
+                      <input
+                        id="assetsLink"
+                        name="assetsLink"
+                        type="url"
+                        value={formData.assetsLink}
+                        onChange={handleChange}
+                        className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="https://drive.google.com/..."
+                      />
+                      {errors.assetsLink && <p className="text-sm text-red-600">{errors.assetsLink}</p>}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Audience Insight */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">4. Audience Insight</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2 md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="idealCustomer">
+                      Who&apos;s your ideal customer?
+                    </label>
+                    <textarea
+                      id="idealCustomer"
+                      name="idealCustomer"
+                      value={formData.idealCustomer}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Demographics, role, mindset, etc."
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="customerPain">
+                      Biggest pain or desire?
+                    </label>
+                    <textarea
+                      id="customerPain"
+                      name="customerPain"
+                      value={formData.customerPain}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="What do they care about most?"
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="acquisitionChannels">
+                      How do customers find you today?
+                    </label>
+                    <textarea
+                      id="acquisitionChannels"
+                      name="acquisitionChannels"
+                      value={formData.acquisitionChannels}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Social, ads, referrals, partnerships, etc."
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Funnel Preferences */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">5. Funnel Preferences</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="funnelType">
+                      What type of funnel are you considering? *
+                    </label>
+                    <select
+                      id="funnelType"
+                      name="funnelType"
+                      value={formData.funnelType}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select funnel type</option>
+                      {funnelTypeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.funnelType && <p className="text-sm text-red-600">{errors.funnelType}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="copyPreference">
+                      Do you want me to write the copy? *
+                    </label>
+                    <select
+                      id="copyPreference"
+                      name="copyPreference"
+                      value={formData.copyPreference}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select an option</option>
+                      {copyPreferenceOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.copyPreference && <p className="text-sm text-red-600">{errors.copyPreference}</p>}
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="designPreferences">
+                      Any design or branding preferences?
+                    </label>
+                    <textarea
+                      id="designPreferences"
+                      name="designPreferences"
+                      value={formData.designPreferences}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Colors, vibe, inspiration links, etc."
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Tech + Integrations */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">6. Tech & Integrations</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2 md:col-span-3">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="currentTools">
+                      What tools are you currently using?
+                    </label>
+                    <textarea
+                      id="currentTools"
+                      name="currentTools"
+                      value={formData.currentTools}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="GetResponse, Stripe, Calendly, CRM, Zapier, etc."
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="domainSetup">
+                      Do you have a domain & hosting set up?
+                    </label>
+                    <select
+                      id="domainSetup"
+                      name="domainSetup"
+                      value={formData.domainSetup}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select an option</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                      <option value="Working on it">Working on it</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="needPayments">
+                      Do you need payment processing set up?
+                    </label>
+                    <select
+                      id="needPayments"
+                      name="needPayments"
+                      value={formData.needPayments}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select an option</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                      <option value="Not sure yet">Not sure yet</option>
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              {/* Timeline + Budget */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">7. Timeline & Budget</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="launchTimeline">
+                      Timeline or launch date *
+                    </label>
+                    <input
+                      id="launchTimeline"
+                      name="launchTimeline"
+                      type="text"
+                      value={formData.launchTimeline}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="e.g. Mid March, ASAP, within 60 days"
+                    />
+                    {errors.launchTimeline && <p className="text-sm text-red-600">{errors.launchTimeline}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="budgetRange">
+                      Budget range for the full project *
+                    </label>
+                    <select
+                      id="budgetRange"
+                      name="budgetRange"
+                      value={formData.budgetRange}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    >
+                      <option value="">Select a range</option>
+                      {budgetOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.budgetRange && <p className="text-sm text-red-600">{errors.budgetRange}</p>}
+                  </div>
+                </div>
+              </section>
+
+              {/* Call Prep */}
+              <section>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4">8. Call Prep</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="callTopics">
+                      Anything specific you want to discuss on the call?
+                    </label>
+                    <textarea
+                      id="callTopics"
+                      name="callTopics"
+                      value={formData.callTopics}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Share any details, questions, or context you want me to know."
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="referralSource">
+                      How did you hear about me?
+                    </label>
+                    <input
+                      id="referralSource"
+                      name="referralSource"
+                      type="text"
+                      value={formData.referralSource}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Instagram, YouTube, referral, ad, Revenue Ripple, etc."
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <div className="border-t border-gray-200 pt-6 flex items-center justify-between flex-col sm:flex-row gap-4">
+                <p className="text-sm text-gray-500">
+                  By submitting you agree to be contacted about this project. We&apos;ll never spam you.
+                </p>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-3 px-8 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Intake & Book Call'}
+                </button>
+              </div>
+            </form>
           </div>
 
           {/* Trust Elements */}
