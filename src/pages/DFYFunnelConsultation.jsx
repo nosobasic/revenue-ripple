@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 
 const DFYFunnelConsultation = () => {
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxE01UFnH4v_Haw2raFox3WC8Lk1SSiGlKf2ybZkbKiYFApjPrOrMHUT9fz4YgMgGVpvQ/exec';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_57Xj_o6D99jUSnzIqB3NjG5mWusS8mN_vbHRKWS9-bdf2xXRLGJT9VA9i2dVsVmlsA/exec';
   const CALENDLY_URL = 'https://calendly.com/donte-binrichmediagroup/30min';
 
   const initialFormData = {
@@ -110,12 +110,14 @@ const DFYFunnelConsultation = () => {
       newErrors.email = 'Enter a valid email address';
     }
 
-    if (formData.website && !/^https?:\/\//i.test(formData.website)) {
-      newErrors.website = 'Include http:// or https://';
+    const urlPattern = /^(https?:\/\/)([\w-]+\.)+[\w-]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/i;
+
+    if (formData.website && !urlPattern.test(formData.website.trim())) {
+      newErrors.website = 'Enter a valid URL including http(s)://';
     }
 
-    if (formData.assetsLink && !/^https?:\/\//i.test(formData.assetsLink)) {
-      newErrors.assetsLink = 'Include http:// or https://';
+    if (formData.assetsLink && !urlPattern.test(formData.assetsLink.trim())) {
+      newErrors.assetsLink = 'Enter a valid URL including http(s)://';
     }
 
     return newErrors;
@@ -144,17 +146,72 @@ const DFYFunnelConsultation = () => {
     setErrors({});
     setIsSubmitting(true);
 
-    try {
-      const payload = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        payload.append(key, value);
+    const payload = new URLSearchParams();
+    Object.entries(formData).forEach(([key, value]) => {
+      payload.append(key, value);
+    });
+
+    const fallbackPayload = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      fallbackPayload.append(key, value);
+    });
+
+    const dataSnapshot = { ...formData };
+
+    const submitWithCors = async () => {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: payload.toString(),
+        mode: 'cors',
+        credentials: 'omit'
       });
 
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      let result = null;
+      try {
+        result = await response.json();
+      } catch (err) {
+        // If the Apps Script returns plain text, fall back to text parsing
+        const text = await response.text();
+        if (text && text.trim().length > 0) {
+          result = JSON.parse(text);
+        }
+      }
+
+      if (result && result.success === false) {
+        throw new Error(result.error || 'Submission failed');
+      }
+    };
+
+    const submitWithNoCors = async () => {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
+        body: fallbackPayload,
         mode: 'no-cors',
-        body: payload
+        credentials: 'omit'
       });
+    };
+
+    try {
+      let submitted = false;
+      try {
+        await submitWithCors();
+        submitted = true;
+      } catch (corsError) {
+        console.warn('CORS submission failed, attempting fallback:', corsError);
+        await submitWithNoCors();
+        submitted = true;
+      }
+
+      if (!submitted) {
+        throw new Error('Unable to submit intake form.');
+      }
 
       hjEvent('dfy_consultation_form_submit');
 
@@ -163,15 +220,32 @@ const DFYFunnelConsultation = () => {
       setFormData(initialFormData);
 
       setTimeout(() => {
-        window.location.href = CALENDLY_URL;
+        window.location.href = buildCalendlyUrl(dataSnapshot);
       }, 1200);
     } catch (error) {
       console.error('Failed to submit intake form:', error);
-      setStatusMessage('Something went wrong while submitting. Please refresh and try again.');
+      setStatusMessage('We couldn’t save your intake. Please check your connection and try again.');
       setStatusType('error');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const buildCalendlyUrl = (data) => {
+    const url = new URL(CALENDLY_URL);
+    if (data.fullName) {
+      url.searchParams.set('name', data.fullName);
+    }
+    if (data.email) {
+      url.searchParams.set('email', data.email);
+    }
+    if (data.funnelGoal) {
+      url.searchParams.set('customAnswers[0]', data.funnelGoal);
+    }
+    if (data.launchTimeline) {
+      url.searchParams.set('customAnswers[1]', data.launchTimeline);
+    }
+    return url.toString();
   };
 
   const testimonials = [
