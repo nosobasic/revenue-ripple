@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 
 const DFYFunnelConsultation = () => {
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_57Xj_o6D99jUSnzIqB3NjG5mWusS8mN_vbHRKWS9-bdf2xXRLGJT9VA9i2dVsVmlsA/exec';
-  const CALENDLY_URL = 'https://calendly.com/donte-binrichmediagroup/30min';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaO8invI2lpY5BCpQWA2d4C8UhXLihhM58VVlgCSFPXjxO2uoBGZLdohjHbHvBjOoU4g/exec';
 
   const initialFormData = {
     fullName: '',
