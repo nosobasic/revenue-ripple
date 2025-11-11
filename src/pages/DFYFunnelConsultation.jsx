@@ -96,27 +96,34 @@ const DFYFunnelConsultation = () => {
     'budgetRange'
   ];
 
-  const validateForm = () => {
+  const sanitizeUrl = (value) => {
+    if (!value) return '';
+    const trimmed = value.trim();
+    if (trimmed.length === 0) return '';
+    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  };
+
+  const validateForm = (data) => {
     const newErrors = {};
 
     requiredFields.forEach((field) => {
-      if (!formData[field]?.trim()) {
+      if (!data[field]?.trim()) {
         newErrors[field] = 'This field is required';
       }
     });
 
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       newErrors.email = 'Enter a valid email address';
     }
 
     const urlPattern = /^(https?:\/\/)([\w-]+\.)+[\w-]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/i;
 
-    if (formData.website && !urlPattern.test(formData.website.trim())) {
-      newErrors.website = 'Enter a valid URL including http(s)://';
+    if (data.website && !urlPattern.test(data.website.trim())) {
+      newErrors.website = 'Enter a valid URL (example: https://yourwebsite.com)';
     }
 
-    if (formData.assetsLink && !urlPattern.test(formData.assetsLink.trim())) {
-      newErrors.assetsLink = 'Enter a valid URL including http(s)://';
+    if (data.assetsLink && !urlPattern.test(data.assetsLink.trim())) {
+      newErrors.assetsLink = 'Enter a valid URL (example: https://drive.google.com/your-folder)';
     }
 
     return newErrors;
@@ -135,7 +142,15 @@ const DFYFunnelConsultation = () => {
     setStatusMessage('');
     setStatusType('');
 
-    const validationErrors = validateForm();
+    const normalizedData = {
+      ...formData,
+      website: sanitizeUrl(formData.website),
+      assetsLink: sanitizeUrl(formData.assetsLink)
+    };
+
+    setFormData(normalizedData);
+
+    const validationErrors = validateForm(normalizedData);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -146,16 +161,16 @@ const DFYFunnelConsultation = () => {
     setIsSubmitting(true);
 
     const payload = new URLSearchParams();
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(normalizedData).forEach(([key, value]) => {
       payload.append(key, value);
     });
 
     const fallbackPayload = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(normalizedData).forEach(([key, value]) => {
       fallbackPayload.append(key, value);
     });
 
-    const dataSnapshot = { ...formData };
+    const dataSnapshot = { ...normalizedData };
 
     const submitWithCors = async () => {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -218,8 +233,10 @@ const DFYFunnelConsultation = () => {
       setStatusType('success');
       setFormData(initialFormData);
 
+      const redirectTarget = buildCalendlyUrl(dataSnapshot);
+
       setTimeout(() => {
-        window.location.href = buildCalendlyUrl(dataSnapshot);
+        window.location.assign(redirectTarget);
       }, 1200);
     } catch (error) {
       console.error('Failed to submit intake form:', error);
