@@ -798,7 +798,8 @@ def add_contact_to_getresponse(email, tag):
         "email": email,
         "campaign": { "campaignId": campaign_id },
         "name": name,
-        "tags": [tag]
+        "tags": [tag],
+        "dayOfCycle": 0
     }
 
     try:
@@ -1389,7 +1390,8 @@ def add_book_giveaway_to_getresponse(email, name):
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": f"{name} (Book Giveaway)"
+        "name": f"{name} (Book Giveaway)",
+        "dayOfCycle": 0
     }
     
     try:
@@ -1511,7 +1513,8 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": f"{name} (Survival Playbook)"
+        "name": f"{name} (Survival Playbook)",
+        "dayOfCycle": 0
     }
     
     try:
@@ -1717,7 +1720,8 @@ def add_membership_mastery_to_getresponse(email, name, phone, source, utm_source
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": f"{name} (Membership Mastery)"
+        "name": f"{name} (Membership Mastery)",
+        "dayOfCycle": 0
     }
     # Attach phone as a custom field when available
     phone_field_id = get_phone_custom_field_id()
@@ -1851,7 +1855,8 @@ def add_digital_marketing_domination_to_getresponse(email, name, phone, source, 
     body = {
         "email": email,
         "campaign": {"campaignId": campaign_id},
-        "name": f"{name} (Digital Marketing Domination)"
+        "name": f"{name} (Digital Marketing Domination)",
+        "dayOfCycle": 0
     }
     phone_field_id = get_phone_custom_field_id()
     norm_phone = _normalize_phone_e164(phone)
