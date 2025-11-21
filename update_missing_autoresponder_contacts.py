@@ -6,11 +6,16 @@ These are contacts that were added via API before we fixed the dayOfCycle parame
 NOTE: This script requires GETRESPONSE_API_KEY and GETRESPONSE_CAMPAIGN_ID environment variables.
       On Render.com, these are set in the environment. To run locally, ensure your .env file
       has these variables set, or run this script on Render.com via SSH or as a one-off task.
+
+IMPORTANT: GetResponse API v3 has limitations updating existing contacts' dayOfCycle.
+           If API updates fail, this script will export a CSV file that can be imported
+           into GetResponse with updateExisting: true to bulk update the contacts.
 """
 
 import requests
 import os
 import time
+import csv
 from typing import List, Dict, Optional
 from dotenv import load_dotenv
 
@@ -99,7 +104,8 @@ def analyze_contacts(contacts: List[Dict]) -> Dict:
 
 def update_contact_autoresponder(api_key: str, contact: Dict, campaign_id: str) -> bool:
     """Update a contact to add them to autoresponder cycle (dayOfCycle: 0)
-    Uses POST with updateIfAlreadyExists: true since GetResponse doesn't support PATCH/PUT
+    Uses POST with updateIfAlreadyExists: true. 
+    Note: GetResponse API may have limitations on updating existing contacts.
     """
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
@@ -113,6 +119,7 @@ def update_contact_autoresponder(api_key: str, contact: Dict, campaign_id: str) 
     contact_campaign = contact.get('campaign', {})
     contact_campaign_id = contact_campaign.get('campaignId', campaign_id)
     
+    # Build body with all available contact data to ensure proper update
     body = {
         "email": email,
         "campaign": {"campaignId": contact_campaign_id},
@@ -124,6 +131,11 @@ def update_contact_autoresponder(api_key: str, contact: Dict, campaign_id: str) 
     if name:
         body["name"] = name
     
+    # Include tags if available
+    tags = contact.get('tags', [])
+    if tags:
+        body["tags"] = tags
+    
     try:
         response = requests.post(
             "https://api.getresponse.com/v3/contacts",
@@ -134,6 +146,11 @@ def update_contact_autoresponder(api_key: str, contact: Dict, campaign_id: str) 
         
         if response.status_code == 202:
             return True
+        elif response.status_code == 409:
+            # 409 means contact already exists
+            # GetResponse API v3 limitation: updateIfAlreadyExists doesn't update dayOfCycle
+            # These contacts will be exported to CSV for manual import/update
+            return False
         else:
             print(f"   ⚠️ Failed to update {email}: {response.status_code} - {response.text}")
             return False
@@ -219,6 +236,7 @@ def main():
     # Update only contacts missing dayOfCycle
     updated = 0
     failed = 0
+    failed_contacts = []
     
     for i, contact in enumerate(missing, 1):
         email = contact.get('email', 'Unknown')
@@ -231,6 +249,7 @@ def main():
             updated += 1
         else:
             failed += 1
+            failed_contacts.append(contact)
         
         # Rate limiting - update every 0.5 seconds
         if i < len(missing):
@@ -248,6 +267,48 @@ def main():
     if updated > 0:
         print(f"🎉 Successfully added {updated} contacts to autoresponder cycle!")
         print("   They will now receive the autoresponder sequence starting from day 0.")
+    
+    # Export failed contacts to CSV for manual import/update
+    if failed_contacts:
+        csv_filename = f"contacts_needing_update_{int(time.time())}.csv"
+        print()
+        print("=" * 70)
+        print("📄 Exporting Failed Contacts to CSV")
+        print("=" * 70)
+        print(f"   Exporting {len(failed_contacts)} contacts to: {csv_filename}")
+        print("   You can import this file into GetResponse to bulk update them.")
+        print()
+        
+        try:
+            with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+                fieldnames = ['email', 'name', 'campaignId', 'dayOfCycle']
+                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                writer.writeheader()
+                
+                for contact in failed_contacts:
+                    email = contact.get('email', '')
+                    name = contact.get('name', '')
+                    contact_campaign = contact.get('campaign', {})
+                    contact_campaign_id = contact_campaign.get('campaignId', campaign_id)
+                    
+                    writer.writerow({
+                        'email': email,
+                        'name': name,
+                        'campaignId': contact_campaign_id,
+                        'dayOfCycle': 0
+                    })
+            
+            print(f"✅ CSV file created: {csv_filename}")
+            print()
+            print("📋 To import into GetResponse:")
+            print("   1. Go to GetResponse Dashboard → Contacts → Import")
+            print("   2. Upload the CSV file")
+            print("   3. Select 'Update existing contacts' option")
+            print("   4. Map fields: email, name, campaignId, dayOfCycle")
+            print("   5. Complete the import")
+            print()
+        except Exception as e:
+            print(f"❌ Failed to create CSV file: {str(e)}")
     
     print("=" * 70)
 
