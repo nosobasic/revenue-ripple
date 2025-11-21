@@ -5,8 +5,15 @@ import { useEffect } from 'react';
 export default function ThankYou() {  
 
   useEffect(() => {
-   localStorage.setItem("reloadPage", true)
-  },[])
+    localStorage.setItem("reloadPage", true);
+    
+    // Always start at top so users read instructions in order
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, [])
 
   return (
     <div className="checkout-container">

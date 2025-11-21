@@ -13,6 +13,16 @@ const TripwireSuccess = () => {
     window.location.href = data.url;
   };
 
+  const handleDownload = () => {
+    // Create a temporary link to download the PDF
+    const link = document.createElement('a');
+    link.href = '/assets/downloads/digital-marketing.pdf';
+    link.download = 'Digital Marketing Domination.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     // Add any post-purchase tracking or analytics here
   }, []);
@@ -23,8 +33,21 @@ const TripwireSuccess = () => {
       <section className="hero-section">
         <h1 className="hero-title">Thank You for Your Purchase! 🎉</h1>
         <p className="hero-subtitle">
-          You've taken the first step towards building your digital marketing empire. Your access to the Digital Marketing Domination Book is being processed.
+          You've taken the first step towards building your digital marketing empire. Your Digital Marketing Domination Book is ready for download!
         </p>
+        
+        {/* Download Button */}
+        <div className="mt-8 text-center">
+          <button 
+            onClick={handleDownload}
+            className="cta-button bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 text-lg font-semibold border-none rounded-lg cursor-pointer shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+          >
+            📥 Download Digital Marketing Domination Book
+          </button>
+          <p className="mt-4 text-gray-600 text-sm">
+            Your book will download automatically. If it doesn't, click the button again.
+          </p>
+        </div>
       </section>
 
       {/* Next Steps */}
@@ -35,9 +58,9 @@ const TripwireSuccess = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="feature-title">Check Your Email</h3>
+          <h3 className="feature-title">Download Your Book</h3>
           <p className="feature-description">
-            We've sent your book access details to your email. Please check your inbox (and spam folder) for the download link.
+            Click the download button above to get your Digital Marketing Domination Book instantly. We've also sent a confirmation email with your purchase details.
           </p>
         </div>
 

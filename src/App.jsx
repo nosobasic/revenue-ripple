@@ -1,6 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer';
 import MilestoneCheckIn from './components/MilestoneCheckIn';
 import { STORAGE_KEYS, logger } from './config/constants';
 
@@ -8,6 +9,10 @@ import { STORAGE_KEYS, logger } from './config/constants';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AuthCallback from './pages/AuthCallback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import DataDeletion from './pages/DataDeletion';
+import OAuthTest from './pages/OAuthTest';
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -49,6 +54,7 @@ const DMDVariation2 = lazy(() => import('./pages/DMDVariation2'));
 const DMDVariation3 = lazy(() => import('./pages/DMDVariation3'));
 const ThankYouMembershipMastery = lazy(() => import('./pages/ThankYouMembershipMastery'));
 const ThankYouDMD = lazy(() => import('./pages/ThankYouDMD'));
+const DFYFunnelConsultation = lazy(() => import('./pages/DFYFunnelConsultation'));
 // Lazy load training components
 const EntrepreneurialBrainstorming = lazy(() => import('./pages/training/videos/EntrepreneurialBrainstorming'));
 const MindsetMastery = lazy(() => import('./pages/training/videos/MindsetMastery'));
@@ -79,6 +85,13 @@ const FoundersAnnualCheckout = lazy(() => import('./pages/FoundersAnnualCheckout
 const FoundersSuccess = lazy(() => import('./pages/FoundersSuccess'));
 // Command Center components
 const CommandCenter = lazy(() => import('./pages/CommandCenter'));
+// Community components
+const Community = lazy(() => import('./pages/Community'));
+const CommunityForum = lazy(() => import('./pages/CommunityForum'));
+const NewPost = lazy(() => import('./pages/NewPost'));
+const ForumPost = lazy(() => import('./pages/ForumPost'));
+const SuccessStories = lazy(() => import('./pages/SuccessStories'));
+const SubmitStory = lazy(() => import('./pages/SubmitStory'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -121,27 +134,47 @@ const App = () => {
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/oauth-test" element={<OAuthTest />} />
+        
+        {/* Public legal pages */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/data-deletion" element={<DataDeletion />} />
 
-        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
-        <Route path="/special" element={<ProtectedRoute><Reseller /></ProtectedRoute>} />
+        
+        {/* Public landing pages for new customer acquisition */}
+        <Route path="/special" element={<Reseller />} />
+        <Route path="/DMD" element={<DMDLanding />} />
+        <Route path="/dfy-funnel-consultation" element={<DFYFunnelConsultation />} />
+        
+        {/* Protected checkout and success pages */}
+        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/tripwire-success" element={<ProtectedRoute><TripwireSuccess /></ProtectedRoute>} />
         <Route path="/reseller-success" element={<ProtectedRoute><ResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-success" element={<ProtectedRoute><ProResellerSuccess /></ProtectedRoute>} />
         <Route path="/pro-reseller-upsell" element={<ProtectedRoute><ProResellerUpsell /></ProtectedRoute>} />
         <Route path="/three-months-free-upsell" element={<ProtectedRoute><ThreeMonthsFreeUpsell /></ProtectedRoute>} />
-        <Route path="/DMD" element={<ProtectedRoute><DMDLanding /></ProtectedRoute>} />
         <Route path="/special-invite" element={<ProtectedRoute><SpecialInvite /></ProtectedRoute>} />
-        <Route path="/reseller-checkout" element={<ProtectedRoute><ResellerCheckout /></ProtectedRoute>} />
         <Route path="/reseller-trial" element={<ProtectedRoute><ResellerTrial /></ProtectedRoute>} />
         
-        {/* Founders Annual Routes */}
-        <Route path="/founders-checkout" element={<ProtectedRoute><FoundersAnnualCheckout /></ProtectedRoute>} />
+        {/* Founders Annual Routes - Landing page is public */}
+        <Route path="/founders-checkout" element={<FoundersAnnualCheckout />} />
         <Route path="/founders-success" element={<ProtectedRoute><FoundersSuccess /></ProtectedRoute>} />
 
         {/* Command Center Routes */}
         <Route path="/command-center" element={<ProtectedRoute><CommandCenter /></ProtectedRoute>} />
+
+        {/* Community Routes */}
+        <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+        <Route path="/community/forum" element={<ProtectedRoute><CommunityForum /></ProtectedRoute>} />
+        <Route path="/community/forum/new" element={<ProtectedRoute><NewPost /></ProtectedRoute>} />
+        <Route path="/community/forum/:postId" element={<ProtectedRoute><ForumPost /></ProtectedRoute>} />
+        <Route path="/community/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
+        <Route path="/community/submit-story" element={<ProtectedRoute><SubmitStory /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
@@ -210,6 +243,7 @@ const App = () => {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <Footer />
       </Suspense>
     </>
   );

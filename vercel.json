@@ -14,15 +14,8 @@
     }
   ],
   "rewrites": [
-<<<<<<< HEAD
-    { "source": "/api/(.*)", "destination": "https://revenue-ripple.onrender.com/api/$1" },
-    { "source": "/insights/(.*)", "destination": "https://revenue-ripple.onrender.com/insights/$1" },
-    { "source": "/devops/(.*)", "destination": "https://revenue-ripple.onrender.com/devops/$1" },
-    { "source": "/create-(.*)", "destination": "https://revenue-ripple.onrender.com/create-$1" },
-    { "source": "/your-existing-api/(.*)", "destination": "https://revenue-ripple.onrender.com/your-existing-api/$1" },
-=======
     { "source": "/dlds/MembershipMastery.pdf", "destination": "/assets/downloads/MembershipMastery.pdf" },
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
+    { "source": "/dlds/dmd", "destination": "/assets/downloads/digital-marketing.pdf" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 } 

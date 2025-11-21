@@ -204,7 +204,7 @@ export default function DMDLanding() {
             </div>
           </div>
           <Link 
-            to="/checkout?product=dmd" 
+            to="/checkout?product=dmd"
             className="cta-button" 
             aria-label="Purchase Digital Marketing Domination ebook for $7"
             onClick={handlePurchaseClick}
@@ -354,7 +354,7 @@ export default function DMDLanding() {
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
               <Link 
-                to="/dlds/dmd" 
+                to="/checkout?product=dmd" 
                 style={{
                   display: 'inline-block',
                   padding: '1rem 2rem',

@@ -6,6 +6,15 @@ const ThankYouSurvivalPlaybook = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Always start at top so users read instructions in order
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
+  useEffect(() => {
     // Get submission data from sessionStorage
     const storedData = sessionStorage.getItem('survivalPlaybookSubmission');
     if (storedData) {
@@ -79,7 +88,7 @@ const ThankYouSurvivalPlaybook = () => {
               You're in, {submissionData.name.split(' ')[0]}!
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Check your inbox for <strong>The Survival Systems Playbook</strong>. 
+              Check your inbox <strong>and spam folder</strong> for <strong>The Survival Systems Playbook</strong>. 
               Your free guide is ready for download!
             </p>
           </div>

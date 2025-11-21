@@ -2029,6 +2029,258 @@ def admin_delete_user():
         print(f"❌ Error in admin_delete_user: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+# Community API Routes
+
+@app.route('/api/community/posts', methods=['GET'])
+def get_community_posts():
+    """Get community posts with pagination and filtering"""
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 20))
+        category = request.args.get('category', '')
+        sort_by = request.args.get('sort', 'created_at')  # created_at, upvotes, views
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Build query
+        query = supabase.table('community_posts').select('''
+            *,
+            users!inner(name, email),
+            post_upvotes(count)
+        ''')
+        
+        # Apply filters
+        if category:
+            query = query.eq('category', category)
+        
+        # Apply sorting
+        if sort_by == 'upvotes':
+            query = query.order('upvotes', desc=True)
+        elif sort_by == 'views':
+            query = query.order('views', desc=True)
+        else:
+            query = query.order('created_at', desc=True)
+        
+        # Apply pagination
+        offset = (page - 1) * limit
+        query = query.range(offset, offset + limit - 1)
+        
+        result = query.execute()
+        
+        return jsonify({
+            'posts': result.data,
+            'page': page,
+            'limit': limit,
+            'total': len(result.data)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error getting community posts: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/community/posts', methods=['POST'])
+def create_community_post():
+    """Create a new community post"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        title = data.get('title')
+        content = data.get('content')
+        category = data.get('category', 'general')
+        
+        if not all([user_id, title, content]):
+            return jsonify({'error': 'user_id, title, and content are required'}), 400
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Create post
+        result = supabase.table('community_posts').insert({
+            'user_id': user_id,
+            'title': title,
+            'content': content,
+            'category': category
+        }).execute()
+        
+        return jsonify({
+            'success': True,
+            'post': result.data[0] if result.data else None
+        }), 201
+        
+    except Exception as e:
+        print(f"❌ Error creating community post: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/community/posts/<post_id>', methods=['GET'])
+def get_community_post(post_id):
+    """Get a specific community post with replies"""
+    try:
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Get post
+        post_result = supabase.table('community_posts').select('''
+            *,
+            users!inner(name, email)
+        ''').eq('id', post_id).execute()
+        
+        if not post_result.data:
+            return jsonify({'error': 'Post not found'}), 404
+        
+        # Get replies
+        replies_result = supabase.table('community_replies').select('''
+            *,
+            users!inner(name, email)
+        ''').eq('post_id', post_id).order('created_at', desc=False).execute()
+        
+        # Increment view count
+        supabase.table('community_posts').update({
+            'views': post_result.data[0]['views'] + 1
+        }).eq('id', post_id).execute()
+        
+        return jsonify({
+            'post': post_result.data[0],
+            'replies': replies_result.data
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error getting community post: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/community/posts/<post_id>/reply', methods=['POST'])
+def create_community_reply():
+    """Create a reply to a community post"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        content = data.get('content')
+        parent_reply_id = data.get('parent_reply_id')
+        
+        if not all([user_id, content]):
+            return jsonify({'error': 'user_id and content are required'}), 400
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Create reply
+        reply_data = {
+            'post_id': request.view_args['post_id'],
+            'user_id': user_id,
+            'content': content
+        }
+        
+        if parent_reply_id:
+            reply_data['parent_reply_id'] = parent_reply_id
+        
+        result = supabase.table('community_replies').insert(reply_data).execute()
+        
+        return jsonify({
+            'success': True,
+            'reply': result.data[0] if result.data else None
+        }), 201
+        
+    except Exception as e:
+        print(f"❌ Error creating community reply: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/community/posts/<post_id>/upvote', methods=['POST'])
+def upvote_community_post():
+    """Upvote a community post"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        post_id = request.view_args['post_id']
+        
+        # Check if already upvoted
+        existing = supabase.table('post_upvotes').select('*').eq('post_id', post_id).eq('user_id', user_id).execute()
+        
+        if existing.data:
+            return jsonify({'error': 'Already upvoted'}), 400
+        
+        # Add upvote
+        supabase.table('post_upvotes').insert({
+            'post_id': post_id,
+            'user_id': user_id
+        }).execute()
+        
+        return jsonify({'success': True}), 200
+        
+    except Exception as e:
+        print(f"❌ Error upvoting community post: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/success-stories', methods=['GET'])
+def get_success_stories():
+    """Get success stories"""
+    try:
+        featured_only = request.args.get('featured', 'false').lower() == 'true'
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        query = supabase.table('success_stories').select('''
+            *,
+            users!inner(name, email)
+        ''').eq('is_approved', True)
+        
+        if featured_only:
+            query = query.eq('is_featured', True)
+        
+        query = query.order('created_at', desc=True)
+        
+        result = query.execute()
+        
+        return jsonify({
+            'stories': result.data
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error getting success stories: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/success-stories', methods=['POST'])
+def create_success_story():
+    """Create a success story"""
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        title = data.get('title')
+        story = data.get('story')
+        outcome = data.get('outcome', '')
+        image_url = data.get('image_url', '')
+        
+        if not all([user_id, title, story]):
+            return jsonify({'error': 'user_id, title, and story are required'}), 400
+        
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Create success story
+        result = supabase.table('success_stories').insert({
+            'user_id': user_id,
+            'title': title,
+            'story': story,
+            'outcome': outcome,
+            'image_url': image_url
+        }).execute()
+        
+        return jsonify({
+            'success': True,
+            'story': result.data[0] if result.data else None
+        }), 201
+        
+    except Exception as e:
+        print(f"❌ Error creating success story: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     print("🚀 Starting Revenue Ripple API Server v1.0.1")
     print("🔍 DEBUG: Checking environment variables...")

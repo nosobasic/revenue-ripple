@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot, FaUsers, FaComments, FaTrophy, FaDiscord, FaChevronDown } from 'react-icons/fa';
 import { logger } from '../config/constants';
 import './Navbar.css';
 
@@ -10,6 +10,7 @@ const Navbar = React.memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -30,6 +31,9 @@ const Navbar = React.memo(() => {
     if (path === '/earn') {
       return location.pathname.includes('/affiliate');
     }
+    if (path === '/community') {
+      return location.pathname.includes('/community');
+    }
     return location.pathname === path;
   }, [location.pathname]);
 
@@ -43,6 +47,14 @@ const Navbar = React.memo(() => {
 
   const closeMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(false);
+  }, []);
+
+  const handleCommunityMouseEnter = useCallback(() => {
+    setCommunityDropdownOpen(true);
+  }, []);
+
+  const handleCommunityMouseLeave = useCallback(() => {
+    setCommunityDropdownOpen(false);
   }, []);
 
   // Memoize navigation items
@@ -98,12 +110,47 @@ const Navbar = React.memo(() => {
                 <span>Support</span>
               </Link>
 
-              {/* Founders CTA - Only show if not already a founder */}
-              {!user?.is_founder && (
-                <Link to="/founders-checkout" className="founders-cta-btn" onClick={closeMobileMenu}>
-                  🚀 Join Founders Circle
-                </Link>
-              )}
+              {/* Community Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={handleCommunityMouseEnter}
+                onMouseLeave={handleCommunityMouseLeave}
+              >
+                <div className={`navbar-link ${isActive('/community') ? 'active' : ''} cursor-pointer`}>
+                  <FaUsers className="nav-icon" />
+                  <span>Community</span>
+                  <FaChevronDown className="ml-1 text-xs" />
+                </div>
+                
+                {communityDropdownOpen && (
+                  <div className="navbar-dropdown">
+                    <Link to="/community" className="navbar-dropdown-item" onClick={closeMobileMenu}>
+                      <FaUsers className="dropdown-icon" />
+                      <span>Community Hub</span>
+                    </Link>
+                    <Link to="/community/forum" className="navbar-dropdown-item" onClick={closeMobileMenu}>
+                      <FaComments className="dropdown-icon" />
+                      <span>Forum</span>
+                    </Link>
+                    <Link to="/community/success-stories" className="navbar-dropdown-item" onClick={closeMobileMenu}>
+                      <FaTrophy className="dropdown-icon" />
+                      <span>Success Stories</span>
+                    </Link>
+                    <a 
+                      href="https://discord.gg/q2b6BDtsyr" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="navbar-dropdown-item"
+                      onClick={closeMobileMenu}
+                    >
+                      <FaDiscord className="dropdown-icon" />
+                      <span>Discord</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Founders CTA moved out of navbar for signed-in users */}
               
               {/* Profile Link */}
               <Link to="/profile" className="navbar-link" onClick={closeMobileMenu}>
@@ -115,7 +162,7 @@ const Navbar = React.memo(() => {
             <>
               <Link to="/login" className="navbar-link" onClick={closeMobileMenu}>Member Sign In</Link>
               <Link to="/affiliate-login" className="navbar-link" onClick={closeMobileMenu}>Affiliates & Resellers</Link>
-              <Link to="/founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
+              <Link to="/register?redirect=founders-checkout" className="founders-cta-btn-guest" onClick={closeMobileMenu}>
                 🚀 Founders Circle
               </Link>
             </>
@@ -173,13 +220,42 @@ const Navbar = React.memo(() => {
                   </Link>
 
                   <div className="mobile-menu-divider"></div>
+
+                  {/* Community Section - Mobile */}
+                  <div className="mobile-community-section">
+                    <div className="mobile-nav-link mobile-community-header">
+                      <FaUsers className="mobile-nav-icon" />
+                      <span>Community</span>
+                    </div>
+                    <div className="mobile-community-submenu">
+                      <Link to="/community" className="mobile-nav-link mobile-community-subitem" onClick={closeMobileMenu}>
+                        <FaUsers className="mobile-nav-icon" />
+                        <span>Community Hub</span>
+                      </Link>
+                      <Link to="/community/forum" className="mobile-nav-link mobile-community-subitem" onClick={closeMobileMenu}>
+                        <FaComments className="mobile-nav-icon" />
+                        <span>Forum</span>
+                      </Link>
+                      <Link to="/community/success-stories" className="mobile-nav-link mobile-community-subitem" onClick={closeMobileMenu}>
+                        <FaTrophy className="mobile-nav-icon" />
+                        <span>Success Stories</span>
+                      </Link>
+                      <a 
+                        href="https://discord.gg/q2b6BDtsyr" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="mobile-nav-link mobile-community-subitem"
+                        onClick={closeMobileMenu}
+                      >
+                        <FaDiscord className="mobile-nav-icon" />
+                        <span>Discord</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="mobile-menu-divider"></div>
                   
-                  {/* Founders CTA - Mobile */}
-                  {!user?.is_founder && (
-                    <Link to="/founders-checkout" className="mobile-founders-cta" onClick={closeMobileMenu}>
-                      🚀 Join Founders Circle
-                    </Link>
-                  )}
+                  {/* Founders CTA moved out of navbar for signed-in users (mobile) */}
                   
                   <Link to="/profile" className="mobile-nav-link" onClick={closeMobileMenu}>
                     <FaUser className="mobile-nav-icon" />

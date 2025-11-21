@@ -2,6 +2,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import StickyCTA from '../components/StickyCTA';
+import GuaranteeBlock from '../components/GuaranteeBlock';
+import TrustBadges from '../components/TrustBadges';
+import FAQAccordion from '../components/FAQAccordion';
+import OfferComparison from '../components/OfferComparison';
 import ReferralTracker from '../components/ReferralTracker.js';
 import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook, FaQuoteLeft, FaRobot, FaBrain, FaCode } from 'react-icons/fa';
 import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
@@ -543,18 +548,10 @@ export default function Home() {
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
           </p>
           
-          <div style={{ 
-            marginTop: isMobile ? '1rem' : '2rem', 
-            display: 'flex', 
-            gap: '1rem', 
-            justifyContent: 'center',
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: 'center',
-            padding: isMobile ? '0 2rem' : '0'
-          }}>
+          <div className={`mt-${isMobile ? '4' : '8'} flex gap-4 justify-center ${isMobile ? 'flex-col px-8' : 'flex-row'}`}>
             {!user && (
               <Link 
-                to="/checkout" 
+                to="/register" 
                 className="cta-button"
                 style={{
                   background: '#2563eb',
@@ -576,6 +573,10 @@ export default function Home() {
                 <FaRocket /> Begin Checkout - $47/month
               </Link>
             )}
+          </div>
+          <div className="max-w-xl mx-auto">
+            <GuaranteeBlock />
+            <TrustBadges />
           </div>
         </div>
       </motion.section>
@@ -718,11 +719,12 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                <Link to="/checkout" className="cta-button">
+              <div className="text-center mt-8">
+                <Link to={user ? "/checkout" : "/register"} className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
                   Start Your 30-Day Journey - $47/month
                 </Link>
+                <div className="max-w-xl mx-auto"><GuaranteeBlock /><TrustBadges /></div>
               </div>
             </div>
             <div className="content-image">
@@ -822,7 +824,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta">Start This Path</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
             </div>
 
             {/* Scale Your Business Path */}
@@ -862,7 +864,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta">Start This Path</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
             </div>
 
             {/* Master AI Marketing Path */}
@@ -903,7 +905,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout" className="path-cta featured">Start AI Mastery</Link>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta featured">Start AI Mastery</Link>
             </div>
           </div>
 
@@ -914,6 +916,7 @@ export default function Home() {
               <p className="total-value">Total Value: <span className="strikethrough">$2,758</span></p>
               <p className="membership-price">Your Price: <span className="highlight">$47/month</span></p>
             </div>
+            <OfferComparison />
           </div>
         </div>
       </motion.section>
@@ -957,7 +960,7 @@ export default function Home() {
 
           <div className="ai-cta-container">
             <Link 
-              to="/checkout" 
+              to={user ? "/checkout" : "/register"}
               className="cta-button"
               style={{
                 background: '#2563eb',
@@ -1219,6 +1222,8 @@ export default function Home() {
         </div>
       </motion.section>
 
+      {/* Community Section removed per request */}
+
       {/* No Free Trial Section */}
       <motion.section 
         className="no-free-trial-section"
@@ -1241,7 +1246,7 @@ export default function Home() {
             Access Revenue Ripple Today.
           </p>
           <div className="no-free-trial-cta">
-            <Link to="/checkout" className="cta-button">
+            <Link to={user ? "/checkout" : "/register"} className="cta-button">
               Join Now for Only $47/month
             </Link>
           </div>
@@ -1263,7 +1268,7 @@ export default function Home() {
           </p>
         
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link to="/checkout" className="cta-button">
+            <Link to={user ? "/checkout" : "/register"} className="cta-button">
               Join Now for Only $47/month
             </Link>
           </div>

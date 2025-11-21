@@ -17,6 +17,15 @@ export default function ThankYou() {
   // const commission = (0.5 / 100) * 47;
 
   useEffect(() => {
+    // Always start at top so users read instructions in order
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const redirectStatus = params.get("redirect_status");
     if (redirectStatus) {

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AuthService } from "../services/authService";
+import { supabase } from "../supabase/client";
 
 const AuthContext = createContext();
 
@@ -13,52 +13,96 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        // Check if Supabase is properly configured
-        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-          console.warn('Supabase not configured, skipping auth initialization');
-          setUser(null);
-          setSession(null);
-          return;
-        }
-        
-        const currentUser = await AuthService.getCurrentUser();
-        if (currentUser) {
-          setUser(currentUser);
-          setSession({ user: currentUser });
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
+    // Check if we're in the middle of OAuth callback
+    const isOAuthCallback = window.location.pathname === '/auth/callback' || 
+                            window.location.hash.includes('access_token');
+    
+    const token = localStorage.getItem("revenue-ripple-auth-token");
+
+    // Don't force signOut during OAuth flow - let Supabase handle it
+    if (!token && !isOAuthCallback) {
+      supabase.auth.signOut().finally(() => {
         setUser(null);
         setSession(null);
-      } finally {
+        setLoading(false);
+      });
+      return;
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserData(session.user);
+      } else {
         setLoading(false);
       }
-    };
+    });
 
-    initializeAuth();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      if (session?.user) {
+        fetchUserData(session.user);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchUserData = async (authUser) => {
     try {
-<<<<<<< HEAD
-      const userData = await AuthService.getUserById(authUser.id);
-=======
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio, paypal_email, has_paid, payment_status"
+          "id, email, role, plan, created_at, name, status, phone, company, bio, paypal_email, has_paid, payment_status"
         )
         .eq("id", authUser.id)
         .single();
 
-      if (error) {
-        console.error("Error fetching user data:", error);
-        // If user doesn't exist in users table, create basic user object
+      if (error && error.code === 'PGRST116') {
+        // User doesn't exist in users table - create one (common with OAuth signups)
+        console.log("Creating user record for OAuth user:", authUser.id);
+        
+        const newUser = {
+          id: authUser.id,
+          email: authUser.email,
+          name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email.split('@')[0],
+          role: 'member',
+          status: 'active',
+          created_at: new Date().toISOString(),
+          phone: authUser.user_metadata?.phone || '',
+          company: '',
+          bio: '',
+          plan: '',
+          paypal_email: null,
+          has_paid: false,
+          payment_status: 'pending'
+        };
+
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert([newUser]);
+
+        if (insertError) {
+          console.error("Error creating user record:", insertError);
+        }
+
         setUser({
           ...authUser,
-          role: 'member', // default role
+          ...newUser,
+        });
+        return;
+      }
+
+      if (error) {
+        console.error("Error fetching user data:", error);
+        setUser({
+          ...authUser,
+          role: 'member',
           status: 'active',
           has_paid: false,
           payment_status: 'pending'
@@ -66,9 +110,11 @@ export function AuthProvider({ children }) {
         return;
       }
 
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       if (userData) {
-        setUser(userData);
+        setUser({
+          ...authUser,
+          ...userData,
+        });
       } else {
         setUser({
           ...authUser,
@@ -93,10 +139,6 @@ export function AuthProvider({ children }) {
   async function signup(email, password, firstName, lastName ,role, paypal) {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const user = await AuthService.signup(email, password, name);
-      return user;
-=======
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -131,7 +173,6 @@ export function AuthProvider({ children }) {
       }
 
       return authData.user;
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
     } catch (error) {
       throw error;
     } finally {
@@ -142,12 +183,6 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const user = await AuthService.login(email, password);
-      setUser(user);
-      setSession({ user });
-      return user;
-=======
       
       const { data: authData, error: authError } =
         await supabase.auth.signInWithPassword({
@@ -163,7 +198,6 @@ export function AuthProvider({ children }) {
 
       await fetchUserData(authData.user);
       return authData.user;
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
     } catch (error) {
       console.error("login: error", error);
       throw error;
@@ -173,9 +207,13 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+    localStorage.removeItem("revenue-ripple-auth-token");
     try {
       setLoading(true);
-      await AuthService.logout();
+      
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
       setUser(null);
       setSession(null);
     } catch (error) {
@@ -187,23 +225,6 @@ export function AuthProvider({ children }) {
   }
 
   async function updateUserProfile(profileData) {
-<<<<<<< HEAD
-    try {
-      if (!user) throw new Error("No user logged in");
-      const updatedUser = await AuthService.updateProfile(user.id, profileData);
-      setUser(updatedUser);
-      return true;
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
-    }
-  }
-
-  async function resetPassword(email) {
-    try {
-      return await AuthService.resetPassword(email);
-    } catch (error) {
-=======
   try {
     if (!user) throw new Error("No user logged in");
 
@@ -244,7 +265,6 @@ export function AuthProvider({ children }) {
     console.log('update response',r)
     if (r.error) {
       console.error("Supabase update error:", error);
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
       throw error;
     }
 
@@ -290,6 +310,49 @@ async function resetPassword(email) {
   }
 }
 
+async function signInWithOAuth(provider, redirectPath = '/checkout?product=membership') {
+  try {
+    setLoading(true);
+    
+    console.log('🔵 Starting OAuth flow for:', provider);
+    console.log('📍 Origin:', window.location.origin);
+    console.log('📍 Redirect path to save:', redirectPath);
+    
+    // Store redirect path in localStorage so we can use it after OAuth callback
+    localStorage.setItem('oauth-redirect-path', redirectPath);
+    console.log('💾 Saved to localStorage:', localStorage.getItem('oauth-redirect-path'));
+    
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    console.log('🔗 OAuth redirectTo URL:', redirectUrl);
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: provider,
+      options: {
+        redirectTo: redirectUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+
+    console.log('OAuth response:', { data, error });
+    
+    if (error) {
+      console.error('❌ OAuth error:', error);
+      throw error;
+    }
+    
+    console.log('✅ OAuth initiated successfully');
+    return data;
+  } catch (error) {
+    console.error(`💥 OAuth ${provider} error:`, error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   // Function to refresh user data from database
   const refreshUserData = async () => {
@@ -308,6 +371,7 @@ async function resetPassword(email) {
     updateUserProfile,
     resetPassword,
     refreshUserData,
+    signInWithOAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
