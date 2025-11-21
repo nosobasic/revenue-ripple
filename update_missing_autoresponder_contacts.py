@@ -97,26 +97,42 @@ def analyze_contacts(contacts: List[Dict]) -> Dict:
         'total': len(contacts)
     }
 
-def update_contact_autoresponder(api_key: str, contact_id: str, email: str) -> bool:
-    """Update a contact to add them to autoresponder cycle (dayOfCycle: 0)"""
+def update_contact_autoresponder(api_key: str, contact: Dict, campaign_id: str) -> bool:
+    """Update a contact to add them to autoresponder cycle (dayOfCycle: 0)
+    Uses POST with updateIfAlreadyExists: true since GetResponse doesn't support PATCH/PUT
+    """
     headers = {
         "X-Auth-Token": f"api-key {api_key}",
         "Content-Type": "application/json"
     }
     
+    email = contact.get('email')
+    name = contact.get('name', '')
+    
+    # Get the campaign from contact, or use the provided campaign_id
+    contact_campaign = contact.get('campaign', {})
+    contact_campaign_id = contact_campaign.get('campaignId', campaign_id)
+    
     body = {
-        "dayOfCycle": 0
+        "email": email,
+        "campaign": {"campaignId": contact_campaign_id},
+        "dayOfCycle": 0,
+        "updateIfAlreadyExists": True
     }
     
+    # Include name if available
+    if name:
+        body["name"] = name
+    
     try:
-        response = requests.patch(
-            f"https://api.getresponse.com/v3/contacts/{contact_id}",
+        response = requests.post(
+            "https://api.getresponse.com/v3/contacts",
             json=body,
             headers=headers,
             timeout=10
         )
         
-        if response.status_code == 200:
+        if response.status_code == 202:
             return True
         else:
             print(f"   ⚠️ Failed to update {email}: {response.status_code} - {response.text}")
@@ -205,13 +221,12 @@ def main():
     failed = 0
     
     for i, contact in enumerate(missing, 1):
-        contact_id = contact.get('contactId')
         email = contact.get('email', 'Unknown')
         name = contact.get('name', 'Unknown')
         
         print(f"   [{i}/{len(missing)}] 🔄 {email} ({name})...", end=" ")
         
-        if update_contact_autoresponder(api_key, contact_id, email):
+        if update_contact_autoresponder(api_key, contact, campaign_id):
             print("✅ Updated")
             updated += 1
         else:
