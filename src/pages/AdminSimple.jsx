@@ -492,30 +492,6 @@ const AdminSimple = () => {
               </div>
               
               {users.length > 0 ? (
-<<<<<<< HEAD
-                <table className="user-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Member Since</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.slice(0, 20).map((user) => (
-                      <tr key={user.id}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>{user.role}</td>
-                        <td>{user.status}</td>
-                        <td>{user.memberSince}</td>
-                        <td>
-                          <button onClick={() => handleEditUser(user)} style={{ padding: '4px 8px', fontSize: '12px' }}>Edit</button>
-                        </td>
-=======
                 <div className="table-wrapper">
                   <table className="user-table">
                     <thead>
@@ -525,7 +501,6 @@ const AdminSimple = () => {
                         <th>Role</th>
                         <th>Status</th>
                         <th>Member Since</th>
->>>>>>> d9037f6c58dc979bec06aba733a4ce6a80f6cd63
                       </tr>
                     </thead>
                     <tbody>
