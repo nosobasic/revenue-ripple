@@ -18,6 +18,13 @@ export const STRIPE_CONFIG = {
   }
 };
 
+// Helper function to get API base URL
+export const getApiBase = () => {
+  return import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
+};
+
+export const USE_PROXY = import.meta.env.VITE_USE_PROXY === 'true';
+
 export const API_ENDPOINTS = {
   BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
   PAYMENT_INTENT: '/create-payment-intent',
