@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import Footer from '../components/Footer';
+import { FOUNDERS_ANNUAL_CONFIG } from '../config/constants';
 
 const DFYFunnelConsultation = () => {
   const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaO8invI2lpY5BCpQWA2d4C8UhXLihhM58VVlgCSFPXjxO2uoBGZLdohjHbHvBjOoU4g/exec';
+  const CALENDLY_URL = FOUNDERS_ANNUAL_CONFIG.CALENDLY_LINK;
 
   const initialFormData = {
     fullName: '',
@@ -944,7 +945,6 @@ const DFYFunnelConsultation = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
