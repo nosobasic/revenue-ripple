@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import StickyCTA from '../components/StickyCTA';
 import GuaranteeBlock from '../components/GuaranteeBlock';
@@ -472,6 +472,91 @@ const learningPathsStyles = `
     margin-bottom: 1rem;
     display: inline-block;
   }
+  
+  /* Modern Glassmorphism Effects */
+  .hero-background {
+    pointer-events: none;
+  }
+  
+  /* Enhanced Card Hover Effects */
+  .stat-card,
+  .learning-path-card,
+  .ai-feature-card,
+  .testimonial-card {
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  /* Smooth Scroll Behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Enhanced Button Effects */
+  .path-cta,
+  .stat-cta,
+  .support-cta {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .path-cta::before,
+  .stat-cta::before,
+  .support-cta::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .path-cta:hover::before,
+  .stat-cta:hover::before,
+  .support-cta:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  /* Animated Gradient Text */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  /* Pulse Animation for Featured Badge */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+  }
+  
+  .featured-badge {
+    animation: pulse-glow 2s infinite;
+  }
+  
+  /* Smooth Icon Animations */
+  .path-icon,
+  .stat-icon,
+  .ai-feature-icon,
+  .support-icon {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  /* Enhanced Modal Animation */
+  .testimonial-modal-overlay {
+    backdrop-filter: blur(8px);
+  }
 `;
 
 // Inject styles
@@ -481,11 +566,110 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(styleSheet);
 }
 
+// Animation variants for modern effects
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9, y: 30 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  },
+  hover: {
+    scale: 1.05,
+    y: -8,
+    transition: {
+      duration: 0.3,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const textRevealVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const iconVariants = {
+  hidden: { opacity: 0, scale: 0, rotate: -180 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.34, 1.56, 0.64, 1]
+    }
+  },
+  hover: {
+    scale: 1.2,
+    rotate: 360,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+const buttonVariants = {
+  rest: { scale: 1 },
+  hover: {
+    scale: 1.05,
+    boxShadow: "0 10px 30px rgba(37, 99, 235, 0.4)",
+    transition: {
+      duration: 0.2,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  },
+  tap: { scale: 0.95 }
+};
+
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { user } = useAuth();
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   useEffect(() => {
     // Hotjar Tracking Code for Revenue Ripple
@@ -518,43 +702,111 @@ export default function Home() {
     <div className="home">
       <ReferralTracker />
       <Navbar />
-      {/* Hero Section */}
+      {/* Hero Section with Parallax */}
       <motion.section 
+        ref={heroRef}
         className="hero"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        style={{ y, opacity }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="container">
-          <h1 className="hero-title" style={{ 
+        {/* Animated Background Gradient */}
+        <motion.div
+          className="hero-background"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+            backgroundSize: '400% 400%',
+            opacity: 0.1,
+            zIndex: 0,
+            filter: 'blur(100px)'
+          }}
+          animate={{
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: 'linear'
+          }}
+        />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.h1 
+            className="hero-title" 
+            variants={textRevealVariants}
+            initial="hidden"
+            animate="visible"
+            style={{ 
             lineHeight: isMobile ? '1.4' : '1.2', 
             letterSpacing: '0.5px',
             fontSize: isMobile ? '1.75rem' : '2.5rem',
             padding: isMobile ? '0 2rem' : '0',
-            marginBottom: isMobile ? '2rem' : '1rem'
-          }}>
+              marginBottom: isMobile ? '2rem' : '1rem',
+              background: 'linear-gradient(135deg, #1e293b 0%, #2563eb 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
             Stop Struggling with Marketing.
-            <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}>Get Results in 30 Days.</span>
-          </h1>
+            <motion.span 
+              style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}
+              animate={{
+                scale: [1, 1.02, 1],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }}
+            >
+              Get Results in 30 Days.
+            </motion.span>
+          </motion.h1>
           
-          <p className="hero-subtitle" style={{ 
+          <motion.p 
+            className="hero-subtitle" 
+            variants={textRevealVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.2 }}
+            style={{ 
             lineHeight: '1.7', 
             letterSpacing: '0.3px', 
             wordSpacing: '1px',
             fontSize: isMobile ? '1rem' : '1.125rem',
             padding: isMobile ? '0 2rem' : '0',
             marginBottom: isMobile ? '2.5rem' : '1.5rem'
-          }}>
+            }}
+          >
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
-          </p>
+          </motion.p>
           
-          <div className={`mt-${isMobile ? '4' : '8'} flex gap-4 justify-center ${isMobile ? 'flex-col px-8' : 'flex-row'}`}>
+          <motion.div 
+            className={`mt-${isMobile ? '4' : '8'} flex gap-4 justify-center ${isMobile ? 'flex-col px-8' : 'flex-row'}`}
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.4 }}
+          >
             {!user && (
+              <motion.div
+                variants={buttonVariants}
+                initial="rest"
+                whileHover="hover"
+                whileTap="tap"
+              >
               <Link 
                 to="/register" 
                 className="cta-button"
                 style={{
-                  background: '#2563eb',
+                    background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
                   color: 'white',
                   padding: isMobile ? '0.875rem 2rem' : '1rem 2.5rem',
                   borderRadius: '50px',
@@ -564,20 +816,41 @@ export default function Home() {
                   alignItems: 'center',
                   gap: '0.5rem',
                   fontSize: isMobile ? '1rem' : '1.25rem',
-                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+                    boxShadow: '0 10px 30px rgba(37, 99, 235, 0.3)',
                   width: isMobile ? '100%' : 'auto',
                   justifyContent: 'center',
-                  maxWidth: isMobile ? '320px' : 'none'
-                }}
-              >
-                <FaRocket /> Begin Checkout - $47/month
+                    maxWidth: isMobile ? '320px' : 'none',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <motion.span
+                    animate={{
+                      rotate: [0, 360],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'linear'
+                    }}
+                  >
+                    <FaRocket />
+                  </motion.span>
+                  Begin Checkout - $47/month
               </Link>
+              </motion.div>
             )}
-          </div>
-          <div className="max-w-xl mx-auto">
+          </motion.div>
+          <motion.div 
+            className="max-w-xl mx-auto"
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.6 }}
+          >
             <GuaranteeBlock />
             <TrustBadges />
-          </div>
+          </motion.div>
         </div>
       </motion.section>
 
@@ -738,176 +1011,400 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* Stats Section with Stagger Animations */}
       <motion.section 
         className="stats-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={containerVariants}
       >
         <div className="container">
-          <div className="stats-grid">
-            <div className="stat-card">
+          <motion.div 
+            className="stats-grid"
+            variants={containerVariants}
+          >
+            <motion.div 
+              className="stat-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.3)'
+              }}
+            >
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaBook className="stat-icon" />
-              <div className="stat-number">Step-By-Step</div>
+              </motion.div>
+              <motion.div 
+                className="stat-number"
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+              >
+                Step-By-Step
+              </motion.div>
               <p className="stat-label">Playbooks</p>
               <Link to="/playbooks" className="stat-cta">Explore Playbooks</Link>
-            </div>
-            <div className="stat-card">
+            </motion.div>
+            
+            <motion.div 
+              className="stat-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.3)'
+              }}
+            >
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaGraduationCap className="stat-icon" />
-              <div className="stat-number">Up-To-Date</div>
+              </motion.div>
+              <motion.div 
+                className="stat-number"
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+              >
+                Up-To-Date
+              </motion.div>
               <p className="stat-label">Trainings</p>
               <Link to="/training" className="stat-cta">Start Learning</Link>
-            </div>
-            <div className="stat-card">
+            </motion.div>
+            
+            <motion.div 
+              className="stat-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.3)'
+              }}
+            >
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaHeadset className="stat-icon" />
-              <div className="stat-number">All Your</div>
+              </motion.div>
+              <motion.div 
+                className="stat-number"
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
+              >
+                All Your
+              </motion.div>
               <p className="stat-label">Questions Answered</p>
               <Link to="/support" className="stat-cta">Get Support</Link>
-            </div>
-            <div className="stat-card">
+            </motion.div>
+            
+            <motion.div 
+              className="stat-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.3)'
+              }}
+            >
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaUsers className="stat-icon" />
-              <div className="stat-number">500+</div>
+              </motion.div>
+              <motion.div 
+                className="stat-number"
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+              >
+                500+
+              </motion.div>
               <p className="stat-label">Active Users</p>
               <Link to="/community" className="stat-cta">Join Community</Link>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </motion.section>
 
       {/* Learning Paths Section */}
       <motion.section 
         className="learning-paths-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
       >
         <div className="container">
-          <h2 className="section-title">Choose Your Path to Success</h2>
-          <p className="section-subtitle">Follow these proven learning paths to get results fast</p>
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            Choose Your Path to Success
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+            transition={{ delay: 0.2 }}
+          >
+            Follow these proven learning paths to get results fast
+          </motion.p>
           
-          <div className="learning-paths-grid">
+          <motion.div 
+            className="learning-paths-grid"
+            variants={containerVariants}
+          >
             {/* Get Your First Sale Path */}
-            <div className="learning-path-card">
-              <div className="path-header">
+            <motion.div 
+              className="learning-path-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div 
+                className="path-header"
+                variants={itemVariants}
+              >
+                <motion.div
+                  variants={iconVariants}
+                  whileHover="hover"
+                >
                 <FaRocket className="path-icon" />
+                </motion.div>
                 <h3>Get Your First Sale</h3>
                 <p className="path-duration">30 Days</p>
-              </div>
-              <div className="path-courses">
-                <div className="course-item">
-                  <span className="course-number">1</span>
+              </motion.div>
+              <motion.div 
+                className="path-courses"
+                variants={containerVariants}
+              >
+                {[
+                  { num: 1, title: 'AI Essentials', desc: 'Build your AI foundation' },
+                  { num: 2, title: 'Email Marketing', desc: 'Build and nurture your audience' },
+                  { num: 3, title: 'Funnel Building', desc: 'Convert leads into customers' },
+                  { num: 4, title: 'Paid Traffic', desc: 'Drive targeted traffic' }
+                ].map((course, idx) => (
+                  <motion.div 
+                    key={idx}
+                    className="course-item"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <motion.span 
+                      className="course-number"
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {course.num}
+                    </motion.span>
                   <div className="course-info">
-                    <h4>AI Essentials</h4>
-                    <p>Build your AI foundation</p>
+                      <h4>{course.title}</h4>
+                      <p>{course.desc}</p>
                   </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">2</span>
-                  <div className="course-info">
-                    <h4>Email Marketing</h4>
-                    <p>Build and nurture your audience</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">3</span>
-                  <div className="course-info">
-                    <h4>Funnel Building</h4>
-                    <p>Convert leads into customers</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">4</span>
-                  <div className="course-info">
-                    <h4>Paid Traffic</h4>
-                    <p>Drive targeted traffic</p>
-                  </div>
-                </div>
-              </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Scale Your Business Path */}
-            <div className="learning-path-card">
-              <div className="path-header">
+            <motion.div 
+              className="learning-path-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div 
+                className="path-header"
+                variants={itemVariants}
+              >
+                <motion.div
+                  variants={iconVariants}
+                  whileHover="hover"
+                >
                 <FaChartLine className="path-icon" />
+                </motion.div>
                 <h3>Scale Your Business</h3>
                 <p className="path-duration">60 Days</p>
-              </div>
-              <div className="path-courses">
-                <div className="course-item">
-                  <span className="course-number">1</span>
+              </motion.div>
+              <motion.div 
+                className="path-courses"
+                variants={containerVariants}
+              >
+                {[
+                  { num: 1, title: 'Prompt Engineering', desc: 'Master AI interactions' },
+                  { num: 2, title: 'Marketing Automation', desc: 'Automate your workflows' },
+                  { num: 3, title: 'SEO', desc: 'Long-term traffic growth' },
+                  { num: 4, title: 'Social Media Marketing', desc: 'Organic growth strategies' }
+                ].map((course, idx) => (
+                  <motion.div 
+                    key={idx}
+                    className="course-item"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <motion.span 
+                      className="course-number"
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {course.num}
+                    </motion.span>
                   <div className="course-info">
-                    <h4>Prompt Engineering</h4>
-                    <p>Master AI interactions</p>
+                      <h4>{course.title}</h4>
+                      <p>{course.desc}</p>
                   </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">2</span>
-                  <div className="course-info">
-                    <h4>Marketing Automation</h4>
-                    <p>Automate your workflows</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">3</span>
-                  <div className="course-info">
-                    <h4>SEO</h4>
-                    <p>Long-term traffic growth</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">4</span>
-                  <div className="course-info">
-                    <h4>Social Media Marketing</h4>
-                    <p>Organic growth strategies</p>
-                  </div>
-                </div>
-              </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Master AI Marketing Path */}
-            <div className="learning-path-card featured">
-              <div className="path-header">
+            <motion.div 
+              className="learning-path-card featured"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.3)',
+                boxShadow: '0 8px 32px rgba(37, 99, 235, 0.2)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  top: '-50%',
+                  right: '-50%',
+                  width: '200%',
+                  height: '200%',
+                  background: 'radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)',
+                  borderRadius: '50%'
+                }}
+                animate={{
+                  rotate: [0, 360],
+                }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: 'linear'
+                }}
+              />
+              <motion.div 
+                className="path-header"
+                variants={itemVariants}
+                style={{ position: 'relative', zIndex: 1 }}
+              >
+                <motion.div
+                  variants={iconVariants}
+                  whileHover="hover"
+                >
                 <FaRobot className="path-icon" />
+                </motion.div>
                 <h3>Master AI Marketing</h3>
                 <p className="path-duration">45 Days</p>
-                <span className="featured-badge">Most Popular</span>
-              </div>
-              <div className="path-courses">
-                <div className="course-item">
-                  <span className="course-number">1</span>
+                <motion.span 
+                  className="featured-badge"
+                  animate={{
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                  }}
+                >
+                  Most Popular
+                </motion.span>
+              </motion.div>
+              <motion.div 
+                className="path-courses"
+                variants={containerVariants}
+                style={{ position: 'relative', zIndex: 1 }}
+              >
+                {[
+                  { num: 1, title: 'AI Essentials', desc: 'Build your AI foundation' },
+                  { num: 2, title: 'Prompt Engineering', desc: 'Craft perfect prompts' },
+                  { num: 3, title: 'AI Agent Fundamentals', desc: 'Build and deploy AI agents' },
+                  { num: 4, title: 'Marketing Automation', desc: 'AI-powered workflows' }
+                ].map((course, idx) => (
+                  <motion.div 
+                    key={idx}
+                    className="course-item"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <motion.span 
+                      className="course-number"
+                      whileHover={{ scale: 1.2, rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {course.num}
+                    </motion.span>
                   <div className="course-info">
-                    <h4>AI Essentials</h4>
-                    <p>Build your AI foundation</p>
+                      <h4>{course.title}</h4>
+                      <p>{course.desc}</p>
                   </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">2</span>
-                  <div className="course-info">
-                    <h4>Prompt Engineering</h4>
-                    <p>Craft perfect prompts</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">3</span>
-                  <div className="course-info">
-                    <h4>AI Agent Fundamentals</h4>
-                    <p>Build and deploy AI agents</p>
-                  </div>
-                </div>
-                <div className="course-item">
-                  <span className="course-number">4</span>
-                  <div className="course-info">
-                    <h4>Marketing Automation</h4>
-                    <p>AI-powered workflows</p>
-                  </div>
-                </div>
-              </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                style={{ position: 'relative', zIndex: 1 }}
+              >
               <Link to={user ? "/checkout" : "/register"} className="path-cta featured">Start AI Mastery</Link>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           <div className="all-courses-summary">
             <h3>Plus 20+ Additional Courses</h3>
@@ -924,39 +1421,110 @@ export default function Home() {
       {/* AI Education Section */}
       <motion.section 
         className="ai-education-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{
+          position: 'relative',
+          overflow: 'hidden'
+        }}
       >
-        <div className="container">
-          <h2 className="section-title">🚀 Master AI Marketing (Your Competitive Edge)</h2>
-          <p className="section-subtitle">While others struggle with outdated tactics, you'll dominate with AI-powered strategies</p>
+        {/* Animated Background */}
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(147, 51, 234, 0.05) 100%)',
+            backgroundSize: '200% 200%',
+            zIndex: 0
+          }}
+          animate={{
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: 'linear'
+          }}
+        />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            🚀 Master AI Marketing (Your Competitive Edge)
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+            transition={{ delay: 0.2 }}
+          >
+            While others struggle with outdated tactics, you'll dominate with AI-powered strategies
+          </motion.p>
           
-          <div className="ai-features-grid">
-            <div className="ai-feature-card">
-              <FaRobot className="ai-feature-icon" />
-              <h3 className="ai-feature-title">AI Fundamentals</h3>
-              <p className="ai-feature-description">
-                Master the basics of AI and machine learning. Learn how to use AI tools to automate tasks, analyze data, and make data-driven decisions that drive real results.
-              </p>
-            </div>
-            
-            <div className="ai-feature-card">
-              <FaBrain className="ai-feature-icon" />
-              <h3 className="ai-feature-title">Prompt Engineering</h3>
-              <p className="ai-feature-description">
-                Learn to craft effective prompts that get the best results from AI tools. Create compelling content, generate ideas, and optimize your marketing copy with precision.
-              </p>
-            </div>
-            
-            <div className="ai-feature-card">
-              <FaCode className="ai-feature-icon" />
-              <h3 className="ai-feature-title">AI Automation</h3>
-              <p className="ai-feature-description">
-                Discover how to automate your marketing workflows with AI. Save time, reduce errors, and scale your marketing efforts efficiently with cutting-edge tools.
-              </p>
-            </div>
-          </div>
+          <motion.div 
+            className="ai-features-grid"
+            variants={containerVariants}
+          >
+            {[
+              { icon: FaRobot, title: 'AI Fundamentals', desc: 'Master the basics of AI and machine learning. Learn how to use AI tools to automate tasks, analyze data, and make data-driven decisions that drive real results.' },
+              { icon: FaBrain, title: 'Prompt Engineering', desc: 'Learn to craft effective prompts that get the best results from AI tools. Create compelling content, generate ideas, and optimize your marketing copy with precision.' },
+              { icon: FaCode, title: 'AI Automation', desc: 'Discover how to automate your marketing workflows with AI. Save time, reduce errors, and scale your marketing efforts efficiently with cutting-edge tools.' }
+            ].map((feature, idx) => {
+              const IconComponent = feature.icon;
+              return (
+                <motion.div 
+                  key={idx}
+                  className="ai-feature-card"
+                  variants={cardVariants}
+                  whileHover="hover"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(37, 99, 235, 0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <motion.div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: '-100%',
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent)',
+                    }}
+                    whileHover={{
+                      left: '100%',
+                    }}
+                    transition={{
+                      duration: 0.6,
+                      ease: 'easeInOut'
+                    }}
+                  />
+                  <motion.div
+                    variants={iconVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    whileHover="hover"
+                    style={{ position: 'relative', zIndex: 1 }}
+                  >
+                    <IconComponent className="ai-feature-icon" />
+                  </motion.div>
+                  <h3 className="ai-feature-title" style={{ position: 'relative', zIndex: 1 }}>{feature.title}</h3>
+                  <p className="ai-feature-description" style={{ position: 'relative', zIndex: 1 }}>{feature.desc}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
 
           <div className="ai-cta-container">
             <Link 
@@ -985,41 +1553,132 @@ export default function Home() {
       {/* Support & Guidance Section */}
       <motion.section 
         className="support-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        style={{ background: '#f9fafb', padding: '4rem 0' }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{ background: '#f9fafb', padding: '4rem 0', position: 'relative', overflow: 'hidden' }}
       >
-        <div className="container">
-          <h2 className="section-title">Still Need Help? We've Got You Covered</h2>
-          <p className="section-subtitle">Get personalized support when you need it most</p>
+        {/* Animated Background Pattern */}
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.05) 0%, transparent 50%)',
+            zIndex: 0
+          }}
+          animate={{
+            backgroundPosition: ['0% 0%', '100% 100%'],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            ease: 'linear'
+          }}
+        />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            Still Need Help? We've Got You Covered
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+            transition={{ delay: 0.2 }}
+          >
+            Get personalized support when you need it most
+          </motion.p>
           
-          <div className="support-grid">
+          <motion.div 
+            className="support-grid"
+            variants={containerVariants}
+          >
             {/* AI Assistant Card */}
-            <div className="support-card">
+            <motion.div 
+              className="support-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaRobot className="support-icon" />
+              </motion.div>
               <h3>AI Marketing Assistant</h3>
               <p>
                 Get instant answers to your marketing questions. Our AI assistant is trained on all our courses and can help you apply strategies to your specific business.
               </p>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to="/dashboard" className="support-cta">
                 <FaRobot /> Chat with AI Assistant
               </Link>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* 1-on-1 Coaching Card */}
-            <div className="support-card premium">
-              <span className="premium-badge">Premium Support</span>
+            <motion.div 
+              className="support-card premium"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(5, 150, 105, 0.3)',
+                boxShadow: '0 8px 32px rgba(5, 150, 105, 0.2)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <motion.span 
+                className="premium-badge"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+              >
+                Premium Support
+              </motion.span>
+              <motion.div
+                variants={iconVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                whileHover="hover"
+              >
               <FaUsers className="support-icon" />
+              </motion.div>
               <h3>1-on-1 Business Coaching</h3>
               <p>
                 Book a personal strategy session with our marketing experts. Get tailored advice for your specific business challenges and accelerate your growth.
               </p>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to="/coaching" className="support-cta">
                 <FaUsers /> Book Coaching Call
               </Link>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
 
           <div style={{ textAlign: 'center', marginTop: '2rem', padding: '1.5rem', background: 'white', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
             <p style={{ margin: '0 0 1rem 0', color: '#6b7280', fontSize: '0.875rem' }}>
@@ -1103,49 +1762,115 @@ export default function Home() {
       {/* Testimonials Section */}
       <motion.section 
         className="testimonials-section"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
       >
         <div className="container">
-          <h2 className="section-title">What Our Members Say</h2>
-          <div className="testimonials-grid">
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            What Our Members Say
+          </motion.h2>
+          <motion.div 
+            className="testimonials-grid"
+            variants={containerVariants}
+          >
             {/* Initial testimonials that are always shown */}
-            <div className="testimonial-card">
-              <div className="stars">★★★★★</div>
+            <motion.div 
+              className="testimonial-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div 
+                className="stars"
+                whileHover={{ scale: 1.1, color: '#fbbf24' }}
+              >
+                ★★★★★
+              </motion.div>
               <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
               <div className="testimonial-author">
-                <img src="/assets/images/images/profile-pic1.png" alt="Profile of Sarah Johnson" className="testimonial-avatar" />
+                <motion.img 
+                  src="/assets/images/images/profile-pic1.png" 
+                  alt="Profile of Sarah Johnson" 
+                  className="testimonial-avatar"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                />
                 <div className="author-info">
                   <h4>Sarah Johnson</h4>
                   <p>Digital Marketing Consultant</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="testimonial-card">
-              <div className="stars">★★★★★</div>
+            <motion.div 
+              className="testimonial-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div 
+                className="stars"
+                whileHover={{ scale: 1.1, color: '#fbbf24' }}
+              >
+                ★★★★★
+              </motion.div>
               <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
               <div className="testimonial-author">
-                <img src="/assets/images/images/profile-pic2.png" alt="Profile of Michael Chen" className="testimonial-avatar" />
+                <motion.img 
+                  src="/assets/images/images/profile-pic2.png" 
+                  alt="Profile of Michael Chen" 
+                  className="testimonial-avatar"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                />
                 <div className="author-info">
                   <h4>Gloria Chen</h4>
                   <p>E-commerce Entrepreneur</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="testimonial-card">
-              <div className="stars">★★★★★</div>
+            <motion.div 
+              className="testimonial-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(0,0,0,0.1)'
+              }}
+            >
+              <motion.div 
+                className="stars"
+                whileHover={{ scale: 1.1, color: '#fbbf24' }}
+              >
+                ★★★★★
+              </motion.div>
               <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
               <div className="testimonial-author">
-                <img src="/assets/images/images/profile-pic3.png" alt="Profile of Paul Rodriguez" className="testimonial-avatar" />
+                <motion.img 
+                  src="/assets/images/images/profile-pic3.png" 
+                  alt="Profile of Paul Rodriguez" 
+                  className="testimonial-avatar"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                />
                 <div className="author-info">
                   <h4>Paul Rodriguez</h4>
                   <p>Agency Founder</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {showAllTestimonials && (
               <>
@@ -1276,21 +2001,27 @@ export default function Home() {
       </motion.section>
 
       {/* Floating See More Reviews Button */}
-      <button
+      <AnimatePresence>
+        <motion.button
         onClick={() => setShowTestimonialModal(true)}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          whileHover={{ scale: 1.1, boxShadow: '0 8px 24px rgba(37, 99, 235, 0.4)' }}
+          whileTap={{ scale: 0.95 }}
         style={{
           position: 'fixed',
           bottom: isMobile ? '16px' : '32px',
           right: isMobile ? '16px' : '32px',
           zIndex: 1200,
-          background: '#2563eb',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
           color: 'white',
           border: 'none',
           borderRadius: '50px',
           padding: isMobile ? '0.625rem 1rem' : '0.75rem 1.5rem',
           fontWeight: 600,
           fontSize: isMobile ? '0.875rem' : '1rem',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+            boxShadow: '0 4px 16px rgba(37, 99, 235, 0.3)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -1301,19 +2032,38 @@ export default function Home() {
           textOverflow: 'ellipsis'
         }}
         aria-label="See More Reviews"
+        >
+          <motion.span
+            animate={{
+              rotate: [0, -10, 10, -10, 0],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 3,
+              ease: 'easeInOut'
+            }}
       >
         <FaQuoteLeft style={{ fontSize: isMobile ? '1rem' : '1.25rem' }} /> 
+          </motion.span>
         {isMobile ? 'More Reviews' : 'See More Reviews'}
-      </button>
+        </motion.button>
+      </AnimatePresence>
       {/* Testimonial Modal Overlay */}
+      <AnimatePresence>
       {showTestimonialModal && (
-        <div style={{
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
           position: 'fixed',
           top: 0,
           left: 0,
           width: '100vw',
           height: '100vh',
           background: 'rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(8px)',
           zIndex: 1300,
           display: 'flex',
           alignItems: 'center',
@@ -1321,9 +2071,14 @@ export default function Home() {
         }}
           onClick={() => setShowTestimonialModal(false)}
         >
-          <div
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             style={{
-              background: 'white',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(20px)',
               borderRadius: isMobile ? '0.5rem' : '1rem',
               maxWidth: '700px',
               width: isMobile ? '95vw' : '90vw',
@@ -1332,27 +2087,49 @@ export default function Home() {
               padding: isMobile ? '1rem' : '2rem',
               position: 'relative',
               margin: isMobile ? '0.5rem' : '0',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                border: '1px solid rgba(255,255,255,0.3)'
             }}
             onClick={e => e.stopPropagation()}
           >
-            <button
+            <motion.button
               onClick={() => setShowTestimonialModal(false)}
+              whileHover={{ scale: 1.2, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
               style={{
                 position: 'absolute',
                 top: '1rem',
                 right: '1rem',
-                background: 'none',
+                background: 'rgba(0,0,0,0.05)',
                 border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
                 fontSize: '1.5rem',
                 cursor: 'pointer',
                 color: '#4b5563',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
               }}
               aria-label="Close"
             >
               ×
-            </button>
-            <h2 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#2563eb' }}>What Our Members Say</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            </motion.button>
+            <motion.h2 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{ marginTop: 0, marginBottom: '1.5rem', color: '#2563eb' }}
+            >
+              What Our Members Say
+            </motion.h2>
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={containerVariants}
+              style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+            >
               {/* Render all testimonials, including the extra ones */}
               {/* Always show all testimonials in the modal */}
               <div className="testimonial-card">
@@ -1442,11 +2219,11 @@ export default function Home() {
                     <p>Marketing Analytics Specialist</p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="footer">
