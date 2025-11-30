@@ -1935,7 +1935,7 @@ export default function Home() {
                 </div>
               </>
             )}
-          </div>
+          </motion.div>
           <div className="show-more-container">
             <button 
               className="show-more-button"
@@ -2219,7 +2219,7 @@ export default function Home() {
                     <p>Marketing Analytics Specialist</p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         )}
