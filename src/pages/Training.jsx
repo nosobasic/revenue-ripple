@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
+import { usePremiumBriefings } from '../hooks/usePremiumBriefings';
+import PremiumBriefingCarousel from '../components/training/PremiumBriefingCarousel';
+import PremiumBriefingModal from '../components/training/PremiumBriefingModal';
 import '../pages.css';
 import {
   FaVideo,
@@ -19,6 +22,9 @@ const Training = () => {
   const { user } = useAuth();
   const [expandedSection, setExpandedSection] = useState(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [selectedBriefing, setSelectedBriefing] = useState(null);
+  const [showBriefingModal, setShowBriefingModal] = useState(false);
+  const { data: briefings, loading: briefingsLoading, error: briefingsError } = usePremiumBriefings();
   const [bookingData, setBookingData] = useState({
     name: '',
     email: '',
@@ -28,6 +34,13 @@ const Training = () => {
     topic: '',
     urgency: 'normal'
   });
+
+  const isMember = user?.has_paid === true;
+
+  const handleBriefingClick = (briefing) => {
+    setSelectedBriefing(briefing);
+    setShowBriefingModal(true);
+  };
 
   const toggleSection = (section) => {
     if (expandedSection === section) {
@@ -443,6 +456,64 @@ const Training = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Premium AI Briefings Section */}
+          <div className="section-group">
+            <h2 className="section-title">Premium AI Briefings</h2>
+            <p className="section-subtitle">Exclusive insights and strategic briefings for members</p>
+            <div className="section">
+              <div className="section-header">
+                <FaBrain className="section-icon" />
+                <h2>PREMIUM AI BRIEFINGS</h2>
+              </div>
+              <div className="section-content">
+                {briefingsLoading ? (
+                  <div style={{
+                    padding: '3rem 1rem',
+                    textAlign: 'center',
+                    color: '#64748b',
+                  }}>
+                    <div style={{
+                      display: 'inline-block',
+                      width: '40px',
+                      height: '40px',
+                      border: '4px solid #e2e8f0',
+                      borderTop: '4px solid #2563eb',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite',
+                      marginBottom: '1rem',
+                    }} />
+                    <p style={{ margin: 0 }}>Loading premium briefings...</p>
+                    <style>{`
+                      @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                      }
+                    `}</style>
+                  </div>
+                ) : briefingsError ? (
+                  <div style={{
+                    padding: '3rem 1rem',
+                    textAlign: 'center',
+                    color: '#ef4444',
+                    background: '#fef2f2',
+                    borderRadius: '12px',
+                    border: '1px solid #fecaca',
+                  }}>
+                    <p style={{ margin: 0, fontSize: '1rem' }}>
+                      Having trouble loading premium briefings right now. Try again soon.
+                    </p>
+                  </div>
+                ) : (
+                  <PremiumBriefingCarousel
+                    briefings={briefings || []}
+                    isMember={isMember}
+                    onCardClick={handleBriefingClick}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -893,6 +964,16 @@ const Training = () => {
           </div>
         </div>
       )}
+
+      {/* Premium Briefing Modal */}
+      <PremiumBriefingModal
+        isOpen={showBriefingModal}
+        onClose={() => {
+          setShowBriefingModal(false);
+          setSelectedBriefing(null);
+        }}
+        briefing={selectedBriefing}
+      />
     </div>
   );
 };
