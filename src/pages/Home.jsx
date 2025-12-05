@@ -970,17 +970,19 @@ export default function Home() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                padding: '2rem 1.5rem'
+                padding: '2rem 1.5rem',
+                position: 'static',
+                paddingBottom: '2rem'
               }}
             >
-              <div style={{ marginBottom: '1rem' }}>
-                <FaBook className="stat-icon" />
+              <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                <FaBook className="stat-icon" style={{ display: 'block', margin: '0 auto' }} />
               </div>
-              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%', marginBottom: '0.5rem' }}>
                 Step-By-Step
               </div>
               <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Playbooks</p>
-              <Link to="/playbooks" className="stat-cta" style={{ textAlign: 'center' }}>Explore Playbooks</Link>
+              <Link to="/playbooks" className="stat-cta" style={{ position: 'static', transform: 'none', left: 'auto', bottom: 'auto', textAlign: 'center', display: 'inline-block', marginTop: '0.5rem' }}>Explore Playbooks</Link>
             </div>
             
             <div 
@@ -994,17 +996,19 @@ export default function Home() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                padding: '2rem 1.5rem'
+                padding: '2rem 1.5rem',
+                position: 'static',
+                paddingBottom: '2rem'
               }}
             >
-              <div style={{ marginBottom: '1rem' }}>
-                <FaGraduationCap className="stat-icon" />
+              <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                <FaGraduationCap className="stat-icon" style={{ display: 'block', margin: '0 auto' }} />
               </div>
-              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%', marginBottom: '0.5rem' }}>
                 Up-To-Date
               </div>
               <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Trainings</p>
-              <Link to="/training" className="stat-cta" style={{ textAlign: 'center' }}>Start Learning</Link>
+              <Link to="/training" className="stat-cta" style={{ position: 'static', transform: 'none', left: 'auto', bottom: 'auto', textAlign: 'center', display: 'inline-block', marginTop: '0.5rem' }}>Start Learning</Link>
             </div>
             
             <div 
@@ -1018,17 +1022,19 @@ export default function Home() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                padding: '2rem 1.5rem'
+                padding: '2rem 1.5rem',
+                position: 'static',
+                paddingBottom: '2rem'
               }}
             >
-              <div style={{ marginBottom: '1rem' }}>
-                <FaHeadset className="stat-icon" />
+              <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                <FaHeadset className="stat-icon" style={{ display: 'block', margin: '0 auto' }} />
               </div>
-              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%', marginBottom: '0.5rem' }}>
                 All Your
               </div>
               <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Questions Answered</p>
-              <Link to="/support" className="stat-cta" style={{ textAlign: 'center' }}>Get Support</Link>
+              <Link to="/support" className="stat-cta" style={{ position: 'static', transform: 'none', left: 'auto', bottom: 'auto', textAlign: 'center', display: 'inline-block', marginTop: '0.5rem' }}>Get Support</Link>
             </div>
             
             <div 
@@ -1042,17 +1048,19 @@ export default function Home() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                padding: '2rem 1.5rem'
+                padding: '2rem 1.5rem',
+                position: 'static',
+                paddingBottom: '2rem'
               }}
             >
-              <div style={{ marginBottom: '1rem' }}>
-                <FaUsers className="stat-icon" />
+              <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                <FaUsers className="stat-icon" style={{ display: 'block', margin: '0 auto' }} />
               </div>
-              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%', marginBottom: '0.5rem' }}>
                 500+
               </div>
               <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Active Users</p>
-              <Link to="/community" className="stat-cta" style={{ textAlign: 'center' }}>Join Community</Link>
+              <Link to="/community" className="stat-cta" style={{ position: 'static', transform: 'none', left: 'auto', bottom: 'auto', textAlign: 'center', display: 'inline-block', marginTop: '0.5rem' }}>Join Community</Link>
             </div>
           </div>
         </div>
