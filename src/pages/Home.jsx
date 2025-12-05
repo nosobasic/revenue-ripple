@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import StickyCTA from '../components/StickyCTA';
@@ -657,13 +657,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { user } = useAuth();
   const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  // Removed opacity transform to prevent hero from fading out
+  // Removed scroll-based parallax and opacity transforms to prevent fade effects
 
   useEffect(() => {
     // Hotjar Tracking Code for Revenue Ripple
@@ -697,13 +691,10 @@ export default function Home() {
       <ReferralTracker />
       <Navbar />
       {/* Hero Section with Parallax */}
-      <motion.section 
+      <section 
         ref={heroRef}
         className="hero"
-        style={{ y }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
+        style={{ position: 'relative', zIndex: 3 }}
       >
         {/* Animated Background Gradient */}
         <motion.div
@@ -805,7 +796,7 @@ export default function Home() {
             <TrustBadges />
           </div>
         </div>
-      </motion.section>
+      </section>
 
       <div className="container">
         <div className="content-section">
@@ -973,14 +964,9 @@ export default function Home() {
         variants={containerVariants}
       >
         <div className="container">
-          <motion.div 
-            className="stats-grid"
-            variants={containerVariants}
-          >
-            <motion.div 
+          <div className="stats-grid">
+            <div 
               className="stat-card"
-              variants={cardVariants}
-              whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
@@ -995,12 +981,10 @@ export default function Home() {
               </div>
               <p className="stat-label">Playbooks</p>
               <Link to="/playbooks" className="stat-cta">Explore Playbooks</Link>
-            </motion.div>
+            </div>
             
-            <motion.div 
+            <div 
               className="stat-card"
-              variants={cardVariants}
-              whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
@@ -1015,12 +999,10 @@ export default function Home() {
               </div>
               <p className="stat-label">Trainings</p>
               <Link to="/training" className="stat-cta">Start Learning</Link>
-            </motion.div>
+            </div>
             
-            <motion.div 
+            <div 
               className="stat-card"
-              variants={cardVariants}
-              whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
@@ -1035,12 +1017,10 @@ export default function Home() {
               </div>
               <p className="stat-label">Questions Answered</p>
               <Link to="/support" className="stat-cta">Get Support</Link>
-            </motion.div>
+            </div>
             
-            <motion.div 
+            <div 
               className="stat-card"
-              variants={cardVariants}
-              whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
@@ -1055,8 +1035,8 @@ export default function Home() {
               </div>
               <p className="stat-label">Active Users</p>
               <Link to="/community" className="stat-cta">Join Community</Link>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </motion.section>
 
