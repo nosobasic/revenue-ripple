@@ -955,14 +955,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stats Section with Stagger Animations */}
-      <motion.section 
-        className="stats-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={containerVariants}
-      >
+      {/* Stats Section */}
+      <section className="stats-section">
         <div className="container">
           <div className="stats-grid">
             <div 
@@ -970,17 +964,23 @@ export default function Home() {
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)'
+                border: '1px solid rgba(255,255,255,0.3)',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                padding: '2rem 1.5rem'
               }}
             >
-              <div>
-              <FaBook className="stat-icon" />
+              <div style={{ marginBottom: '1rem' }}>
+                <FaBook className="stat-icon" />
               </div>
-              <div className="stat-number">
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
                 Step-By-Step
               </div>
-              <p className="stat-label">Playbooks</p>
-              <Link to="/playbooks" className="stat-cta">Explore Playbooks</Link>
+              <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Playbooks</p>
+              <Link to="/playbooks" className="stat-cta" style={{ textAlign: 'center' }}>Explore Playbooks</Link>
             </div>
             
             <div 
@@ -988,17 +988,23 @@ export default function Home() {
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)'
+                border: '1px solid rgba(255,255,255,0.3)',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                padding: '2rem 1.5rem'
               }}
             >
-              <div>
-              <FaGraduationCap className="stat-icon" />
+              <div style={{ marginBottom: '1rem' }}>
+                <FaGraduationCap className="stat-icon" />
               </div>
-              <div className="stat-number">
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
                 Up-To-Date
               </div>
-              <p className="stat-label">Trainings</p>
-              <Link to="/training" className="stat-cta">Start Learning</Link>
+              <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Trainings</p>
+              <Link to="/training" className="stat-cta" style={{ textAlign: 'center' }}>Start Learning</Link>
             </div>
             
             <div 
@@ -1006,17 +1012,23 @@ export default function Home() {
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)'
+                border: '1px solid rgba(255,255,255,0.3)',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                padding: '2rem 1.5rem'
               }}
             >
-              <div>
-              <FaHeadset className="stat-icon" />
+              <div style={{ marginBottom: '1rem' }}>
+                <FaHeadset className="stat-icon" />
               </div>
-              <div className="stat-number">
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
                 All Your
               </div>
-              <p className="stat-label">Questions Answered</p>
-              <Link to="/support" className="stat-cta">Get Support</Link>
+              <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Questions Answered</p>
+              <Link to="/support" className="stat-cta" style={{ textAlign: 'center' }}>Get Support</Link>
             </div>
             
             <div 
@@ -1024,21 +1036,27 @@ export default function Home() {
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                 backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.3)'
+                border: '1px solid rgba(255,255,255,0.3)',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                padding: '2rem 1.5rem'
               }}
             >
-              <div>
-              <FaUsers className="stat-icon" />
+              <div style={{ marginBottom: '1rem' }}>
+                <FaUsers className="stat-icon" />
               </div>
-              <div className="stat-number">
+              <div className="stat-number" style={{ textAlign: 'center', width: '100%' }}>
                 500+
               </div>
-              <p className="stat-label">Active Users</p>
-              <Link to="/community" className="stat-cta">Join Community</Link>
+              <p className="stat-label" style={{ textAlign: 'center', width: '100%', marginBottom: '1rem' }}>Active Users</p>
+              <Link to="/community" className="stat-cta" style={{ textAlign: 'center' }}>Join Community</Link>
             </div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Learning Paths Section */}
       <motion.section 
