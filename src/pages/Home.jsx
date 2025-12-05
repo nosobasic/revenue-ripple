@@ -572,74 +572,69 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
+      staggerChildren: 0.05,
+      delayChildren: 0.1
     }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.3,
+      ease: 'easeOut'
     }
   }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 30 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
-    scale: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.3,
+      ease: 'easeOut'
     }
   },
   hover: {
-    scale: 1.05,
-    y: -8,
+    y: -2,
     transition: {
-      duration: 0.3,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.2,
+      ease: 'easeOut'
     }
   }
 };
 
 const textRevealVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.4,
+      ease: 'easeOut'
     }
   }
 };
 
 const iconVariants = {
-  hidden: { opacity: 0, scale: 0, rotate: -180 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    scale: 1,
-    rotate: 0,
     transition: {
-      duration: 0.6,
-      ease: [0.34, 1.56, 0.64, 1]
+      duration: 0.3,
+      ease: 'easeOut'
     }
   },
   hover: {
-    scale: 1.2,
-    rotate: 360,
+    scale: 1.05,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.2,
+      ease: 'easeOut'
     }
   }
 };
@@ -647,14 +642,13 @@ const iconVariants = {
 const buttonVariants = {
   rest: { scale: 1 },
   hover: {
-    scale: 1.05,
-    boxShadow: "0 10px 30px rgba(37, 99, 235, 0.4)",
+    scale: 1.02,
     transition: {
       duration: 0.2,
-      ease: [0.22, 1, 0.36, 1]
+      ease: 'easeOut'
     }
   },
-  tap: { scale: 0.95 }
+  tap: { scale: 0.98 }
 };
 
 export default function Home() {
@@ -668,8 +662,8 @@ export default function Home() {
     offset: ["start start", "end start"]
   });
   
-  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  // Removed opacity transform to prevent hero from fading out
 
   useEffect(() => {
     // Hotjar Tracking Code for Revenue Ripple
@@ -706,10 +700,10 @@ export default function Home() {
       <motion.section 
         ref={heroRef}
         className="hero"
-        style={{ y, opacity }}
+        style={{ y }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.4 }}
       >
         {/* Animated Background Gradient */}
         <motion.div
@@ -730,18 +724,15 @@ export default function Home() {
             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
           }}
           transition={{
-            duration: 20,
+            duration: 40,
             repeat: Infinity,
             ease: 'linear'
           }}
         />
         
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <motion.h1 
+          <h1 
             className="hero-title" 
-            variants={textRevealVariants}
-            initial="hidden"
-            animate="visible"
             style={{ 
             lineHeight: isMobile ? '1.4' : '1.2', 
             letterSpacing: '0.5px',
@@ -751,57 +742,36 @@ export default function Home() {
               background: 'linear-gradient(135deg, #1e293b 0%, #2563eb 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
+              backgroundClip: 'text',
+              opacity: 1
             }}
           >
             Stop Struggling with Marketing.
-            <motion.span 
-              style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb' }}
-              animate={{
-                scale: [1, 1.02, 1],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut'
-              }}
-            >
+            <span style={{ display: 'block', marginTop: '0.5rem', color: '#2563eb', opacity: 1 }}>
               Get Results in 30 Days.
-            </motion.span>
-          </motion.h1>
+            </span>
+          </h1>
           
-          <motion.p 
+          <p 
             className="hero-subtitle" 
-            variants={textRevealVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.2 }}
             style={{ 
             lineHeight: '1.7', 
             letterSpacing: '0.3px', 
             wordSpacing: '1px',
             fontSize: isMobile ? '1rem' : '1.125rem',
             padding: isMobile ? '0 2rem' : '0',
-            marginBottom: isMobile ? '2.5rem' : '1.5rem'
+            marginBottom: isMobile ? '2.5rem' : '1.5rem',
+            opacity: 1,
+            color: '#4b5563'
             }}
           >
             Master AI-powered marketing with our proven system. Learn the exact strategies that generate real revenue - no fluff, just results.
-          </motion.p>
+          </p>
           
-          <motion.div 
+          <div 
             className={`mt-${isMobile ? '4' : '8'} flex gap-4 justify-center ${isMobile ? 'flex-col px-8' : 'flex-row'}`}
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.4 }}
           >
             {!user && (
-              <motion.div
-                variants={buttonVariants}
-                initial="rest"
-                whileHover="hover"
-                whileTap="tap"
-              >
               <Link 
                 to="/register" 
                 className="cta-button"
@@ -821,36 +791,19 @@ export default function Home() {
                   justifyContent: 'center',
                     maxWidth: isMobile ? '320px' : 'none',
                     position: 'relative',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                   }}
                 >
-                  <motion.span
-                    animate={{
-                      rotate: [0, 360],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: 'linear'
-                    }}
-                  >
-                    <FaRocket />
-                  </motion.span>
+                  <FaRocket />
                   Begin Checkout - $47/month
               </Link>
-              </motion.div>
             )}
-          </motion.div>
-          <motion.div 
-            className="max-w-xl mx-auto"
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.6 }}
-          >
+          </div>
+          <div className="max-w-xl mx-auto">
             <GuaranteeBlock />
             <TrustBadges />
-          </motion.div>
+          </div>
         </div>
       </motion.section>
 
@@ -1034,24 +987,12 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.3)'
               }}
             >
-              <motion.div
-                variants={iconVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                whileHover="hover"
-              >
+              <div>
               <FaBook className="stat-icon" />
-              </motion.div>
-              <motion.div 
-                className="stat-number"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-              >
+              </div>
+              <div className="stat-number">
                 Step-By-Step
-              </motion.div>
+              </div>
               <p className="stat-label">Playbooks</p>
               <Link to="/playbooks" className="stat-cta">Explore Playbooks</Link>
             </motion.div>
@@ -1066,24 +1007,12 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.3)'
               }}
             >
-              <motion.div
-                variants={iconVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                whileHover="hover"
-              >
+              <div>
               <FaGraduationCap className="stat-icon" />
-              </motion.div>
-              <motion.div 
-                className="stat-number"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
-              >
+              </div>
+              <div className="stat-number">
                 Up-To-Date
-              </motion.div>
+              </div>
               <p className="stat-label">Trainings</p>
               <Link to="/training" className="stat-cta">Start Learning</Link>
             </motion.div>
@@ -1098,24 +1027,12 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.3)'
               }}
             >
-              <motion.div
-                variants={iconVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                whileHover="hover"
-              >
+              <div>
               <FaHeadset className="stat-icon" />
-              </motion.div>
-              <motion.div 
-                className="stat-number"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
-              >
+              </div>
+              <div className="stat-number">
                 All Your
-              </motion.div>
+              </div>
               <p className="stat-label">Questions Answered</p>
               <Link to="/support" className="stat-cta">Get Support</Link>
             </motion.div>
@@ -1130,24 +1047,12 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.3)'
               }}
             >
-              <motion.div
-                variants={iconVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                whileHover="hover"
-              >
+              <div>
               <FaUsers className="stat-icon" />
-              </motion.div>
-              <motion.div 
-                className="stat-number"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
-              >
+              </div>
+              <div className="stat-number">
                 500+
-              </motion.div>
+              </div>
               <p className="stat-label">Active Users</p>
               <Link to="/community" className="stat-cta">Join Community</Link>
             </motion.div>
@@ -1221,16 +1126,12 @@ export default function Home() {
                     key={idx}
                     className="course-item"
                     variants={itemVariants}
-                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileHover={{ scale: 1.01 }}
                     style={{ cursor: 'pointer' }}
                   >
-                    <motion.span 
-                      className="course-number"
-                      whileHover={{ scale: 1.2, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
+                    <span className="course-number">
                       {course.num}
-                    </motion.span>
+                    </span>
                   <div className="course-info">
                       <h4>{course.title}</h4>
                       <p>{course.desc}</p>
@@ -1238,9 +1139,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
-              </motion.div>
             </motion.div>
 
             {/* Scale Your Business Path */}
@@ -1282,16 +1181,12 @@ export default function Home() {
                     key={idx}
                     className="course-item"
                     variants={itemVariants}
-                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileHover={{ scale: 1.01 }}
                     style={{ cursor: 'pointer' }}
                   >
-                    <motion.span 
-                      className="course-number"
-                      whileHover={{ scale: 1.2, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
+                    <span className="course-number">
                       {course.num}
-                    </motion.span>
+                    </span>
                   <div className="course-info">
                       <h4>{course.title}</h4>
                       <p>{course.desc}</p>
@@ -1299,9 +1194,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
-              </motion.div>
             </motion.div>
 
             {/* Master AI Marketing Path */}
@@ -1318,25 +1211,6 @@ export default function Home() {
                 overflow: 'hidden'
               }}
             >
-              <motion.div
-                style={{
-                  position: 'absolute',
-                  top: '-50%',
-                  right: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: 'radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)',
-                  borderRadius: '50%'
-                }}
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-              />
               <motion.div 
                 className="path-header"
                 variants={itemVariants}
@@ -1350,19 +1224,9 @@ export default function Home() {
                 </motion.div>
                 <h3>Master AI Marketing</h3>
                 <p className="path-duration">45 Days</p>
-                <motion.span 
-                  className="featured-badge"
-                  animate={{
-                    scale: [1, 1.05, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut'
-                  }}
-                >
+                <span className="featured-badge">
                   Most Popular
-                </motion.span>
+                </span>
               </motion.div>
               <motion.div 
                 className="path-courses"
@@ -1379,16 +1243,12 @@ export default function Home() {
                     key={idx}
                     className="course-item"
                     variants={itemVariants}
-                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileHover={{ scale: 1.01 }}
                     style={{ cursor: 'pointer' }}
                   >
-                    <motion.span 
-                      className="course-number"
-                      whileHover={{ scale: 1.2, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
+                    <span className="course-number">
                       {course.num}
-                    </motion.span>
+                    </span>
                   <div className="course-info">
                       <h4>{course.title}</h4>
                       <p>{course.desc}</p>
@@ -1396,13 +1256,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                style={{ position: 'relative', zIndex: 1 }}
-              >
-              <Link to={user ? "/checkout" : "/register"} className="path-cta featured">Start AI Mastery</Link>
-              </motion.div>
+              <Link to={user ? "/checkout" : "/register"} className="path-cta featured" style={{ position: 'relative', zIndex: 1 }}>Start AI Mastery</Link>
             </motion.div>
           </motion.div>
 
@@ -1446,7 +1300,7 @@ export default function Home() {
             backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
           }}
           transition={{
-            duration: 15,
+            duration: 30,
             repeat: Infinity,
             ease: 'linear'
           }}
@@ -1541,7 +1395,8 @@ export default function Home() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 fontSize: '1.25rem',
-                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
               }}
             >
               <FaRocket /> Begin Checkout - $47/month
@@ -1574,7 +1429,7 @@ export default function Home() {
             backgroundPosition: ['0% 0%', '100% 100%'],
           }}
           transition={{
-            duration: 20,
+            duration: 40,
             repeat: Infinity,
             repeatType: 'reverse',
             ease: 'linear'
@@ -1625,11 +1480,9 @@ export default function Home() {
               <p>
                 Get instant answers to your marketing questions. Our AI assistant is trained on all our courses and can help you apply strategies to your specific business.
               </p>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to="/dashboard" className="support-cta">
                 <FaRobot /> Chat with AI Assistant
               </Link>
-              </motion.div>
             </motion.div>
 
             {/* 1-on-1 Coaching Card */}
@@ -1646,19 +1499,9 @@ export default function Home() {
                 overflow: 'hidden'
               }}
             >
-              <motion.span 
-                className="premium-badge"
-                animate={{
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-              >
+              <span className="premium-badge">
                 Premium Support
-              </motion.span>
+              </span>
               <motion.div
                 variants={iconVariants}
                 initial="hidden"
@@ -1672,11 +1515,9 @@ export default function Home() {
               <p>
                 Book a personal strategy session with our marketing experts. Get tailored advice for your specific business challenges and accelerate your growth.
               </p>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link to="/coaching" className="support-cta">
                 <FaUsers /> Book Coaching Call
               </Link>
-              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -1696,7 +1537,7 @@ export default function Home() {
         className="affiliate-program-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="container">
           <h2 className="section-title">The Revenue Ripple Affiliate Program</h2>
@@ -1736,7 +1577,7 @@ export default function Home() {
         className="what-is-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="container">
           <h2 className="section-title">WHAT IS REVENUE RIPPLE?</h2>
@@ -1789,19 +1630,15 @@ export default function Home() {
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
-              <motion.div 
-                className="stars"
-                whileHover={{ scale: 1.1, color: '#fbbf24' }}
-              >
+              <div className="stars">
                 ★★★★★
-              </motion.div>
+              </div>
               <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
               <div className="testimonial-author">
-                <motion.img 
+                <img 
                   src="/assets/images/images/profile-pic1.png" 
                   alt="Profile of Sarah Johnson" 
                   className="testimonial-avatar"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
                 />
                 <div className="author-info">
                   <h4>Sarah Johnson</h4>
@@ -1820,12 +1657,9 @@ export default function Home() {
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
-              <motion.div 
-                className="stars"
-                whileHover={{ scale: 1.1, color: '#fbbf24' }}
-              >
+              <div className="stars">
                 ★★★★★
-              </motion.div>
+              </div>
               <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
               <div className="testimonial-author">
                 <motion.img 
@@ -1851,12 +1685,9 @@ export default function Home() {
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
-              <motion.div 
-                className="stars"
-                whileHover={{ scale: 1.1, color: '#fbbf24' }}
-              >
+              <div className="stars">
                 ★★★★★
-              </motion.div>
+              </div>
               <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
               <div className="testimonial-author">
                 <motion.img 
@@ -1954,7 +1785,7 @@ export default function Home() {
         className="no-free-trial-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="container">
           <h2 className="section-title">No Free Trial?</h2>
@@ -1983,7 +1814,7 @@ export default function Home() {
         className="final-cta-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.4 }}
       >
         <div className="container">
           <h2 className="section-title">Ready to Transform Your Marketing?</h2>
@@ -2007,8 +1838,8 @@ export default function Home() {
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0, opacity: 0 }}
-          whileHover={{ scale: 1.1, boxShadow: '0 8px 24px rgba(37, 99, 235, 0.4)' }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         style={{
           position: 'fixed',
           bottom: isMobile ? '16px' : '32px',
@@ -2033,19 +1864,7 @@ export default function Home() {
         }}
         aria-label="See More Reviews"
         >
-          <motion.span
-            animate={{
-              rotate: [0, -10, 10, -10, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatDelay: 3,
-              ease: 'easeInOut'
-            }}
-      >
-        <FaQuoteLeft style={{ fontSize: isMobile ? '1rem' : '1.25rem' }} /> 
-          </motion.span>
+          <FaQuoteLeft style={{ fontSize: isMobile ? '1rem' : '1.25rem' }} />
         {isMobile ? 'More Reviews' : 'See More Reviews'}
         </motion.button>
       </AnimatePresence>
@@ -2092,10 +1911,8 @@ export default function Home() {
             }}
             onClick={e => e.stopPropagation()}
           >
-            <motion.button
+            <button
               onClick={() => setShowTestimonialModal(false)}
-              whileHover={{ scale: 1.2, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
               style={{
                 position: 'absolute',
                 top: '1rem',
@@ -2226,12 +2043,6 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>&copy; 2025 Revenue Ripple. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }
