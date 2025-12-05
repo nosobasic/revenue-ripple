@@ -1933,7 +1933,7 @@ export default function Home() {
               aria-label="Close"
             >
               ×
-            </motion.button>
+            </button>
             <motion.h2 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
