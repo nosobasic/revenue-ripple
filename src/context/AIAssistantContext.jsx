@@ -33,6 +33,9 @@ export const AIAssistantProvider = ({ children }) => {
     scrollPattern: 'normal',
     returnVisits: 0
   });
+  
+  // Deep dive insight context
+  const [pendingInsightContext, setPendingInsightContext] = useState(null);
 
   // Initialize message history with welcome message
   useEffect(() => {
@@ -139,6 +142,47 @@ export const AIAssistantProvider = ({ children }) => {
     }
   };
 
+  // Format insight context message for AI
+  const formatInsightContext = (briefing) => {
+    if (!briefing) return null;
+    
+    const tagsText = briefing.tags && briefing.tags.length > 0 
+      ? `\n\nRelated topics: ${briefing.tags.join(', ')}` 
+      : '';
+    
+    const contentSummary = briefing.short_description 
+      ? briefing.short_description.substring(0, 300) + (briefing.short_description.length > 300 ? '...' : '')
+      : briefing.full_body 
+        ? briefing.full_body.substring(0, 300) + (briefing.full_body.length > 300 ? '...' : '')
+        : '';
+    
+    let message = `I see you'd like to dive deeper into "${briefing.title}". Let me provide you with a more detailed analysis.\n\n`;
+    
+    if (contentSummary) {
+      message += `Here's what this insight covers:\n${contentSummary}\n`;
+    }
+    
+    if (tagsText) {
+      message += tagsText;
+    }
+    
+    message += `\n\nWhat specific aspects would you like me to explore further? I can provide deeper analysis, actionable strategies, real-world examples, or answer any questions you have about this topic.`;
+    
+    return message;
+  };
+
+  // Open chat with insight/briefing context
+  const openWithInsight = (briefing) => {
+    if (!briefing) return;
+    
+    const contextMessage = formatInsightContext(briefing);
+    setPendingInsightContext({
+      briefing,
+      contextMessage
+    });
+    setIsOpen(true);
+  };
+
   // Update user preferences
   const updatePreferences = (newPreferences) => {
     setUserPreferences(prev => ({
@@ -196,10 +240,13 @@ export const AIAssistantProvider = ({ children }) => {
     setMessageHistory,
     userPreferences,
     strugglingIndicators,
+    pendingInsightContext,
+    setPendingInsightContext,
     
     // Methods
     addMessage,
     openWithContext,
+    openWithInsight,
     updatePreferences,
     shouldOfferHelp,
     getContextualSuggestions,

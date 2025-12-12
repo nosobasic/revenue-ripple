@@ -472,21 +472,21 @@ const Training = () => {
               <div className="section-content">
                 {briefingsLoading ? (
                   <div style={{
-                    padding: '3rem 1rem',
+                    padding: window.innerWidth <= 768 ? '2rem 1rem' : '3rem 1rem',
                     textAlign: 'center',
                     color: '#64748b',
                   }}>
                     <div style={{
                       display: 'inline-block',
-                      width: '40px',
-                      height: '40px',
+                      width: window.innerWidth <= 768 ? '32px' : '40px',
+                      height: window.innerWidth <= 768 ? '32px' : '40px',
                       border: '4px solid #e2e8f0',
                       borderTop: '4px solid #2563eb',
                       borderRadius: '50%',
                       animation: 'spin 1s linear infinite',
                       marginBottom: '1rem',
                     }} />
-                    <p style={{ margin: 0 }}>Loading premium briefings...</p>
+                    <p style={{ margin: 0, fontSize: window.innerWidth <= 768 ? '0.9375rem' : '1rem' }}>Loading premium briefings...</p>
                     <style>{`
                       @keyframes spin {
                         0% { transform: rotate(0deg); }
@@ -496,14 +496,14 @@ const Training = () => {
                   </div>
                 ) : briefingsError ? (
                   <div style={{
-                    padding: '3rem 1rem',
+                    padding: window.innerWidth <= 768 ? '2rem 1rem' : '3rem 1rem',
                     textAlign: 'center',
                     color: '#ef4444',
                     background: '#fef2f2',
                     borderRadius: '12px',
                     border: '1px solid #fecaca',
                   }}>
-                    <p style={{ margin: 0, fontSize: '1rem' }}>
+                    <p style={{ margin: 0, fontSize: window.innerWidth <= 768 ? '0.9375rem' : '1rem' }}>
                       Having trouble loading premium briefings right now. Try again soon.
                     </p>
                   </div>

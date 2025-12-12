@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
+import { useAIAssistant } from '../context/AIAssistantContext';
 import { getApiBase } from '../config/constants';
 
 export default function AIAssistantWidget({ showWelcomeBubble = false, pageContext = '' }) {
   const { user } = useAuth();
   const location = useLocation();
+  const { 
+    isOpen: contextIsOpen, 
+    setIsOpen: setContextIsOpen,
+    pendingInsightContext,
+    setPendingInsightContext
+  } = useAIAssistant();
   const allowedRoles = ['member', 'affiliate', 'reseller', 'admin'];
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -45,6 +52,48 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   };
 
   useEffect(scrollToBottom, [messages]);
+
+  // Sync local open state with context
+  useEffect(() => {
+    setOpen(contextIsOpen);
+  }, [contextIsOpen]);
+
+  // Update context when local open state changes
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+    setContextIsOpen(newOpen);
+  };
+
+  // Handle pending insight context
+  useEffect(() => {
+    if (pendingInsightContext && open) {
+      // Add the AI message with insight context
+      const insightMessage = {
+        id: Date.now(),
+        from: 'ai',
+        text: pendingInsightContext.contextMessage,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => {
+        // Check if we already added this insight message (avoid duplicates)
+        const hasInsightMessage = prev.some(msg => 
+          msg.text && msg.text.includes(pendingInsightContext.briefing.title) && 
+          msg.from === 'ai' &&
+          Date.now() - new Date(msg.timestamp).getTime() < 5000 // Within last 5 seconds
+        );
+        
+        if (hasInsightMessage) {
+          return prev;
+        }
+        
+        return [...prev, insightMessage];
+      });
+      
+      // Clear the pending context
+      setPendingInsightContext(null);
+    }
+  }, [pendingInsightContext, open, setPendingInsightContext]);
 
   // Focus input when chat opens
   useEffect(() => {
@@ -201,7 +250,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   };
 
   const openChatWithContext = () => {
-    setOpen(true);
+    handleOpenChange(true);
     setShowHelpBubble(false);
     
     // Add contextual welcome message if not recently added
@@ -409,7 +458,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
             </div>
           </div>
           <button 
-            onClick={() => setOpen(false)}
+            onClick={() => handleOpenChange(false)}
             className="text-white hover:text-blue-200 transition-colors"
             style={{ 
               color: 'white',
@@ -695,7 +744,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
       {/* Tab Trigger Button */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => handleOpenChange(!open)}
         aria-label="Toggle AI Assistant"
         style={getTriggerButtonStyles()}
       >

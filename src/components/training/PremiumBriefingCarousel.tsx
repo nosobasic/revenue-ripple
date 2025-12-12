@@ -17,7 +17,20 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Check if screen is mobile size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
@@ -76,14 +89,14 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
   // Scroll to current card
   useEffect(() => {
     if (scrollContainerRef.current) {
-      const cardWidth = 320; // Approximate card width with gap
+      const cardWidth = isMobile ? window.innerWidth - 32 : 320; // Full width minus padding on mobile
       const scrollPosition = currentIndex * cardWidth;
       scrollContainerRef.current.scrollTo({
         left: scrollPosition,
         behavior: 'smooth',
       });
     }
-  }, [currentIndex]);
+  }, [currentIndex, isMobile]);
 
   // Empty state
   if (briefings.length === 0) {
@@ -110,11 +123,11 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
       style={{
         position: 'relative',
         width: '100%',
-        padding: '1rem 0',
+        padding: isMobile ? '0.5rem 0' : '1rem 0',
       }}
     >
-      {/* Navigation Buttons */}
-      {briefings.length > 1 && (
+      {/* Navigation Buttons - Hidden on mobile, shown on desktop */}
+      {briefings.length > 1 && !isMobile && (
         <>
           <button
             onClick={goToPrevious}
@@ -194,18 +207,18 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
         onTouchEnd={onTouchEnd}
         style={{
           display: 'flex',
-          gap: '1rem',
+          gap: isMobile ? '0.75rem' : '1rem',
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
           scrollBehavior: 'smooth',
-          padding: '0.5rem',
+          padding: isMobile ? '0.5rem 1rem' : '0.5rem',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           WebkitOverflowScrolling: 'touch',
         }}
         onScroll={(e) => {
           const container = e.currentTarget;
-          const cardWidth = 320;
+          const cardWidth = isMobile ? window.innerWidth - 32 : 320;
           const newIndex = Math.round(container.scrollLeft / cardWidth);
           if (newIndex !== currentIndex && newIndex >= 0 && newIndex < briefings.length) {
             setCurrentIndex(newIndex);
@@ -233,8 +246,8 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               }
             }}
             style={{
-              minWidth: '300px',
-              maxWidth: '300px',
+              minWidth: isMobile ? 'calc(100vw - 2rem)' : '300px',
+              maxWidth: isMobile ? 'calc(100vw - 2rem)' : '300px',
               scrollSnapAlign: 'start',
               cursor: isMember ? 'pointer' : 'not-allowed',
               position: 'relative',
@@ -247,7 +260,7 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               style={{
                 background: 'white',
                 borderRadius: '12px',
-                padding: '1.5rem',
+                padding: isMobile ? '1.25rem' : '1.5rem',
                 boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                 border: '1px solid #e2e8f0',
                 height: '100%',
@@ -300,7 +313,7 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               {/* Title */}
               <h3
                 style={{
-                  fontSize: '1.25rem',
+                  fontSize: isMobile ? '1.1rem' : '1.25rem',
                   fontWeight: '600',
                   margin: '0 0 0.75rem 0',
                   color: '#1e293b',
@@ -314,7 +327,7 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               {briefing.short_description && (
                 <p
                   style={{
-                    fontSize: '0.9rem',
+                    fontSize: isMobile ? '0.875rem' : '0.9rem',
                     color: '#64748b',
                     margin: '0 0 1rem 0',
                     lineHeight: '1.5',
@@ -329,7 +342,7 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               {briefing.published_at && (
                 <div
                   style={{
-                    fontSize: '0.85rem',
+                    fontSize: isMobile ? '0.8rem' : '0.85rem',
                     color: '#94a3b8',
                     marginBottom: '0.75rem',
                   }}
@@ -344,34 +357,34 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
                   style={{
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: '0.5rem',
+                    gap: isMobile ? '0.375rem' : '0.5rem',
                     marginTop: 'auto',
                   }}
                 >
-                  {briefing.tags.slice(0, 3).map((tag, tagIndex) => (
+                  {briefing.tags.slice(0, isMobile ? 2 : 3).map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
                       style={{
                         background: '#eff6ff',
                         color: '#2563eb',
-                        padding: '0.25rem 0.75rem',
+                        padding: isMobile ? '0.2rem 0.625rem' : '0.25rem 0.75rem',
                         borderRadius: '16px',
-                        fontSize: '0.75rem',
+                        fontSize: isMobile ? '0.7rem' : '0.75rem',
                         fontWeight: '500',
                       }}
                     >
                       {tag}
                     </span>
                   ))}
-                  {briefing.tags.length > 3 && (
+                  {briefing.tags.length > (isMobile ? 2 : 3) && (
                     <span
                       style={{
                         color: '#94a3b8',
-                        fontSize: '0.75rem',
-                        padding: '0.25rem 0.75rem',
+                        fontSize: isMobile ? '0.7rem' : '0.75rem',
+                        padding: isMobile ? '0.2rem 0.625rem' : '0.25rem 0.75rem',
                       }}
                     >
-                      +{briefing.tags.length - 3}
+                      +{briefing.tags.length - (isMobile ? 2 : 3)}
                     </span>
                   )}
                 </div>
@@ -387,8 +400,9 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '0.5rem',
-            marginTop: '1rem',
+            gap: isMobile ? '0.375rem' : '0.5rem',
+            marginTop: isMobile ? '0.75rem' : '1rem',
+            padding: isMobile ? '0 1rem' : '0',
           }}
         >
           {briefings.map((_, index) => (
@@ -396,8 +410,8 @@ const PremiumBriefingCarousel: React.FC<PremiumBriefingCarouselProps> = ({
               key={index}
               onClick={() => goToSlide(index)}
               style={{
-                width: index === currentIndex ? '24px' : '8px',
-                height: '8px',
+                width: index === currentIndex ? (isMobile ? '20px' : '24px') : '8px',
+                height: isMobile ? '6px' : '8px',
                 borderRadius: '4px',
                 border: 'none',
                 background: index === currentIndex ? '#2563eb' : '#cbd5e1',

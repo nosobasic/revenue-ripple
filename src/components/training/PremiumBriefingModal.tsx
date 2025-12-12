@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PremiumBriefing } from '../../types/content';
+import { useAIAssistant } from '../../context/AIAssistantContext';
 
 interface PremiumBriefingModalProps {
   isOpen: boolean;
@@ -13,7 +14,26 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
   onClose,
   briefing,
 }) => {
+  const { openWithInsight } = useAIAssistant();
+  const [isMobile, setIsMobile] = React.useState(false);
+  
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   if (!isOpen || !briefing) return null;
+
+  const handleDeepDive = () => {
+    openWithInsight(briefing);
+    onClose(); // Close the modal when opening the chat
+  };
 
   const formatDate = (dateString: string | null): string => {
     if (!dateString) return '';
@@ -47,10 +67,11 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
               bottom: 0,
               backgroundColor: 'rgba(0, 0, 0, 0.7)',
               display: 'flex',
-              alignItems: 'center',
+              alignItems: isMobile ? 'flex-start' : 'center',
               justifyContent: 'center',
               zIndex: 1000,
-              padding: '1rem',
+              padding: isMobile ? '0' : '1rem',
+              overflowY: 'auto',
             }}
           >
             {/* Modal Content */}
@@ -61,14 +82,16 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
               onClick={(e) => e.stopPropagation()}
               style={{
                 backgroundColor: 'white',
-                borderRadius: '12px',
-                maxWidth: '800px',
+                borderRadius: isMobile ? '0' : '12px',
+                maxWidth: isMobile ? '100%' : '800px',
                 width: '100%',
-                maxHeight: '90vh',
+                maxHeight: isMobile ? '100vh' : '90vh',
+                minHeight: isMobile ? '100vh' : 'auto',
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                boxShadow: isMobile ? 'none' : '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                marginTop: isMobile ? '0' : 'auto',
               }}
             >
               {/* Close Button */}
@@ -76,15 +99,15 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                 onClick={onClose}
                 style={{
                   position: 'absolute',
-                  top: '1rem',
-                  right: '1rem',
-                  background: 'none',
+                  top: isMobile ? '0.75rem' : '1rem',
+                  right: isMobile ? '0.75rem' : '1rem',
+                  background: isMobile ? 'rgba(0, 0, 0, 0.1)' : 'none',
                   border: 'none',
-                  fontSize: '1.5rem',
+                  fontSize: isMobile ? '1.75rem' : '1.5rem',
                   cursor: 'pointer',
                   color: '#64748b',
-                  width: '32px',
-                  height: '32px',
+                  width: isMobile ? '40px' : '32px',
+                  height: isMobile ? '40px' : '32px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -97,7 +120,7 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                   e.currentTarget.style.color = '#1e293b';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.backgroundColor = isMobile ? 'rgba(0, 0, 0, 0.1)' : 'transparent';
                   e.currentTarget.style.color = '#64748b';
                 }}
               >
@@ -108,16 +131,17 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
               <div
                 style={{
                   overflowY: 'auto',
-                  padding: '2rem',
-                  paddingRight: '3rem',
+                  padding: isMobile ? '1rem' : '2rem',
+                  paddingRight: isMobile ? '1rem' : '3rem',
+                  paddingTop: isMobile ? '3.5rem' : '2rem',
                 }}
               >
                 {/* Title */}
                 <h2
                   style={{
                     marginTop: 0,
-                    marginBottom: '1rem',
-                    fontSize: '1.75rem',
+                    marginBottom: isMobile ? '0.75rem' : '1rem',
+                    fontSize: isMobile ? '1.375rem' : '1.75rem',
                     fontWeight: '600',
                     color: '#1e293b',
                     lineHeight: '1.3',
@@ -130,9 +154,9 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                 {briefing.published_at && (
                   <div
                     style={{
-                      fontSize: '0.9rem',
+                      fontSize: isMobile ? '0.85rem' : '0.9rem',
                       color: '#64748b',
-                      marginBottom: '1.5rem',
+                      marginBottom: isMobile ? '1rem' : '1.5rem',
                     }}
                   >
                     {formatDate(briefing.published_at)}
@@ -145,8 +169,8 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                     style={{
                       display: 'flex',
                       flexWrap: 'wrap',
-                      gap: '0.5rem',
-                      marginBottom: '1.5rem',
+                      gap: isMobile ? '0.375rem' : '0.5rem',
+                      marginBottom: isMobile ? '1rem' : '1.5rem',
                     }}
                   >
                     {briefing.tags.map((tag, index) => (
@@ -155,9 +179,9 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                         style={{
                           background: '#eff6ff',
                           color: '#2563eb',
-                          padding: '0.375rem 0.875rem',
+                          padding: isMobile ? '0.3rem 0.75rem' : '0.375rem 0.875rem',
                           borderRadius: '16px',
-                          fontSize: '0.875rem',
+                          fontSize: isMobile ? '0.8rem' : '0.875rem',
                           fontWeight: '500',
                         }}
                       >
@@ -171,7 +195,7 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                 {briefing.full_body && (
                   <div
                     style={{
-                      fontSize: '1rem',
+                      fontSize: isMobile ? '0.9375rem' : '1rem',
                       lineHeight: '1.7',
                       color: '#334155',
                       whiteSpace: 'pre-wrap',
@@ -185,7 +209,7 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                 {!briefing.full_body && briefing.short_description && (
                   <div
                     style={{
-                      fontSize: '1rem',
+                      fontSize: isMobile ? '0.9375rem' : '1rem',
                       lineHeight: '1.7',
                       color: '#334155',
                     }}
@@ -193,6 +217,65 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
                     {briefing.short_description}
                   </div>
                 )}
+
+                {/* Deep Dive Button */}
+                <div
+                  style={{
+                    marginTop: isMobile ? '1.5rem' : '2rem',
+                    paddingTop: isMobile ? '1rem' : '1.5rem',
+                    borderTop: '1px solid #e2e8f0',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    paddingBottom: isMobile ? '1rem' : '0',
+                  }}
+                >
+                  <button
+                    onClick={handleDeepDive}
+                    style={{
+                      background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: isMobile ? '14px 20px' : '12px 24px',
+                      fontSize: isMobile ? '0.9375rem' : '1rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: isMobile ? '6px' : '8px',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                      width: isMobile ? '100%' : 'auto',
+                      justifyContent: 'center',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isMobile) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isMobile) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                      }
+                    }}
+                  >
+                    <svg
+                      width={isMobile ? "18" : "20"}
+                      height={isMobile ? "18" : "20"}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Deep Dive with Ripple AI
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
