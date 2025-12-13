@@ -8,7 +8,7 @@ import './Navbar.css';
 
 const Navbar = React.memo(() => {
   const { user, logout } = useAuth();
-  const { isAffiliate } = useUserRole();
+  const { isAffiliate, isAdmin } = useUserRole();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -101,7 +101,7 @@ const Navbar = React.memo(() => {
                 <FaChartLine className="nav-icon" />
                 <span>Progress</span>
               </Link>
-              {isAffiliate &&
+              {(isAffiliate || isAdmin) &&
               <Link to="/affiliate-centre" className={getNavLinkClass('/earn')} onClick={closeMobileMenu}>
                 <FaDollarSign className="nav-icon" />
                 <span>Earn</span>
@@ -210,7 +210,7 @@ const Navbar = React.memo(() => {
                     <FaChartLine className="mobile-nav-icon" />
                     <span>Progress</span>
                   </Link>
-                  {isAffiliate &&
+                  {(isAffiliate || isAdmin) &&
                   <Link to="/affiliate-centre" className={`mobile-nav-link ${getNavLinkClass('/earn')}`} onClick={closeMobileMenu}>
                     <FaDollarSign className="mobile-nav-icon" />
                     <span>Earn</span>
