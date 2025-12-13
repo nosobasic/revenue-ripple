@@ -18,7 +18,7 @@ export default function Checkout() {
   const [product, setProduct] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
   const [checkoutError, setCheckoutError] = useState(null);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +27,17 @@ export default function Checkout() {
     
     // DMD is a tripwire product - no authentication required
     // For all other products, require authentication
-    if (productParam !== 'dmd' && !user) {
-      navigate('/register');
-      return;
+    // But wait for auth to finish loading before redirecting
+    if (productParam !== 'dmd') {
+      // If auth is still loading, wait - don't redirect yet
+      if (authLoading) {
+        return;
+      }
+      // Only redirect if auth finished loading and user is still null
+      if (!user) {
+        navigate('/register');
+        return;
+      }
     }
     
     // Determine which endpoint to use based on product
@@ -131,7 +139,7 @@ export default function Checkout() {
     };
     
     attemptFetch();
-  }, [searchParams, user, navigate]);
+  }, [searchParams, user, navigate, authLoading]);
 
   const appearance = {
     theme: 'stripe',
@@ -157,6 +165,27 @@ export default function Checkout() {
         };
     }
   };
+
+  // Show loading state while auth is loading (for non-DMD products)
+  const productParam = searchParams.get('product');
+  if (productParam !== 'dmd' && authLoading) {
+    const loadingProductInfo = getProductInfo();
+    return (
+      <div className="checkout-container">
+        <div className="checkout-content">
+          <h1>{loadingProductInfo.title || 'Complete Your Purchase'}</h1>
+          <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+            <div style={{ color: '#2563eb', fontWeight: 600 }}>
+              Verifying your account...
+            </div>
+            <div style={{ marginTop: '0.5rem', color: '#6b7280', fontSize: '0.875rem' }}>
+              Please wait while we set up your checkout session.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const productInfo = getProductInfo();
 

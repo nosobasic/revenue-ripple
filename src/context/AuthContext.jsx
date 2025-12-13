@@ -176,6 +176,16 @@ export function AuthProvider({ children }) {
         if (userError) {
           console.error("Error creating user record:", userError);
         }
+
+        // Immediately fetch user data to populate auth context
+        // This ensures the user object is available right after signup
+        await fetchUserData(authData.user);
+        
+        // Store auth token in localStorage for persistence
+        if (authData.session) {
+          localStorage.setItem("revenue-ripple-auth-token", authData.session.access_token);
+          setSession(authData.session);
+        }
       }
 
       return authData.user;
