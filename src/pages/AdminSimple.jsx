@@ -46,7 +46,8 @@ const AdminSimple = () => {
 
   useEffect(() => {
     // Only initialize once when we have a confirmed admin user
-    if (!authLoading && user?.role === 'admin' && !initializationRef.current) {
+    const userRole = user?.role || 'member';
+    if (!authLoading && userRole === 'admin' && !initializationRef.current) {
       console.log('AdminSimple: Initializing data...');
       initializationRef.current = true;
       fetchDashboardData();
@@ -70,7 +71,8 @@ const AdminSimple = () => {
       return;
     }
 
-    if (user.role !== 'admin') {
+    const userRole = user?.role || 'member';
+    if (userRole !== 'admin') {
       console.log('AdminSimple: User is not admin, resetting state...');
       initializationRef.current = false;
       setDataLoaded(false);
@@ -181,7 +183,7 @@ const AdminSimple = () => {
   // Edit user role/status
   const handleEditUser = (user) => {
     setEditUserId(user.id);
-    setEditRole(user.role);
+    setEditRole(user?.role || 'member');
     setEditStatus(user.status);
     setEditError('');
     setEditSuccess('');
@@ -215,7 +217,8 @@ const AdminSimple = () => {
   }
 
   // Check if user exists and is admin
-  if (!user || user.role !== 'admin') {
+  const currentUserRole = user?.role || 'member';
+  if (!user || currentUserRole !== 'admin') {
     return (
       <div style={{ 
         color: 'red', 
@@ -508,7 +511,7 @@ const AdminSimple = () => {
                         <tr key={user.id}>
                           <td>{user.name}</td>
                           <td>{user.email}</td>
-                          <td>{user.role}</td>
+                          <td>{user?.role || 'member'}</td>
                           <td>{user.status}</td>
                           <td>{user.memberSince}</td>
                         </tr>

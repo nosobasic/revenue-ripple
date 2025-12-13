@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useUserRole } from '../hooks/useUserRole';
 import { supabase } from '../supabase/client.jsx';
 import Navbar from '../components/Navbar';
 import ReferralTracker from '../components/ReferralTracker.js';
@@ -106,6 +107,7 @@ import {
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const { isMember, isAffiliate } = useUserRole();
   const [expandedSection, setExpandedSection] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -299,7 +301,7 @@ const Dashboard = () => {
         <header className="dashboard-header">
           <div className="container">
             <h1 className="dashboard-title">Welcome to Revenue Ripple</h1>
-            <p className="dashboard-welcome">Hello, Good To See You {user?.name?.toUpperCase()}</p>
+            <p className="dashboard-welcome">Hello, Good To See You {user?.name?.toUpperCase() || 'Guest'}</p>
           </div>
         </header>
 
@@ -308,7 +310,7 @@ const Dashboard = () => {
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
             {/* <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2> */}
             {/* Affiliate Program Section */}
-            {user.role === "member" &&
+            {isMember &&
             <div className="section mb-8">
               <div className="section-header affiliate">
                 <FaMoneyBillWave className="section-icon" />
@@ -337,10 +339,10 @@ const Dashboard = () => {
                           }}
                         >click here</span>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
-                      <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
+                      <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!                      </p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
-                        {user.role === "member" &&
-                        <button 
+                        {isMember &&
+                        <button
                           // href="/affiliate/sign-up"
                           className="cta-link"
                           onClick={(e) => {e.stopPropagation()
@@ -445,7 +447,7 @@ const Dashboard = () => {
             </div>
             
             {/*Reseller Program Section*/}
-            {user.role === "affiliate" && 
+            {isAffiliate && 
             <div className="section mb-8">
               <div className="section-header reseller">
                 <FaShoppingCart className="section-icon" />

@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useUserRole } from "../hooks/useUserRole";
 import React from "react";
 
 // ErrorBoundary component to catch errors in child components
@@ -41,6 +42,7 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
 
 export default function ProtectedRoute({ children, requireAdmin = false, requirePayment = false }) {
   const { user, loading } = useAuth();
+  const { isAdmin, requiresCheckout } = useUserRole();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
 
@@ -50,17 +52,21 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
   }
 
   // Redirect to login if not authenticated
-  if (!token) {
+  if (!token || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // Check payment status if required (but allow admin access)
-  if (requirePayment && user && !user.has_paid && user.role !== 'admin') {
-    return <Navigate to="/checkout" state={{ from: location }} replace />;
+  if (requirePayment && requiresCheckout && !isAdmin) {
+    // Store intended path for redirect after checkout
+    if (location.pathname !== '/checkout') {
+      sessionStorage.setItem('intended-path', location.pathname);
+    }
+    return <Navigate to="/checkout?product=membership" state={{ from: location }} replace />;
   }
 
   // Check if user has required role
-  if (requireAdmin && user?.role !== "admin") {
+  if (requireAdmin && !isAdmin) {
     return (
       <div style={{ 
         color: "red", 

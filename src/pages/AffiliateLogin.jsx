@@ -31,7 +31,8 @@ export default function AffiliateLogin() {
 
       if (userError) throw userError;
 
-      if (userData.role === "affiliate" || userData.role === "reseller") {
+      const role = userData?.role || 'member';
+      if (role === "affiliate" || role === "reseller") {
         navigate("/affiliate-centre");
       } else {
         setError(

@@ -95,6 +95,7 @@ export function AuthProvider({ children }) {
           ...authUser,
           ...newUser,
         });
+        setLoading(false);
         return;
       }
 
@@ -113,6 +114,8 @@ export function AuthProvider({ children }) {
       if (userData) {
         setUser({
           ...authUser,
+          // Ensure role always has a default value
+          role: userData.role || 'member',
           ...userData,
         });
       } else {
@@ -133,6 +136,9 @@ export function AuthProvider({ children }) {
         has_paid: false,
         payment_status: 'pending'
       });
+    } finally {
+      // Ensure loading state is set to false after user data is fetched
+      setLoading(false);
     }
   };
 

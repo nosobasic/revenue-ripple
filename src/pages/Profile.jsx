@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useUserRole } from "../hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
 import {
   FaUser,
@@ -16,6 +17,7 @@ import "../pages.css";
 
 const Profile = () => {
   const { user, updateUserProfile, logout } = useAuth();
+  const { role: userRole } = useUserRole();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,11 +38,11 @@ const Profile = () => {
         email: user.email || "",
         phone: user.phone || "",
         company: user.company || "",
-        role: user.role || "",
+        role: userRole || "",
         bio: user.bio || "",
       });
     }
-  }, [user]);
+  }, [user, userRole]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -153,9 +155,9 @@ const Profile = () => {
                   {user.name || "Your Profile"}
                 </h1>
                 <p className="dashboard-welcome">
-                  {user.role
+                  {userRole
                     ? `${
-                        user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                        userRole.charAt(0).toUpperCase() + userRole.slice(1)
                       } Account`
                     : "Member Account"}
                 </p>
@@ -417,9 +419,9 @@ const Profile = () => {
                     <span
                       style={{
                         background:
-                          user.role === "pro_reseller"
+                          userRole === "pro_reseller"
                             ? "#10B981"
-                            : user.role === "reseller"
+                            : userRole === "reseller"
                             ? "#F59E0B"
                             : "#3B82F6",
                         color: "white",
@@ -429,17 +431,17 @@ const Profile = () => {
                         fontWeight: "600",
                       }}
                     >
-                      {user.role
-                        ? user.role.replace("_", " ").toUpperCase()
+                      {userRole
+                        ? userRole.replace("_", " ").toUpperCase()
                         : "MEMBER"}
                     </span>
                   </div>
                   <p style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                    {user.role === "pro_reseller"
+                    {userRole === "pro_reseller"
                       ? "You have access to all premium features and earn 100% commission on every sale."
-                      : user.role === "reseller"
+                      : userRole === "reseller"
                       ? "You can resell memberships and earn 100% commission on every other sale."
-                      : user.role === "affiliate"
+                      : userRole === "affiliate"
                       ? "You can promote products and earn commissions on successful referrals."
                       : "Access to all member training and resources."}
                   </p>
@@ -462,7 +464,7 @@ const Profile = () => {
                   gap: "0.75rem",
                 }}
               >
-                {user.role !== "pro_reseller" && (
+                {userRole !== "pro_reseller" && (
                   <button
                     onClick={() => navigate("/affiliate-centre/tools")}
                     className="cta-link"
@@ -510,7 +512,7 @@ const Profile = () => {
               <div className="section-content">
                 <div className="course-item">
                   <div className="course-details">
-                    {user.role === "affiliate" && (
+                    {userRole === "affiliate" && (
                       <>
                         <p style={{ color: "#374151", marginBottom: "1rem" }}>
                           Upgrade to Reseller and start earning 100% commission
@@ -525,8 +527,8 @@ const Profile = () => {
                         </button>
                       </>
                     )}
-                    {(user.role === "affiliate" ||
-                      user.role === "reseller") && (
+                    {(userRole === "affiliate" ||
+                      userRole === "reseller") && (
                       <>
                         <p
                           style={{

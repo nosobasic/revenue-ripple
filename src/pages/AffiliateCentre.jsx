@@ -2,11 +2,13 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabase/client';
 import { useAuth } from '../context/AuthContext';
+import { useUserRole } from '../hooks/useUserRole';
 import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 
 export default function AffiliateCentre() {
   const { user } = useAuth();
+  const { role: userRole } = useUserRole();
   const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState({
     totalEarnings: 0,
@@ -19,7 +21,7 @@ export default function AffiliateCentre() {
 
   const baseUrl = "https://www.revenueripple.org/affiliate/sign-up";
   // const baseUrl = "http://localhost:5173/affiliate/sign-up";
-  const affiliateLink = `${baseUrl}/?ref=${user?.id}&role=${user?.role}`;
+  const affiliateLink = `${baseUrl}/?ref=${user?.id || ''}&role=${userRole || 'member'}`;
 
   const copyAffiliateLink = () => {
     navigator.clipboard.writeText(affiliateLink).then(() => {
@@ -62,7 +64,7 @@ export default function AffiliateCentre() {
         setStats({
           totalEarnings: `$${totalEarnings.toFixed(2)}`,
           totalSales,
-          commissionRate: user.role === "pro_reseller"? `${100}%`: `${50}%`
+          commissionRate: userRole === "pro_reseller"? `${100}%`: `${50}%`
         });
 
         const recentActivity = commissions
@@ -175,10 +177,10 @@ export default function AffiliateCentre() {
             <div className="section-content">
               <div className="grid-layout">
                 <div className="course-item">
-                  <h3>Generate {user.role === "affiliate"?"Affiliate": user.role === "reseller"? "Reseller": "Pro Reseller"} Link</h3>
+                  <h3>Generate {userRole === "affiliate"?"Affiliate": userRole === "reseller"? "Reseller": "Pro Reseller"} Link</h3>
                   <div className="course-details">
                     
-                    <p>Create and copy your unique {user.role === "affiliate"?"affiliate": user.role === "reseller"? "reseller": "pro reseller"} link to start promoting.</p>
+                    <p>Create and copy your unique {userRole === "affiliate"?"affiliate": userRole === "reseller"? "reseller": "pro reseller"} link to start promoting.</p>
                     <button className="cta-button" onClick={copyAffiliateLink}>Copy Link</button>
                   </div>
                 </div>

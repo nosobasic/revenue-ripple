@@ -1,13 +1,16 @@
 import { User } from '../types/user';
+import { getUserRole } from '../hooks/useUserRole';
 
 export class NavigationUtils {
   /**
    * Get dashboard route based on user role
    */
-  static getDashboardRoute(user: User): string {
+  static getDashboardRoute(user: User | null): string {
     if (!user) return '/login';
 
-    switch (user.role) {
+    const role = getUserRole(user);
+    
+    switch (role) {
       case 'admin':
         return '/admin';
       case 'affiliate':
@@ -45,21 +48,23 @@ export class NavigationUtils {
   static hasRouteAccess(user: User | null, route: string, requireAdmin: boolean = false): boolean {
     if (!user) return false;
 
+    const role = getUserRole(user);
+
     if (requireAdmin) {
-      return user.role === 'admin';
+      return role === 'admin';
     }
 
     // Check specific route permissions
     if (route.startsWith('/admin')) {
-      return user.role === 'admin';
+      return role === 'admin';
     }
 
     if (route.startsWith('/affiliate-centre') || route.includes('affiliate')) {
-      return ['affiliate', 'reseller', 'pro_reseller', 'admin'].includes(user.role);
+      return ['affiliate', 'reseller', 'pro_reseller', 'admin'].includes(role);
     }
 
     if (route.includes('reseller') && !route.includes('affiliate')) {
-      return ['reseller', 'pro_reseller', 'admin'].includes(user.role);
+      return ['reseller', 'pro_reseller', 'admin'].includes(role);
     }
 
     // Default: all authenticated users have access
@@ -85,7 +90,8 @@ export class NavigationUtils {
    */
   static shouldShowAffiliateTab(user: User | null): boolean {
     if (!user) return false;
-    return ['affiliate', 'reseller', 'pro_reseller', 'admin'].includes(user.role);
+    const role = getUserRole(user);
+    return ['affiliate', 'reseller', 'pro_reseller', 'admin'].includes(role);
   }
 
   /**

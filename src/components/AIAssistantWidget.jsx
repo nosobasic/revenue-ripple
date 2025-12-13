@@ -104,7 +104,9 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
 
   // Periodic help offers based on page context and user activity
   useEffect(() => {
-    if (!user || !allowedRoles.includes(user.role)) return;
+    if (!user) return;
+    const userRole = user.role || 'member';
+    if (!allowedRoles.includes(userRole)) return;
 
     const offerHelp = () => {
       const now = Date.now();
@@ -152,7 +154,9 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
     return "Hi there! I'm here to help with any questions you might have. What can I assist you with today?";
   }, [location.pathname]);
 
-  if (!user || !allowedRoles.includes(user.role)) return null;
+  if (!user) return null;
+  const userRole = user.role || 'member';
+  if (!allowedRoles.includes(userRole)) return null;
 
   // Enhanced streaming message handler with better error handling
   const sendMessage = async () => {
@@ -180,13 +184,13 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-role': user.role
+          'x-user-role': userRole
         },
         body: JSON.stringify({ 
           message: contextualMessage,
           context: {
             page: location.pathname,
-            userRole: user.role,
+            userRole: userRole,
             previousMessages: messages.slice(-3) // Send last 3 messages for context
           }
         })
