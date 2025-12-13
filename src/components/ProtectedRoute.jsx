@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useUserRole } from "../hooks/useUserRole";
+import { useEffect, useState } from "react";
 import React from "react";
 
 // ErrorBoundary component to catch errors in child components
@@ -41,13 +42,24 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
 );
 
 export default function ProtectedRoute({ children, requireAdmin = false, requirePayment = false }) {
-  const { user, loading } = useAuth();
-  const { isAdmin, requiresCheckout } = useUserRole();
+  const { user, loading, refreshUserData } = useAuth();
+  const { isAdmin } = useUserRole();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
+  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
 
-  // Show a loading spinner while auth state is loading
-  if (loading) {
+  // Refresh user data once when component mounts if payment is required
+  useEffect(() => {
+    if (requirePayment && user && !loading && refreshUserData) {
+      setIsCheckingPayment(true);
+      refreshUserData().finally(() => {
+        setIsCheckingPayment(false);
+      });
+    }
+  }, [requirePayment, user, loading, refreshUserData]);
+
+  // Show a loading spinner while auth state is loading or checking payment
+  if (loading || isCheckingPayment) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 
@@ -57,12 +69,21 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
   }
 
   // Check payment status if required (but allow admin access)
-  if (requirePayment && requiresCheckout && !isAdmin) {
-    // Store intended path for redirect after checkout
-    if (location.pathname !== '/checkout') {
-      sessionStorage.setItem('intended-path', location.pathname);
+  // IMPORTANT: Check user.has_paid directly from the user object
+  // This ensures we're checking the actual database value, not stale hook data
+  if (requirePayment && !isAdmin) {
+    // Check has_paid directly - must be explicitly true
+    const hasPaid = user?.has_paid === true;
+    
+    // If user hasn't paid, redirect to checkout
+    if (!hasPaid) {
+      // Store intended path for redirect after checkout
+      if (location.pathname !== '/checkout' && location.pathname !== '/membership-success') {
+        sessionStorage.setItem('intended-path', location.pathname);
+      }
+      return <Navigate to="/checkout?product=membership" state={{ from: location }} replace />;
     }
-    return <Navigate to="/checkout?product=membership" state={{ from: location }} replace />;
+    // If user has paid, allow access (don't redirect)
   }
 
   // Check if user has required role

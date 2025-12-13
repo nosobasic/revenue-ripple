@@ -26,24 +26,18 @@ export default function Login() {
     try {
       await login(email, password);
       
-      // Wait for user data to load in context (fetchUserData completes)
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Wait for user data to fully load and refresh
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      // Now get the user from context which has payment status
-      // We need to check the actual user object from auth context
-      // Since we can't access it directly here, we'll use a different approach:
-      // Check localStorage or wait for the next render cycle
-      
-      // For now, check if there's an intended path first
+      // Check if there's an intended path from ProtectedRoute redirect
       const intendedPath = sessionStorage.getItem('intended-path');
       
-      // If user came from a protected route, check payment status via API or redirect
-      // Otherwise, default behavior: go to dashboard and let ProtectedRoute handle it
-      if (intendedPath && intendedPath !== '/checkout') {
+      if (intendedPath && intendedPath !== '/checkout' && intendedPath !== '/membership-success') {
         sessionStorage.removeItem('intended-path');
         navigate(intendedPath, { replace: true });
       } else {
-        // Default: go to dashboard - ProtectedRoute will redirect to checkout if needed
+        // Default: go to dashboard
+        // ProtectedRoute will check payment status and redirect if needed
         navigate(from, { replace: true });
       }
     } catch (error) {

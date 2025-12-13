@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../supabase/client';
 import Navbar from '../components/Navbar';
 import { FaCheckCircle, FaRocket } from 'react-icons/fa';
 
@@ -13,64 +14,71 @@ export default function MembershipSuccess() {
 
   useEffect(() => {
     const verifyPaymentAndRedirect = async () => {
+      if (!user) return;
+      
       try {
-        // Refresh user data to get latest payment status
-        if (user) {
-          await refreshUserData();
-        }
-
-        // Wait a moment for webhook to process (if needed)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Refresh again to ensure we have latest data
-        if (user) {
-          await refreshUserData();
-        }
-
-        // Check if user now has subscription
-        // If they do, redirect to dashboard
-        // If not, wait a bit more and check again (webhook might be delayed)
+        // Refresh user data multiple times to ensure we get the latest payment status
         let attempts = 0;
-        const maxAttempts = 5;
+        const maxAttempts = 8; // Increased attempts for webhook delay
         
         const checkPaymentStatus = async () => {
-          if (user) {
-            await refreshUserData();
+          // Always refresh user data before checking
+          await refreshUserData();
+          
+          // Wait a moment for state to update
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Get fresh user data from Supabase directly to verify payment
+          const { data: freshUserData, error } = await supabase
+            .from('users')
+            .select('has_paid, payment_status, role')
+            .eq('id', user.id)
+            .single();
+          
+          if (error) {
+            console.error('Error fetching user payment status:', error);
           }
           
-          // Re-check subscription status
-          // If user has paid or is admin, go to dashboard
-          if (user?.has_paid || user?.role === 'admin') {
+          // Check if user has paid (either from context or fresh DB query)
+          const hasPaid = freshUserData?.has_paid === true || user?.has_paid === true;
+          const isAdmin = freshUserData?.role === 'admin' || user?.role === 'admin';
+          
+          if (hasPaid || isAdmin) {
             setIsVerifying(false);
+            // Refresh one more time to ensure context is updated
+            await refreshUserData();
             // Small delay to show success message
             setTimeout(() => {
               navigate('/dashboard', { replace: true });
-            }, 2000);
+            }, 1500);
             return;
           }
           
           attempts++;
           if (attempts < maxAttempts) {
-            // Wait and try again
+            // Wait and try again (webhook might still be processing)
             setTimeout(checkPaymentStatus, 2000);
           } else {
-            // After max attempts, still redirect to dashboard
-            // The webhook will update payment status eventually
+            // After max attempts, assume payment is processed and redirect
+            // The webhook will have updated by now, or will update soon
             setIsVerifying(false);
+            await refreshUserData();
             setTimeout(() => {
               navigate('/dashboard', { replace: true });
-            }, 2000);
+            }, 1500);
           }
         };
 
+        // Start checking immediately
         checkPaymentStatus();
       } catch (error) {
         console.error('Error verifying payment:', error);
         // On error, still redirect to dashboard after delay
         setIsVerifying(false);
+        await refreshUserData();
         setTimeout(() => {
           navigate('/dashboard', { replace: true });
-        }, 3000);
+        }, 2000);
       }
     };
 

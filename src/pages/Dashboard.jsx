@@ -106,7 +106,7 @@ import {
 } from 'react-icons/fa';
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshUserData } = useAuth();
   const { isMember, isAffiliate } = useUserRole();
   const [expandedSection, setExpandedSection] = useState(null);
   const location = useLocation();
@@ -165,13 +165,18 @@ const Dashboard = () => {
     }
   };
 
-  // Simulate async loading for better feedback
+  // Refresh user data on mount to ensure payment status is current
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-      // window.location.reload();
-    }, 1000);
-  }, []);
+    const refreshData = async () => {
+      if (user && refreshUserData) {
+        await refreshUserData();
+      }
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    };
+    refreshData();
+  }, [user, refreshUserData]);
 
   // Fetch all course progress for the user
   useEffect(() => {
