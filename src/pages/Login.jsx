@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useUserRole } from '../hooks/useUserRole';
 import ClearCacheButton from '../components/ClearCacheButton';
 import '../pages.css';
 import Navbar from '../components/Navbar';
@@ -25,35 +24,27 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Login returns the user object
-      const loggedInUser = await login(email, password);
+      await login(email, password);
       
-      // Wait a moment for user data to fully load in context
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Wait for user data to load in context (fetchUserData completes)
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Check if user has already paid
-      // If user has paid or is admin, go to dashboard
-      // If user hasn't paid, go to checkout
-      const hasPaid = loggedInUser?.has_paid === true;
-      const isAdmin = loggedInUser?.role === 'admin';
+      // Now get the user from context which has payment status
+      // We need to check the actual user object from auth context
+      // Since we can't access it directly here, we'll use a different approach:
+      // Check localStorage or wait for the next render cycle
       
-      // Respect the intended destination if it was set (from ProtectedRoute redirect)
+      // For now, check if there's an intended path first
       const intendedPath = sessionStorage.getItem('intended-path');
+      
+      // If user came from a protected route, check payment status via API or redirect
+      // Otherwise, default behavior: go to dashboard and let ProtectedRoute handle it
       if (intendedPath && intendedPath !== '/checkout') {
         sessionStorage.removeItem('intended-path');
-        // Only redirect to intended path if user has paid
-        if (hasPaid || isAdmin) {
-          navigate(intendedPath, { replace: true });
-        } else {
-          // User needs to pay first
-          navigate('/checkout?product=membership', { replace: true });
-        }
-      } else if (hasPaid || isAdmin) {
-        // User has paid, go to dashboard (or intended path)
-        navigate(from, { replace: true });
+        navigate(intendedPath, { replace: true });
       } else {
-        // User hasn't paid, redirect to checkout
-        navigate('/checkout?product=membership', { replace: true });
+        // Default: go to dashboard - ProtectedRoute will redirect to checkout if needed
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.error('Login error:', error);

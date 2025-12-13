@@ -206,13 +206,18 @@ export function AuthProvider({ children }) {
           password,
         });
 
-
-
       if (authError) throw authError;
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
+      // Fetch full user data including payment status
       await fetchUserData(authData.user);
+      
+      // Wait a moment for state to update, then return the user from state
+      // The user state will have the full data including has_paid
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Return the auth user - the full user data is now in context state
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
