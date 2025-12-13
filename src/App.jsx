@@ -32,6 +32,7 @@ const Courses = lazy(() => import('./pages/Courses'));
 const Reseller = lazy(() => import('./pages/Reseller'));
 const TripwireSuccess = lazy(() => import('./pages/TripwireSuccess'));
 const ResellerSuccess = lazy(() => import('./pages/ResellerSuccess'));
+const MembershipSuccess = lazy(() => import('./pages/MembershipSuccess'));
 const ProResellerUpsell = lazy(() => import('./pages/ProResellerUpsell'));
 const ThreeMonthsFreeUpsell = lazy(() => import('./pages/ThreeMonthsFreeUpsell'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -143,6 +144,7 @@ const App = () => {
 
         {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/membership-success" element={<ProtectedRoute><MembershipSuccess /></ProtectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />
         
