@@ -110,18 +110,17 @@ const UnprotectedRoute = ({ children }) => {
   }
   // #endregion
   
-  // Allow access to register/login even if authenticated if user is on checkout path
-  // This prevents redirect loop after signup when navigating to checkout
+  // If user is authenticated and trying to access register/login, check if they need to complete checkout
+  // Only redirect to dashboard if they're NOT in the process of navigating to checkout after signup
   if (isAuthenticated && (location.pathname === '/register' || location.pathname === '/login')) {
-    // Don't redirect if we're already on checkout or reseller-checkout
-    // This allows the Register component to navigate to checkout after signup
-    const checkoutPaths = ['/checkout', '/reseller-checkout'];
     const isNavigatingToCheckout = sessionStorage.getItem('navigating-to-checkout') === 'true';
+    const isOnCheckoutPath = location.pathname.startsWith('/checkout') || location.pathname.startsWith('/reseller-checkout');
     
-    if (!checkoutPaths.some(path => location.pathname.startsWith(path)) && !isNavigatingToCheckout) {
+    // Don't redirect if user is navigating to checkout (just signed up) or already on checkout
+    if (!isNavigatingToCheckout && !isOnCheckoutPath) {
       // #region agent log
       if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:110',message:'UnprotectedRoute redirecting authenticated user to dashboard',data:{currentPath:location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:116',message:'UnprotectedRoute redirecting authenticated user to dashboard',data:{currentPath:location.pathname,isNavigatingToCheckout,isOnCheckoutPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
       }
       // #endregion
       return <Navigate to="/dashboard" replace />;

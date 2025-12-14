@@ -39,16 +39,51 @@ export default function Checkout() {
         // #endregion
         return;
       }
-      // Only redirect if auth finished loading and user is still null
-      if (!user) {
+      
+      // CRITICAL FIX: If user just signed up, they might have a token but user data hasn't loaded yet
+      // Check if we have a token but no user - give it a moment to load after signup
+      const hasToken = !!localStorage.getItem("revenue-ripple-auth-token");
+      const isNavigatingToCheckout = sessionStorage.getItem('navigating-to-checkout') === 'true';
+      
+      if (!user && hasToken && isNavigatingToCheckout) {
+        // User just signed up and is navigating to checkout - wait a bit for user data to load
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:38',message:'Checkout redirecting to register - no user',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:40',message:'Checkout waiting for user data after signup',data:{hasToken,isNavigatingToCheckout},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+        // Wait up to 2 seconds for user data to load (AuthContext is fetching it)
+        const maxWaitTime = 2000;
+        const checkInterval = 100;
+        let waitedTime = 0;
+        
+        const waitForUser = setInterval(() => {
+          waitedTime += checkInterval;
+          if (user || waitedTime >= maxWaitTime) {
+            clearInterval(waitForUser);
+            if (!user && waitedTime >= maxWaitTime) {
+              // Still no user after waiting - redirect to register
+              // #region agent log
+              fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:52',message:'Checkout timeout waiting for user, redirecting to register',data:{waitedTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+              // #endregion
+              navigate('/register');
+            }
+            // If user is now available, the effect will re-run and proceed
+          }
+        }, checkInterval);
+        
+        return () => clearInterval(waitForUser);
+      }
+      
+      // Only redirect if auth finished loading and user is still null (and not in signup flow)
+      if (!user && !isNavigatingToCheckout) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:61',message:'Checkout redirecting to register - no user and not signing up',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
         // #endregion
         navigate('/register');
         return;
       }
+      
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:41',message:'Checkout has user, proceeding to create session',data:{userId:user.id,hasPaid:user.has_paid},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:66',message:'Checkout has user, proceeding to create session',data:{userId:user?.id,hasPaid:user?.has_paid},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
       // #endregion
     }
     
@@ -154,7 +189,7 @@ export default function Checkout() {
     };
     
     attemptFetch();
-  }, [searchParams, user, navigate, authLoading]);
+  }, [searchParams, user, navigate, authLoading, retryCount]); // Added retryCount back for retry logic
 
   const appearance = {
     theme: 'stripe',

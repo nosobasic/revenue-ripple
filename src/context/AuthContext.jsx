@@ -143,8 +143,19 @@ export function AuthProvider({ children }) {
         if (userError) {
           console.error("Error creating user record:", userError);
         }
+        
+        // CRITICAL: Fetch user data immediately after creating the record
+        // This ensures the user object is loaded in AuthContext before Register navigates
+        await fetchUserData(authData.user);
+        
+        // Store auth token in localStorage for persistence
+        if (authData.session) {
+          localStorage.setItem("revenue-ripple-auth-token", authData.session.access_token);
+          setSession(authData.session);
+        }
+        
         // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:130',message:'User record created, about to return',data:{userId:authData.user.id,hasSession:!!authData.session},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:135',message:'User record created and fetched, about to return',data:{userId:authData.user.id,hasSession:!!authData.session},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
         // #endregion
       }
 
