@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import MilestoneCheckIn from './components/MilestoneCheckIn';
@@ -102,7 +102,33 @@ const LoadingFallback = () => (
 
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
+  const location = useLocation();
+  
+  // #region agent log
+  if (typeof window !== 'undefined') {
+    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:103',message:'UnprotectedRoute render',data:{isAuthenticated,currentPath:location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+  }
+  // #endregion
+  
+  // Allow access to register/login even if authenticated if user is on checkout path
+  // This prevents redirect loop after signup when navigating to checkout
+  if (isAuthenticated && (location.pathname === '/register' || location.pathname === '/login')) {
+    // Don't redirect if we're already on checkout or reseller-checkout
+    // This allows the Register component to navigate to checkout after signup
+    const checkoutPaths = ['/checkout', '/reseller-checkout'];
+    const isNavigatingToCheckout = sessionStorage.getItem('navigating-to-checkout') === 'true';
+    
+    if (!checkoutPaths.some(path => location.pathname.startsWith(path)) && !isNavigatingToCheckout) {
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:110',message:'UnprotectedRoute redirecting authenticated user to dashboard',data:{currentPath:location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      }
+      // #endregion
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+  
+  return children;
 };
 
 const App = () => {

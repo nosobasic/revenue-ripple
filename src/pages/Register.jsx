@@ -34,17 +34,41 @@ export default function Register() {
     }
 
     try {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:37',message:'Before signup call',data:{email,redirect:searchParams.get('redirect')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B'})}).catch(()=>{});
+      // #endregion
       await signup(email, password, firstName, lastName,"member","");
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:39',message:'After signup call completed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,E'})}).catch(()=>{});
+      // #endregion
       // alert('Registration successful! Please check your email for verification.');
       
       // Check if there's a redirect parameter (e.g., from reseller signup)
       const redirectTo = searchParams.get('redirect');
+      const targetPath = redirectTo === 'reseller-checkout' ? '/reseller-checkout' : '/checkout?product=membership';
+      
+      // Set flag to prevent UnprotectedRoute from redirecting to dashboard
+      sessionStorage.setItem('navigating-to-checkout', 'true');
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:45',message:'Before navigate to checkout',data:{redirectTo,targetPath,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});
+      // #endregion
+      
+      // Use replace: true and immediate navigation to prevent UnprotectedRoute from intercepting
       if (redirectTo === 'reseller-checkout') {
-        navigate('/reseller-checkout');
+        navigate('/reseller-checkout', { replace: true });
       } else {
         // Default: redirect to membership checkout
-        navigate('/checkout?product=membership');
+        navigate('/checkout?product=membership', { replace: true });
       }
+      
+      // Clear flag after a short delay
+      setTimeout(() => {
+        sessionStorage.removeItem('navigating-to-checkout');
+      }, 1000);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:50',message:'After navigate call',data:{targetPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});
+      // #endregion
     } catch (error) {
       setError(error.message);
     } finally {
