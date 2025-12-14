@@ -13,7 +13,7 @@ export default function Login() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, resetPassword } = useAuth();
+  const { login, resetPassword, signInWithOAuth } = useAuth();
 
   // Get the intended redirect path, default to dashboard
   const from = location.state?.from?.pathname || '/dashboard';
@@ -47,6 +47,17 @@ export default function Login() {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSocialSignIn = async (provider) => {
+    try {
+      setError('');
+      // Use the from location or default to dashboard
+      const redirectPath = from || '/dashboard';
+      await signInWithOAuth(provider, redirectPath);
+    } catch (error) {
+      setError(error.message || `Failed to sign in with ${provider}`);
     }
   };
 
