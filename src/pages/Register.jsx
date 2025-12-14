@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../pages.css';
 import Navbar from '../components/Navbar';
@@ -14,6 +14,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { signup, signInWithOAuth } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -35,7 +36,15 @@ export default function Register() {
     try {
       await signup(email, password, firstName, lastName,"member","");
       // alert('Registration successful! Please check your email for verification.');
-      navigate('/login');
+      
+      // Check if there's a redirect parameter (e.g., from reseller signup)
+      const redirectTo = searchParams.get('redirect');
+      if (redirectTo === 'reseller-checkout') {
+        navigate('/reseller-checkout');
+      } else {
+        // Default: redirect to membership checkout
+        navigate('/checkout?product=membership');
+      }
     } catch (error) {
       setError(error.message);
     } finally {
@@ -46,8 +55,14 @@ export default function Register() {
   const handleSocialSignIn = async (provider) => {
     try {
       setError('');
-      // Default redirect to checkout for new signups
-      const redirectPath = '/checkout?product=membership';
+      // Check if there's a redirect parameter (e.g., from reseller signup)
+      const redirectTo = searchParams.get('redirect');
+      let redirectPath = '/checkout?product=membership';
+      
+      if (redirectTo === 'reseller-checkout') {
+        redirectPath = '/reseller-checkout';
+      }
+      
       await signInWithOAuth(provider, redirectPath);
     } catch (error) {
       setError(error.message || `Failed to sign in with ${provider}`);

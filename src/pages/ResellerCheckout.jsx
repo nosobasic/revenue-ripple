@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/Button';
@@ -8,8 +8,15 @@ import { getApiBase } from '../config/constants';
 
 export default function ResellerCheckout() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Redirect to register if not authenticated (after auth finishes loading)
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/register?redirect=reseller-checkout');
+    }
+  }, [user, authLoading, navigate]);
 
   const handleCheckout = async () => {
     setIsProcessing(true);
