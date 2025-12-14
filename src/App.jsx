@@ -104,12 +104,6 @@ const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   const location = useLocation();
   
-  // #region agent log
-  if (typeof window !== 'undefined') {
-    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:103',message:'UnprotectedRoute render',data:{isAuthenticated,currentPath:location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-  }
-  // #endregion
-  
   // If user is authenticated and trying to access register/login, check if they need to complete checkout
   // Only redirect to dashboard if they're NOT in the process of navigating to checkout after signup
   if (isAuthenticated && (location.pathname === '/register' || location.pathname === '/login')) {
@@ -118,11 +112,6 @@ const UnprotectedRoute = ({ children }) => {
     
     // Don't redirect if user is navigating to checkout (just signed up) or already on checkout
     if (!isNavigatingToCheckout && !isOnCheckoutPath) {
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.jsx:116',message:'UnprotectedRoute redirecting authenticated user to dashboard',data:{currentPath:location.pathname,isNavigatingToCheckout,isOnCheckoutPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      }
-      // #endregion
       return <Navigate to="/dashboard" replace />;
     }
   }

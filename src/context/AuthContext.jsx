@@ -41,14 +41,8 @@ export function AuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:38',message:'onAuthStateChange fired',data:{event,hasSession:!!session,hasUser:!!session?.user,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
-      // #endregion
       setSession(session);
       if (session?.user) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:41',message:'Calling fetchUserData from onAuthStateChange',data:{userId:session.user.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
-        // #endregion
         fetchUserData(session.user);
       } else {
         setUser(null);
@@ -104,26 +98,17 @@ export function AuthProvider({ children }) {
 
   async function signup(email, password, firstName, lastName ,role, paypal) {
     try {
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:100',message:'signup function called',data:{email,role,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
-      // #endregion
       setLoading(true);
       
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
       });
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:107',message:'After supabase.auth.signUp',data:{hasUser:!!authData.user,hasError:!!authError,hasSession:!!authData.session},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
-      // #endregion
       console.log("authData==",authData, "authError==",authError)
       if (authError) throw authError;
 
       // Create a user document in Supabase
       if (authData.user) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:112',message:'Creating user record in database',data:{userId:authData.user.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
         const { error: userError } = await supabase.from("users").insert([
           {
             id: authData.user.id,
@@ -153,10 +138,6 @@ export function AuthProvider({ children }) {
           localStorage.setItem("revenue-ripple-auth-token", authData.session.access_token);
           setSession(authData.session);
         }
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AuthContext.jsx:135',message:'User record created and fetched, about to return',data:{userId:authData.user.id,hasSession:!!authData.session},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B,E'})}).catch(()=>{});
-        // #endregion
       }
 
       return authData.user;

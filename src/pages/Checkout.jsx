@@ -22,9 +22,6 @@ export default function Checkout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:24',message:'Checkout useEffect started',data:{productParam:searchParams.get('product'),authLoading,hasUser:!!user,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});
-    // #endregion
     const productParam = searchParams.get('product');
     setProduct(productParam);
     
@@ -34,9 +31,6 @@ export default function Checkout() {
     if (productParam !== 'dmd') {
       // If auth is still loading, wait - don't redirect yet
       if (authLoading) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:33',message:'Checkout waiting for auth to load',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         return;
       }
       
@@ -47,9 +41,6 @@ export default function Checkout() {
       
       if (!user && hasToken && isNavigatingToCheckout) {
         // User just signed up and is navigating to checkout - wait a bit for user data to load
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:40',message:'Checkout waiting for user data after signup',data:{hasToken,isNavigatingToCheckout},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         // Wait up to 2 seconds for user data to load (AuthContext is fetching it)
         const maxWaitTime = 2000;
         const checkInterval = 100;
@@ -61,9 +52,6 @@ export default function Checkout() {
             clearInterval(waitForUser);
             if (!user && waitedTime >= maxWaitTime) {
               // Still no user after waiting - redirect to register
-              // #region agent log
-              fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:52',message:'Checkout timeout waiting for user, redirecting to register',data:{waitedTime},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-              // #endregion
               navigate('/register');
             }
             // If user is now available, the effect will re-run and proceed
@@ -75,16 +63,9 @@ export default function Checkout() {
       
       // Only redirect if auth finished loading and user is still null (and not in signup flow)
       if (!user && !isNavigatingToCheckout) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:61',message:'Checkout redirecting to register - no user and not signing up',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         navigate('/register');
         return;
       }
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:66',message:'Checkout has user, proceeding to create session',data:{userId:user?.id,hasPaid:user?.has_paid},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
     }
     
     // Determine which endpoint to use based on product
@@ -132,9 +113,6 @@ export default function Checkout() {
         if (productParam === 'dmd' || productParam === 'membership') {
           // For DMD and membership, redirect to Stripe checkout session
           if (data.url) {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:88',message:'Redirecting to Stripe checkout URL',data:{stripeUrl:data.url,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-            // #endregion
             window.location.href = data.url;
             return; // Exit early - redirecting away
           } else {

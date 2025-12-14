@@ -40,18 +40,8 @@ export default function Register() {
       const targetPath = redirectTo === 'reseller-checkout' ? '/reseller-checkout' : '/checkout?product=membership';
       sessionStorage.setItem('navigating-to-checkout', 'true');
       
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:37',message:'Before signup call',data:{email,redirect:searchParams.get('redirect'),targetPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,D'})}).catch(()=>{});
-      // #endregion
       await signup(email, password, firstName, lastName,"member","");
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:39',message:'After signup call completed',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,B,E'})}).catch(()=>{});
-      // #endregion
       // alert('Registration successful! Please check your email for verification.');
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:45',message:'Before navigate to checkout',data:{redirectTo,targetPath,currentPath:window.location.pathname},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});
-      // #endregion
       
       // Navigate to checkout - flag is already set to prevent UnprotectedRoute from intercepting
       if (redirectTo === 'reseller-checkout') {
