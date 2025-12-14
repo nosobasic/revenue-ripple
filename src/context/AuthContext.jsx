@@ -376,11 +376,15 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
 
 
   // Function to refresh user data from database
-  const refreshUserData = async () => {
-    if (session?.user) {
-      await fetchUserData(session.user);
+  // Use useCallback to memoize and prevent infinite loops
+  // Get fresh session each time instead of depending on state
+  const refreshUserData = React.useCallback(async () => {
+    // Always get fresh session from Supabase to avoid stale state
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (currentSession?.user) {
+      await fetchUserData(currentSession.user);
     }
-  };
+  }, []); // No dependencies - always get fresh session
 
   const value = {
     user,

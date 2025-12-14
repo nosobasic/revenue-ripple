@@ -42,24 +42,13 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
 );
 
 export default function ProtectedRoute({ children, requireAdmin = false, requirePayment = false }) {
-  const { user, loading, refreshUserData } = useAuth();
+  const { user, loading } = useAuth();
   const { isAdmin } = useUserRole();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
-  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
 
-  // Refresh user data once when component mounts if payment is required
-  useEffect(() => {
-    if (requirePayment && user && !loading && refreshUserData) {
-      setIsCheckingPayment(true);
-      refreshUserData().finally(() => {
-        setIsCheckingPayment(false);
-      });
-    }
-  }, [requirePayment, user, loading, refreshUserData]);
-
-  // Show a loading spinner while auth state is loading or checking payment
-  if (loading || isCheckingPayment) {
+  // Show a loading spinner while auth state is loading
+  if (loading) {
     return <LoadingSpinner message="Checking authentication..." />;
   }
 

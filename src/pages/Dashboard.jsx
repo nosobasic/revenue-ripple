@@ -165,18 +165,12 @@ const Dashboard = () => {
     }
   };
 
-  // Refresh user data on mount to ensure payment status is current
+  // Simulate async loading for better feedback
   useEffect(() => {
-    const refreshData = async () => {
-      if (user && refreshUserData) {
-        await refreshUserData();
-      }
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    };
-    refreshData();
-  }, [user, refreshUserData]);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   // Fetch all course progress for the user
   useEffect(() => {
