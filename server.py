@@ -16,6 +16,7 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
+from server.engagement.routes import engagement_bp
 # from insights.routes import insights_bp  # Module not found - commented out
 load_dotenv()
 
@@ -91,6 +92,7 @@ def get_paypal_access_token():
 
 app.register_blueprint(ai_assistant_bp)
 app.register_blueprint(command_center_bp)
+app.register_blueprint(engagement_bp)
 
 @app.route('/', methods=['GET'])
 def health_check():

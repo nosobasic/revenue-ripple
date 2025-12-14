@@ -46,6 +46,8 @@ const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
 const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
+const EngagementDashboard = lazy(() => import('./components/engagement/EngagementDashboard'));
+const AdminEngagementDashboard = lazy(() => import('./pages/admin/EngagementDashboard'));
 // New landing page components
 const MembershipVariation1 = lazy(() => import('./pages/MembershipVariation1'));
 const MembershipVariation2 = lazy(() => import('./pages/MembershipVariation2'));
@@ -193,6 +195,7 @@ const App = () => {
         <Route path="/community/submit-story" element={<ProtectedRoute><SubmitStory /></ProtectedRoute>} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/engagement" element={<ProtectedRoute><EngagementDashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />

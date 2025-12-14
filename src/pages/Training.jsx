@@ -6,6 +6,7 @@ import AIAssistantWidget from '../components/AIAssistantWidget';
 import { usePremiumBriefings } from '../hooks/usePremiumBriefings';
 import PremiumBriefingCarousel from '../components/training/PremiumBriefingCarousel';
 import PremiumBriefingModal from '../components/training/PremiumBriefingModal';
+import { trackBriefingOpen } from '../services/engagementTracking';
 import '../pages.css';
 import {
   FaVideo,
@@ -40,6 +41,10 @@ const Training = () => {
   const handleBriefingClick = (briefing) => {
     setSelectedBriefing(briefing);
     setShowBriefingModal(true);
+    // Track briefing open from carousel
+    if (user) {
+      trackBriefingOpen(user.id, briefing.id);
+    }
   };
 
   const toggleSection = (section) => {

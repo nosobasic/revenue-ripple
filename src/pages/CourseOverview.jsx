@@ -7,6 +7,7 @@ import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../styles/courses.css';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
+import { trackModuleView, trackModuleComplete } from '../services/engagementTracking';
 
 const CourseOverview = () => {
   const { courseSlug } = useParams();
@@ -68,6 +69,10 @@ const CourseOverview = () => {
           completed_at: new Date().toISOString(),
         }
       ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+    
+    // Track module completion
+    trackModuleComplete(user.id, moduleId, courseSlug);
+    
     setModuleCompletion(prev => ({ ...prev, [moduleId]: true }));
     await recalculateProgress();
     setButtonLoading(false);
@@ -113,6 +118,10 @@ const CourseOverview = () => {
 
   const handleModuleClick = (module) => {
     setSelectedModule(module);
+    // Track module view when clicked
+    if (user) {
+      trackModuleView(user.id, module.id, courseSlug);
+    }
   };
 
   const handleCloseModal = () => {

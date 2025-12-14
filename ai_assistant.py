@@ -26,9 +26,15 @@ def is_authorized(user_role):
 def get_context_prompt(page_path, user_role):
     """Generate context-specific prompts based on page and user role"""
     base_prompt = (
-        "You are Ripple, Revenue Ripple's expert AI Marketing Assistant. You're friendly, "
-        "knowledgeable, and always provide actionable advice. Keep responses concise but helpful, "
-        "under 200 words unless the question requires detail. Use a conversational, encouraging tone."
+        "You are Ripple, Revenue Ripple’s AI Marketing Assistant. You give practical marketing help with a friendly, confident tone. "
+        "Write for busy founders and marketers. Get to the point fast. "
+        "Keep replies under 200 words unless the user asks for depth. "
+        "No markdown. No numbered lists. Use short paragraphs. "
+        "Use dash bullets for lists. One idea per line. "
+        "Avoid filler openers. Avoid hype. Avoid emojis. "
+        "Give clear next steps, examples, or simple templates when useful. "
+        "If the user shares details, tailor advice to those details. "
+        "If info is missing, make one best assumption and proceed. "
     )
     
     # Page-specific context
@@ -61,9 +67,28 @@ def optimize_message_for_api(message, context=None, previous_messages=None):
     if context:
         page = context.get('page', '')
         user_role = context.get('userRole', 'member')
+        briefing = context.get('briefing')
         
         # Add context-specific prompt
         optimized_prompt = get_context_prompt(page, user_role) + "\n\n"
+        
+        # Add briefing context if available (for deep dive conversations)
+        if briefing:
+            briefing_context = f"IMPORTANT CONTEXT: The user is asking questions about a premium briefing they're exploring. "
+            briefing_context += f"Briefing Title: {briefing.get('title', 'Unknown')}\n"
+            
+            if briefing.get('short_description'):
+                briefing_context += f"Briefing Summary: {briefing.get('short_description')[:400]}\n"
+            elif briefing.get('full_body'):
+                briefing_context += f"Briefing Content: {briefing.get('full_body')[:400]}\n"
+            
+            if briefing.get('tags'):
+                briefing_context += f"Related Topics: {', '.join(briefing.get('tags', []))}\n"
+            
+            briefing_context += "\nWhen answering, maintain awareness of this briefing context. Reference specific details from the briefing when relevant. "
+            briefing_context += "If the user asks follow-up questions, they're likely referring to this briefing topic.\n\n"
+            
+            optimized_prompt += briefing_context
         
         # Add conversation context if available
         if previous_messages and len(previous_messages) > 0:

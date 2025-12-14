@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
+const AdminEngagementDashboard = lazy(() => import('./admin/EngagementDashboard'));
 import {
   RiDashboardLine,
   RiUserLine,
@@ -2074,6 +2075,13 @@ const Admin = () => {
             Analytics
           </Link>
           <Link 
+            to="/admin/engagement" 
+            className={`admin-nav-item ${location.pathname === '/admin/engagement' ? 'active' : ''}`}
+          >
+            <RiBarChartLine size={20} />
+            Engagement
+          </Link>
+          <Link 
             to="/admin/widgets" 
             className={`admin-nav-item ${location.pathname === '/admin/widgets' ? 'active' : ''}`}
           >
@@ -2149,6 +2157,11 @@ const Admin = () => {
           <Route path="commissions" element={<Commissions />} />
           <Route path="content" element={<Content />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="engagement" element={
+            <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+              <AdminEngagementDashboard />
+            </Suspense>
+          } />
           <Route
             path="widgets"
             element={

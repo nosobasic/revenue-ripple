@@ -7,6 +7,7 @@ import ModuleCompletionFeedback from '../components/ModuleCompletionFeedback';
 import { triggerMilestone } from '../components/MilestoneCheckIn';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
+import { trackModuleView, trackModuleComplete } from '../services/engagementTracking';
 import '../styles/courses.css';
 
 const CourseModule = () => {
@@ -31,6 +32,13 @@ const CourseModule = () => {
     }
     setIsLoading(false);
   }, [course, module]);
+
+  // Track module view when component mounts
+  useEffect(() => {
+    if (user && moduleId && courseSlug) {
+      trackModuleView(user.id, moduleId, courseSlug);
+    }
+  }, [user, moduleId, courseSlug]);
 
   // Check if this module is already completed for this user
   useEffect(() => {
@@ -65,6 +73,9 @@ const CourseModule = () => {
           completed_at: new Date().toISOString(),
         }
       ], { onConflict: ['user_id', 'course_id', 'module_id'] });
+    
+    // Track module completion
+    trackModuleComplete(user.id, moduleId, courseSlug);
     
     setCompleted(true);
     await recalculateProgress();

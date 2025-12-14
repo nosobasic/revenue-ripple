@@ -2,6 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PremiumBriefing } from '../../types/content';
 import { useAIAssistant } from '../../context/AIAssistantContext';
+import { useAuth } from '../../context/AuthContext';
+import { trackBriefingOpen, trackBriefingRead } from '../../services/engagementTracking';
 
 interface PremiumBriefingModalProps {
   isOpen: boolean;
@@ -15,7 +17,9 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
   briefing,
 }) => {
   const { openWithInsight } = useAIAssistant();
+  const { user } = useAuth();
   const [isMobile, setIsMobile] = React.useState(false);
+  const [hasTrackedRead, setHasTrackedRead] = React.useState(false);
   
   React.useEffect(() => {
     const checkMobile = () => {
@@ -27,6 +31,25 @@ const PremiumBriefingModal: React.FC<PremiumBriefingModalProps> = ({
     
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Track briefing opened when modal opens
+  React.useEffect(() => {
+    if (isOpen && briefing && user) {
+      trackBriefingOpen(user.id, briefing.id);
+    }
+  }, [isOpen, briefing, user]);
+
+  // Track briefing read after user has viewed content (after 3 seconds)
+  React.useEffect(() => {
+    if (isOpen && briefing && user && !hasTrackedRead) {
+      const timer = setTimeout(() => {
+        trackBriefingRead(user.id, briefing.id);
+        setHasTrackedRead(true);
+      }, 3000); // Track as "read" after 3 seconds of viewing
+
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, briefing, user, hasTrackedRead]);
   
   if (!isOpen || !briefing) return null;
 

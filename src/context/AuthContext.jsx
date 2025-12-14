@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../supabase/client";
+import { trackDailyLogin } from "../services/engagementTracking";
 
 const AuthContext = createContext();
 
@@ -165,6 +166,12 @@ export function AuthProvider({ children }) {
         throw new Error("No user returned from signInWithPassword");
 
       await fetchUserData(authData.user);
+      
+      // Track daily login for engagement
+      if (authData.user) {
+        trackDailyLogin(authData.user.id);
+      }
+      
       return authData.user;
     } catch (error) {
       console.error("login: error", error);

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
 import { useAIAssistant } from '../context/AIAssistantContext';
 import { getApiBase } from '../config/constants';
+import { trackAIIteraction } from '../services/engagementTracking';
 
 export default function AIAssistantWidget({ showWelcomeBubble = false, pageContext = '' }) {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   const [lastHelpOffer, setLastHelpOffer] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [apiUnreachable, setApiUnreachable] = useState(false);
+  const [activeBriefingContext, setActiveBriefingContext] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const helpBubbleTimer = useRef(null);
@@ -62,11 +64,18 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
     setContextIsOpen(newOpen);
+    // Clear briefing context when chat is closed
+    if (!newOpen) {
+      setActiveBriefingContext(null);
+    }
   };
 
   // Handle pending insight context
   useEffect(() => {
     if (pendingInsightContext && open) {
+      // Store the active briefing context for future messages
+      setActiveBriefingContext(pendingInsightContext.briefing);
+      
       // Add the AI message with insight context
       const insightMessage = {
         id: Date.now(),
@@ -174,12 +183,28 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
     setLoading(true);
     setIsTyping(true);
     
+    // Track AI interaction
+    if (user) {
+      trackAIIteraction(user.id, 'message_sent', {
+        page: location.pathname,
+        has_briefing_context: !!activeBriefingContext,
+      });
+    }
+    
     // Add contextual information to the message
     const contextualMessage = pageContext ? 
       `Page context: ${pageContext}. User message: ${userMessage.text}` : 
       userMessage.text;
 
     try {
+      // Include briefing context if available
+      const briefingContext = activeBriefingContext ? {
+        title: activeBriefingContext.title,
+        short_description: activeBriefingContext.short_description,
+        full_body: activeBriefingContext.full_body,
+        tags: activeBriefingContext.tags
+      } : null;
+
       const response = await fetch(`${getApiBase()}/api/ai-assistant`, {
         method: 'POST',
         headers: {
@@ -191,7 +216,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           context: {
             page: location.pathname,
             userRole: userRole,
-            previousMessages: messages.slice(-3) // Send last 3 messages for context
+            previousMessages: messages.slice(-3), // Send last 3 messages for context
+            briefing: briefingContext // Include active briefing context
           }
         })
       });
@@ -490,27 +516,35 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           style={{ 
             flex: 1,
             overflowY: 'auto',
-            padding: isMobile ? '20px' : '16px',
+            padding: isMobile ? '20px 16px' : '20px',
             scrollbarWidth: 'thin',
             // Ensure messages are visible above keyboard
             maxHeight: isMobile ? 'calc(100vh - 200px)' : 'auto',
-            minHeight: isMobile ? '200px' : 'auto'
+            minHeight: isMobile ? '200px' : 'auto',
+            fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale'
           }}
         >
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <div
               key={message.id}
               className={`flex ${message.from === 'user' ? 'justify-end' : 'justify-start'}`}
               style={{ 
                 display: 'flex',
-                justifyContent: message.from === 'user' ? 'flex-end' : 'flex-start'
+                justifyContent: message.from === 'user' ? 'flex-end' : 'flex-start',
+                marginBottom: '12px',
+                animation: 'fadeIn 150ms ease-out',
+                animationFillMode: 'both',
+                animationDelay: `${index * 20}ms`
               }}
             >
               <div 
-                className={`max-w-[85%] ${message.from === 'user' ? 'order-2' : 'order-1'}`}
+                className={`${message.from === 'user' ? 'order-2' : 'order-1'}`}
                 style={{ 
-                  maxWidth: isMobile ? '90%' : '85%',
-                  order: message.from === 'user' ? 2 : 1
+                  maxWidth: isMobile ? '92%' : '72%',
+                  order: message.from === 'user' ? 2 : 1,
+                  width: '100%'
                 }}
               >
                 {message.from === 'ai' && (
@@ -520,7 +554,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      marginBottom: '4px'
+                      marginBottom: '6px'
                     }}
                   >
                     <img 
@@ -531,9 +565,10 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                     <span 
                       className="text-xs text-gray-500 font-medium"
                       style={{ 
-                        fontSize: isMobile ? '14px' : '12px',
+                        fontSize: '12px',
                         color: '#6b7280',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        letterSpacing: '0.1px'
                       }}
                     >
                       Ripple
@@ -541,34 +576,37 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                   </div>
                 )}
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                    message.from === 'user'
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white'
-                      : 'bg-gray-100 text-gray-800 border border-gray-200'
-                  }`}
                   style={{
-                    borderRadius: '16px',
-                    padding: isMobile ? '16px 20px' : '12px 16px',
-                    fontSize: isMobile ? '16px' : '14px',
-                    lineHeight: '1.5',
+                    borderRadius: '14px',
+                    padding: '14px 16px',
+                    fontSize: '15px',
+                    lineHeight: '1.6',
+                    letterSpacing: '0.1px',
                     background: message.from === 'user' 
                       ? 'linear-gradient(to right, #2563eb, #1d4ed8)' 
                       : '#f3f4f6',
                     color: message.from === 'user' ? 'white' : '#1f2937',
-                    border: message.from === 'user' ? 'none' : '1px solid #e5e7eb'
+                    border: message.from === 'user' 
+                      ? 'none' 
+                      : '1px solid rgba(229, 231, 235, 0.8)',
+                    boxShadow: message.from === 'user'
+                      ? '0 1px 2px rgba(37, 99, 235, 0.1)'
+                      : '0 1px 2px rgba(0, 0, 0, 0.05)',
+                    whiteSpace: 'pre-wrap',
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word'
                   }}
                 >
                   {message.text}
                 </div>
                 <div 
-                  className={`text-xs text-gray-400 mt-1 ${
-                    message.from === 'user' ? 'text-right' : 'text-left'
-                  }`}
                   style={{
-                    fontSize: isMobile ? '14px' : '12px',
+                    fontSize: '12px',
                     color: '#9ca3af',
-                    marginTop: '4px',
-                    textAlign: message.from === 'user' ? 'right' : 'left'
+                    marginTop: '6px',
+                    textAlign: message.from === 'user' ? 'right' : 'left',
+                    paddingLeft: message.from === 'ai' ? '4px' : '0',
+                    paddingRight: message.from === 'user' ? '4px' : '0'
                   }}
                 >
                   {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -581,58 +619,59 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           {isTyping && (
             <div 
               className="flex justify-start"
-              style={{ display: 'flex', justifyContent: 'flex-start' }}
+              style={{ 
+                display: 'flex', 
+                justifyContent: 'flex-start',
+                marginBottom: '12px',
+                animation: 'fadeIn 150ms ease-out'
+              }}
             >
               <div 
                 className="flex items-center space-x-2"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', maxWidth: isMobile ? '92%' : '72%' }}
               >
                 <img 
                   src="/assets/icons/revenue_ripple_icon_transparent.png" 
                   alt="Ripple" 
-                  style={{ width: isMobile ? '20px' : '16px', height: isMobile ? '20px' : '16px' }}
+                  style={{ width: '16px', height: '16px' }}
                 />
                 <div 
-                  className="bg-gray-100 rounded-2xl px-4 py-3 border border-gray-200"
                   style={{
                     backgroundColor: '#f3f4f6',
-                    borderRadius: '16px',
-                    padding: isMobile ? '16px 20px' : '12px 16px',
-                    border: '1px solid #e5e7eb'
+                    borderRadius: '14px',
+                    padding: '14px 16px',
+                    border: '1px solid rgba(229, 231, 235, 0.8)',
+                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
                   }}
                 >
                   <div 
-                    className="flex space-x-1"
-                    style={{ display: 'flex', gap: '4px' }}
+                    style={{ display: 'flex', gap: '4px', alignItems: 'center' }}
                   >
                     <div 
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                       style={{
-                        width: isMobile ? '10px' : '8px',
-                        height: isMobile ? '10px' : '8px',
+                        width: '6px',
+                        height: '6px',
                         backgroundColor: '#9ca3af',
                         borderRadius: '50%',
-                        animation: 'bounce 1s infinite'
+                        animation: 'typingDot 1.4s infinite ease-in-out'
                       }}
                     ></div>
                     <div 
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                       style={{
-                        width: isMobile ? '10px' : '8px',
-                        height: isMobile ? '10px' : '8px',
+                        width: '6px',
+                        height: '6px',
                         backgroundColor: '#9ca3af',
                         borderRadius: '50%',
-                        animation: 'bounce 1s infinite 0.1s'
+                        animation: 'typingDot 1.4s infinite ease-in-out 0.2s'
                       }}
                     ></div>
                     <div 
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                       style={{
-                        width: isMobile ? '10px' : '8px',
-                        height: isMobile ? '10px' : '8px',
+                        width: '6px',
+                        height: '6px',
                         backgroundColor: '#9ca3af',
                         borderRadius: '50%',
-                        animation: 'bounce 1s infinite 0.2s'
+                        animation: 'typingDot 1.4s infinite ease-in-out 0.4s'
                       }}
                     ></div>
                   </div>
@@ -934,12 +973,25 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           }
         }
         
-        @keyframes bounce {
-          0%, 80%, 100% {
-            transform: scale(0);
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
           }
-          40% {
-            transform: scale(1);
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes typingDot {
+          0%, 60%, 100% {
+            transform: translateY(0);
+            opacity: 0.7;
+          }
+          30% {
+            transform: translateY(-8px);
+            opacity: 1;
           }
         }
         
@@ -958,6 +1010,15 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
           }
           50% {
             opacity: 0.5;
+          }
+        }
+
+        /* Respect reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
           }
         }
 
