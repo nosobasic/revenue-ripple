@@ -178,13 +178,13 @@ const App = () => {
         <Route path="/community/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
         <Route path="/community/submit-story" element={<ProtectedRoute><SubmitStory /></ProtectedRoute>} />
 
-        <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
-        <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
-        <Route path="/training" element={<ProtectedRoute requirePayment={true}><Training /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+        <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug" element={<ProtectedRoute requirePayment={true}><CourseOverview /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute requirePayment={true}><CourseModule /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
 
         <Route path="/affiliate-centre/*" element={<ProtectedRoute>
           <Routes>

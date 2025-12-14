@@ -1,7 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useUserRole } from "../hooks/useUserRole";
-import { useEffect, useState } from "react";
 import React from "react";
 
 // ErrorBoundary component to catch errors in child components
@@ -41,9 +39,8 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
   </div>
 );
 
-export default function ProtectedRoute({ children, requireAdmin = false, requirePayment = false }) {
+export default function ProtectedRoute({ children, requireAdmin = false }) {
   const { user, loading } = useAuth();
-  const { isAdmin } = useUserRole();
   const location = useLocation();
   const token = localStorage.getItem("revenue-ripple-auth-token");
 
@@ -53,30 +50,12 @@ export default function ProtectedRoute({ children, requireAdmin = false, require
   }
 
   // Redirect to login if not authenticated
-  if (!token || !user) {
+  if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Check payment status if required (but allow admin access)
-  // IMPORTANT: Check user.has_paid directly from the user object
-  // This ensures we're checking the actual database value, not stale hook data
-  if (requirePayment && !isAdmin) {
-    // Check has_paid directly - must be explicitly true
-    const hasPaid = user?.has_paid === true;
-    
-    // If user hasn't paid, redirect to checkout
-    if (!hasPaid) {
-      // Store intended path for redirect after checkout
-      if (location.pathname !== '/checkout' && location.pathname !== '/membership-success') {
-        sessionStorage.setItem('intended-path', location.pathname);
-      }
-      return <Navigate to="/checkout?product=membership" state={{ from: location }} replace />;
-    }
-    // If user has paid, allow access (don't redirect)
-  }
-
   // Check if user has required role
-  if (requireAdmin && !isAdmin) {
+  if (requireAdmin && user?.role !== "admin") {
     return (
       <div style={{ 
         color: "red", 

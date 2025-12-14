@@ -13,14 +13,9 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    // Check if we're in the middle of OAuth callback
-    const isOAuthCallback = window.location.pathname === '/auth/callback' || 
-                            window.location.hash.includes('access_token');
-    
     const token = localStorage.getItem("revenue-ripple-auth-token");
 
-    // Don't force signOut during OAuth flow - let Supabase handle it
-    if (!token && !isOAuthCallback) {
+    if (!token) {
       supabase.auth.signOut().finally(() => {
         setUser(null);
         setSession(null);
@@ -58,55 +53,18 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, phone, company, bio, paypal_email, has_paid, payment_status"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio,paypal_email, has_paid, payment_status"
         )
         .eq("id", authUser.id)
         .single();
 
-      if (error && error.code === 'PGRST116') {
-        // User doesn't exist in users table - create one (common with OAuth signups)
-        console.log("Creating user record for OAuth user:", authUser.id);
-        
-        const newUser = {
-          id: authUser.id,
-          email: authUser.email,
-          name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email.split('@')[0],
-          role: 'member',
-          status: 'active',
-          created_at: new Date().toISOString(),
-          phone: authUser.user_metadata?.phone || '',
-          company: '',
-          bio: '',
-          plan: '',
-          paypal_email: null,
-          has_paid: false,
-          payment_status: 'pending'
-        };
-
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert([newUser]);
-
-        if (insertError) {
-          console.error("Error creating user record:", insertError);
-        }
-
-        setUser({
-          ...authUser,
-          ...newUser,
-        });
-        setLoading(false);
-        return;
-      }
-
       if (error) {
         console.error("Error fetching user data:", error);
+        // If user doesn't exist in users table, create basic user object
         setUser({
           ...authUser,
-          role: 'member',
-          status: 'active',
-          has_paid: false,
-          payment_status: 'pending'
+          role: 'member', // default role
+          status: 'active'
         });
         return;
       }
@@ -114,17 +72,13 @@ export function AuthProvider({ children }) {
       if (userData) {
         setUser({
           ...authUser,
-          // Ensure role always has a default value
-          role: userData.role || 'member',
           ...userData,
         });
       } else {
         setUser({
           ...authUser,
           role: 'member',
-          status: 'active',
-          has_paid: false,
-          payment_status: 'pending'
+          status: 'active'
         });
       }
     } catch (error) {
@@ -132,13 +86,8 @@ export function AuthProvider({ children }) {
       setUser({
         ...authUser,
         role: 'member',
-        status: 'active',
-        has_paid: false,
-        payment_status: 'pending'
+        status: 'active'
       });
-    } finally {
-      // Ensure loading state is set to false after user data is fetched
-      setLoading(false);
     }
   };
 
@@ -167,24 +116,12 @@ export function AuthProvider({ children }) {
             company: "",
             bio: "",
             plan: "",
-            paypal_email: paypal,
-            has_paid: false,
-            payment_status: "pending"
+            paypal_email:paypal
           },
         ]);
 
         if (userError) {
           console.error("Error creating user record:", userError);
-        }
-
-        // Immediately fetch user data to populate auth context
-        // This ensures the user object is available right after signup
-        await fetchUserData(authData.user);
-        
-        // Store auth token in localStorage for persistence
-        if (authData.session) {
-          localStorage.setItem("revenue-ripple-auth-token", authData.session.access_token);
-          setSession(authData.session);
         }
       }
 
@@ -206,18 +143,13 @@ export function AuthProvider({ children }) {
           password,
         });
 
+
+
       if (authError) throw authError;
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
-      // Fetch full user data including payment status
       await fetchUserData(authData.user);
-      
-      // Wait a moment for state to update, then return the user from state
-      // The user state will have the full data including has_paid
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      // Return the auth user - the full user data is now in context state
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
@@ -331,61 +263,6 @@ async function resetPassword(email) {
   }
 }
 
-async function signInWithOAuth(provider, redirectPath = '/checkout?product=membership') {
-  try {
-    setLoading(true);
-    
-    console.log('🔵 Starting OAuth flow for:', provider);
-    console.log('📍 Origin:', window.location.origin);
-    console.log('📍 Redirect path to save:', redirectPath);
-    
-    // Store redirect path in localStorage so we can use it after OAuth callback
-    localStorage.setItem('oauth-redirect-path', redirectPath);
-    console.log('💾 Saved to localStorage:', localStorage.getItem('oauth-redirect-path'));
-    
-    const redirectUrl = `${window.location.origin}/auth/callback`;
-    console.log('🔗 OAuth redirectTo URL:', redirectUrl);
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: provider,
-      options: {
-        redirectTo: redirectUrl,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        }
-      }
-    });
-
-    console.log('OAuth response:', { data, error });
-    
-    if (error) {
-      console.error('❌ OAuth error:', error);
-      throw error;
-    }
-    
-    console.log('✅ OAuth initiated successfully');
-    return data;
-  } catch (error) {
-    console.error(`💥 OAuth ${provider} error:`, error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-}
-
-
-  // Function to refresh user data from database
-  // Use useCallback to memoize and prevent infinite loops
-  // Get fresh session each time instead of depending on state
-  const refreshUserData = React.useCallback(async () => {
-    // Always get fresh session from Supabase to avoid stale state
-    const { data: { session: currentSession } } = await supabase.auth.getSession();
-    if (currentSession?.user) {
-      await fetchUserData(currentSession.user);
-    }
-  }, []); // No dependencies - always get fresh session
-
   const value = {
     user,
     session,
@@ -395,8 +272,6 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
     logout,
     updateUserProfile,
     resetPassword,
-    refreshUserData,
-    signInWithOAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
