@@ -2288,7 +2288,48 @@ export default function Home() {
             Everything you need to know about Revenue Ripple
           </motion.p>
           <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
-            <FAQAccordion />
+            <FAQAccordion faqs={[
+              {
+                q: "What exactly do I get with my membership?",
+                a: "You get instant access to 46+ comprehensive marketing tutorials, 25+ expert-led video courses, step-by-step playbooks, AI marketing strategies, community access, and our exclusive affiliate program. Plus, you get ongoing support through our AI assistant and 1-on-1 coaching options."
+              },
+              {
+                q: "Is there a free trial?",
+                a: "We don't offer free trials because we believe real growth comes from commitment, not dabbling. However, we back everything with a 30-day money-back guarantee. If Revenue Ripple isn't for you or doesn't deliver what you expected, we'll refund you, no questions asked."
+              },
+              {
+                q: "How is this different from other marketing courses?",
+                a: "Revenue Ripple focuses on AI-powered strategies that actually generate revenue. We don't teach outdated tactics - everything is current, actionable, and results-focused. Plus, you can earn while you learn through our affiliate program, turning your education into income immediately."
+              },
+              {
+                q: "Do I need any prior marketing experience?",
+                a: "Not at all! Our learning paths are designed for everyone - from complete beginners to seasoned marketers. We have step-by-step roadmaps that take you from zero to first sale in 30 days, with clear guidance every step of the way."
+              },
+              {
+                q: "What if I get stuck or have questions?",
+                a: "You're never alone! We offer an AI Marketing Assistant trained on all our courses for instant answers, plus 1-on-1 business coaching sessions. Our community is also incredibly supportive and always ready to help."
+              },
+              {
+                q: "Can I cancel anytime?",
+                a: "Yes, you can cancel your subscription at any time. There are no long-term contracts or commitments. However, we're confident you'll see value - that's why we offer the 30-day money-back guarantee."
+              },
+              {
+                q: "How does the affiliate program work?",
+                a: "As a member, you get access to our exclusive affiliate program. You can earn commissions by referring others to Revenue Ripple. We provide all the tools, training, and resources you need - including lead magnets, landing pages, and promo scripts - to help you start earning fast."
+              },
+              {
+                q: "What's the difference between Monthly Builder, Quarterly Growth, and Founder Annual?",
+                a: "Monthly Builder ($47/month) gives you core platform access, starter templates, and community access. Quarterly Growth ($129/3 months) includes everything in Monthly Builder plus one onboarding/strategy call and quarterly roadmap setup. Founder Annual ($470/year) includes everything in Quarterly Growth plus founder badge, locked-in pricing forever, and early feature access - saving you $94/year."
+              },
+              {
+                q: "Are the courses updated regularly?",
+                a: "Absolutely! We're constantly adding new content and updating existing courses to reflect the latest AI marketing strategies and industry changes. As a member, you get lifetime access to all current and future content."
+              },
+              {
+                q: "What payment methods do you accept?",
+                a: "We accept all major credit cards and debit cards through our secure Stripe payment system. Your payment information is encrypted and secure. We also offer a 30-day money-back guarantee on all memberships."
+              }
+            ]} />
           </div>
         </div>
       </motion.section>
