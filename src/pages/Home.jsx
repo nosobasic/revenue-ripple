@@ -8,7 +8,7 @@ import TrustBadges from '../components/TrustBadges';
 import FAQAccordion from '../components/FAQAccordion';
 import OfferComparison from '../components/OfferComparison';
 import ReferralTracker from '../components/ReferralTracker.js';
-import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook, FaQuoteLeft, FaRobot, FaBrain, FaCode } from 'react-icons/fa';
+import { FaRocket, FaChartLine, FaUsers, FaHeadset, FaCheckCircle, FaStar, FaGraduationCap, FaHandshake, FaBook, FaRobot, FaBrain, FaCode } from 'react-icons/fa';
 import { MdDashboard, MdInventory, MdPeople } from 'react-icons/md';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
@@ -653,7 +653,6 @@ const buttonVariants = {
 
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
-  const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [showExitIntent, setShowExitIntent] = useState(false);
   const [exitIntentShown, setExitIntentShown] = useState(false);
   const [recentActivity] = useState([
@@ -2316,217 +2315,6 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Floating See More Reviews Button */}
-      <AnimatePresence>
-        <motion.button
-        onClick={() => setShowTestimonialModal(true)}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        style={{
-          position: 'fixed',
-          bottom: isMobile ? '16px' : '32px',
-          right: isMobile ? '16px' : '32px',
-          zIndex: 1200,
-            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '50px',
-          padding: isMobile ? '0.625rem 1rem' : '0.75rem 1.5rem',
-          fontWeight: 600,
-          fontSize: isMobile ? '0.875rem' : '1rem',
-            boxShadow: '0 4px 16px rgba(37, 99, 235, 0.3)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          maxWidth: isMobile ? '200px' : 'none',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
-        }}
-        aria-label="See More Reviews"
-        >
-          <FaQuoteLeft style={{ fontSize: isMobile ? '1rem' : '1.25rem' }} />
-        {isMobile ? 'More Reviews' : 'See More Reviews'}
-        </motion.button>
-      </AnimatePresence>
-      {/* Testimonial Modal Overlay */}
-      <AnimatePresence>
-      {showTestimonialModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(0,0,0,0.7)',
-              backdropFilter: 'blur(8px)',
-          zIndex: 1300,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-          onClick={() => setShowTestimonialModal(false)}
-        >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 50 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(20px)',
-              borderRadius: isMobile ? '0.5rem' : '1rem',
-              maxWidth: '700px',
-              width: isMobile ? '95vw' : '90vw',
-              maxHeight: isMobile ? '90vh' : '80vh',
-              overflowY: 'auto',
-              padding: isMobile ? '1rem' : '2rem',
-              position: 'relative',
-              margin: isMobile ? '0.5rem' : '0',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.3)'
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowTestimonialModal(false)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(0,0,0,0.05)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                color: '#4b5563',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s'
-              }}
-              aria-label="Close"
-            >
-              ×
-            </button>
-            <motion.h2 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{ marginTop: 0, marginBottom: '1.5rem', color: '#2563eb' }}
-            >
-              What Our Members Say
-            </motion.h2>
-            <motion.div 
-              initial="hidden"
-              animate="visible"
-              variants={containerVariants}
-              style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
-            >
-              {/* Render all testimonials, including the extra ones */}
-              {/* Always show all testimonials in the modal */}
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic1.png" alt="Profile of Sarah Johnson" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Sarah Johnson</h4>
-                    <p>Digital Marketing Consultant</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic2.png" alt="Profile of Michael Chen" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Gloria Chen</h4>
-                    <p>E-commerce Entrepreneur</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic3.png" alt="Profile of Paul Rodriguez" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Paul Rodriguez</h4>
-                    <p>Agency Founder</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"The affiliate program is a game-changer! Not only am I learning valuable skills, but I'm also earning while implementing what I learn. It's a win-win situation."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>David Thompson</h4>
-                    <p>Affiliate Marketer</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"The support team is incredible! They're always there to help and the community is so encouraging. It's like having a marketing family that wants you to succeed."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Adin Parker</h4>
-                    <p>Small Business Owner</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"The video courses are pure gold! Each lesson is packed with actionable insights that I could implement immediately. My social media engagement has tripled!"</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>James Wilson</h4>
-                    <p>Social Media Manager</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"I love how the platform keeps updating with new content and strategies. It helps me stay ahead of the curve in this fast-paced digital marketing world."</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Nina Patel</h4>
-                    <p>Marketing Director</p>
-                  </div>
-                </div>
-              </div>
-              <div className="testimonial-card">
-                <div className="stars">★★★★★</div>
-                <p className="testimonial-text">"The ROI tracking templates and analytics tutorials helped me prove the value of my marketing efforts to clients. My retainer rates have doubled!"</p>
-                <div className="testimonial-author">
-                  <img src="/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
-                  <div className="author-info">
-                    <h4>Alex Foster</h4>
-                    <p>Marketing Analytics Specialist</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Mobile Sticky CTA */}
       {isMobile && (
@@ -2534,8 +2322,8 @@ export default function Home() {
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-          style={{
-            position: 'fixed',
+        style={{
+          position: 'fixed',
             bottom: 0,
             left: 0,
             right: 0,
@@ -2553,11 +2341,11 @@ export default function Home() {
               display: 'block',
               width: '100%',
               textAlign: 'center',
-              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              color: 'white',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+          color: 'white',
               padding: '1rem',
               borderRadius: '12px',
-              fontWeight: 600,
+          fontWeight: 600,
               textDecoration: 'none',
               fontSize: '1rem',
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
@@ -2601,7 +2389,7 @@ export default function Home() {
                 {activity}
               </motion.div>
             ))}
-          </AnimatePresence>
+      </AnimatePresence>
         </div>
       )}
 
@@ -2613,28 +2401,28 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
+          position: 'fixed',
+          top: 0,
+          left: 0,
               right: 0,
               bottom: 0,
-              background: 'rgba(0,0,0,0.7)',
+          background: 'rgba(0,0,0,0.7)',
               backdropFilter: 'blur(4px)',
               zIndex: 2000,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
               padding: '1rem'
-            }}
+        }}
             onClick={() => setShowExitIntent(false)}
-          >
+        >
             <motion.div
               initial={{ scale: 0.8, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 50 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              style={{
+            style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 100%)',
                 backdropFilter: 'blur(20px)',
                 borderRadius: '20px',
@@ -2645,31 +2433,31 @@ export default function Home() {
                 boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
                 border: '1px solid rgba(255,255,255,0.3)',
                 position: 'relative'
-              }}
-            >
-              <button
+            }}
+          >
+            <button
                 onClick={() => setShowExitIntent(false)}
-                style={{
-                  position: 'absolute',
-                  top: '1rem',
-                  right: '1rem',
-                  background: 'rgba(0,0,0,0.05)',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  fontSize: '1.5rem',
-                  cursor: 'pointer',
-                  color: '#4b5563',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s'
-                }}
-                aria-label="Close"
-              >
-                ×
-              </button>
+              style={{
+                position: 'absolute',
+                top: '1rem',
+                right: '1rem',
+                background: 'rgba(0,0,0,0.05)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#4b5563',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
               {/* Book Image */}
               <div style={{ marginBottom: '1rem' }}>
                 <img 
@@ -2750,8 +2538,8 @@ export default function Home() {
               >
                 No thanks, I'll pass
               </button>
-            </motion.div>
           </motion.div>
+        </motion.div>
         )}
       </AnimatePresence>
 
