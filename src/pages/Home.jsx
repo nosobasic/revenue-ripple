@@ -2670,24 +2670,53 @@ export default function Home() {
               >
                 ×
               </button>
+              {/* Book Image */}
+              <div style={{ marginBottom: '1rem' }}>
+                <img 
+                  src="/assets/images/images/money-models.jpeg" 
+                  alt="$100M Money Models by Alex Hormozi" 
+                  style={{
+                    width: '120px',
+                    height: '160px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    margin: '0 auto'
+                  }}
+                  onError={(e) => {
+                    e.target.src = "/assets/images/images/money-book.jpeg";
+                  }}
+                />
+              </div>
+              
               <h3 style={{ 
                 fontSize: '1.75rem', 
-                marginBottom: '1rem', 
+                marginBottom: '0.75rem', 
                 color: '#1f2937',
-                fontWeight: 700
+                fontWeight: 700,
+                lineHeight: '1.2'
               }}>
-                Wait! Don't Miss Out 🎁
+                Wait! Get Alex Hormozi's $100M Money Models FREE
               </h3>
               <p style={{ 
                 color: '#6b7280', 
-                marginBottom: '1.5rem',
-                fontSize: '1rem',
-                lineHeight: '1.6'
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                lineHeight: '1.5',
+                fontWeight: 600
               }}>
-                Get our FREE "30-Day Marketing Roadmap" when you join today
+                Limited to 198 copies - You just cover shipping
+              </p>
+              <p style={{ 
+                color: '#6b7280', 
+                marginBottom: '1.5rem',
+                fontSize: '0.875rem',
+                lineHeight: '1.5'
+              }}>
+                Learn the exact money models used to build billion-dollar businesses
               </p>
               <Link 
-                to="/register"
+                to="/book-giveaway?utm_source=exit_intent&utm_medium=popup&utm_campaign=book_giveaway"
                 className="cta-button"
                 style={{
                   display: 'block',
@@ -2705,7 +2734,7 @@ export default function Home() {
                 onClick={() => setShowExitIntent(false)}
               >
                 <FaRocket style={{ marginRight: '0.5rem', display: 'inline' }} />
-                Claim Your Free Roadmap
+                Claim My Free Book
               </Link>
               <button
                 onClick={() => setShowExitIntent(false)}
