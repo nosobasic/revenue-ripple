@@ -273,6 +273,43 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/create-quarterly-growth-session', methods=['POST'])
+def create_quarterly_growth_session():
+    try:
+        data = request.get_json()
+        referrer_username = data.get('referrer_username')
+
+        # Get price ID for Quarterly Growth product (prod_TcC4UZ5qMY6L8I)
+        # List prices for the product and use the first active price
+        prices = stripe.Price.list(
+            product='prod_TcC4UZ5qMY6L8I',
+            active=True,
+            limit=1
+        )
+        
+        if not prices.data or len(prices.data) == 0:
+            return jsonify({'error': 'No active price found for Quarterly Growth product'}), 400
+        
+        price_id = prices.data[0].id
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price': price_id,
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url='https://revenueripple.org/membership-cancel',
+            metadata={
+                'referrer_username': referrer_username or 'none',
+                'product': 'quarterly_growth_subscription'
+            }
+        )
+        return jsonify({'url': session.url})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 # Founders Annual Endpoints - moved here for immediate deployment
 @app.route('/founders-test', methods=['GET'])
 def founders_test_simple():
@@ -647,7 +684,7 @@ def stripe_webhook():
             }
             send_conversion_event('Subscribe', user_data, custom_data, "https://revenueripple.org/founders-checkout")
 
-        elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription", "reseller_trial_subscription", "pro_reseller_trial_subscription"]:
+        elif product in ["membership_subscription", "reseller_subscription", "pro_reseller_subscription", "reseller_trial_subscription", "pro_reseller_trial_subscription", "quarterly_growth_subscription"]:
             tier = product.replace("_subscription", "")
             print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
             log_subscription_to_supabase(customer_email, amount_total, referrer_username, tier)
@@ -664,6 +701,8 @@ def stripe_webhook():
                 set_user_role(customer_email, "reseller")
             elif product == "pro_reseller_trial_subscription":
                 set_user_role(customer_email, "pro_reseller")
+            elif product == "quarterly_growth_subscription":
+                set_user_role(customer_email, "member")
             
             # Send Subscribe event to Facebook Conversions API
             user_data = {'email': customer_email}

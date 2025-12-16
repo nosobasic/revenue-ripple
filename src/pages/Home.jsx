@@ -654,6 +654,13 @@ const buttonVariants = {
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const [exitIntentShown, setExitIntentShown] = useState(false);
+  const [recentActivity] = useState([
+    "Sarah from NYC just joined",
+    "Mike completed AI Essentials course", 
+    "3 people joined in the last hour"
+  ]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { user } = useAuth();
   const heroRef = useRef(null);
@@ -682,9 +689,21 @@ export default function Home() {
       setIsMobile(window.innerWidth <= 768);
     };
     
+    // Exit intent detection
+    const handleMouseLeave = (e) => {
+      if (e.clientY <= 0 && !exitIntentShown && !user) {
+        setShowExitIntent(true);
+        setExitIntentShown(true);
+      }
+    };
+    
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [exitIntentShown, user]);
 
   return (
     <div className="home">
@@ -1600,7 +1619,19 @@ export default function Home() {
             <img src="/assets/images/images/rev-rip-pic.png" alt="Clean modern workspace with Revenue Ripple platform" />
           </div>
           <div className="what-is-cta-container">
-            <Link to="/pricing" className="what-is-cta primary">View Pricing Plans</Link>
+            <a 
+              href="#pricing-section" 
+              className="what-is-cta primary"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById('pricing-section');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+            >
+              View Pricing Plans
+            </a>
             <Link to="/demo" className="what-is-cta secondary">Request Demo</Link>
           </div>
         </div>
@@ -1786,6 +1817,164 @@ export default function Home() {
 
       {/* Community Section removed per request */}
 
+      {/* Text Message Testimonials Section */}
+      <motion.section 
+        className="sms-testimonials-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{ background: '#ffffff', padding: '4rem 0' }}
+      >
+        <div className="container">
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            Real Messages from Real Results
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+          >
+            See what people are saying about Revenue Ripple
+          </motion.p>
+          
+          <motion.div 
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: '2rem',
+              maxWidth: '1200px',
+              margin: '2rem auto',
+              padding: isMobile ? '0 1rem' : '0'
+            }}
+            variants={containerVariants}
+          >
+            {/* Testimonial 1 */}
+            <motion.div
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'white',
+                borderRadius: '20px',
+                padding: '1.5rem',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: '1px solid #e5e7eb'
+              }}
+            >
+              <div style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280', 
+                marginBottom: '1rem',
+                textAlign: 'center'
+              }}>
+                Today 6:12 PM
+              </div>
+              <div style={{
+                background: '#e5e7eb',
+                borderRadius: '18px',
+                padding: '1rem',
+                marginBottom: '1rem',
+                position: 'relative'
+              }}>
+                <p style={{ 
+                  margin: 0, 
+                  color: '#1f2937',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5'
+                }}>
+                  "My guy Donte made a my work flow that perfectly handles my YouTube video summary automation"
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Testimonial 2 */}
+            <motion.div
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'white',
+                borderRadius: '20px',
+                padding: '1.5rem',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: '1px solid #e5e7eb'
+              }}
+            >
+              <div style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280', 
+                marginBottom: '1rem',
+                textAlign: 'center'
+              }}>
+                Today 4:37 PM
+              </div>
+              <div style={{
+                background: '#e5e7eb',
+                borderRadius: '18px',
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <p style={{ 
+                  margin: 0, 
+                  color: '#1f2937',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5'
+                }}>
+                  "Working with Donte at Revenue Ripple has been an absolute game changer for my foundation. From the very beginning, he understood my vision on both a technical and emotional level; transforming it into a stunning, professional website that perfectly reflects our mission. Donte was hands-on, patient, and incredibly responsive, guiding me through every step of the process with clarity and care."
+                </p>
+              </div>
+              <div style={{
+                fontSize: '0.75rem',
+                color: '#059669',
+                fontWeight: 600,
+                textAlign: 'center',
+                marginTop: '0.5rem'
+              }}>
+                — Nykiah Morgan, Founder
+              </div>
+            </motion.div>
+
+            {/* Testimonial 3 */}
+            <motion.div
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'white',
+                borderRadius: '20px',
+                padding: '1.5rem',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                border: '1px solid #e5e7eb'
+              }}
+            >
+              <div style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280', 
+                marginBottom: '1rem',
+                textAlign: 'center'
+              }}>
+                Mon, Sep 22 at 3:21 PM
+              </div>
+              <div style={{
+                background: '#e5e7eb',
+                borderRadius: '18px',
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <p style={{ 
+                  margin: 0, 
+                  color: '#1f2937',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5'
+                }}>
+                  "I've been learning so much about marketing and leads on revenue ripple, I seriously can't thank you enough! Applying the knowledge ive gained from the site, I've been able to generate and convert way more leads for my business 💪🔥"
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
+
       {/* No Free Trial Section */}
       <motion.section 
         className="no-free-trial-section"
@@ -1811,6 +2000,296 @@ export default function Home() {
             <Link to={user ? "/checkout" : "/register"} className="cta-button">
               Join Now for Only $47/month
             </Link>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Pricing Plans Section */}
+      <motion.section 
+        id="pricing-section"
+        className="pricing-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{ background: '#f9fafb', padding: '4rem 0', position: 'relative', overflow: 'hidden' }}
+      >
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            Choose Your Plan
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+            transition={{ delay: 0.2 }}
+          >
+            Select the plan that fits your journey
+          </motion.p>
+          
+          <motion.div 
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: '2rem',
+              maxWidth: '1200px',
+              margin: '0 auto',
+              padding: isMobile ? '0 1rem' : '0'
+            }}
+            variants={containerVariants}
+          >
+            {/* Monthly Builder Plan */}
+            <motion.div 
+              className="pricing-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                borderRadius: '12px',
+                padding: '2rem',
+                textAlign: 'center',
+                position: 'relative'
+              }}
+            >
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#1f2937' }}>Monthly Builder</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '2.5rem', fontWeight: 700, color: '#2563eb' }}>$47</span>
+                <span style={{ color: '#6b7280', fontSize: '1rem' }}>/month</span>
+              </div>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>
+                Entry level access for early stage builders
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', textAlign: 'left' }}>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Core platform access
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Starter templates
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Community access
+                </li>
+              </ul>
+              <Link 
+                to={user ? "/checkout" : "/register"} 
+                className="path-cta"
+                style={{ display: 'block', width: '100%', textAlign: 'center' }}
+              >
+                Get Started
+              </Link>
+            </motion.div>
+
+            {/* Quarterly Growth Plan - Recommended */}
+            <motion.div 
+              className="pricing-card featured"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.3)',
+                boxShadow: '0 8px 32px rgba(37, 99, 235, 0.2)',
+                borderRadius: '12px',
+                padding: '2rem',
+                textAlign: 'center',
+                position: 'relative',
+                transform: isMobile ? 'none' : 'scale(1.05)',
+                zIndex: 2
+              }}
+            >
+              <span className="featured-badge" style={{ 
+                background: '#2563eb',
+                color: 'white',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '20px',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                marginBottom: '1rem',
+                display: 'inline-block'
+              }}>
+                Recommended
+              </span>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#1f2937' }}>Quarterly Growth</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '2.5rem', fontWeight: 700, color: '#2563eb' }}>$129</span>
+                <span style={{ color: '#6b7280', fontSize: '1rem' }}>/3 months</span>
+              </div>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>
+                Designed for builders focused on momentum over 90 days
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', textAlign: 'left' }}>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Everything in Monthly Builder
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  One onboarding or strategy call
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Quarterly roadmap or automation setup
+                </li>
+              </ul>
+              <Link 
+                to={user ? "/checkout" : "/register"} 
+                className="path-cta featured"
+                style={{ display: 'block', width: '100%', textAlign: 'center' }}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  try {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ referrer_username: null })
+                    });
+                    const data = await response.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    }
+                  } catch (error) {
+                    console.error('Error creating checkout session:', error);
+                    window.location.href = user ? "/checkout" : "/register";
+                  }
+                }}
+              >
+                Get Started
+              </Link>
+            </motion.div>
+
+            {/* Founder Annual Plan */}
+            <motion.div 
+              className="pricing-card"
+              variants={cardVariants}
+              whileHover="hover"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
+                backdropFilter: 'blur(10px)',
+                border: '2px solid rgba(37, 99, 235, 0.2)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                borderRadius: '12px',
+                padding: '2rem',
+                textAlign: 'center',
+                position: 'relative'
+              }}
+            >
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#1f2937' }}>Founder Annual</h3>
+              <div style={{ marginBottom: '1rem' }}>
+                <span style={{ fontSize: '2.5rem', fontWeight: 700, color: '#2563eb' }}>$470</span>
+                <span style={{ color: '#6b7280', fontSize: '1rem' }}>/year</span>
+              </div>
+              <p style={{ color: '#059669', fontSize: '0.875rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                Save $94/year vs monthly
+              </p>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>
+                Best value for committed builders
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem', textAlign: 'left' }}>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Everything in Quarterly Growth
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Founder badge
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Locked in pricing
+                </li>
+                <li style={{ padding: '0.75rem 0', color: '#4b5563', fontSize: '0.875rem', display: 'flex', alignItems: 'flex-start' }}>
+                  <FaCheckCircle style={{ color: '#2563eb', marginRight: '0.5rem', marginTop: '0.25rem', flexShrink: 0 }} />
+                  Early feature access
+                </li>
+              </ul>
+              <Link 
+                to="/founders-checkout" 
+                className="path-cta"
+                style={{ display: 'block', width: '100%', textAlign: 'center' }}
+              >
+                Get Started
+              </Link>
+            </motion.div>
+          </motion.div>
+          
+          {/* Payment Security Section */}
+          <div style={{
+            textAlign: 'center',
+            marginTop: '3rem',
+            padding: '1.5rem',
+            background: '#f9fafb',
+            borderRadius: '12px',
+            maxWidth: '800px',
+            margin: '3rem auto 0'
+          }}>
+            <p style={{ 
+              fontSize: '0.875rem', 
+              color: '#6b7280', 
+              marginBottom: '1rem',
+              fontWeight: 600
+            }}>
+              Secure Payment Powered By
+            </p>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '1.5rem',
+              flexWrap: 'wrap',
+              marginBottom: '1rem'
+            }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#2563eb' }}>Stripe</div>
+              <div style={{ fontSize: '0.875rem', color: '#059669', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span>🔒</span> SSL Encrypted
+              </div>
+              <div style={{ fontSize: '0.875rem', color: '#059669', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <span>✅</span> 30-Day Guarantee
+              </div>
+            </div>
+            <p style={{ 
+              fontSize: '0.75rem', 
+              color: '#9ca3af', 
+              marginTop: '0.5rem'
+            }}>
+              Your payment information is secure and encrypted
+            </p>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* FAQ Section */}
+      <motion.section 
+        className="faq-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{ padding: '4rem 0', background: '#ffffff' }}
+      >
+        <div className="container">
+          <motion.h2 
+            className="section-title"
+            variants={textRevealVariants}
+          >
+            Frequently Asked Questions
+          </motion.h2>
+          <motion.p 
+            className="section-subtitle"
+            variants={textRevealVariants}
+            transition={{ delay: 0.2 }}
+          >
+            Everything you need to know about Revenue Ripple
+          </motion.p>
+          <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
+            <FAQAccordion />
           </div>
         </div>
       </motion.section>
@@ -2046,6 +2525,204 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Sticky CTA */}
+      {isMobile && (
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: 'white',
+            borderTop: '2px solid #e5e7eb',
+            padding: '1rem',
+            zIndex: 1000,
+            boxShadow: '0 -4px 12px rgba(0,0,0,0.1)'
+          }}
+        >
+          <Link
+            to={user ? "/checkout" : "/register"}
+            className="cta-button"
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'center',
+              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+              color: 'white',
+              padding: '1rem',
+              borderRadius: '12px',
+              fontWeight: 600,
+              textDecoration: 'none',
+              fontSize: '1rem',
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+            }}
+          >
+            <FaRocket style={{ marginRight: '0.5rem', display: 'inline' }} />
+            Start Now - $47/month
+          </Link>
+        </motion.div>
+      )}
+
+      {/* Live Activity Feed */}
+      {!isMobile && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          zIndex: 999,
+          maxWidth: '300px'
+        }}>
+          <AnimatePresence>
+            {recentActivity.slice(0, 1).map((activity, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ delay: idx * 2 }}
+                style={{
+                  background: 'white',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  border: '1px solid #e5e7eb',
+                  fontSize: '0.875rem',
+                  color: '#1f2937',
+                  marginBottom: '0.5rem'
+                }}
+              >
+                <span style={{ color: '#059669', fontWeight: 600, marginRight: '0.5rem' }}>✓</span> 
+                {activity}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* Exit Intent Popup */}
+      <AnimatePresence>
+        {showExitIntent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 2000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
+            onClick={() => setShowExitIntent(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 100%)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: '20px',
+                padding: '2rem',
+                maxWidth: '500px',
+                width: '100%',
+                textAlign: 'center',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                position: 'relative'
+              }}
+            >
+              <button
+                onClick={() => setShowExitIntent(false)}
+                style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1rem',
+                  background: 'rgba(0,0,0,0.05)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#4b5563',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                aria-label="Close"
+              >
+                ×
+              </button>
+              <h3 style={{ 
+                fontSize: '1.75rem', 
+                marginBottom: '1rem', 
+                color: '#1f2937',
+                fontWeight: 700
+              }}>
+                Wait! Don't Miss Out 🎁
+              </h3>
+              <p style={{ 
+                color: '#6b7280', 
+                marginBottom: '1.5rem',
+                fontSize: '1rem',
+                lineHeight: '1.6'
+              }}>
+                Get our FREE "30-Day Marketing Roadmap" when you join today
+              </p>
+              <Link 
+                to="/register"
+                className="cta-button"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  marginBottom: '0.5rem',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                  color: 'white',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                }}
+                onClick={() => setShowExitIntent(false)}
+              >
+                <FaRocket style={{ marginRight: '0.5rem', display: 'inline' }} />
+                Claim Your Free Roadmap
+              </Link>
+              <button
+                onClick={() => setShowExitIntent(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#6b7280',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '0.5rem'
+                }}
+              >
+                No thanks, I'll pass
+              </button>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
