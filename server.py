@@ -287,11 +287,8 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/create-quarterly-growth-session', methods=['POST', 'OPTIONS'])
+@app.route('/create-quarterly-growth-session', methods=['POST'])
 def create_quarterly_growth_session():
-    # Handle OPTIONS requests for CORS preflight
-    if request.method == 'OPTIONS':
-        return '', 200
     try:
         # #region agent log
         import json
