@@ -279,23 +279,10 @@ def create_quarterly_growth_session():
         data = request.get_json()
         referrer_username = data.get('referrer_username')
 
-        # Get price ID for Quarterly Growth product (prod_TcC4UZ5qMY6L8I)
-        # List prices for the product and use the first active price
-        prices = stripe.Price.list(
-            product='prod_TcC4UZ5qMY6L8I',
-            active=True,
-            limit=1
-        )
-        
-        if not prices.data or len(prices.data) == 0:
-            return jsonify({'error': 'No active price found for Quarterly Growth product'}), 400
-        
-        price_id = prices.data[0].id
-
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
-                'price': price_id,
+                'price': 'price_1Sexg62Ku9STqdAd4dotWHAi',  # Quarterly Growth $129/3 months
                 'quantity': 1,
             }],
             mode='subscription',
