@@ -2077,13 +2077,39 @@ export default function Home() {
                   Community access
                 </li>
               </ul>
-              <Link 
-                to={user ? "/checkout" : "/register"} 
+              <a
+                href="#"
                 className="path-cta"
                 style={{ display: 'block', width: '100%', textAlign: 'center' }}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (!user) {
+                    // Store plan intent and redirect to register
+                    sessionStorage.setItem('intended-plan', 'monthly');
+                    window.location.href = '/register?plan=monthly';
+                    return;
+                  }
+                  try {
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-membership-session`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ referrer_username: null })
+                    });
+                    const data = await response.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      console.error('Error creating checkout session:', data);
+                      window.location.href = '/checkout?product=membership';
+                    }
+                  } catch (error) {
+                    console.error('Error creating checkout session:', error);
+                    window.location.href = '/checkout?product=membership';
+                  }
+                }}
               >
                 Get Started
-              </Link>
+              </a>
             </motion.div>
 
             {/* Quarterly Growth Plan - Recommended */}
@@ -2138,12 +2164,18 @@ export default function Home() {
                   Quarterly roadmap or automation setup
                 </li>
               </ul>
-              <Link 
-                to={user ? "/checkout" : "/register"} 
+              <a
+                href="#"
                 className="path-cta featured"
                 style={{ display: 'block', width: '100%', textAlign: 'center' }}
                 onClick={async (e) => {
                   e.preventDefault();
+                  if (!user) {
+                    // Store plan intent and redirect to register
+                    sessionStorage.setItem('intended-plan', 'quarterly');
+                    window.location.href = '/register?plan=quarterly';
+                    return;
+                  }
                   try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                       method: 'POST',
@@ -2153,15 +2185,18 @@ export default function Home() {
                     const data = await response.json();
                     if (data.url) {
                       window.location.href = data.url;
+                    } else {
+                      console.error('Error creating checkout session:', data);
+                      window.location.href = '/checkout';
                     }
                   } catch (error) {
                     console.error('Error creating checkout session:', error);
-                    window.location.href = user ? "/checkout" : "/register";
+                    window.location.href = '/checkout';
                   }
                 }}
               >
                 Get Started
-              </Link>
+              </a>
             </motion.div>
 
             {/* Founder Annual Plan */}

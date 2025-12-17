@@ -15,13 +15,35 @@ export default function AuthCallback() {
 
       try {
         // Set up auth state listener for SIGNED_IN event
-        authSubscription = supabase.auth.onAuthStateChange((event, session) => {
+        authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
           if (event === 'SIGNED_IN' && session && mounted && !hasRedirected) {
             setHasRedirected(true);
             
             const storedPath = localStorage.getItem('oauth-redirect-path');
-            const redirectPath = storedPath || '/checkout?product=membership';
+            const intendedPlan = sessionStorage.getItem('intended-plan');
             localStorage.removeItem('oauth-redirect-path');
+            
+            // Handle plan-specific redirects
+            if (intendedPlan === 'quarterly') {
+              try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ referrer_username: null })
+                });
+                const data = await response.json();
+                if (data.url) {
+                  sessionStorage.removeItem('intended-plan');
+                  window.location.href = data.url;
+                  return;
+                }
+              } catch (error) {
+                console.error('Error creating quarterly session:', error);
+              }
+              sessionStorage.removeItem('intended-plan');
+            }
+            
+            const redirectPath = storedPath || '/checkout?product=membership';
             
             // Small delay to ensure state is fully synced
             setTimeout(() => {
@@ -43,8 +65,30 @@ export default function AuthCallback() {
           setHasRedirected(true);
           
           const storedPath = localStorage.getItem('oauth-redirect-path');
-          const redirectPath = storedPath || '/checkout?product=membership';
+          const intendedPlan = sessionStorage.getItem('intended-plan');
           localStorage.removeItem('oauth-redirect-path');
+          
+          // Handle plan-specific redirects
+          if (intendedPlan === 'quarterly') {
+            try {
+              const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ referrer_username: null })
+              });
+              const data = await response.json();
+              if (data.url) {
+                sessionStorage.removeItem('intended-plan');
+                window.location.href = data.url;
+                return;
+              }
+            } catch (error) {
+              console.error('Error creating quarterly session:', error);
+            }
+            sessionStorage.removeItem('intended-plan');
+          }
+          
+          const redirectPath = storedPath || '/checkout?product=membership';
           
           setTimeout(() => {
             navigate(redirectPath, { replace: true });
@@ -53,8 +97,27 @@ export default function AuthCallback() {
           // Fallback if auth state change doesn't fire within 5 seconds
           setTimeout(() => {
             if (!hasRedirected && mounted) {
-              supabase.auth.getSession().then(({ data: { session: finalSession } }) => {
+              supabase.auth.getSession().then(async ({ data: { session: finalSession } }) => {
                 if (finalSession) {
+                  const intendedPlan = sessionStorage.getItem('intended-plan');
+                  if (intendedPlan === 'quarterly') {
+                    try {
+                      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ referrer_username: null })
+                      });
+                      const data = await response.json();
+                      if (data.url) {
+                        sessionStorage.removeItem('intended-plan');
+                        window.location.href = data.url;
+                        return;
+                      }
+                    } catch (error) {
+                      console.error('Error creating quarterly session:', error);
+                    }
+                    sessionStorage.removeItem('intended-plan');
+                  }
                   const redirectPath = localStorage.getItem('oauth-redirect-path') || '/checkout?product=membership';
                   localStorage.removeItem('oauth-redirect-path');
                   navigate(redirectPath, { replace: true });

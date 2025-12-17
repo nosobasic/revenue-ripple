@@ -37,23 +37,44 @@ export default function Register() {
       // Set flag BEFORE signup to prevent UnprotectedRoute from redirecting
       // This allows navigation to checkout after signup completes
       const redirectTo = searchParams.get('redirect');
-      const targetPath = redirectTo === 'reseller-checkout' ? '/reseller-checkout' : '/checkout?product=membership';
+      const plan = searchParams.get('plan') || sessionStorage.getItem('intended-plan');
       sessionStorage.setItem('navigating-to-checkout', 'true');
       
       await signup(email, password, firstName, lastName,"member","");
-      // alert('Registration successful! Please check your email for verification.');
       
-      // Navigate to checkout - flag is already set to prevent UnprotectedRoute from intercepting
+      // Handle plan-specific redirects after registration
       if (redirectTo === 'reseller-checkout') {
         navigate('/reseller-checkout', { replace: true });
+      } else if (plan === 'quarterly') {
+        // Create quarterly growth session and redirect to Stripe
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ referrer_username: null })
+          });
+          const data = await response.json();
+          if (data.url) {
+            sessionStorage.removeItem('intended-plan');
+            window.location.href = data.url;
+            return;
+          }
+        } catch (error) {
+          console.error('Error creating quarterly session:', error);
+        }
+        // Fallback to checkout if API call fails
+        navigate('/checkout?product=membership', { replace: true });
+      } else if (plan === 'founder') {
+        navigate('/founders-checkout', { replace: true });
       } else {
         // Default: redirect to membership checkout
         navigate('/checkout?product=membership', { replace: true });
       }
       
-      // Clear flag after navigation completes (short delay)
+      // Clear flag and plan after navigation completes (short delay)
       setTimeout(() => {
         sessionStorage.removeItem('navigating-to-checkout');
+        sessionStorage.removeItem('intended-plan');
       }, 2000);
       // #region agent log
       fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:50',message:'After navigate call',data:{targetPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});
@@ -70,10 +91,17 @@ export default function Register() {
       setError('');
       // Check if there's a redirect parameter (e.g., from reseller signup)
       const redirectTo = searchParams.get('redirect');
+      const plan = searchParams.get('plan') || sessionStorage.getItem('intended-plan');
       let redirectPath = '/checkout?product=membership';
       
       if (redirectTo === 'reseller-checkout') {
         redirectPath = '/reseller-checkout';
+      } else if (plan === 'quarterly') {
+        // Store plan for after OAuth callback
+        sessionStorage.setItem('intended-plan', 'quarterly');
+        redirectPath = '/checkout?product=membership'; // Will be handled in AuthCallback
+      } else if (plan === 'founder') {
+        redirectPath = '/founders-checkout';
       }
       
       await signInWithOAuth(provider, redirectPath);
