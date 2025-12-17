@@ -16,7 +16,21 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
-from server.engagement.routes import engagement_bp
+
+# Import engagement_bp from server package to avoid conflict with this server.py module
+# Use importlib to explicitly load from the server package directory
+import importlib.util
+import sys
+import os as os_module
+
+_server_dir = os_module.path.dirname(os_module.path.abspath(__file__))
+_engagement_routes_path = os_module.path.join(_server_dir, 'server', 'engagement', 'routes.py')
+spec = importlib.util.spec_from_file_location("engagement_routes", _engagement_routes_path)
+engagement_routes_module = importlib.util.module_from_spec(spec)
+sys.modules['engagement_routes'] = engagement_routes_module  # Register the module
+spec.loader.exec_module(engagement_routes_module)
+engagement_bp = engagement_routes_module.engagement_bp
+
 # from insights.routes import insights_bp  # Module not found - commented out
 load_dotenv()
 
