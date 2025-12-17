@@ -148,8 +148,8 @@ export default function Checkout() {
       } catch (error) {
         console.error(`Checkout API attempt ${attempt + 1} failed:`, error);
         
-        // For dmd and membership products, we MUST use Stripe Checkout Session - never show PayPal fallback
-        if (productParam === 'dmd' || productParam === 'membership') {
+        // For dmd, membership, and quarterly products, we MUST use Stripe Checkout Session - never show PayPal fallback
+        if (productParam === 'dmd' || productParam === 'membership' || effectiveProduct === 'quarterly') {
           // Retry if we haven't exceeded max retries
           if (attempt < maxRetries) {
             const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Exponential backoff, max 5s

@@ -29,7 +29,7 @@ export default function AuthCallback() {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ referrer_username: null })
+                  body: JSON.stringify({ referrer_username: localStorage.getItem('ref_id') || 'none' })
                 });
                 const data = await response.json();
                 if (data.url) {
@@ -37,10 +37,14 @@ export default function AuthCallback() {
                   window.location.href = data.url;
                   return;
                 }
+                // If no URL in response, fall through to checkout which will retry
+                console.error('Quarterly session created but no URL received:', data);
               } catch (error) {
                 console.error('Error creating quarterly session:', error);
+                // Don't remove intended-plan - let checkout page retry
               }
-              sessionStorage.removeItem('intended-plan');
+              // Only remove intended-plan if we successfully redirected above
+              // If we reach here, it means the session creation failed, so keep intended-plan for checkout to handle
             }
             
             const redirectPath = storedPath || '/checkout?product=membership';
@@ -74,7 +78,7 @@ export default function AuthCallback() {
               const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ referrer_username: null })
+                body: JSON.stringify({ referrer_username: localStorage.getItem('ref_id') || 'none' })
               });
               const data = await response.json();
               if (data.url) {
@@ -82,10 +86,14 @@ export default function AuthCallback() {
                 window.location.href = data.url;
                 return;
               }
+              // If no URL in response, fall through to checkout which will retry
+              console.error('Quarterly session created but no URL received:', data);
             } catch (error) {
               console.error('Error creating quarterly session:', error);
+              // Don't remove intended-plan - let checkout page retry
             }
-            sessionStorage.removeItem('intended-plan');
+            // Only remove intended-plan if we successfully redirected above
+            // If we reach here, it means the session creation failed, so keep intended-plan for checkout to handle
           }
           
           const redirectPath = storedPath || '/checkout?product=membership';
