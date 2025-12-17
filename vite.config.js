@@ -96,6 +96,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      "/create-quarterly-growth-session": {
+        target: "http://localhost:5001",
+        changeOrigin: true,
+        secure: false,
+      },
       "/webhook": {
         target: "http://localhost:5001",
         changeOrigin: true,
