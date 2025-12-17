@@ -5,18 +5,53 @@ export default function FAQAccordion({ faqs }) {
   if (!faqs || faqs.length === 0) return null;
 
   return (
-    <div className="mt-8 border border-gray-200 rounded-xl divide-y">
+    <div style={{
+      marginTop: '2rem',
+      border: '1px solid #e5e7eb',
+      borderRadius: '12px',
+      background: '#ffffff',
+      overflow: 'hidden'
+    }}>
       {faqs.map((f, idx) => (
-        <div key={idx}>
+        <div key={idx} style={{
+          borderTop: idx > 0 ? '1px solid #e5e7eb' : 'none'
+        }}>
           <button
             onClick={() => setOpen(open === idx ? null : idx)}
-            className="w-full text-left px-5 py-4 flex justify-between items-center hover:bg-gray-50"
+            style={{
+              width: '100%',
+              textAlign: 'left',
+              padding: '1.25rem 1.5rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: '#ffffff',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#ffffff'}
           >
-            <span className="font-medium text-gray-900">{f.q}</span>
-            <span className="text-gray-500">{open === idx ? '−' : '+'}</span>
+            <span style={{
+              fontWeight: 500,
+              color: '#1f2937',
+              fontSize: '1rem'
+            }}>{f.q}</span>
+            <span style={{
+              color: '#6b7280',
+              fontSize: '1.25rem',
+              fontWeight: 300
+            }}>{open === idx ? '−' : '+'}</span>
           </button>
           {open === idx && (
-            <div className="px-5 pb-5 text-gray-700">
+            <div style={{
+              padding: '0 1.5rem 1.5rem',
+              color: '#374151',
+              lineHeight: '1.6',
+              fontSize: '0.9375rem',
+              background: '#ffffff'
+            }}>
               {f.a}
             </div>
           )}
