@@ -287,8 +287,11 @@ def create_membership_session():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-@app.route('/create-quarterly-growth-session', methods=['POST'])
+@app.route('/create-quarterly-growth-session', methods=['POST', 'OPTIONS'])
 def create_quarterly_growth_session():
+    # Handle OPTIONS requests for CORS preflight - return early before any logging
+    if request.method == 'OPTIONS':
+        return '', 200
     try:
         # #region agent log
         import json
@@ -297,7 +300,7 @@ def create_quarterly_growth_session():
         log_path = '/Users/dontewillis/revenue-ripple/.cursor/debug.log'
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
         with open(log_path, 'a') as f:
-            f.write(json.dumps({'location':'server.py:277','message':'Quarterly session endpoint called','data':{'method':request.method},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'D,E'})+'\n')
+            f.write(json.dumps({'location':'server.py:290','message':'Quarterly session endpoint called','data':{'method':request.method},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'D,E'})+'\n')
         # #endregion
         data = request.get_json()
         referrer_username = data.get('referrer_username')
