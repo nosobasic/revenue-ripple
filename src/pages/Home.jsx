@@ -2169,13 +2169,29 @@ export default function Home() {
                 className="path-cta featured"
                 style={{ display: 'block', width: '100%', textAlign: 'center' }}
                 onClick={async (e) => {
+                  // #region agent log
+                  console.log('[DEBUG] Quarterly Growth button clicked', {user:!!user,userId:user?.id});
+                  fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2171',message:'Quarterly Growth button clicked',data:{user:!!user,userId:user?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,G'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+                  // #endregion
                   e.preventDefault();
                   if (!user) {
+                    // #region agent log
+                    console.log('[DEBUG] User not logged in - storing quarterly plan');
+                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2175',message:'User not logged in - storing quarterly plan',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+                    // #endregion
                     // Store plan intent and redirect to register
                     sessionStorage.setItem('intended-plan', 'quarterly');
+                    // #region agent log
+                    const storedPlan = sessionStorage.getItem('intended-plan');
+                    console.log('[DEBUG] After storing plan in sessionStorage', {storedPlan,url:'/register?plan=quarterly'});
+                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2177',message:'After storing plan in sessionStorage',data:{storedPlan,url:'/register?plan=quarterly'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+                    // #endregion
                     window.location.href = '/register?plan=quarterly';
                     return;
                   }
+                  // #region agent log
+                  fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2180',message:'User logged in - calling quarterly session API',data:{apiUrl:`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D,E'})}).catch(()=>{});
+                  // #endregion
                   try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                       method: 'POST',
@@ -2183,14 +2199,26 @@ export default function Home() {
                       body: JSON.stringify({ referrer_username: null })
                     });
                     const data = await response.json();
+                    // #region agent log
+                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2185',message:'Quarterly session API response received',data:{hasUrl:!!data.url,url:data.url?.substring(0,100),error:data.error,status:response.status},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D,E'})}).catch(()=>{});
+                    // #endregion
                     if (data.url) {
+                      // #region agent log
+                      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2187',message:'Redirecting to Stripe checkout URL',data:{url:data.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+                      // #endregion
                       window.location.href = data.url;
                     } else {
                       console.error('Error creating checkout session:', data);
+                      // #region agent log
+                      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2190',message:'API returned no URL - falling back to checkout',data:{error:data.error},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+                      // #endregion
                       window.location.href = '/checkout';
                     }
                   } catch (error) {
                     console.error('Error creating checkout session:', error);
+                    // #region agent log
+                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2193',message:'API call exception - falling back to checkout',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+                    // #endregion
                     window.location.href = '/checkout';
                   }
                 }}

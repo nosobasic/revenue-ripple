@@ -37,15 +37,30 @@ export default function Register() {
       // Set flag BEFORE signup to prevent UnprotectedRoute from redirecting
       // This allows navigation to checkout after signup completes
       const redirectTo = searchParams.get('redirect');
-      const plan = searchParams.get('plan') || sessionStorage.getItem('intended-plan');
+      const planFromUrl = searchParams.get('plan');
+      const planFromStorage = sessionStorage.getItem('intended-plan');
+      const plan = planFromUrl || planFromStorage;
+      // #region agent log
+      console.log('[DEBUG] Reading plan parameter', {planFromUrl,planFromStorage,plan,redirectTo});
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:40',message:'Reading plan parameter',data:{planFromUrl,planFromStorage,plan,redirectTo},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C,F'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+      // #endregion
       sessionStorage.setItem('navigating-to-checkout', 'true');
       
       await signup(email, password, firstName, lastName,"member","");
       
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:45',message:'After signup - checking plan again',data:{plan,redirectTo},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C,F'})}).catch(()=>{});
+      // #endregion
       // Handle plan-specific redirects after registration
       if (redirectTo === 'reseller-checkout') {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:47',message:'Redirecting to reseller checkout',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         navigate('/reseller-checkout', { replace: true });
       } else if (plan === 'quarterly') {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:49',message:'Plan is quarterly - calling API',data:{apiUrl:`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C,D'})}).catch(()=>{});
+        // #endregion
         // Create quarterly growth session and redirect to Stripe
         try {
           const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
@@ -54,27 +69,51 @@ export default function Register() {
             body: JSON.stringify({ referrer_username: null })
           });
           const data = await response.json();
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:56',message:'Quarterly session API response in Register',data:{hasUrl:!!data.url,url:data.url?.substring(0,100),error:data.error,status:response.status},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D,E'})}).catch(()=>{});
+          // #endregion
           if (data.url) {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:58',message:'Redirecting to Stripe from Register',data:{url:data.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+            // #endregion
             sessionStorage.removeItem('intended-plan');
             window.location.href = data.url;
             return;
           }
         } catch (error) {
           console.error('Error creating quarterly session:', error);
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:63',message:'Quarterly API call exception - falling back',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+          // #endregion
         }
-        // Fallback to checkout if API call fails
+        // Fallback to checkout if API call fails - keep intended-plan in sessionStorage so Checkout can use it
+        // #region agent log
+        console.log('[DEBUG] Falling back to checkout, preserving intended-plan in sessionStorage');
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:66',message:'Falling back to checkout with quarterly plan preserved',data:{intendedPlan:sessionStorage.getItem('intended-plan')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+        // Don't remove intended-plan here - let Checkout.jsx handle it after successful session creation
         navigate('/checkout?product=membership', { replace: true });
       } else if (plan === 'founder') {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:68',message:'Redirecting to founders checkout',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         navigate('/founders-checkout', { replace: true });
       } else {
         // Default: redirect to membership checkout
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:71',message:'Default redirect to monthly checkout',data:{plan},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         navigate('/checkout?product=membership', { replace: true });
       }
       
-      // Clear flag and plan after navigation completes (short delay)
+      // Clear flag after navigation completes (short delay)
+      // Don't clear intended-plan here - let the checkout/session creation handle it
       setTimeout(() => {
         sessionStorage.removeItem('navigating-to-checkout');
-        sessionStorage.removeItem('intended-plan');
+        // Only clear intended-plan if we're not going to checkout (e.g., founders-checkout)
+        if (redirectTo !== 'reseller-checkout' && plan !== 'founder' && plan !== 'quarterly') {
+          sessionStorage.removeItem('intended-plan');
+        }
       }, 2000);
       // #region agent log
       fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Register.jsx:50',message:'After navigate call',data:{targetPath},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,C,D'})}).catch(()=>{});

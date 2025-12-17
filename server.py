@@ -276,8 +276,21 @@ def create_membership_session():
 @app.route('/create-quarterly-growth-session', methods=['POST'])
 def create_quarterly_growth_session():
     try:
+        # #region agent log
+        import json
+        import time
+        import os
+        log_path = '/Users/dontewillis/revenue-ripple/.cursor/debug.log'
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        with open(log_path, 'a') as f:
+            f.write(json.dumps({'location':'server.py:277','message':'Quarterly session endpoint called','data':{'method':request.method},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'D,E'})+'\n')
+        # #endregion
         data = request.get_json()
         referrer_username = data.get('referrer_username')
+        # #region agent log
+        with open(log_path, 'a') as f:
+            f.write(json.dumps({'location':'server.py:281','message':'Creating Stripe session with price ID','data':{'priceId':'price_1Sexg62Ku9STqdAd4dotWHAi','referrer':referrer_username},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'E'})+'\n')
+        # #endregion
 
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -293,8 +306,21 @@ def create_quarterly_growth_session():
                 'product': 'quarterly_growth_subscription'
             }
         )
+        # #region agent log
+        with open(log_path, 'a') as f:
+            f.write(json.dumps({'location':'server.py:296','message':'Stripe session created','data':{'sessionId':session.id,'url':session.url},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'E'})+'\n')
+        # #endregion
         return jsonify({'url': session.url})
     except Exception as e:
+        # #region agent log
+        import json
+        import time
+        import os
+        log_path = '/Users/dontewillis/revenue-ripple/.cursor/debug.log'
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        with open(log_path, 'a') as f:
+            f.write(json.dumps({'location':'server.py:298','message':'Error creating quarterly session','data':{'error':str(e)},'timestamp':int(time.time()*1000),'sessionId':'debug-session','runId':'run1','hypothesisId':'D'})+'\n')
+        # #endregion
         return jsonify({'error': str(e)}), 400
 
 # Founders Annual Endpoints - moved here for immediate deployment

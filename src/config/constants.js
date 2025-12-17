@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   RESELLER_SESSION: '/create-reseller-session',
   PRO_RESELLER_SESSION: '/create-pro-reseller-session',
   MEMBERSHIP_SESSION: '/create-membership-session',
+  QUARTERLY_GROWTH_SESSION: '/create-quarterly-growth-session',
   FOUNDERS_ANNUAL_SESSION: '/create-founders-annual-session',
   FOUNDERS_MONTHLY_SESSION: '/create-founders-monthly-session',
   WEBHOOK: '/webhook',

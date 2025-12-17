@@ -72,9 +72,27 @@ export default function Checkout() {
     let endpoint = API_ENDPOINTS.PAYMENT_INTENT; // Default to membership
     let requestBody = {};
     
+    // Check for intended plan in sessionStorage if product is membership (fallback case)
+    const intendedPlan = sessionStorage.getItem('intended-plan');
+    const effectiveProduct = (productParam === 'membership' && intendedPlan === 'quarterly') ? 'quarterly' : productParam;
+    // #region agent log
+    console.log('[DEBUG] Checkout - product param and intended plan', {productParam, intendedPlan, effectiveProduct});
+    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:75',message:'Determining checkout endpoint',data:{productParam,intendedPlan,effectiveProduct},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+    // #endregion
+    
     if (productParam === 'dmd') {
       // For DMD, use the tripwire session endpoint
       endpoint = API_ENDPOINTS.TRIPWIRE_SESSION;
+      requestBody = {
+        referrer_username: localStorage.getItem('ref_id') || 'none'
+      };
+    } else if (effectiveProduct === 'quarterly') {
+      // For quarterly growth, use the quarterly session endpoint
+      // #region agent log
+      console.log('[DEBUG] Using quarterly growth session endpoint');
+      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:82',message:'Using quarterly endpoint',data:{endpoint:API_ENDPOINTS.QUARTERLY_GROWTH_SESSION},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
+      // #endregion
+      endpoint = API_ENDPOINTS.QUARTERLY_GROWTH_SESSION;
       requestBody = {
         referrer_username: localStorage.getItem('ref_id') || 'none'
       };
@@ -110,9 +128,13 @@ export default function Checkout() {
         
         const data = await response.json();
         
-        if (productParam === 'dmd' || productParam === 'membership') {
-          // For DMD and membership, redirect to Stripe checkout session
+        if (productParam === 'dmd' || productParam === 'membership' || effectiveProduct === 'quarterly') {
+          // For DMD, membership, and quarterly, redirect to Stripe checkout session
           if (data.url) {
+            // Clear intended-plan if we successfully created the session
+            if (effectiveProduct === 'quarterly') {
+              sessionStorage.removeItem('intended-plan');
+            }
             window.location.href = data.url;
             return; // Exit early - redirecting away
           } else {
