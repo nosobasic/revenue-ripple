@@ -72,9 +72,14 @@ export default function Checkout() {
     let endpoint = API_ENDPOINTS.PAYMENT_INTENT; // Default to membership
     let requestBody = {};
     
-    // Check for intended plan in sessionStorage if product is membership (fallback case)
+    // Check for intended plan in sessionStorage (fallback cases)
+    // - Register flow may send you to /checkout?product=membership while intended-plan=quarterly
+    // - Some fallbacks may land on /checkout with no ?product at all
     const intendedPlan = sessionStorage.getItem('intended-plan');
-    const effectiveProduct = (productParam === 'membership' && intendedPlan === 'quarterly') ? 'quarterly' : productParam;
+    const effectiveProduct =
+      intendedPlan === 'quarterly' && (productParam === 'membership' || !productParam)
+        ? 'quarterly'
+        : productParam;
     // #region agent log
     console.log('[DEBUG] Checkout - product param and intended plan', {productParam, intendedPlan, effectiveProduct});
     fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Checkout.jsx:75',message:'Determining checkout endpoint',data:{productParam,intendedPlan,effectiveProduct},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
@@ -200,12 +205,24 @@ export default function Checkout() {
   };
 
   const getProductInfo = () => {
-    switch (product) {
+    const intendedPlan = sessionStorage.getItem('intended-plan');
+    const effectiveProduct =
+      intendedPlan === 'quarterly' && (product === 'membership' || !product)
+        ? 'quarterly'
+        : product;
+
+    switch (effectiveProduct) {
       case 'dmd':
         return {
           title: 'Digital Marketing Domination',
           description: 'Get instant access to the Digital Marketing Domination ebook for just $7.',
           price: '$7'
+        };
+      case 'quarterly':
+        return {
+          title: 'Quarterly Growth',
+          description: 'You\'re just one step away from activating Quarterly Growth (billed every 3 months).',
+          price: '$129'
         };
       default:
         return {

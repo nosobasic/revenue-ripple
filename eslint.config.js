@@ -9,7 +9,11 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      // Some versions of `globals` have accidental whitespace in keys (e.g. "AudioWorkletGlobalScope ")
+      // which causes ESLint flat config validation to fail. Normalize keys defensively.
+      globals: Object.fromEntries(
+        Object.entries(globals.browser).map(([key, value]) => [key.trim(), value]),
+      ),
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
