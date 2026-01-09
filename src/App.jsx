@@ -95,6 +95,9 @@ const NewPost = lazy(() => import('./pages/NewPost'));
 const ForumPost = lazy(() => import('./pages/ForumPost'));
 const SuccessStories = lazy(() => import('./pages/SuccessStories'));
 const SubmitStory = lazy(() => import('./pages/SubmitStory'));
+// Vault components
+const Vault = lazy(() => import('./pages/Vault'));
+const VaultDetail = lazy(() => import('./pages/VaultDetail'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -194,10 +197,12 @@ const App = () => {
         <Route path="/community/success-stories" element={<ProtectedRoute><SuccessStories /></ProtectedRoute>} />
         <Route path="/community/submit-story" element={<ProtectedRoute><SubmitStory /></ProtectedRoute>} />
 
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute requirePayment={true}><Dashboard /></ProtectedRoute>} />
         <Route path="/engagement" element={<ProtectedRoute><EngagementDashboard /></ProtectedRoute>} />
-        <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-        <Route path="/training" element={<ProtectedRoute><Training /></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute requirePayment={true}><Courses /></ProtectedRoute>} />
+        <Route path="/training" element={<ProtectedRoute requirePayment={true}><Training /></ProtectedRoute>} />
+        <Route path="/vault" element={<ProtectedRoute requirePayment={true}><Vault /></ProtectedRoute>} />
+        <Route path="/vault/:id" element={<ProtectedRoute requirePayment={true}><VaultDetail /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />

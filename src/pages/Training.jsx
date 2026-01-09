@@ -152,6 +152,61 @@ const Training = () => {
             </div>
           </div>
 
+          {/* Vault Section */}
+          <div className="section-group">
+            <h2 className="section-title">Vault</h2>
+            <p className="section-subtitle">Weekly playbooks as premium, living assets</p>
+            <div className="section">
+              <div className="section-header" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+                <FaBook className="section-icon" />
+                <h2>VAULT</h2>
+              </div>
+              <div className="section-content">
+                <div style={{ 
+                  padding: '2rem', 
+                  background: '#f8f9fa', 
+                  borderRadius: '12px',
+                  textAlign: 'center'
+                }}>
+                  <p style={{ 
+                    color: '#495057', 
+                    fontSize: '1.1rem', 
+                    lineHeight: '1.6',
+                    marginBottom: '1.5rem'
+                  }}>
+                    Access your weekly playbooks—premium content designed to guide your progress. Each playbook is a living asset, updated regularly with the latest strategies and insights.
+                  </p>
+                  <Link 
+                    to="/vault" 
+                    className="cta-link"
+                    style={{
+                      display: 'inline-block',
+                      padding: '0.75rem 2rem',
+                      background: '#2563eb',
+                      color: 'white',
+                      textDecoration: 'none',
+                      borderRadius: '8px',
+                      fontWeight: '600',
+                      fontSize: '1rem',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#1d4ed8';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#2563eb';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    View All Playbooks →
+                  </Link>
+                </div>
+                <hr className="section-divider" />
+              </div>
+            </div>
+          </div>
+
           {/* Marketing Training & Guides Section */}
           <div className="section-group">
             <h2 className="section-title">Marketing Training & Guides</h2>

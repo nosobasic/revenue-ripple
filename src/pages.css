@@ -1338,7 +1338,87 @@ button:hover {
   }
 }
 
+/* Vault/Playbook Styles */
+.playbook-body {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #2d3748;
+}
+
+.playbook-body h1,
+.playbook-body h2,
+.playbook-body h3,
+.playbook-body h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.playbook-body h1 {
+  font-size: 2rem;
+}
+
+.playbook-body h2 {
+  font-size: 1.75rem;
+}
+
+.playbook-body h3 {
+  font-size: 1.5rem;
+}
+
+.playbook-body p {
+  margin-bottom: 1.5rem;
+}
+
+.playbook-body ul,
+.playbook-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.playbook-body li {
+  margin-bottom: 0.5rem;
+}
+
+.playbook-body strong {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.playbook-body code {
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.playbook-body pre {
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.playbook-body blockquote {
+  border-left: 4px solid #2563eb;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #4a5568;
+}
+
 /* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

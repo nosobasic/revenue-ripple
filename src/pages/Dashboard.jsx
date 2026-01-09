@@ -9,6 +9,7 @@ import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import MemberRoleUpdateModal from '../components/MemberRoleUpdateModal.jsx';
+import VaultPreview from '../components/VaultPreview';
 import '../pages.css';
 
 // Add styles for the learning path options and progress bars
@@ -444,6 +445,9 @@ const Dashboard = () => {
                 <hr className="section-divider" />
               </div>
             </div>
+
+            {/* Vault Preview Section */}
+            <VaultPreview />
             
             {/*Reseller Program Section*/}
             {isAffiliate && 

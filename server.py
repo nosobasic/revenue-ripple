@@ -2331,6 +2331,100 @@ def create_success_story():
         print(f"❌ Error creating success story: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/vault/playbooks', methods=['GET'])
+def get_playbooks():
+    """Get all published playbooks for members"""
+    try:
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Try querying content_items via view (which points to ve_content_items)
+        # Note: This assumes the view is accessible via PostgREST
+        # If schema access is not configured, you may need to create a view:
+        # CREATE VIEW public.content_items AS SELECT * FROM ve_content_items;
+        try:
+            result = supabase.table('content_items').select('*').eq('content_type', 'playbook').eq('level', 'member').not_.is_('published_at', 'null').order('published_at', desc=True).execute()
+            playbooks = result.data if result.data else []
+        except Exception as e:
+            # If direct table access fails, try with schema prefix
+            print(f"⚠️ Direct table access failed, trying alternative: {str(e)}")
+            try:
+                # Alternative: Use raw SQL via RPC if exec_sql function exists
+                # Or create a view in public schema pointing to ve_content_items
+                result = supabase.rpc('exec_sql', {
+                    'sql': "SELECT * FROM ve_content_items WHERE content_type = 'playbook' AND level = 'member' AND published_at IS NOT NULL ORDER BY published_at DESC"
+                }).execute()
+                playbooks = result.data if result.data else []
+                if not isinstance(playbooks, list):
+                    playbooks = [playbooks] if playbooks else []
+            except Exception as e2:
+                print(f"❌ All query methods failed: {str(e2)}")
+                # Return empty array for now - user needs to configure schema access
+                playbooks = []
+        
+        # Calculate estimated read time (average reading speed: 200-250 words per minute)
+        for playbook in playbooks:
+            if playbook.get('full_body'):
+                word_count = len(playbook['full_body'].split())
+                read_time_minutes = max(1, round(word_count / 225))  # 225 words/min average
+                playbook['estimated_read_time'] = f"{read_time_minutes} min"
+            else:
+                playbook['estimated_read_time'] = "5 min"  # Default
+        
+        return jsonify({
+            'success': True,
+            'playbooks': playbooks
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error fetching playbooks: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/vault/playbooks/<playbook_id>', methods=['GET'])
+def get_playbook_detail(playbook_id):
+    """Get a single playbook by ID"""
+    try:
+        if not supabase:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        # Try querying content_items directly
+        try:
+            result = supabase.table('content_items').select('*').eq('id', playbook_id).eq('content_type', 'playbook').eq('level', 'member').single().execute()
+            playbook = result.data
+        except Exception as e:
+            print(f"⚠️ Direct table access failed: {str(e)}")
+            # Fallback: try with RPC or alternative method
+            try:
+                result = supabase.rpc('exec_sql', {
+                    'sql': f"SELECT * FROM ve_content_items WHERE id = '{playbook_id}' AND content_type = 'playbook' AND level = 'member' LIMIT 1"
+                }).execute()
+                if not result.data:
+                    return jsonify({'error': 'Playbook not found'}), 404
+                playbook = result.data[0] if isinstance(result.data, list) else result.data
+            except Exception as e2:
+                print(f"❌ All query methods failed: {str(e2)}")
+                return jsonify({'error': 'Playbook not found'}), 404
+        
+        if not playbook:
+            return jsonify({'error': 'Playbook not found'}), 404
+        
+        # Calculate estimated read time
+        if playbook.get('full_body'):
+            word_count = len(playbook['full_body'].split())
+            read_time_minutes = max(1, round(word_count / 225))
+            playbook['estimated_read_time'] = f"{read_time_minutes} min"
+        else:
+            playbook['estimated_read_time'] = "5 min"
+        
+        return jsonify({
+            'success': True,
+            'playbook': playbook
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error fetching playbook detail: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     print("🚀 Starting Revenue Ripple API Server v1.0.1")
     print("🔍 DEBUG: Checking environment variables...")
