@@ -2212,14 +2212,16 @@ export default function Home() {
                       // #region agent log
                       fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2190',message:'API returned no URL - falling back to checkout',data:{error:data.error},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
                       // #endregion
-                      window.location.href = '/checkout';
+                      // Ensure fallback still routes to quarterly (otherwise /checkout defaults to monthly membership)
+                      window.location.href = '/checkout?product=quarterly';
                     }
                   } catch (error) {
                     console.error('Error creating checkout session:', error);
                     // #region agent log
                     fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2193',message:'API call exception - falling back to checkout',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
                     // #endregion
-                    window.location.href = '/checkout';
+                    // Ensure fallback still routes to quarterly (otherwise /checkout defaults to monthly membership)
+                    window.location.href = '/checkout?product=quarterly';
                   }
                 }}
               >
