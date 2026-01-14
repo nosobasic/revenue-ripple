@@ -2084,12 +2084,16 @@ def admin_delete_user():
 @app.route('/api/community/posts', methods=['GET', 'POST', 'OPTIONS'])
 def community_posts():
     """Handle GET and POST requests for community posts"""
+    print(f"🔍 DEBUG: community_posts() called with method: {request.method}, path: {request.path}")
+    
     # Handle OPTIONS requests for CORS preflight
     if request.method == 'OPTIONS':
+        print("✅ Handling OPTIONS request")
         return '', 200
     
     # Handle POST requests - create new post
     if request.method == 'POST':
+        print("✅ Handling POST request to create community post")
         try:
             data = request.get_json()
             user_id = data.get('user_id')
