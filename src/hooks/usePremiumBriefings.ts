@@ -22,8 +22,9 @@ export function usePremiumBriefings(): UsePremiumBriefingsResult {
         setError(null);
 
         // Query with proper ordering: published_at DESC (nulls last), then created_at DESC
+        // Using content_items view which has proper permissions granted
         const { data: briefings, error: fetchError } = await supabase
-          .from('ve_content_items')
+          .from('content_items')
           .select('*')
           .eq('level', 'member')
           .eq('content_type', 'premium_briefing')
