@@ -2081,9 +2081,46 @@ def admin_delete_user():
 
 # Community API Routes
 
-@app.route('/api/community/posts', methods=['GET'])
-def get_community_posts():
-    """Get community posts with pagination and filtering"""
+@app.route('/api/community/posts', methods=['GET', 'POST', 'OPTIONS'])
+def community_posts():
+    """Handle GET and POST requests for community posts"""
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    # Handle POST requests - create new post
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            title = data.get('title')
+            content = data.get('content')
+            category = data.get('category', 'general')
+            
+            if not all([user_id, title, content]):
+                return jsonify({'error': 'user_id, title, and content are required'}), 400
+            
+            if not supabase:
+                return jsonify({'error': 'Database not configured'}), 500
+            
+            # Create post
+            result = supabase.table('community_posts').insert({
+                'user_id': user_id,
+                'title': title,
+                'content': content,
+                'category': category
+            }).execute()
+            
+            return jsonify({
+                'success': True,
+                'post': result.data[0] if result.data else None
+            }), 201
+            
+        except Exception as e:
+            print(f"❌ Error creating community post: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    # Handle GET requests - get posts with pagination and filtering
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 20))
@@ -2127,39 +2164,6 @@ def get_community_posts():
         
     except Exception as e:
         print(f"❌ Error getting community posts: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/community/posts', methods=['POST'])
-def create_community_post():
-    """Create a new community post"""
-    try:
-        data = request.get_json()
-        user_id = data.get('user_id')
-        title = data.get('title')
-        content = data.get('content')
-        category = data.get('category', 'general')
-        
-        if not all([user_id, title, content]):
-            return jsonify({'error': 'user_id, title, and content are required'}), 400
-        
-        if not supabase:
-            return jsonify({'error': 'Database not configured'}), 500
-        
-        # Create post
-        result = supabase.table('community_posts').insert({
-            'user_id': user_id,
-            'title': title,
-            'content': content,
-            'category': category
-        }).execute()
-        
-        return jsonify({
-            'success': True,
-            'post': result.data[0] if result.data else None
-        }), 201
-        
-    except Exception as e:
-        print(f"❌ Error creating community post: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/community/posts/<post_id>', methods=['GET'])
