@@ -805,7 +805,7 @@ export default function Home() {
                   }}
                 >
                   <FaRocket />
-                  Begin Checkout - $47/month
+                  Get Started Free (Limited Time)
               </Link>
             )}
           </div>
@@ -955,9 +955,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="text-center mt-8">
-                <Link to={user ? "/checkout" : "/register"} className="cta-button">
+                <Link to={user ? "/dashboard" : "/register"} className="cta-button">
                   <FaHandshake style={{ marginRight: '8px' }} />
-                  Start Your 30-Day Journey - $47/month
+                  Start Free - Limited Time Offer
                 </Link>
                 <div className="max-w-xl mx-auto"><GuaranteeBlock /><TrustBadges /></div>
               </div>
@@ -1163,7 +1163,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
+              <Link to={user ? "/dashboard" : "/register"} className="path-cta">Start This Path</Link>
             </motion.div>
 
             {/* Scale Your Business Path */}
@@ -1218,7 +1218,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <Link to={user ? "/checkout" : "/register"} className="path-cta">Start This Path</Link>
+              <Link to={user ? "/dashboard" : "/register"} className="path-cta">Start This Path</Link>
             </motion.div>
 
             {/* Master AI Marketing Path */}
@@ -1280,7 +1280,7 @@ export default function Home() {
                   </motion.div>
                 ))}
               </motion.div>
-              <Link to={user ? "/checkout" : "/register"} className="path-cta featured" style={{ position: 'relative', zIndex: 1 }}>Start AI Mastery</Link>
+              <Link to={user ? "/dashboard" : "/register"} className="path-cta featured" style={{ position: 'relative', zIndex: 1 }}>Start AI Mastery</Link>
             </motion.div>
           </motion.div>
 
@@ -1289,10 +1289,131 @@ export default function Home() {
             <p>Website Design • Social Media Marketing • E-commerce • Affiliate Marketing • Freelancing • And More</p>
             <div className="value-proposition">
               <p className="total-value">Total Value: <span className="strikethrough">$2,758</span></p>
-              <p className="membership-price">Your Price: <span className="highlight">$47/month</span></p>
+              <p className="membership-price">Your Price: <span className="highlight">FREE (Limited Time)</span></p>
             </div>
-            <OfferComparison />
+            {/* <OfferComparison /> */}
           </div>
+        </div>
+      </motion.section>
+
+      {/* Vault Section - Weekly Playbooks */}
+      <motion.section 
+        className="vault-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          padding: '4rem 0',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <div className="container">
+          <motion.div
+            style={{
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: 'center',
+              gap: '3rem'
+            }}
+          >
+            <motion.div
+              style={{ flex: 1, color: 'white' }}
+              variants={textRevealVariants}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                <MdInventory style={{ fontSize: '2.5rem' }} />
+                <h2 style={{ fontSize: isMobile ? '1.75rem' : '2.5rem', margin: 0, fontWeight: 700 }}>
+                  The Vault
+                </h2>
+              </div>
+              <p style={{ fontSize: '1.25rem', marginBottom: '1.5rem', opacity: 0.95, fontWeight: 500 }}>
+                Weekly Playbooks Delivered Fresh
+              </p>
+              <p style={{ fontSize: '1rem', lineHeight: '1.8', opacity: 0.9, marginBottom: '2rem' }}>
+                Every week, unlock a new actionable playbook packed with expert strategies, step-by-step guides, and proven tactics. Topics range from AI marketing automation to conversion optimization, content creation to paid advertising mastery.
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '2rem' }}>
+                {[
+                  'New playbook every week',
+                  'Step-by-step implementation guides',
+                  'Real-world case studies',
+                  'Downloadable templates & resources'
+                ].map((item, idx) => (
+                  <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', fontSize: '1rem' }}>
+                    <FaCheckCircle style={{ color: '#10b981', flexShrink: 0 }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={user ? "/vault" : "/register"}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: 'white',
+                  color: '#764ba2',
+                  padding: '1rem 2rem',
+                  borderRadius: '50px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s ease'
+                }}
+              >
+                <FaBook /> {user ? 'Access The Vault' : 'Get Free Access (Limited Time)'}
+              </Link>
+            </motion.div>
+            <motion.div
+              style={{ 
+                flex: 1,
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+              variants={cardVariants}
+            >
+              <div style={{
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '16px',
+                padding: '2rem',
+                maxWidth: '400px',
+                width: '100%'
+              }}>
+                <div style={{ color: 'white', textAlign: 'center' }}>
+                  <div style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '0.5rem' }}>52+</div>
+                  <div style={{ fontSize: '1rem', opacity: 0.9, marginBottom: '1.5rem' }}>Playbooks Per Year</div>
+                </div>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: '1rem',
+                  color: 'white'
+                }}>
+                  {[
+                    { label: 'AI Marketing', icon: '🤖' },
+                    { label: 'Funnels', icon: '📊' },
+                    { label: 'Email', icon: '📧' },
+                    { label: 'Automation', icon: '⚡' }
+                  ].map((topic, idx) => (
+                    <div key={idx} style={{
+                      background: 'rgba(255,255,255,0.1)',
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      textAlign: 'center'
+                    }}>
+                      <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{topic.icon}</div>
+                      <div style={{ fontSize: '0.875rem' }}>{topic.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
       </motion.section>
 
@@ -1406,7 +1527,7 @@ export default function Home() {
 
           <div className="ai-cta-container">
             <Link 
-              to={user ? "/checkout" : "/register"}
+              to={user ? "/dashboard" : "/register"}
               className="cta-button"
               style={{
                 background: '#2563eb',
@@ -1423,9 +1544,154 @@ export default function Home() {
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease'
               }}
             >
-              <FaRocket /> Begin Checkout - $47/month
+              <FaRocket /> Get Started Free (Limited Time)
             </Link>
           </div>
+        </div>
+      </motion.section>
+
+      {/* AI Briefings Section */}
+      <motion.section 
+        className="ai-briefings-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={containerVariants}
+        style={{
+          background: '#0f172a',
+          padding: '4rem 0',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Animated gradient overlay */}
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(147, 51, 234, 0.15) 0%, transparent 50%)',
+            zIndex: 0
+          }}
+        />
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <motion.div
+            style={{
+              textAlign: 'center',
+              marginBottom: '3rem'
+            }}
+            variants={textRevealVariants}
+          >
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+              <FaBrain style={{ fontSize: '2rem', color: '#8b5cf6' }} />
+              <span style={{ 
+                background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em'
+              }}>
+                New Feature
+              </span>
+            </div>
+            <h2 style={{ 
+              fontSize: isMobile ? '1.75rem' : '2.5rem', 
+              color: 'white', 
+              marginBottom: '1rem',
+              fontWeight: 700 
+            }}>
+              AI Briefings
+            </h2>
+            <p style={{ 
+              fontSize: '1.125rem', 
+              color: 'rgba(255,255,255,0.7)', 
+              maxWidth: '600px', 
+              margin: '0 auto',
+              lineHeight: '1.7'
+            }}>
+              Stay ahead of the curve with curated AI intelligence delivered straight to your dashboard
+            </p>
+          </motion.div>
+
+          <motion.div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: '1.5rem',
+              maxWidth: '1000px',
+              margin: '0 auto'
+            }}
+            variants={containerVariants}
+          >
+            {[
+              {
+                icon: '📊',
+                title: 'Market Intelligence',
+                desc: 'Weekly briefings on AI tool updates, emerging trends, and market shifts that impact your marketing strategy.'
+              },
+              {
+                icon: '💡',
+                title: 'Actionable Insights',
+                desc: 'Each briefing includes specific tactics you can implement immediately to stay ahead of competitors.'
+              },
+              {
+                icon: '🎯',
+                title: 'Curated Content',
+                desc: 'Our team filters through the noise so you get only the most relevant AI marketing intelligence.'
+              }
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                variants={cardVariants}
+                whileHover="hover"
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '16px',
+                  padding: '2rem',
+                  textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{item.icon}</div>
+                <h3 style={{ color: 'white', fontSize: '1.25rem', marginBottom: '0.75rem', fontWeight: 600 }}>
+                  {item.title}
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            style={{ textAlign: 'center', marginTop: '2.5rem' }}
+            variants={textRevealVariants}
+          >
+            <Link
+              to={user ? "/training" : "/register"}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)',
+                color: 'white',
+                padding: '1rem 2rem',
+                borderRadius: '50px',
+                fontWeight: 600,
+                textDecoration: 'none',
+                fontSize: '1rem',
+                boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)',
+                transition: 'transform 0.2s ease'
+              }}
+            >
+              <FaBrain /> {user ? 'Access AI Briefings' : 'Get Free Access (Limited Time)'}
+            </Link>
+          </motion.div>
         </div>
       </motion.section>
 
@@ -1606,13 +1872,13 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">WHAT IS REVENUE RIPPLE?</h2>
           <p className="what-is-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
-            Whether you're a beginner looking for a place to start or a seasoned marketer looking to uplevel 
-            your skills, Revenue Ripple has everything you need to get marketing DONE. Our platform is like 
-            a personal coach, but without the awkward eye contact. We offer 46 comprehensive marketing 
-            tutorials, 25 expert-led video courses, and a growing library of resources to help you stay ahead 
-            of the curve. Plus, our exclusive affiliate program means you can earn while you learn and turn 
-            your marketing skills into profit! And our experienced team is always here to support you, like having a mentor in your pocket—minus the awkward small talk. Revenue Ripple truly is an unfair advantage for any 
-            marketer. So why wait? Join today and take your marketing game to the next level!
+            Whether you're a beginner looking for a place to start or a seasoned marketer looking to uplevel
+            your skills, Revenue Ripple has everything you need to get marketing DONE. Our platform is like
+            a personal coach, but without the awkward eye contact. We offer 46 comprehensive marketing
+            tutorials, 25 expert-led video courses, weekly Vault playbooks, AI briefings, and a growing library of resources to help you stay ahead
+            of the curve. Plus, our exclusive affiliate program means you can earn while you learn and turn
+            your marketing skills into profit! And our experienced team is always here to support you, like having a mentor in your pocket—minus the awkward small talk. Revenue Ripple truly is an unfair advantage for any
+            marketer. So why wait? Join today for free and take your marketing game to the next level!
           </p>
           <div className="workspace-image">
             <img src="/assets/images/images/rev-rip-pic.png" alt="Clean modern workspace with Revenue Ripple platform" />
@@ -1974,7 +2240,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* No Free Trial Section */}
+      {/* Limited Time Free Access Section */}
       <motion.section 
         className="no-free-trial-section"
         initial={{ opacity: 0 }}
@@ -1982,28 +2248,29 @@ export default function Home() {
         transition={{ duration: 0.4 }}
       >
         <div className="container">
-          <h2 className="section-title">No Free Trial?</h2>
-          <h3>What about a guarantee?</h3>
+          <h2 className="section-title">Free Access - Limited Time Only</h2>
+          <h3>No credit card required. Lock in free access before it's gone.</h3>
           <p className="no-free-trial-description" style={{ lineHeight: '1.7', letterSpacing: '0.3px', wordSpacing: '0.8px' }}>
-            Free trials are cool in theory—until you're left with nothing but an expired login and the sour aftertaste of wasted time. We don't do the whole "test drive" thing over here. Why? Because growth doesn't come from dabbling—it comes from committing.
+            For a limited time, we're opening the doors to Revenue Ripple completely free. No strings attached, no trial periods, no surprise charges.
 
-            At Revenue Ripple, we're not trying to attract tire-kickers or fence-sitters. We're looking for the go-getters, the doers, the ones ready to make moves and invest in themselves. When you put real skin in the game, that's when real results show up.
+            Get instant access to 46+ comprehensive marketing tutorials, 25+ expert-led video courses, weekly Vault playbooks, AI briefings, and our entire library of resources. All at zero cost—but only while this offer lasts.
 
-            Now, don't get it twisted—we're not heartless. That's why we back it up with a 30-day money-back guarantee. If it's not for you or doesn't deliver what you expected, no hard feelings. We'll refund you, no questions asked. It's like going on a first date, realizing we're not your type, and still parting ways with respect (and maybe a follow on Instagram).
+            We're on a mission to help entrepreneurs and marketers succeed. Whether you're just starting out or looking to level up your game, everything you need is here. Don't miss this opportunity to lock in free access.
 
-            So if you're ready to level up, we've got your back—and your wallet—covered.
-
-            Access Revenue Ripple Today.
+            Ready to transform your marketing? Join thousands of successful marketers who are already growing with Revenue Ripple.
           </p>
           <div className="no-free-trial-cta">
-            <Link to={user ? "/checkout" : "/register"} className="cta-button">
-              Join Now for Only $47/month
+            <Link to={user ? "/dashboard" : "/register"} className="cta-button">
+              Join Free - Limited Time
             </Link>
           </div>
         </div>
       </motion.section>
 
-      {/* Pricing Plans Section */}
+      {/* PRICING PLANS SECTION - COMMENTED OUT FOR FREE ACCESS
+      
+      Uncomment this section when ready to re-enable paid plans
+      
       <motion.section 
         id="pricing-section"
         className="pricing-section"
@@ -2039,7 +2306,7 @@ export default function Home() {
             }}
             variants={containerVariants}
           >
-            {/* Monthly Builder Plan */}
+            {/* Monthly Builder Plan *}
             <motion.div 
               className="pricing-card"
               variants={cardVariants}
@@ -2084,7 +2351,6 @@ export default function Home() {
                 onClick={async (e) => {
                   e.preventDefault();
                   if (!user) {
-                    // Store plan intent and redirect to register
                     sessionStorage.setItem('intended-plan', 'monthly');
                     window.location.href = '/register?plan=monthly';
                     return;
@@ -2112,7 +2378,7 @@ export default function Home() {
               </a>
             </motion.div>
 
-            {/* Quarterly Growth Plan - Recommended */}
+            {/* Quarterly Growth Plan - Recommended *}
             <motion.div 
               className="pricing-card featured"
               variants={cardVariants}
@@ -2169,29 +2435,12 @@ export default function Home() {
                 className="path-cta featured"
                 style={{ display: 'block', width: '100%', textAlign: 'center' }}
                 onClick={async (e) => {
-                  // #region agent log
-                  console.log('[DEBUG] Quarterly Growth button clicked', {user:!!user,userId:user?.id});
-                  fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2171',message:'Quarterly Growth button clicked',data:{user:!!user,userId:user?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A,G'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
-                  // #endregion
                   e.preventDefault();
                   if (!user) {
-                    // #region agent log
-                    console.log('[DEBUG] User not logged in - storing quarterly plan');
-                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2175',message:'User not logged in - storing quarterly plan',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
-                    // #endregion
-                    // Store plan intent and redirect to register
                     sessionStorage.setItem('intended-plan', 'quarterly');
-                    // #region agent log
-                    const storedPlan = sessionStorage.getItem('intended-plan');
-                    console.log('[DEBUG] After storing plan in sessionStorage', {storedPlan,url:'/register?plan=quarterly'});
-                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2177',message:'After storing plan in sessionStorage',data:{storedPlan,url:'/register?plan=quarterly'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch((err)=>console.error('[DEBUG] Log fetch failed:',err));
-                    // #endregion
                     window.location.href = '/register?plan=quarterly';
                     return;
                   }
-                  // #region agent log
-                  fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2180',message:'User logged in - calling quarterly session API',data:{apiUrl:`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D,E'})}).catch(()=>{});
-                  // #endregion
                   try {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                       method: 'POST',
@@ -2199,26 +2448,14 @@ export default function Home() {
                       body: JSON.stringify({ referrer_username: null })
                     });
                     const data = await response.json();
-                    // #region agent log
-                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2185',message:'Quarterly session API response received',data:{hasUrl:!!data.url,url:data.url?.substring(0,100),error:data.error,status:response.status},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D,E'})}).catch(()=>{});
-                    // #endregion
                     if (data.url) {
-                      // #region agent log
-                      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2187',message:'Redirecting to Stripe checkout URL',data:{url:data.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-                      // #endregion
                       window.location.href = data.url;
                     } else {
                       console.error('Error creating checkout session:', data);
-                      // #region agent log
-                      fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2190',message:'API returned no URL - falling back to checkout',data:{error:data.error},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-                      // #endregion
                       window.location.href = '/checkout';
                     }
                   } catch (error) {
                     console.error('Error creating checkout session:', error);
-                    // #region agent log
-                    fetch('http://127.0.0.1:7242/ingest/9836e60c-0cdf-4689-bbe0-60afdaaff40e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Home.jsx:2193',message:'API call exception - falling back to checkout',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-                    // #endregion
                     window.location.href = '/checkout';
                   }
                 }}
@@ -2227,7 +2464,7 @@ export default function Home() {
               </a>
             </motion.div>
 
-            {/* Founder Annual Plan */}
+            {/* Founder Annual Plan *}
             <motion.div 
               className="pricing-card"
               variants={cardVariants}
@@ -2282,7 +2519,7 @@ export default function Home() {
             </motion.div>
           </motion.div>
           
-          {/* Payment Security Section */}
+          {/* Payment Security Section *}
           <div style={{
             textAlign: 'center',
             marginTop: '3rem',
@@ -2326,6 +2563,8 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
+      
+      END OF PRICING PLANS SECTION */}
 
       {/* FAQ Section */}
       <motion.section 
@@ -2353,16 +2592,24 @@ export default function Home() {
           <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
             <FAQAccordion faqs={[
               {
-                q: "What exactly do I get with my membership?",
-                a: "You get instant access to 46+ comprehensive marketing tutorials, 25+ expert-led video courses, step-by-step playbooks, AI marketing strategies, community access, and our exclusive affiliate program. Plus, you get ongoing support through our AI assistant and 1-on-1 coaching options."
+                q: "What exactly do I get with free access?",
+                a: "You get instant access to 46+ comprehensive marketing tutorials, 25+ expert-led video courses, weekly Vault playbooks, AI briefings, step-by-step guides, AI marketing strategies, community access, and our exclusive affiliate program. Plus, you get ongoing support through our AI assistant and 1-on-1 coaching options."
               },
               {
-                q: "Is there a free trial?",
-                a: "We don't offer free trials because we believe real growth comes from commitment, not dabbling. However, we back everything with a 30-day money-back guarantee. If Revenue Ripple isn't for you or doesn't deliver what you expected, we'll refund you, no questions asked."
+                q: "Is Revenue Ripple really free?",
+                a: "Yes, 100% free! No credit card required, no hidden fees, no trial periods that expire. We believe everyone deserves access to world-class marketing education. Simply create an account and you'll have full access to all our courses, Vault playbooks, AI briefings, and resources."
+              },
+              {
+                q: "What are the Vault playbooks?",
+                a: "The Vault is our collection of weekly actionable playbooks. Every week, we release a new playbook packed with expert strategies, step-by-step implementation guides, and proven tactics covering AI marketing, funnels, email marketing, automation, and more. It's like having a marketing consultant deliver fresh strategies to your doorstep every week."
+              },
+              {
+                q: "What are AI Briefings?",
+                a: "AI Briefings are curated intelligence reports delivered to your dashboard. They cover the latest AI tool updates, emerging marketing trends, and actionable insights you can implement immediately. Stay ahead of the curve without spending hours researching - we do the heavy lifting for you."
               },
               {
                 q: "How is this different from other marketing courses?",
-                a: "Revenue Ripple focuses on AI-powered strategies that actually generate revenue. We don't teach outdated tactics - everything is current, actionable, and results-focused. Plus, you can earn while you learn through our affiliate program, turning your education into income immediately."
+                a: "Revenue Ripple focuses on AI-powered strategies that actually generate revenue. We don't teach outdated tactics - everything is current, actionable, and results-focused. Plus, with weekly Vault playbooks and AI Briefings, you're always getting fresh content. And you can earn while you learn through our affiliate program, turning your education into income immediately."
               },
               {
                 q: "Do I need any prior marketing experience?",
@@ -2373,24 +2620,16 @@ export default function Home() {
                 a: "You're never alone! We offer an AI Marketing Assistant trained on all our courses for instant answers, plus 1-on-1 business coaching sessions. Our community is also incredibly supportive and always ready to help."
               },
               {
-                q: "Can I cancel anytime?",
-                a: "Yes, you can cancel your subscription at any time. There are no long-term contracts or commitments. However, we're confident you'll see value - that's why we offer the 30-day money-back guarantee."
-              },
-              {
                 q: "How does the affiliate program work?",
                 a: "As a member, you get access to our exclusive affiliate program. You can earn commissions by referring others to Revenue Ripple. We provide all the tools, training, and resources you need - including lead magnets, landing pages, and promo scripts - to help you start earning fast."
               },
               {
-                q: "What's the difference between Monthly Builder, Quarterly Growth, and Founder Annual?",
-                a: "Monthly Builder ($47/month) gives you core platform access, starter templates, and community access. Quarterly Growth ($129/3 months) includes everything in Monthly Builder plus one onboarding/strategy call and quarterly roadmap setup. Founder Annual ($470/year) includes everything in Quarterly Growth plus founder badge, locked-in pricing forever, and early feature access - saving you $94/year."
-              },
-              {
                 q: "Are the courses updated regularly?",
-                a: "Absolutely! We're constantly adding new content and updating existing courses to reflect the latest AI marketing strategies and industry changes. As a member, you get lifetime access to all current and future content."
+                a: "Absolutely! We're constantly adding new content and updating existing courses to reflect the latest AI marketing strategies and industry changes. Plus, with weekly Vault playbooks and regular AI Briefings, you always have fresh, relevant content to learn from."
               },
               {
-                q: "What payment methods do you accept?",
-                a: "We accept all major credit cards and debit cards through our secure Stripe payment system. Your payment information is encrypted and secure. We also offer a 30-day money-back guarantee on all memberships."
+                q: "Why is Revenue Ripple free?",
+                a: "We're on a mission to democratize marketing education. We believe that cost shouldn't be a barrier to learning the skills you need to succeed. Our sustainable model allows us to offer this value for free while still growing and improving the platform."
               }
             ]} />
           </div>
@@ -2412,8 +2651,8 @@ export default function Home() {
           </p>
         
           <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-            <Link to={user ? "/checkout" : "/register"} className="cta-button">
-              Join Now for Only $47/month
+            <Link to={user ? "/dashboard" : "/register"} className="cta-button">
+              Join Free - Limited Time Only
             </Link>
           </div>
         </div>
@@ -2439,7 +2678,7 @@ export default function Home() {
           }}
         >
           <Link
-            to={user ? "/checkout" : "/register"}
+            to={user ? "/dashboard" : "/register"}
             className="cta-button"
             style={{
               display: 'block',
@@ -2456,7 +2695,7 @@ export default function Home() {
             }}
           >
             <FaRocket style={{ marginRight: '0.5rem', display: 'inline' }} />
-            Start Now - $47/month
+            Start Free - Limited Time
           </Link>
         </motion.div>
       )}
