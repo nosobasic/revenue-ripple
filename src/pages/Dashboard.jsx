@@ -309,7 +309,7 @@ const Dashboard = () => {
           {/* Main Content - Left Side */}
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
             {/* <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2> */}
-            {/* Affiliate Program Section */}
+            {/* AFFILIATE PROGRAM SECTION - HIDDEN WHILE APP IS FREE
             {isMember &&
             <div className="section mb-8">
               <div className="section-header affiliate">
@@ -332,18 +332,16 @@ const Dashboard = () => {
                     <div className="course-details">
                       <p>As someone who truly appreciates having you on board, I wanted to extend a personal invitation to you. We've got this awesome MEMBER EXCLUSIVE affiliate program that you've gotta check out. It's a sweet deal - you earn every penny for every other member that signs up through your special link. I'm talkin' $47.00 every single month for every 2 people you send our way, and we send it directly to your Paypal account. No waiting for an affiliate check or any of that nonsense.</p>
                                               <p>To join, just <span 
-                          // href="/affiliate/sign-up" 
                           style={{ color: '#2563eb', textDecoration: 'underline', fontWeight: '500' }}
                           onClick={(e) => {e.stopPropagation()
                             handleJoinAffiliate("member")
                           }}
                         >click here</span>.</p>
                       <p>Now listen up, because this part's important. Your affiliate account (and all your sweet, sweet payments) will only stay active as long as your membership subscription is active. So don't cancel, or you'll miss out on all the cash. And that's not what we want, is it?</p>
-                      <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!                      </p>
+                      <p>My goal is for us to make money together, not just for me. That's why I'm tellin' you, the fastest way to earn is by promoting the membership itself. Sell it once, and you'll get paid every single month. That's my cup of tea, and it should be yours too. So get out there and sign up 2 members - that way, your own fee is more than covered. Let's do this thing!</p>
                       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
                         {isMember &&
                         <button
-                          // href="/affiliate/sign-up"
                           className="cta-link"
                           onClick={(e) => {e.stopPropagation()
                             handleJoinAffiliate("member")
@@ -386,6 +384,7 @@ const Dashboard = () => {
                 <hr className="section-divider" />
               </div>
             </div>}
+            END OF AFFILIATE PROGRAM SECTION */}
 
             {/* Community Section */}
             <div className="section mb-8">
@@ -449,7 +448,7 @@ const Dashboard = () => {
             {/* Vault Preview Section */}
             <VaultPreview />
             
-            {/*Reseller Program Section*/}
+            {/* RESELLER PROGRAM SECTION - HIDDEN WHILE APP IS FREE
             {isAffiliate && 
             <div className="section mb-8">
               <div className="section-header reseller">
@@ -497,6 +496,7 @@ const Dashboard = () => {
                 <hr className="section-divider" />
               </div>
             </div>}
+            END OF RESELLER PROGRAM SECTION */}
             
             {/* Learning Paths Section */}
             <div className="section mb-8">
@@ -729,18 +729,24 @@ const Dashboard = () => {
               <div className="section-content">
                 <div className="coming-soon-content">
                   <p>We're constantly working to bring you the latest and most effective business strategies. Here's what's coming soon:</p>
-                  
+
                   <div className="coming-soon-grid">
+                    <div className="coming-soon-item">
+                      <FaMoneyBillWave className="coming-soon-icon" />
+                      <h3>Affiliate Program</h3>
+                      <p>Earn commissions by referring others to Revenue Ripple. Get paid every month for every member you bring in.</p>
+                    </div>
+
+                    <div className="coming-soon-item">
+                      <FaShoppingCart className="coming-soon-icon" />
+                      <h3>Reseller Program</h3>
+                      <p>Run your own premium membership business and earn 100% commission on every referral. Build passive income on autopilot.</p>
+                    </div>
+
                     <div className="coming-soon-item">
                       <FaChartLine className="coming-soon-icon" />
                       <h3>Advanced Analytics Dashboard</h3>
                       <p>Track your business metrics in real-time with our new comprehensive analytics platform.</p>
-                    </div>
-
-                    <div className="coming-soon-item">
-                      <FaUsers className="coming-soon-icon" />
-                      <h3>Community Platform</h3>
-                      <p>Connect with other entrepreneurs, share experiences, and grow your network.</p>
                     </div>
 
                     <div className="coming-soon-item">

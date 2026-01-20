@@ -101,11 +101,13 @@ const Navbar = React.memo(() => {
                 <FaChartLine className="nav-icon" />
                 <span>Progress</span>
               </Link>
+              {/* EARN LINK - HIDDEN WHILE APP IS FREE
               {(isAffiliate || isAdmin) &&
               <Link to="/affiliate-centre" className={getNavLinkClass('/earn')} onClick={closeMobileMenu}>
                 <FaDollarSign className="nav-icon" />
                 <span>Earn</span>
               </Link>}
+              */}
               
               <Link to="/training" className={getNavLinkClass('/support')} onClick={closeMobileMenu}>
                 <FaQuestionCircle className="nav-icon" />
@@ -210,12 +212,14 @@ const Navbar = React.memo(() => {
                     <FaChartLine className="mobile-nav-icon" />
                     <span>Progress</span>
                   </Link>
+                  {/* EARN LINK MOBILE - HIDDEN WHILE APP IS FREE
                   {(isAffiliate || isAdmin) &&
                   <Link to="/affiliate-centre" className={`mobile-nav-link ${getNavLinkClass('/earn')}`} onClick={closeMobileMenu}>
                     <FaDollarSign className="mobile-nav-icon" />
                     <span>Earn</span>
                   </Link>
-}
+                  }
+                  */}
                   <Link to="/training" className={`mobile-nav-link ${getNavLinkClass('/support')}`} onClick={closeMobileMenu}>
                     <FaQuestionCircle className="mobile-nav-icon" />
                     <span>Support</span>
