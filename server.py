@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort, make_response
+from flask import Flask, request, jsonify, abort, make_response, send_from_directory
 from flask_cors import CORS
 import stripe
 import os
@@ -49,8 +49,18 @@ if SUPABASE_URL and SUPABASE_KEY:
 else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
 
-app = Flask(__name__)
-CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173"])
+app = Flask(__name__, static_folder='dist', static_url_path='')
+CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
+
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -2438,4 +2448,4 @@ if __name__ == '__main__':
     print("🔍 DEBUG: Checking environment variables...")
     print(f"🔍 STRIPE_SECRET_KEY: {'SET' if os.getenv('STRIPE_SECRET_KEY') else 'NOT SET'}")
     print(f"🔍 STRIPE_WEBHOOK_SECRET: {'SET' if os.getenv('STRIPE_WEBHOOK_SECRET') else 'NOT SET'}")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='localhost', port=8000)

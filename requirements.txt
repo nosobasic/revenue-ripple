@@ -9,3 +9,13 @@ PyJWT
 gunicorn
 openai
 paypalrestsdk
+flask
+flask-cors
+gunicorn
+openai
+paypalrestsdk
+PyJWT
+python-dotenv
+requests
+stripe
+supabase

@@ -59,60 +59,62 @@ export default defineConfig({
   },
   
   server: {
-    allowedHosts: ["friendly-neat-walrus.ngrok-free.app"],
+    host: "0.0.0.0",
+    port: 5000,
+    allowedHosts: true,
     proxy: {
       "/devops": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/api": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-payment-intent": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-tripwire-session": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-pro-reseller-session": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-reseller-session": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-membership-session": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/create-quarterly-growth-session": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/webhook": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/your-existing-api": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
       "/paypal": {
-        target: "http://localhost:5001",
+        target: "http://localhost:8000",
         changeOrigin: true,
         secure: false,
       },
