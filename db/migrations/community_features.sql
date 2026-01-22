@@ -213,9 +213,7 @@ CREATE TRIGGER trigger_update_reply_upvotes
     AFTER INSERT OR DELETE ON reply_upvotes
     FOR EACH ROW EXECUTE FUNCTION update_reply_upvotes();
 
--- Insert some sample categories
-INSERT INTO community_posts (user_id, title, content, category, upvotes) VALUES
-    ('00000000-0000-0000-0000-000000000000', 'Welcome to the Community!', 'This is a sample post to get the community started. Feel free to introduce yourself and share what you''re working on!', 'general', 5),
-    ('00000000-0000-0000-0000-000000000000', 'Marketing Tips & Strategies', 'Share your best marketing strategies and learn from others in the community.', 'marketing', 3),
-    ('00000000-0000-0000-0000-000000000000', 'AI Tools Discussion', 'Discuss the latest AI tools and how they can help your business.', 'ai', 7)
-ON CONFLICT DO NOTHING;
+-- Note: Sample posts should only be inserted after users exist in the database
+-- To add sample posts, first create a user account, then run:
+-- INSERT INTO community_posts (user_id, title, content, category, upvotes) VALUES
+--     ('<your-user-uuid>', 'Welcome to the Community!', 'This is a sample post to get the community started. Feel free to introduce yourself and share what you''re working on!', 'general', 5);

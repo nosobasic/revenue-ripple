@@ -2115,7 +2115,10 @@ def community_posts():
                 return jsonify({'error': 'user_id, title, and content are required'}), 400
             
             if not supabase:
-                return jsonify({'error': 'Database not configured'}), 500
+                return jsonify({
+                    'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
+                    'code': 'DB_NOT_CONFIGURED'
+                }), 503
             
             # Create post
             result = supabase.table('community_posts').insert({
@@ -2142,7 +2145,10 @@ def community_posts():
         sort_by = request.args.get('sort', 'created_at')  # created_at, upvotes, views
         
         if not supabase:
-            return jsonify({'error': 'Database not configured'}), 500
+            return jsonify({
+                'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
+                'code': 'DB_NOT_CONFIGURED'
+            }), 503
         
         # Build query
         query = supabase.table('community_posts').select('''
@@ -2185,7 +2191,10 @@ def get_community_post(post_id):
     """Get a specific community post with replies"""
     try:
         if not supabase:
-            return jsonify({'error': 'Database not configured'}), 500
+            return jsonify({
+                'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
+                'code': 'DB_NOT_CONFIGURED'
+            }), 503
         
         # Get post
         post_result = supabase.table('community_posts').select('''
@@ -2229,7 +2238,10 @@ def create_community_reply():
             return jsonify({'error': 'user_id and content are required'}), 400
         
         if not supabase:
-            return jsonify({'error': 'Database not configured'}), 500
+            return jsonify({
+                'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
+                'code': 'DB_NOT_CONFIGURED'
+            }), 503
         
         # Create reply
         reply_data = {
@@ -2263,7 +2275,10 @@ def upvote_community_post():
             return jsonify({'error': 'user_id is required'}), 400
         
         if not supabase:
-            return jsonify({'error': 'Database not configured'}), 500
+            return jsonify({
+                'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
+                'code': 'DB_NOT_CONFIGURED'
+            }), 503
         
         post_id = request.view_args['post_id']
         
