@@ -43,7 +43,17 @@ Revenue Ripple is a full-stack marketing platform built with React (Vite) fronte
 - Database: Supabase (PostgreSQL)
 - Authentication: Supabase Auth + JWT tokens
 
+## Database Migrations
+
+To set up the database, run these SQL files in your Supabase SQL editor (in order):
+1. `database_schema.sql` - Core tables (users, payments, subscriptions, etc.)
+2. `db/migrations/community_features.sql` - Community forum tables (posts, replies, upvotes)
+
 ## Recent Changes
+- 2026-01-22: Fixed community forum database configuration
+  - Removed sample data with fake user IDs from migration (would fail on insert)
+  - Added helpful error messages when database is not configured (HTTP 503 with setup instructions)
+  - All community endpoints now consistently return error code 'DB_NOT_CONFIGURED' when Supabase is missing
 - 2026-01-20: Imported from GitHub, configured for Replit environment
   - Updated backend port from 5001 to 8000
   - Configured Vite to allow all hosts for Replit proxy
