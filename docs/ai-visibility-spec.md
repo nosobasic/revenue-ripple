@@ -93,34 +93,35 @@ When users ask AI chatbots questions like:
 
 ---
 
-## Technical Questions to Resolve
+## Technical Decisions (Confirmed)
 
 ### Data Collection
-- **Q1:** How do we actually detect when a business appears in AI responses?
-  - Option A: Periodic API calls to ChatGPT/Gemini/Perplexity with test prompts
-  - Option B: Integration with third-party AI visibility tools
-  - Option C: Crowdsourced/user-reported data
-  - Option D: Web scraping of AI-generated content
+**Decision: Option A - Direct API calls to AI platforms**
+- Make periodic API calls to OpenAI (ChatGPT) with test prompts
+- Start with OpenAI only, expand to Gemini/Perplexity later
+- No third-party visibility tools (expensive, unproven reliability)
 
-### API Costs
-- **Q2:** What's the cost model for checking visibility?
-  - How many prompts can we test per user per day?
-  - Tier-based limits (Core: 10/day, Growth: 50/day, Partner: unlimited?)
+### API Costs & Limits
+**Decision: Minimal limits since platform is free**
+- Platform is free to validate demand, so keep costs minimal
+- Heavy caching: check each prompt once per day max
+- Share results across users tracking same prompts
+- MVP limits: ~5-10 tracked prompts per user
 
 ### Accuracy
-- **Q3:** AI responses are non-deterministic. How do we handle this?
-  - Multiple samples per prompt?
-  - Confidence scores?
-  - Time-based averaging?
+**Decision: Confidence scores**
+- Run 3 samples per prompt to handle non-deterministic responses
+- Calculate confidence score based on consistency
+- Example: 3/3 mentions = 100% confidence, 2/3 = 67%, 1/3 = 33%
 
 ### Competitor Data
-- **Q4:** How do we get competitor visibility data?
-  - Same approach as user's own data
-  - Shared database across all users in same niche?
+**Decision: Same API-based approach**
+- Check competitor visibility using same method as user's business
+- Results are cached and shared if multiple users track same competitor
 
 ---
 
-## Database Schema (Draft)
+## Database Schema
 
 ```sql
 -- Business profiles for AI visibility tracking
@@ -181,40 +182,40 @@ CREATE TABLE ai_visibility_content (
 
 ---
 
-## Tier-Based Access
+## Access Limits (Free Platform)
 
-| Feature | Core | Growth | Partner |
-|---------|------|--------|---------|
-| Prompts tracked | 10 | 50 | Unlimited |
-| Competitors tracked | 3 | 10 | Unlimited |
-| Visibility checks/day | 5 | 25 | Unlimited |
-| Content generation/mo | 5 | 25 | Unlimited |
-| Historical data | 7 days | 30 days | 1 year |
+Since the platform is free to validate demand, limits are minimal but necessary to control API costs:
 
----
-
-## Open Questions for Discussion
-
-1. **What's the MVP scope?** Start with just prompt tracking, or include content generation?
-
-2. **Which AI platforms to support first?** ChatGPT only, or multi-platform from day one?
-
-3. **Manual vs Automated?** Should users submit prompts to track, or do we auto-discover?
-
-4. **Integration with existing features?** Does this connect to the AI Insights briefings?
-
-5. **Third-party dependencies?** Are there existing APIs/services we should integrate with?
+| Feature | Limit |
+|---------|-------|
+| Prompts tracked | 10 |
+| Competitors tracked | 3 |
+| Visibility checks/day | 10 (shared cache) |
+| Content generation/mo | 5 (Phase 2) |
+| Historical data | 30 days |
 
 ---
 
-## Next Steps
+## MVP Scope (Phase 1)
 
-Once we align on:
-- [ ] MVP feature scope
-- [ ] Data collection approach
-- [ ] Technical architecture decisions
+**In scope:**
+- [x] Business profile setup (name, URL, industry)
+- [x] Add up to 3 competitors
+- [x] Curated industry prompt library
+- [x] Visibility check via OpenAI API
+- [x] Visibility score with confidence rating
+- [x] Competitor comparison dashboard
 
-Then we can:
+**Phase 2 (later):**
+- [ ] Content generation for visibility boost
+- [ ] Multi-platform support (Gemini, Perplexity)
+- [ ] Custom prompt tracking
+- [ ] Historical trends
+
+---
+
+## Implementation Plan
+
 1. Create database migrations
 2. Build backend API endpoints
 3. Create frontend dashboard
@@ -225,3 +226,4 @@ Then we can:
 
 *Document created: 2026-01-22*
 *Last updated: 2026-01-22*
+*Status: Confirmed - Building MVP*
