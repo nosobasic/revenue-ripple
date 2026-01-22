@@ -6,10 +6,11 @@ import requests
 import time
 import paypalrestsdk
 import json
-from datetime import datetime
+from datetime import datetime, date
 import re
 import hashlib
 import uuid
+from openai import OpenAI
 
 
 from supabase import create_client, Client
@@ -48,6 +49,20 @@ if SUPABASE_URL and SUPABASE_KEY:
         supabase = None
 else:
     print("⚠️ Supabase credentials not found - database features will be disabled")
+
+# Initialize OpenAI client using Replit AI Integrations
+openai_client = None
+OPENAI_BASE_URL = os.getenv("AI_INTEGRATIONS_OPENAI_BASE_URL")
+OPENAI_API_KEY = os.getenv("AI_INTEGRATIONS_OPENAI_API_KEY")
+if OPENAI_BASE_URL and OPENAI_API_KEY:
+    try:
+        openai_client = OpenAI(base_url=OPENAI_BASE_URL, api_key=OPENAI_API_KEY)
+        print("✅ OpenAI client initialized successfully")
+    except Exception as e:
+        print(f"⚠️ Failed to initialize OpenAI client: {e}")
+        openai_client = None
+else:
+    print("⚠️ OpenAI credentials not found - AI visibility features will be disabled")
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
@@ -2458,9 +2473,366 @@ def get_playbook_detail(playbook_id):
         print(f"❌ Error fetching playbook detail: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+# ============================================================================
+# AI VISIBILITY ENDPOINTS
+# ============================================================================
+
+@app.route('/api/ai-visibility/profile', methods=['GET', 'POST', 'PUT'])
+def ai_visibility_profile():
+    """Manage user's AI visibility profile"""
+    if not supabase:
+        return jsonify({
+            'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.',
+            'code': 'DB_NOT_CONFIGURED'
+        }), 503
+    
+    if request.method == 'GET':
+        try:
+            user_id = request.args.get('user_id')
+            if not user_id:
+                return jsonify({'error': 'user_id is required'}), 400
+            
+            result = supabase.table('ai_visibility_profiles').select('*').eq('user_id', user_id).execute()
+            
+            if result.data:
+                profile = result.data[0]
+                competitors = supabase.table('ai_visibility_competitors').select('*').eq('profile_id', profile['id']).execute()
+                profile['competitors'] = competitors.data or []
+                return jsonify({'profile': profile}), 200
+            else:
+                return jsonify({'profile': None}), 200
+                
+        except Exception as e:
+            print(f"❌ Error getting AI visibility profile: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            business_name = data.get('business_name')
+            business_url = data.get('business_url')
+            industry = data.get('industry')
+            competitors = data.get('competitors', [])
+            
+            if not all([user_id, business_name, industry]):
+                return jsonify({'error': 'user_id, business_name, and industry are required'}), 400
+            
+            existing = supabase.table('ai_visibility_profiles').select('id').eq('user_id', user_id).execute()
+            if existing.data:
+                return jsonify({'error': 'Profile already exists. Use PUT to update.'}), 409
+            
+            profile_result = supabase.table('ai_visibility_profiles').insert({
+                'user_id': user_id,
+                'business_name': business_name,
+                'business_url': business_url,
+                'industry': industry
+            }).execute()
+            
+            profile = profile_result.data[0] if profile_result.data else None
+            
+            if profile and competitors:
+                for comp in competitors[:3]:
+                    supabase.table('ai_visibility_competitors').insert({
+                        'profile_id': profile['id'],
+                        'competitor_name': comp.get('name'),
+                        'competitor_url': comp.get('url')
+                    }).execute()
+            
+            return jsonify({'success': True, 'profile': profile}), 201
+            
+        except Exception as e:
+            print(f"❌ Error creating AI visibility profile: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+    
+    elif request.method == 'PUT':
+        try:
+            data = request.get_json()
+            user_id = data.get('user_id')
+            
+            if not user_id:
+                return jsonify({'error': 'user_id is required'}), 400
+            
+            update_data = {}
+            if 'business_name' in data:
+                update_data['business_name'] = data['business_name']
+            if 'business_url' in data:
+                update_data['business_url'] = data['business_url']
+            if 'industry' in data:
+                update_data['industry'] = data['industry']
+            
+            if update_data:
+                update_data['updated_at'] = datetime.now().isoformat()
+                result = supabase.table('ai_visibility_profiles').update(update_data).eq('user_id', user_id).execute()
+                return jsonify({'success': True, 'profile': result.data[0] if result.data else None}), 200
+            
+            return jsonify({'error': 'No fields to update'}), 400
+            
+        except Exception as e:
+            print(f"❌ Error updating AI visibility profile: {str(e)}")
+            return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai-visibility/competitors', methods=['GET', 'POST', 'DELETE'])
+def ai_visibility_competitors():
+    """Manage competitors for a profile"""
+    if not supabase:
+        return jsonify({'error': 'Database not configured', 'code': 'DB_NOT_CONFIGURED'}), 503
+    
+    if request.method == 'GET':
+        try:
+            profile_id = request.args.get('profile_id')
+            if not profile_id:
+                return jsonify({'error': 'profile_id is required'}), 400
+            
+            result = supabase.table('ai_visibility_competitors').select('*').eq('profile_id', profile_id).execute()
+            return jsonify({'competitors': result.data or []}), 200
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    elif request.method == 'POST':
+        try:
+            data = request.get_json()
+            profile_id = data.get('profile_id')
+            competitor_name = data.get('competitor_name')
+            competitor_url = data.get('competitor_url')
+            
+            if not all([profile_id, competitor_name]):
+                return jsonify({'error': 'profile_id and competitor_name are required'}), 400
+            
+            existing = supabase.table('ai_visibility_competitors').select('id').eq('profile_id', profile_id).execute()
+            if len(existing.data or []) >= 3:
+                return jsonify({'error': 'Maximum 3 competitors allowed'}), 400
+            
+            result = supabase.table('ai_visibility_competitors').insert({
+                'profile_id': profile_id,
+                'competitor_name': competitor_name,
+                'competitor_url': competitor_url
+            }).execute()
+            
+            return jsonify({'success': True, 'competitor': result.data[0] if result.data else None}), 201
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    elif request.method == 'DELETE':
+        try:
+            competitor_id = request.args.get('competitor_id')
+            if not competitor_id:
+                return jsonify({'error': 'competitor_id is required'}), 400
+            
+            supabase.table('ai_visibility_competitors').delete().eq('id', competitor_id).execute()
+            return jsonify({'success': True}), 200
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai-visibility/prompts', methods=['GET'])
+def ai_visibility_prompts():
+    """Get available prompts for an industry"""
+    if not supabase:
+        return jsonify({'error': 'Database not configured', 'code': 'DB_NOT_CONFIGURED'}), 503
+    
+    try:
+        industry = request.args.get('industry')
+        
+        query = supabase.table('ai_visibility_prompts').select('*').eq('is_active', True)
+        
+        if industry:
+            query = query.or_(f"industry.eq.{industry},industry.is.null")
+        
+        result = query.execute()
+        return jsonify({'prompts': result.data or []}), 200
+        
+    except Exception as e:
+        print(f"❌ Error getting prompts: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai-visibility/check', methods=['POST'])
+def ai_visibility_check():
+    """Check visibility for a business across prompts"""
+    if not supabase:
+        return jsonify({'error': 'Database not configured', 'code': 'DB_NOT_CONFIGURED'}), 503
+    
+    if not openai_client:
+        return jsonify({
+            'error': 'AI service not configured',
+            'code': 'AI_NOT_CONFIGURED'
+        }), 503
+    
+    try:
+        data = request.get_json()
+        business_name = data.get('business_name')
+        prompt_ids = data.get('prompt_ids', [])
+        
+        if not business_name:
+            return jsonify({'error': 'business_name is required'}), 400
+        
+        today = date.today().isoformat()
+        results = []
+        
+        for prompt_id in prompt_ids[:10]:
+            prompt_result = supabase.table('ai_visibility_prompts').select('*').eq('id', prompt_id).execute()
+            if not prompt_result.data:
+                continue
+            
+            prompt = prompt_result.data[0]
+            
+            cached = supabase.table('ai_visibility_results').select('*').eq('prompt_id', prompt_id).eq('business_name', business_name).eq('checked_at', today).execute()
+            
+            if cached.data:
+                results.append(cached.data[0])
+                continue
+            
+            samples = []
+            for _ in range(3):
+                try:
+                    response = openai_client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": "You are a helpful assistant answering questions about businesses and services. Be specific and mention actual business names when relevant."},
+                            {"role": "user", "content": prompt['prompt_text']}
+                        ],
+                        max_tokens=500,
+                        temperature=0.7
+                    )
+                    answer = response.choices[0].message.content
+                    appears = business_name.lower() in answer.lower()
+                    samples.append({
+                        'appears': appears,
+                        'snippet': answer[:200] if appears else None
+                    })
+                except Exception as e:
+                    print(f"⚠️ OpenAI API error: {str(e)}")
+                    samples.append({'appears': False, 'snippet': None})
+            
+            appearances = sum(1 for s in samples if s['appears'])
+            confidence = appearances / len(samples) if samples else 0
+            appears_final = appearances > 0
+            snippet = next((s['snippet'] for s in samples if s['snippet']), None)
+            
+            result_data = {
+                'prompt_id': prompt_id,
+                'business_name': business_name,
+                'ai_platform': 'openai',
+                'appears': appears_final,
+                'confidence_score': round(confidence, 2),
+                'snippet': snippet,
+                'samples_taken': len(samples),
+                'checked_at': today
+            }
+            
+            try:
+                insert_result = supabase.table('ai_visibility_results').upsert(result_data).execute()
+                results.append(insert_result.data[0] if insert_result.data else result_data)
+            except Exception as e:
+                print(f"⚠️ Error saving result: {str(e)}")
+                results.append(result_data)
+        
+        return jsonify({
+            'success': True,
+            'results': results,
+            'checked_at': today
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error checking visibility: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai-visibility/results', methods=['GET'])
+def ai_visibility_results():
+    """Get visibility results for a business"""
+    if not supabase:
+        return jsonify({'error': 'Database not configured', 'code': 'DB_NOT_CONFIGURED'}), 503
+    
+    try:
+        business_name = request.args.get('business_name')
+        if not business_name:
+            return jsonify({'error': 'business_name is required'}), 400
+        
+        result = supabase.table('ai_visibility_results').select('*, ai_visibility_prompts(prompt_text, category, industry)').eq('business_name', business_name).order('checked_at', desc=True).limit(50).execute()
+        
+        results = result.data or []
+        
+        if results:
+            total_prompts = len(results)
+            appearing = sum(1 for r in results if r['appears'])
+            avg_confidence = sum(r['confidence_score'] for r in results) / total_prompts if total_prompts > 0 else 0
+            visibility_score = int((appearing / total_prompts) * 100) if total_prompts > 0 else 0
+        else:
+            visibility_score = 0
+            avg_confidence = 0
+            appearing = 0
+            total_prompts = 0
+        
+        return jsonify({
+            'results': results,
+            'summary': {
+                'visibility_score': visibility_score,
+                'avg_confidence': round(avg_confidence, 2),
+                'prompts_appearing': appearing,
+                'total_prompts_checked': total_prompts
+            }
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Error getting results: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai-visibility/compare', methods=['GET'])
+def ai_visibility_compare():
+    """Compare visibility between business and competitors"""
+    if not supabase:
+        return jsonify({'error': 'Database not configured', 'code': 'DB_NOT_CONFIGURED'}), 503
+    
+    try:
+        profile_id = request.args.get('profile_id')
+        if not profile_id:
+            return jsonify({'error': 'profile_id is required'}), 400
+        
+        profile = supabase.table('ai_visibility_profiles').select('*').eq('id', profile_id).execute()
+        if not profile.data:
+            return jsonify({'error': 'Profile not found'}), 404
+        
+        business_name = profile.data[0]['business_name']
+        
+        competitors = supabase.table('ai_visibility_competitors').select('*').eq('profile_id', profile_id).execute()
+        
+        business_results = supabase.table('ai_visibility_results').select('*').eq('business_name', business_name).execute()
+        
+        comparison = {
+            'business': {
+                'name': business_name,
+                'appearing': sum(1 for r in (business_results.data or []) if r['appears']),
+                'total': len(business_results.data or [])
+            },
+            'competitors': []
+        }
+        
+        for comp in (competitors.data or []):
+            comp_results = supabase.table('ai_visibility_results').select('*').eq('business_name', comp['competitor_name']).execute()
+            comparison['competitors'].append({
+                'name': comp['competitor_name'],
+                'appearing': sum(1 for r in (comp_results.data or []) if r['appears']),
+                'total': len(comp_results.data or [])
+            })
+        
+        return jsonify({'comparison': comparison}), 200
+        
+    except Exception as e:
+        print(f"❌ Error comparing visibility: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     print("🚀 Starting Revenue Ripple API Server v1.0.1")
     print("🔍 DEBUG: Checking environment variables...")
     print(f"🔍 STRIPE_SECRET_KEY: {'SET' if os.getenv('STRIPE_SECRET_KEY') else 'NOT SET'}")
     print(f"🔍 STRIPE_WEBHOOK_SECRET: {'SET' if os.getenv('STRIPE_WEBHOOK_SECRET') else 'NOT SET'}")
+    print(f"🔍 AI_INTEGRATIONS_OPENAI: {'SET' if os.getenv('AI_INTEGRATIONS_OPENAI_API_KEY') else 'NOT SET'}")
     app.run(debug=True, host='localhost', port=8000)

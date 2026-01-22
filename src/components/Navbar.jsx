@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUserRole } from '../hooks/useUserRole';
-import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot, FaUsers, FaComments, FaTrophy, FaDiscord, FaChevronDown } from 'react-icons/fa';
+import { FaGraduationCap, FaChartLine, FaDollarSign, FaQuestionCircle, FaUser, FaBars, FaTimes, FaRobot, FaUsers, FaComments, FaTrophy, FaDiscord, FaChevronDown, FaEye } from 'react-icons/fa';
 import { logger } from '../config/constants';
 import './Navbar.css';
 
@@ -68,9 +68,10 @@ const Navbar = React.memo(() => {
       { path: '/support', icon: FaQuestionCircle, label: 'Support' }
     ];
     
-    // Add Command Center for authenticated users
+    // Add Command Center and AI Visibility for authenticated users
     if (user) {
       items.push({ path: '/command-center', icon: FaRobot, label: 'Command Center' });
+      items.push({ path: '/ai-visibility', icon: FaEye, label: 'AI Visibility' });
     }
     
     return items;

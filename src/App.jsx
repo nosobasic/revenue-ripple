@@ -98,6 +98,10 @@ const SubmitStory = lazy(() => import('./pages/SubmitStory'));
 // Vault components
 const Vault = lazy(() => import('./pages/Vault'));
 const VaultDetail = lazy(() => import('./pages/VaultDetail'));
+// AI Visibility components
+const AIVisibilityDashboard = lazy(() => import('./pages/AIVisibilityDashboard'));
+const AIVisibilitySetup = lazy(() => import('./pages/AIVisibilitySetup'));
+const AIVisibilityTracker = lazy(() => import('./pages/AIVisibilityTracker'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -203,6 +207,11 @@ const App = () => {
         <Route path="/training" element={<ProtectedRoute requirePayment={true}><Training /></ProtectedRoute>} />
         <Route path="/vault" element={<ProtectedRoute requirePayment={true}><Vault /></ProtectedRoute>} />
         <Route path="/vault/:id" element={<ProtectedRoute requirePayment={true}><VaultDetail /></ProtectedRoute>} />
+        
+        {/* AI Visibility */}
+        <Route path="/ai-visibility" element={<ProtectedRoute><AIVisibilityDashboard /></ProtectedRoute>} />
+        <Route path="/ai-visibility/setup" element={<ProtectedRoute><AIVisibilitySetup /></ProtectedRoute>} />
+        <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
