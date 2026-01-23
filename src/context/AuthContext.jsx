@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
       const { data: userData, error } = await supabase
         .from("users")
         .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio,paypal_email, has_paid, payment_status"
+          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio, paypal_email"
         )
         .eq("id", authUser.id)
         .single();
