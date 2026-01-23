@@ -74,6 +74,11 @@ The AI Visibility feature tracks how businesses appear in AI chatbots (ChatGPT, 
 - `docs/ai-visibility-spec.md` - Full feature specification
 
 ## Recent Changes
+- 2026-01-23: Enabled free access during validation phase
+  - Commented out has_paid checks in Training.jsx and useUserRole.ts
+  - All users now get full access to premium briefings and features
+  - AI assistant now uses Replit AI Integration (removed confusing warning)
+  - Original paid logic preserved with TODO comments for easy re-enabling
 - 2026-01-22: Built AI Visibility feature
   - Created backend API with OpenAI integration (gpt-4o-mini via Replit AI Integrations)
   - Built React dashboard with visibility scores, competitor comparison, prompt results
