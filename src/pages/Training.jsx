@@ -36,7 +36,10 @@ const Training = () => {
     urgency: 'normal'
   });
 
-  const isMember = user?.has_paid === true;
+  // TODO: Re-enable paid membership check when ready to monetize
+  // const isMember = user?.has_paid === true;
+  // TEMPORARY: App is free during validation phase - all users get full access
+  const isMember = true;
 
   const handleBriefingClick = (briefing) => {
     setSelectedBriefing(briefing);

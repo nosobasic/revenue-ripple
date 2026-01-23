@@ -7,17 +7,24 @@ from functools import lru_cache
 
 ai_assistant_bp = Blueprint('ai_assistant', __name__)
 
-# Make OpenAI client optional
+# Make OpenAI client optional - uses Replit AI Integrations if available
 try:
-    openai_api_key = os.getenv("OPENAI_API_KEY")
+    # Try Replit AI Integration first (preferred), then fall back to direct API key
+    openai_base_url = os.getenv("AI_INTEGRATIONS_OPENAI_BASE_URL")
+    openai_api_key = os.getenv("AI_INTEGRATIONS_OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
     if openai_api_key:
-        client = openai.OpenAI(api_key=openai_api_key)
+        if openai_base_url:
+            client = openai.OpenAI(base_url=openai_base_url, api_key=openai_api_key)
+            print("✅ AI assistant initialized via Replit AI Integration")
+        else:
+            client = openai.OpenAI(api_key=openai_api_key)
+            print("✅ AI assistant initialized via direct API key")
     else:
         client = None
-        print("⚠️ OpenAI API key not found - AI assistant will be disabled")
+        # Silent - no warning needed since AI Visibility uses separate integration
 except Exception as e:
     client = None
-    print(f"⚠️ Failed to initialize OpenAI client: {e}")
+    print(f"⚠️ Failed to initialize AI assistant: {e}")
 
 def is_authorized(user_role):
     return user_role in ["member", "affiliate", "reseller", "admin"]

@@ -34,11 +34,16 @@ export function useUserRole(): UserRoleInfo {
 
   // Safely extract role with fallback
   const role = user.role || DEFAULT_ROLE;
-  const hasPaid = user.has_paid === true;
+  
+  // TODO: Re-enable paid membership check when ready to monetize
+  // const hasPaid = user.has_paid === true;
+  // TEMPORARY: App is free during validation phase - all users get full access
+  const hasPaid = true;
   
   // Check if user needs to complete checkout
   // New users typically have has_paid = false or undefined
-  const requiresCheckout = !hasPaid && role !== 'admin';
+  // TEMPORARY: Skip checkout requirement during free validation phase
+  const requiresCheckout = false; // Original: !hasPaid && role !== 'admin'
 
   return {
     role,
