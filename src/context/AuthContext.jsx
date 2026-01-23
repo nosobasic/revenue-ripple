@@ -56,11 +56,10 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
+      // Use select(*) to get all available columns without hardcoding
       const { data: userData, error } = await supabase
         .from("users")
-        .select(
-          "id, email, role, plan, created_at, name, status, username, commission_rate, phone, company, bio,paypal_email, has_paid, payment_status"
-        )
+        .select("*")
         .eq("id", authUser.id)
         .single();
 

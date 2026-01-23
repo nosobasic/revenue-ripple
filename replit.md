@@ -75,8 +75,8 @@ The AI Visibility feature tracks how businesses appear in AI chatbots (ChatGPT, 
 
 ## Recent Changes
 - 2026-01-23: Fixed admin access issue
-  - Removed `has_paid` and `payment_status` from user query in AuthContext.jsx
-  - These columns were causing 500 errors and defaulting admin users to 'member' role
+  - Changed user query in AuthContext.jsx to use `select("*")` instead of explicit columns
+  - This prevents 500 errors from column mismatches between code and database schema
   - Admin access now works correctly based on the `role` column in users table
 - 2026-01-23: Enabled free access during validation phase
   - Commented out has_paid checks in Training.jsx and useUserRole.ts
