@@ -114,6 +114,11 @@ const Navbar = React.memo(() => {
                 <FaQuestionCircle className="nav-icon" />
                 <span>Support</span>
               </Link>
+              
+              <Link to="/ai-visibility" className={getNavLinkClass('/ai-visibility')} onClick={closeMobileMenu}>
+                <FaEye className="nav-icon" />
+                <span>AI Visibility</span>
+              </Link>
 
               {/* Community Dropdown */}
               <div 
@@ -224,6 +229,11 @@ const Navbar = React.memo(() => {
                   <Link to="/training" className={`mobile-nav-link ${getNavLinkClass('/support')}`} onClick={closeMobileMenu}>
                     <FaQuestionCircle className="mobile-nav-icon" />
                     <span>Support</span>
+                  </Link>
+                  
+                  <Link to="/ai-visibility" className={`mobile-nav-link ${getNavLinkClass('/ai-visibility')}`} onClick={closeMobileMenu}>
+                    <FaEye className="mobile-nav-icon" />
+                    <span>AI Visibility</span>
                   </Link>
 
                   <div className="mobile-menu-divider"></div>
