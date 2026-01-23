@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
     bio TEXT,
     contact_email TEXT,
     paypal_email TEXT,
+    has_paid BOOLEAN DEFAULT FALSE,
+    payment_status TEXT DEFAULT 'pending' CHECK (payment_status IN ('pending', 'completed', 'failed', 'refunded')),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

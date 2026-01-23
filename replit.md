@@ -74,6 +74,10 @@ The AI Visibility feature tracks how businesses appear in AI chatbots (ChatGPT, 
 - `docs/ai-visibility-spec.md` - Full feature specification
 
 ## Recent Changes
+- 2026-01-23: Fixed admin access issue
+  - Added missing `has_paid` and `payment_status` columns to users table schema
+  - Created migration script: `db/migrations/add_payment_columns.sql`
+  - To grant admin access: run `UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com'` in Supabase
 - 2026-01-23: Enabled free access during validation phase
   - Commented out has_paid checks in Training.jsx and useUserRole.ts
   - All users now get full access to premium briefings and features
