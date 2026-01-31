@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import { usePremiumBriefings } from '../hooks/usePremiumBriefings';
 import PremiumBriefingCarousel from '../components/training/PremiumBriefingCarousel';
@@ -82,6 +83,11 @@ const Training = () => {
 
   return (
     <div className="dashboard">
+      <SEO 
+        title="Training Center"
+        description="Access marketing guides, premium briefings, and expert training to grow your online business with proven strategies."
+        url="https://revenueripple.org/training"
+      />
       <Navbar />
       <AIAssistantWidget 
         showWelcomeBubble={true} 

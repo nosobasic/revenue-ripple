@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import { 
   FaRocket, 
   FaEye, 
@@ -115,6 +116,11 @@ export default function AIVisibilityTracker() {
 
   return (
     <div className="home">
+      <SEO 
+        title="AI Visibility Tracker"
+        description="Track how your business appears in AI chatbots like ChatGPT, Perplexity, and Gemini. The SEO for AI - monitor and boost your visibility."
+        url="https://revenueripple.org/ai-visibility-tracker"
+      />
       <Navbar />
       
       {/* Hero Section */}

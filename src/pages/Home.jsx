@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import StickyCTA from '../components/StickyCTA';
 import GuaranteeBlock from '../components/GuaranteeBlock';
 import TrustBadges from '../components/TrustBadges';
@@ -706,6 +707,11 @@ export default function Home() {
 
   return (
     <div className="home">
+      <SEO 
+        title="Marketing Training & Tools for Entrepreneurs"
+        description="Proven marketing strategies, AI-powered tools, and comprehensive training to build sustainable online businesses. Join thousands of entrepreneurs."
+        url="https://revenueripple.org"
+      />
       <ReferralTracker />
       <Navbar />
       {/* Hero Section with Parallax */}

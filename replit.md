@@ -74,6 +74,16 @@ The AI Visibility feature tracks how businesses appear in AI chatbots (ChatGPT, 
 - `docs/ai-visibility-spec.md` - Full feature specification
 
 ## Recent Changes
+- 2026-01-31: Added SEO metadata and simplified AI Visibility UI
+  - Installed react-helmet-async for SEO management
+  - Created reusable SEO component (src/components/SEO.jsx)
+  - Added SEO meta tags to all main pages (Home, Training, Dashboard, Login, Checkout, Community, AI Visibility)
+  - Simplified AI Visibility Dashboard - cleaner 2-stat layout, streamlined competitor section
+  - Simplified AI Visibility Setup - compact single-page form with minimal styling
+  - All pages now have proper title, description, and Open Graph tags for better search visibility
+- 2026-01-29: Identified and documented fix for admin RLS policy issue
+  - Supabase RLS policies had recursive self-reference causing 500 errors
+  - Documented fix: create is_admin() security definer function to prevent recursion
 - 2026-01-23: Fixed admin access issue
   - Changed user query in AuthContext.jsx to use `select("*")` instead of explicit columns
   - This prevents 500 errors from column mismatches between code and database schema

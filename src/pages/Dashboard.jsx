@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useUserRole } from '../hooks/useUserRole';
 import { supabase } from '../supabase/client.jsx';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
@@ -221,6 +222,11 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        title="Dashboard"
+        description="Your Revenue Ripple dashboard - track progress, access training, and grow your business."
+        url="https://revenueripple.org/dashboard"
+      />
       <ReferralTracker />
       {/* Persistent nav for key dashboard features */}
       <Navbar

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 import { 
   FaRobot, 
@@ -112,142 +113,107 @@ export default function AIVisibilitySetup() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        title="AI Visibility Setup"
+        description="Set up your AI visibility profile to track how your business appears in ChatGPT, Perplexity, and other AI chatbots."
+        url="https://revenueripple.org/ai-visibility/setup"
+      />
       <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
-            <FaRobot className="text-3xl text-blue-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">AI Visibility Setup</h1>
-          <p className="text-gray-600 mt-2">
-            Tell us about your business to start tracking your AI visibility
+      <div className="max-w-lg mx-auto px-4 py-10">
+        <div className="text-center mb-6">
+          <FaRobot className="mx-auto text-4xl text-blue-600 mb-3" />
+          <h1 className="text-2xl font-bold text-gray-900">Set Up AI Visibility</h1>
+          <p className="text-gray-600 mt-1 text-sm">
+            Track how AI chatbots see your business
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-8">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
               {error}
             </div>
           )}
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                <FaBuilding className="mr-2 text-gray-400" />
-                Business Name *
-              </label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Business Name *</label>
               <input
                 type="text"
                 name="business_name"
                 value={formData.business_name}
                 onChange={handleChange}
-                placeholder="e.g., Revenue Ripple"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your business name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
             </div>
 
             <div>
-              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                <FaGlobe className="mr-2 text-gray-400" />
-                Website URL (optional)
-              </label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Website (optional)</label>
               <input
                 type="url"
                 name="business_url"
                 value={formData.business_url}
                 onChange={handleChange}
-                placeholder="https://www.example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="https://example.com"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                <FaIndustry className="mr-2 text-gray-400" />
-                Industry *
-              </label>
+              <label className="text-sm font-medium text-gray-700 mb-1 block">Industry *</label>
               <select
                 name="industry"
                 value={formData.industry}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               >
-                <option value="">Select your industry</option>
+                <option value="">Select industry</option>
                 {INDUSTRIES.map(ind => (
                   <option key={ind.value} value={ind.value}>{ind.label}</option>
                 ))}
               </select>
             </div>
 
-            <div className="border-t pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <label className="flex items-center text-sm font-medium text-gray-700">
-                  <FaUsers className="mr-2 text-gray-400" />
-                  Competitors (up to 3)
-                </label>
+            <div className="pt-4 border-t">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-700">Competitors (optional)</label>
                 {competitors.length < 3 && (
-                  <button
-                    type="button"
-                    onClick={addCompetitor}
-                    className="text-sm text-blue-600 hover:text-blue-700 flex items-center"
-                  >
-                    <FaPlus className="mr-1" /> Add
+                  <button type="button" onClick={addCompetitor} className="text-xs text-blue-600 hover:text-blue-700">
+                    + Add
                   </button>
                 )}
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {competitors.map((comp, idx) => (
-                  <div key={idx} className="flex gap-3">
+                  <div key={idx} className="flex gap-2">
                     <input
                       type="text"
                       value={comp.name}
                       onChange={(e) => handleCompetitorChange(idx, 'name', e.target.value)}
                       placeholder="Competitor name"
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <input
-                      type="url"
-                      value={comp.url}
-                      onChange={(e) => handleCompetitorChange(idx, 'url', e.target.value)}
-                      placeholder="Website (optional)"
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     {competitors.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeCompetitor(idx)}
-                        className="p-3 text-red-500 hover:bg-red-50 rounded-lg"
-                      >
-                        <FaTrash />
+                      <button type="button" onClick={() => removeCompetitor(idx)} className="p-2 text-red-400 hover:text-red-600">
+                        <FaTrash size={12} />
                       </button>
                     )}
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Add competitors to compare your AI visibility against theirs
-              </p>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-8 py-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+            className="w-full mt-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {loading ? (
-              <>
-                <FaSpinner className="animate-spin mr-2" /> Creating Profile...
-              </>
-            ) : (
-              <>
-                Start Tracking <FaArrowRight className="ml-2" />
-              </>
-            )}
+            {loading ? <FaSpinner className="animate-spin mx-auto" /> : 'Start Tracking'}
           </button>
         </form>
       </div>

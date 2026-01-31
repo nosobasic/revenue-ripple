@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ClearCacheButton from '../components/ClearCacheButton';
+import SEO from '../components/SEO';
 import '../pages.css';
 import Navbar from '../components/Navbar';
 
@@ -63,6 +64,7 @@ export default function Login() {
 
   return (
     <div className="auth-container">
+      <SEO title="Login" description="Sign in to your Revenue Ripple account" url="https://revenueripple.org/login" />
       <Navbar />
       <div className="auth-box">
         <div className="auth-header">

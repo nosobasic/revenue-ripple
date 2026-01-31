@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 import { 
   FaRobot, 
@@ -119,6 +120,7 @@ export default function AIVisibilityDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <SEO title="AI Visibility" description="Track how your business appears in AI chatbots" />
         <Navbar />
         <div className="flex items-center justify-center h-96">
           <FaSpinner className="animate-spin text-4xl text-blue-600" />
@@ -130,10 +132,11 @@ export default function AIVisibilityDashboard() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <SEO title="AI Visibility" description="Track how your business appears in AI chatbots" />
         <Navbar />
-        <div className="max-w-4xl mx-auto px-4 py-16">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-            <FaRobot className="mx-auto text-6xl text-blue-600 mb-6" />
+        <div className="max-w-2xl mx-auto px-4 py-16">
+          <div className="bg-white rounded-xl shadow p-8 text-center">
+            <FaRobot className="mx-auto text-5xl text-blue-600 mb-4" />
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               Set Up Your AI Visibility Profile
             </h1>
@@ -155,152 +158,82 @@ export default function AIVisibilityDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        title="AI Visibility Dashboard"
+        description="Monitor your AI visibility score, track appearance in AI chatbots, and compare against competitors."
+        url="https://revenueripple.org/ai-visibility"
+      />
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">AI Visibility Dashboard</h1>
-            <p className="text-gray-600 mt-1">
-              Tracking: <span className="font-semibold">{profile.business_name}</span>
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900">AI Visibility</h1>
+            <p className="text-gray-500 text-sm">{profile.business_name}</p>
           </div>
           <button
             onClick={runVisibilityCheck}
             disabled={checking}
-            className="mt-4 lg:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {checking ? (
-              <>
-                <FaSpinner className="animate-spin mr-2" /> Checking...
-              </>
-            ) : (
-              <>
-                <FaSync className="mr-2" /> Run Visibility Check
-              </>
-            )}
+            {checking ? <FaSpinner className="animate-spin" /> : <><FaSync className="inline mr-1" /> Check</>}
           </button>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center">
-            <FaExclamationTriangle className="mr-2" /> {error}
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {error}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Visibility Score</p>
-                <p className="text-3xl font-bold text-blue-600">{summary?.visibility_score || 0}%</p>
-              </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <FaChartLine className="text-blue-600 text-xl" />
-              </div>
-            </div>
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-white rounded-lg shadow-sm p-5 text-center">
+            <p className="text-4xl font-bold text-blue-600">{summary?.visibility_score || 0}%</p>
+            <p className="text-sm text-gray-500 mt-1">Visibility Score</p>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-5 text-center">
+            <p className="text-4xl font-bold text-green-600">{summary?.prompts_appearing || 0}<span className="text-lg text-gray-400">/{summary?.total_prompts_checked || 0}</span></p>
+            <p className="text-sm text-gray-500 mt-1">Prompts Appearing</p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Prompts Appearing</p>
-                <p className="text-3xl font-bold text-green-600">{summary?.prompts_appearing || 0}</p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <FaCheckCircle className="text-green-600 text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Checked</p>
-                <p className="text-3xl font-bold text-gray-900">{summary?.total_prompts_checked || 0}</p>
-              </div>
-              <div className="p-3 bg-gray-100 rounded-full">
-                <FaSearch className="text-gray-600 text-xl" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Avg Confidence</p>
-                <p className="text-3xl font-bold text-purple-600">{Math.round((summary?.avg_confidence || 0) * 100)}%</p>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-full">
-                <FaRobot className="text-purple-600 text-xl" />
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <FaUsers className="mr-2 text-blue-600" /> Competitor Comparison
-            </h2>
-            {comparison ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                  <span className="font-semibold text-blue-900">{comparison.business.name} (You)</span>
-                  <span className="text-blue-600 font-bold">
-                    {comparison.business.appearing}/{comparison.business.total} prompts
-                  </span>
-                </div>
-                {comparison.competitors.map((comp, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <span className="text-gray-700">{comp.name}</span>
-                    <span className="text-gray-600 font-medium">
-                      {comp.appearing}/{comp.total} prompts
-                    </span>
-                  </div>
-                ))}
-                {comparison.competitors.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
-                    No competitors added yet. <Link to="/ai-visibility/setup" className="text-blue-600 hover:underline">Add competitors</Link>
-                  </p>
-                )}
+        {comparison && comparison.competitors.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm p-5 mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">vs Competitors</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center py-2 border-b">
+                <span className="font-medium text-blue-600">{comparison.business.name} (You)</span>
+                <span className="text-blue-600 font-bold">{comparison.business.appearing}/{comparison.business.total}</span>
               </div>
-            ) : (
-              <p className="text-gray-500 text-center py-8">Run a visibility check to see comparison</p>
-            )}
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <FaSearch className="mr-2 text-blue-600" /> Prompt Results
-            </h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {results.length > 0 ? results.map((result, idx) => (
-                <div key={idx} className="flex items-start p-3 border rounded-lg">
-                  <div className="flex-shrink-0 mt-1">
-                    {result.appears ? (
-                      <FaCheckCircle className="text-green-500" />
-                    ) : (
-                      <FaTimesCircle className="text-red-400" />
-                    )}
-                  </div>
-                  <div className="ml-3 flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      {result.ai_visibility_prompts?.prompt_text || 'Unknown prompt'}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Confidence: {Math.round(result.confidence_score * 100)}%
-                      {result.snippet && (
-                        <span className="ml-2 text-green-600">Mentioned!</span>
-                      )}
-                    </p>
-                  </div>
+              {comparison.competitors.map((comp, idx) => (
+                <div key={idx} className="flex justify-between items-center py-2">
+                  <span className="text-gray-600">{comp.name}</span>
+                  <span className="text-gray-500">{comp.appearing}/{comp.total}</span>
                 </div>
-              )) : (
-                <p className="text-gray-500 text-center py-8">
-                  No results yet. Click "Run Visibility Check" to start.
-                </p>
-              )}
+              ))}
             </div>
+          </div>
+        )}
+
+        <div className="bg-white rounded-lg shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3">Prompt Results</h3>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {results.length > 0 ? results.map((result, idx) => (
+              <div key={idx} className="flex items-center py-2 border-b last:border-0">
+                {result.appears ? (
+                  <FaCheckCircle className="text-green-500 flex-shrink-0" />
+                ) : (
+                  <FaTimesCircle className="text-gray-300 flex-shrink-0" />
+                )}
+                <span className="ml-3 text-sm text-gray-700 truncate">
+                  {result.ai_visibility_prompts?.prompt_text || 'Unknown prompt'}
+                </span>
+              </div>
+            )) : (
+              <p className="text-gray-400 text-center py-6 text-sm">
+                Click "Check" to scan AI visibility
+              </p>
+            )}
           </div>
         </div>
       </div>

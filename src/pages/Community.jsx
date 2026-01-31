@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaComments, FaTrophy, FaDiscord, FaUsers, FaRocket } from 'react-icons/fa';
+import SEO from '../components/SEO';
 import DiscordEmbed from '../components/DiscordEmbed';
 
 const Community = () => {
@@ -47,6 +48,11 @@ const Community = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
+      <SEO 
+        title="Community"
+        description="Connect with fellow entrepreneurs, share wins, and get support in the Revenue Ripple community."
+        url="https://revenueripple.org/community"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">

@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../components/CheckoutForm';
 import PayPalButton from '../components/PayPalButton';
+import SEO from '../components/SEO';
 import { STRIPE_CONFIG, API_ENDPOINTS, logger } from '../config/constants';
 import { useAuth } from '../context/AuthContext';
 import './checkout.css';
@@ -241,6 +242,7 @@ export default function Checkout() {
 
   return (
     <div className="checkout-container">
+      <SEO title="Checkout" description="Complete your purchase" url="https://revenueripple.org/checkout" />
       <div className="checkout-content">
         <h1>{productInfo.title}</h1>
         <p className="checkout-description">
