@@ -3,7 +3,32 @@ import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
 import MilestoneCheckIn from './components/MilestoneCheckIn';
+import SEO from './components/SEO';
 import { STORAGE_KEYS, logger } from './config/constants';
+
+// SEO meta per route (public and key landing pages)
+const ROUTE_SEO = {
+  '/': { title: 'Home', description: 'Revenue Ripple helps entrepreneurs master AI, email marketing, funnels, and paid traffic. Join the membership for courses, training, and community support.' },
+  '/login': { title: 'Login', description: 'Log in to your Revenue Ripple account to access your dashboard, courses, and training.' },
+  '/register': { title: 'Create Account', description: 'Create your Revenue Ripple account and get access to AI-powered marketing training, courses, and community.' },
+  '/privacy-policy': { title: 'Privacy Policy', description: 'Revenue Ripple privacy policy. How we collect, use, and protect your data.' },
+  '/data-deletion': { title: 'Data Deletion', description: 'Request deletion of your data from Revenue Ripple.' },
+  '/book-giveaway': { title: 'Free Book Giveaway', description: 'Get a free book from Revenue Ripple. Limited offer for entrepreneurs.' },
+  '/survival-playbook': { title: 'The Survival Systems Playbook', description: 'Download the Survival Systems Playbook – practical strategies for entrepreneurs.' },
+  '/DMD': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
+  '/dfy-funnel-consultation': { title: 'DFY Funnel Consultation', description: 'Done-for-you funnel consultation. Get expert guidance on your marketing funnel.' },
+  '/reset-password': { title: 'Reset Password', description: 'Reset your Revenue Ripple account password.' },
+  '/affiliate-login': { title: 'Affiliate Login', description: 'Log in to the Revenue Ripple affiliate centre.' },
+  '/affiliate/sign-up': { title: 'Affiliate Sign Up', description: 'Join the Revenue Ripple affiliate program and earn commissions.' },
+  '/membership-variation-1': { title: 'Membership Mastery', description: 'Membership Mastery – build and grow your membership business with Revenue Ripple.' },
+  '/membership-variation-2': { title: 'Membership Mastery', description: 'Membership Mastery – build and grow your membership business with Revenue Ripple.' },
+  '/membership-variation-3': { title: 'Membership Mastery', description: 'Membership Mastery – build and grow your membership business with Revenue Ripple.' },
+  '/dmd-variation-1': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
+  '/dmd-variation-2': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
+  '/dmd-variation-3': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
+  '/special': { title: 'Reseller Offer', description: 'Revenue Ripple reseller opportunity. Grow your business with our training and community.' },
+};
+const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/book-giveaway-thank-you', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success'];
 
 // Immediate load components (critical path)
 import Home from './pages/Home';
@@ -109,6 +134,20 @@ const LoadingFallback = () => (
   </div>
 );
 
+function RouteSEO() {
+  const { pathname } = useLocation();
+  const meta = ROUTE_SEO[pathname];
+  const noIndex = NO_INDEX_PATHS.some(p => pathname === p || pathname.startsWith(p));
+  return (
+    <SEO
+      title={meta?.title}
+      description={meta?.description}
+      path={pathname}
+      noIndex={noIndex}
+    />
+  );
+}
+
 const UnprotectedRoute = ({ children }) => {
   const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   const location = useLocation();
@@ -146,6 +185,7 @@ const App = () => {
 
   return (
     <>
+      <RouteSEO />
       {showReload && (
         <div className="fixed top-0 w-full bg-yellow-300 text-black text-center p-4 z-50">
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>

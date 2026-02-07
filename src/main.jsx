@@ -28,7 +28,7 @@ try {
     <ErrorBoundary>
       <HelmetProvider>
         <BrowserRouter>
-          <AuthProvider> 
+          <AuthProvider>
             <AIAssistantProvider>
               <App />
             </AIAssistantProvider>

@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap (update the host to your production domain if different)
+Sitemap: https://revenueripple.org/sitemap.xml

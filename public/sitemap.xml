@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://revenueripple.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://revenueripple.org/login</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://revenueripple.org/register</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://revenueripple.org/privacy-policy</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://revenueripple.org/data-deletion</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://revenueripple.org/book-giveaway</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://revenueripple.org/survival-playbook</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://revenueripple.org/DMD</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://revenueripple.org/dfy-funnel-consultation</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://revenueripple.org/affiliate-login</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/affiliate/sign-up</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://revenueripple.org/special</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://revenueripple.org/membership-variation-1</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/membership-variation-2</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/membership-variation-3</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/dmd-variation-1</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/dmd-variation-2</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://revenueripple.org/dmd-variation-3</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+</urlset>
