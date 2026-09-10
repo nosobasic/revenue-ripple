@@ -654,8 +654,6 @@ const buttonVariants = {
 
 export default function Home() {
   const [showAllTestimonials, setShowAllTestimonials] = useState(false);
-  const [showExitIntent, setShowExitIntent] = useState(false);
-  const [exitIntentShown, setExitIntentShown] = useState(false);
   const [recentActivity] = useState([
     "Sarah from NYC just joined",
     "Mike completed AI Essentials course", 
@@ -689,21 +687,11 @@ export default function Home() {
       setIsMobile(window.innerWidth <= 768);
     };
     
-    // Exit intent detection
-    const handleMouseLeave = (e) => {
-      if (e.clientY <= 0 && !exitIntentShown && !user) {
-        setShowExitIntent(true);
-        setExitIntentShown(true);
-      }
-    };
-    
     window.addEventListener('resize', handleResize);
-    document.addEventListener('mouseleave', handleMouseLeave);
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [exitIntentShown, user]);
+  }, []);
 
   return (
     <div className="home">
@@ -2741,156 +2729,6 @@ export default function Home() {
       </AnimatePresence>
         </div>
       )}
-
-      {/* Exit Intent Popup */}
-      <AnimatePresence>
-        {showExitIntent && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-              right: 0,
-              bottom: 0,
-          background: 'rgba(0,0,0,0.7)',
-              backdropFilter: 'blur(4px)',
-              zIndex: 2000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-              padding: '1rem'
-        }}
-            onClick={() => setShowExitIntent(false)}
-        >
-            <motion.div
-              initial={{ scale: 0.8, y: 50 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.8, y: 50 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-            style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 100%)',
-                backdropFilter: 'blur(20px)',
-                borderRadius: '20px',
-                padding: '2rem',
-                maxWidth: '500px',
-                width: '100%',
-                textAlign: 'center',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                position: 'relative'
-            }}
-          >
-            <button
-                onClick={() => setShowExitIntent(false)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(0,0,0,0.05)',
-                border: 'none',
-                borderRadius: '50%',
-                width: '32px',
-                height: '32px',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                color: '#4b5563',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s'
-              }}
-              aria-label="Close"
-            >
-              ×
-            </button>
-              {/* Book Image */}
-              <div style={{ marginBottom: '1rem' }}>
-                <img 
-                  src="/assets/images/images/money-models.jpeg" 
-                  alt="$100M Money Models by Alex Hormozi" 
-                  style={{
-                    width: '120px',
-                    height: '160px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                    margin: '0 auto'
-                  }}
-                  onError={(e) => {
-                    e.target.src = "/assets/images/images/money-book.jpeg";
-                  }}
-                />
-              </div>
-              
-              <h3 style={{ 
-                fontSize: '1.75rem', 
-                marginBottom: '0.75rem', 
-                color: '#1f2937',
-                fontWeight: 700,
-                lineHeight: '1.2'
-              }}>
-                Wait! Get Alex Hormozi's $100M Money Models FREE
-              </h3>
-              <p style={{ 
-                color: '#6b7280', 
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem',
-                lineHeight: '1.5',
-                fontWeight: 600
-              }}>
-                Limited to 198 copies - You just cover shipping
-              </p>
-              <p style={{ 
-                color: '#6b7280', 
-                marginBottom: '1.5rem',
-                fontSize: '0.875rem',
-                lineHeight: '1.5'
-              }}>
-                Learn the exact money models used to build billion-dollar businesses
-              </p>
-              <Link 
-                to="/book-giveaway?utm_source=exit_intent&utm_medium=popup&utm_campaign=book_giveaway"
-                className="cta-button"
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  marginBottom: '0.5rem',
-                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                  color: 'white',
-                  padding: '1rem',
-                  borderRadius: '12px',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  fontSize: '1rem',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
-                }}
-                onClick={() => setShowExitIntent(false)}
-              >
-                <FaRocket style={{ marginRight: '0.5rem', display: 'inline' }} />
-                Claim My Free Book
-              </Link>
-              <button
-                onClick={() => setShowExitIntent(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#6b7280',
-                  fontSize: '0.875rem',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                  padding: '0.5rem'
-                }}
-              >
-                No thanks, I'll pass
-              </button>
-          </motion.div>
-        </motion.div>
-        )}
-      </AnimatePresence>
 
     </div>
   );

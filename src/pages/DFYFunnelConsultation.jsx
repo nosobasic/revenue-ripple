@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FOUNDERS_ANNUAL_CONFIG } from '../config/constants';
+import VideoPlayer from '../components/VideoPlayer';
 
 const DFYFunnelConsultation = () => {
   const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaO8invI2lpY5BCpQWA2d4C8UhXLihhM58VVlgCSFPXjxO2uoBGZLdohjHbHvBjOoU4g/exec';
@@ -316,13 +317,9 @@ const DFYFunnelConsultation = () => {
           {/* Quick Intro Video Section */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">Why This Works</h2>
-            <div className="relative w-full rounded-xl overflow-hidden mb-6" style={{ paddingTop: "56.25%" }}>
-              <iframe
-                src="https://player.vimeo.com/video/1131714866?title=0&byline=0&portrait=0&badge=0&autopause=0"
-                className="absolute top-0 left-0 w-full h-full"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                allowFullScreen
+            <div className="mb-6">
+              <VideoPlayer
+                video={{ cdnPath: 'marketing/dfy-funnel-offer/dfy-funnel-consultation.mp4' }}
                 title="Why This Works"
               />
             </div>

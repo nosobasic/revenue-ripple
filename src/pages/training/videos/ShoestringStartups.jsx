@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../../components/Navbar';
+import VideoPlayer from '../../../components/VideoPlayer';
 import { courses } from '../../../data/courses';
 import '../../../pages.css';
 
@@ -39,7 +40,7 @@ const ShoestringStartups = () => {
             </div>
             <div className="section-content">
               {/* Intro Video Tab */}
-              {course?.introVideo?.vimeoId && (
+              {course?.introVideo && (
                 <div className="video-tab">
                   <button 
                     className="video-tab-header"
@@ -53,15 +54,10 @@ const ShoestringStartups = () => {
                   {expandedSections.intro && (
                     <div className="video-tab-content">
                       <div className="video-container">
-                        <iframe
-                          width="100%"
-                          height="600"
-                          src={`https://player.vimeo.com/video/${course.introVideo.vimeoId}`}
+                        <VideoPlayer
+                          video={course.introVideo}
                           title="Introduction"
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
+                        />
                       </div>
                       <div className="video-description">
                         <h3>About This Video</h3>
@@ -160,15 +156,10 @@ const ShoestringStartups = () => {
                   {expandedSections[`module-${idx}`] && (
                     <div className="video-tab-content">
                       <div className="video-container">
-                        <iframe
-                          width="100%"
-                          height="600"
-                          src={`https://player.vimeo.com/video/${mod.video.vimeoId}`}
+                        <VideoPlayer
+                          video={mod.video}
                           title={mod.title}
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
+                        />
                       </div>
                       <div className="video-description">
                         <h3>{mod.title}</h3>

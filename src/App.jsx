@@ -13,7 +13,6 @@ const ROUTE_SEO = {
   '/register': { title: 'Create Account', description: 'Create your Revenue Ripple account and get access to AI-powered marketing training, courses, and community.' },
   '/privacy-policy': { title: 'Privacy Policy', description: 'Revenue Ripple privacy policy. How we collect, use, and protect your data.' },
   '/data-deletion': { title: 'Data Deletion', description: 'Request deletion of your data from Revenue Ripple.' },
-  '/book-giveaway': { title: 'Free Book Giveaway', description: 'Get a free book from Revenue Ripple. Limited offer for entrepreneurs.' },
   '/survival-playbook': { title: 'The Survival Systems Playbook', description: 'Download the Survival Systems Playbook – practical strategies for entrepreneurs.' },
   '/DMD': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
   '/dfy-funnel-consultation': { title: 'DFY Funnel Consultation', description: 'Done-for-you funnel consultation. Get expert guidance on your marketing funnel.' },
@@ -28,7 +27,7 @@ const ROUTE_SEO = {
   '/dmd-variation-3': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
   '/special': { title: 'Reseller Offer', description: 'Revenue Ripple reseller opportunity. Grow your business with our training and community.' },
 };
-const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/book-giveaway-thank-you', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success'];
+const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success'];
 
 // Immediate load components (critical path)
 import Home from './pages/Home';
@@ -66,8 +65,6 @@ const SpecialInvite = lazy(() => import('./pages/SpecialInvite'));
 const ResellerCheckout = lazy(() => import('./pages/ResellerCheckout'));
 const ResellerTrial = lazy(() => import('./pages/ResellerTrial'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-const BookGiveaway = lazy(() => import('./pages/BookGiveaway'));
-const BookGiveawayThankYou = lazy(() => import('./pages/BookGiveawayThankYou'));
 const SurvivalPlaybook = lazy(() => import('./pages/SurvivalPlaybook'));
 const ThankYouSurvivalPlaybook = lazy(() => import('./pages/ThankYouSurvivalPlaybook'));
 const ProResellerSuccess = lazy(() => import('./pages/ProResellerSuccess'));
@@ -294,10 +291,6 @@ const App = () => {
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
         <Route path="/command-center" element={<CommandCenter />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
-        {/* Book Giveaway Routes */}
-        <Route path="/book-giveaway" element={<BookGiveaway />} />
-        <Route path="/book-giveaway-thank-you" element={<BookGiveawayThankYou />} />
         
         {/* Survival Playbook Routes */}
         <Route path="/survival-playbook" element={<SurvivalPlaybook />} />

@@ -30,6 +30,32 @@ CloudFront is **referer-locked** to `revenueripple.org`. Playback works on the l
 
 **Note:** `ads` and `landing-pages` have empty prefixes in S3 — those courses keep Vimeo-only playback until files are uploaded and normalized.
 
+### Marketing / thank-you drop-ins
+
+Stable object keys (upload when ready; the app already points here):
+
+| Page | Object key |
+| --- | --- |
+| Membership Mastery thank-you | `marketing/thank-you/membership-mastery.mp4` |
+| DMD thank-you | `marketing/thank-you/dmd.mp4` |
+| DFY Funnel Consultation | `marketing/dfy-funnel-offer/dfy-funnel-consultation.mp4` |
+
+```bash
+aws s3 cp ./membership-mastery.mp4 \
+  s3://revenue-ripple-prod-videos-359143808201/marketing/thank-you/membership-mastery.mp4 \
+  --region us-east-1
+
+aws s3 cp ./dmd.mp4 \
+  s3://revenue-ripple-prod-videos-359143808201/marketing/thank-you/dmd.mp4 \
+  --region us-east-1
+
+aws s3 cp ./dfy.mp4 \
+  s3://revenue-ripple-prod-videos-359143808201/marketing/dfy-funnel-offer/dfy-funnel-consultation.mp4 \
+  --region us-east-1
+```
+
+Terraform prefix markers (including `marketing/thank-you/` and `marketing/dfy-funnel-offer/`) live in `terraform-practice/stacks/revenue-ripple/prod/prefixes.tf`.
+
 ### Normalize / rename uploads
 
 After dumping Synthesia-style filenames into the bucket:

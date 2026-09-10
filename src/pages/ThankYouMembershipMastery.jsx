@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import GuaranteeBlock from '../components/GuaranteeBlock';
 import TrustBadges from '../components/TrustBadges';
 import FAQAccordion from '../components/FAQAccordion';
+import VideoPlayer from '../components/VideoPlayer';
 
 const ThankYouMembershipMastery = () => {
   const [submissionData, setSubmissionData] = useState(null);
@@ -87,16 +88,10 @@ const ThankYouMembershipMastery = () => {
             <p className="text-gray-600 mb-4">
               Here is how to get the most value from your membership guide and the next step when you are ready.
             </p>
-            <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingTop: "56.25%" }}>
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src="https://player.vimeo.com/video/1130965044?title=0&byline=0&portrait=0"
-                title="Welcome"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
+            <VideoPlayer
+              video={{ cdnPath: 'marketing/thank-you/membership-mastery.mp4' }}
+              title="Welcome"
+            />
           </div>
 
           {/* Guide Delivery Info */}
