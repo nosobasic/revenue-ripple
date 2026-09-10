@@ -2,12 +2,14 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 const AdminEngagementDashboard = lazy(() => import('./admin/EngagementDashboard'));
+const AdminContentEngine = lazy(() => import('../components/admin/ContentEngine'));
 import {
   RiDashboardLine,
   RiUserLine,
   RiMoneyDollarCircleLine,
   RiFileTextLine,
   RiBarChartLine,
+  RiMovie2Line,
   RiUserAddLine,
   RiSearchLine,
   RiFilterLine,
@@ -2068,6 +2070,13 @@ const Admin = () => {
             Content
           </Link>
           <Link 
+            to="/admin/content-engine" 
+            className={`admin-nav-item ${location.pathname === '/admin/content-engine' ? 'active' : ''}`}
+          >
+            <RiMovie2Line size={20} />
+            Content Engine
+          </Link>
+          <Link 
             to="/admin/analytics" 
             className={`admin-nav-item ${location.pathname === '/admin/analytics' ? 'active' : ''}`}
           >
@@ -2156,6 +2165,14 @@ const Admin = () => {
           } />
           <Route path="commissions" element={<Commissions />} />
           <Route path="content" element={<Content />} />
+          <Route
+            path="content-engine"
+            element={
+              <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+                <AdminContentEngine />
+              </Suspense>
+            }
+          />
           <Route path="analytics" element={<Analytics />} />
           <Route path="engagement" element={
             <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>

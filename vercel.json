@@ -20,6 +20,6 @@
   "rewrites": [
     { "source": "/dlds/MembershipMastery.pdf", "destination": "/assets/downloads/MembershipMastery.pdf" },
     { "source": "/dlds/dmd", "destination": "/assets/downloads/digital-marketing.pdf" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 } 

@@ -23,6 +23,10 @@ export const getApiBase = () => {
   return import.meta.env.VITE_API_BASE_URL || 'https://revenue-ripple.onrender.com';
 };
 
+/** CloudFront distribution for course MP4s (S3 origin, referer-locked to revenueripple.org) */
+export const VIDEO_CDN_BASE_URL =
+  import.meta.env.VITE_VIDEO_CDN_BASE_URL || 'https://d3klssyvhh70us.cloudfront.net';
+
 export const USE_PROXY = import.meta.env.VITE_USE_PROXY === 'true';
 
 export const API_ENDPOINTS = {

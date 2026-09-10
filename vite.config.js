@@ -4,6 +4,77 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+function contentEngineDevApi() {
+  const routes = {
+    '/api/content/status': './api/content/status.js',
+    '/api/content/analyze-gaps': './api/content/analyze-gaps.js',
+    '/api/content/generate-script': './api/content/generate-script.js',
+  };
+
+  return {
+    name: 'content-engine-dev-api',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = req.url?.split('?')[0];
+        const handlerPath = routes[pathname];
+        if (!handlerPath) return next();
+
+        const { default: handler } = await import(handlerPath);
+
+        let body = '';
+        if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+          body = await new Promise((resolve, reject) => {
+            let data = '';
+            req.on('data', (chunk) => {
+              data += chunk;
+            });
+            req.on('end', () => resolve(data));
+            req.on('error', reject);
+          });
+        }
+
+        let parsedBody;
+        if (body) {
+          try {
+            parsedBody = JSON.parse(body);
+          } catch {
+            parsedBody = undefined;
+          }
+        }
+
+        const reqMock = {
+          method: req.method,
+          query: {},
+          body: parsedBody,
+          on: req.on.bind(req),
+        };
+
+        const resMock = {
+          statusCode: 200,
+          status(code) {
+            this.statusCode = code;
+            return this;
+          },
+          setHeader() {},
+          json(payload) {
+            res.statusCode = this.statusCode || 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(payload));
+          },
+        };
+
+        try {
+          await handler(reqMock, resMock);
+        } catch (err) {
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+    },
+  };
+}
+
 function synthesiaDevApi() {
   return {
     name: "synthesia-dev-api",
@@ -53,7 +124,7 @@ function synthesiaDevApi() {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), synthesiaDevApi()],
+  plugins: [react(), contentEngineDevApi(), synthesiaDevApi()],
   build: {
     rollupOptions: {
       output: {

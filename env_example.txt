@@ -17,6 +17,11 @@ GETRESPONSE_CAMPAIGN_ID=your-campaign-id
 # OpenAI Configuration
 OPENAI_API_KEY=sk-...
 
+# Content Engine (Vercel API routes + n8n)
+SUPABASE_SERVICE_KEY=your-service-role-key
+ANTHROPIC_API_KEY=sk-ant-...
+SYNTHESIA_API_KEY=your-synthesia-api-key
+
 # JWT Configuration
 JWT_SECRET=your-jwt-secret-key-here
 
@@ -26,3 +31,11 @@ FLASK_DEBUG=True
 
 # Frontend Feature Flags
 VITE_USE_FLASK_INSIGHTS=true
+
+# Course video CDN (CloudFront → private S3). Set on Vercel Production.
+# Playback is referer-locked to revenueripple.org (localhost / *.vercel.app get 403).
+VITE_VIDEO_CDN_BASE_URL=https://d3klssyvhh70us.cloudfront.net
+
+# Ops (normalize script only — not required by the Vite app)
+# S3_VIDEO_BUCKET=revenue-ripple-prod-videos-359143808201
+# AWS_DEFAULT_REGION=us-east-1

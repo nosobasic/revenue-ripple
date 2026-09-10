@@ -13,7 +13,9 @@
     "type-check": "tsc --noEmit",
     "bundle-analyzer": "npx vite-bundle-analyzer dist",
     "diag:options": "node scripts/diag-options.js",
-    "diag:env": "node scripts/print-env.js"
+    "diag:env": "node scripts/print-env.js",
+    "normalize:videos": "node scripts/normalize-course-videos.mjs",
+    "normalize:videos:apply": "node scripts/normalize-course-videos.mjs --apply"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -29,6 +31,7 @@
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.513.0",
     "moment": "^2.30.1",
+    "openai": "^6.39.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
