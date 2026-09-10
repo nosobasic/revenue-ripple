@@ -1,22 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { resolveVideoSrc } from '../utils/videoCdn';
 import ConfettiAnimation from './ConfettiAnimation';
 
 const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, buttonLoading }) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [cdnFailed, setCdnFailed] = useState(false);
+
+  useEffect(() => {
+    setCdnFailed(false);
+  }, [video?.cdnPath, video?.vimeoId, video?.url, isOpen]);
 
   if (!isOpen) return null;
 
-  let embedUrl = '';
-  if (video?.vimeoId) {
-    embedUrl = `https://player.vimeo.com/video/${video.vimeoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
-  } else if (video?.url) {
-    embedUrl = video.url;
+  const preferred = resolveVideoSrc(video);
+  const useCdn = preferred?.type === 'cdn' && !cdnFailed;
+
+  let iframeSrc = null;
+  if (!useCdn) {
+    if (video?.vimeoId) {
+      iframeSrc = `https://player.vimeo.com/video/${video.vimeoId}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
+    } else if (preferred?.type === 'iframe') {
+      iframeSrc = preferred.src;
+    } else if (video?.url && !/\.mp4(\?|$)/i.test(video.url)) {
+      iframeSrc = video.url;
+    }
   }
 
   const handleMarkComplete = async () => {
     if (onMarkComplete) {
       await onMarkComplete();
-      // Trigger confetti animation
       setShowConfetti(true);
     }
   };
@@ -38,12 +50,11 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
       justifyContent: 'center',
       zIndex: 1000
     }}>
-      {/* Confetti Animation */}
-      <ConfettiAnimation 
-        isActive={showConfetti} 
+      <ConfettiAnimation
+        isActive={showConfetti}
         onComplete={handleConfettiComplete}
       />
-      
+
       <div style={{
         backgroundColor: 'white',
         padding: '2rem',
@@ -70,23 +81,59 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
         <h2 style={{ marginTop: 0, marginBottom: '1rem' }}>{title}</h2>
         <div style={{
           position: 'relative',
-          paddingBottom: '56.25%', // 16:9 aspect ratio
+          paddingBottom: '56.25%',
           height: 0,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          background: '#000'
         }}>
-          <iframe
-            src={embedUrl}
-            style={{
+          {useCdn ? (
+            <video
+              src={preferred.src}
+              controls
+              playsInline
+              preload="metadata"
+              title={title}
+              onError={() => setCdnFailed(true)}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                objectFit: 'contain',
+                background: '#000'
+              }}
+            >
+              Your browser does not support the video tag.
+            </video>
+          ) : iframeSrc ? (
+            <iframe
+              src={iframeSrc}
+              title={title}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                border: 'none'
+              }}
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+              allowFullScreen
+            />
+          ) : (
+            <div style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              border: 'none'
-            }}
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-            allowFullScreen
-          />
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#9ca3af'
+            }}>
+              Video unavailable
+            </div>
+          )}
         </div>
         <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
           <button
@@ -111,4 +158,4 @@ const VideoModal = ({ isOpen, onClose, video, title, onMarkComplete, completed, 
   );
 };
 
-export default VideoModal; 
+export default VideoModal;
