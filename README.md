@@ -1,43 +1,51 @@
 # Revenue Ripple
 
-## Backend CORS and Health
+Marketing membership platform: React (Vite) frontend, Flask API, Supabase, Stripe/PayPal, and email sequences.
 
-- The backend runs on Render (Flask). CORS is configured via `ALLOWED_ORIGINS`.
-- Preflight (OPTIONS) is handled globally and returns 204 with proper headers.
-- Health endpoints:
-  - `/health` → `{ ok: true }`
-  - `/cors-test` → echoes method and headers; supports OPTIONS.
+## Layout
 
-### Configure allowed origins
-Set `ALLOWED_ORIGINS` in Render (comma-separated):
 ```
-https://*.vercel.app,https://revenue-ripple.vercel.app,https://revenueripple.org,https://www.revenueripple.org,http://localhost:3000,http://localhost:5173
-```
-
-## Frontend API base and proxy
-
-<<<<<<< Current (Your changes)
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-- Use `VITE_API_BASE_URL` or `NEXT_PUBLIC_API_URL` to override API base.
-- Fallbacks: prod → `https://revenue-ripple.onrender.com`, dev → `http://localhost:5001`.
-- Toggle proxy with `VITE_USE_PROXY` or `NEXT_PUBLIC_USE_PROXY` (if a proxy route is added).
-- Ensure the Ripple widget is enabled: `NEXT_PUBLIC_ENABLE_RIPPLE=1`.
-
-## Diagnostics
-
-- Probe CORS and endpoints:
-```
-npm run diag:options
-# Env:
-API_URL=https://revenue-ripple.onrender.com TEST_ORIGIN=https://your-branch-yourapp.vercel.app npm run diag:options
-```
-- Print env flags at runtime:
-```
-npm run diag:env
+src/            React app (pages, components, services)
+server.py       Flask entrypoint (Render: gunicorn server:app)
+server/         Engagement and insights routes
+email_crm/      SES/GetResponse enrollment and send
+insights/       AI insights API module
+api/            Vercel serverless routes (content engine)
+infra/email/    Terraform for SES, bounce handling, due-worker
+supabase/migrations/   SQL migrations
+scripts/        Email import, video normalize, diagnostics
+tests/          Python tests
+docs/           Product and ops notes
 ```
 
-## Tests/Health Checks
+## Local development
 
-- Add CI/deploy step to call `/health` and fail if non-200.
->>>>>>> Incoming (Background Agent changes)
+```bash
+# Frontend (Vite, typically http://localhost:5173)
+npm install
+npm run dev
+
+# Backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python server.py
+```
+
+Copy `env_example.txt` to `.env` and fill in values. Frontend vars need the `VITE_` prefix.
+
+## Deploy
+
+- **Frontend:** Vercel (`vercel.json`)
+- **API:** Render (`render.yaml` → `gunicorn server:app`)
+- **Email infra:** `infra/email/` (see `infra/email/README.md` and `infra/email/CUTOVER.md`)
+
+Health: `GET /health` and `GET /cors-test`.
+
+Set `ALLOWED_ORIGINS` on Render (comma-separated). Override the API base with `VITE_API_BASE_URL`.
+
+## Tests
+
+```bash
+python -m pytest tests/
+```

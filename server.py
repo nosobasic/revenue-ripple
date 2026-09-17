@@ -17,6 +17,8 @@ from supabase import create_client, Client
 from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
+from email_crm.routes import email_bp
+from email_crm.deliver import deliver_lead, deliver_paid
 
 # Import engagement_bp from server package to avoid conflict with this server.py module
 # Use importlib to explicitly load from the server package directory
@@ -66,6 +68,8 @@ else:
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
+app.supabase = supabase
+app.register_blueprint(email_bp)
 
 @app.route('/')
 def serve_index():
@@ -847,7 +851,7 @@ def update_webhook_processed(customer_email, event_type):
     except Exception as e:
         print(f"❌ Failed to mark webhook as processed: {e}")
 
-def add_contact_to_getresponse(email, tag):
+def _post_getresponse_paid(email, tag):
     api_key = os.getenv("GET_RESPONSE_TRIPWIRE_KEY")
     
     # Use Founders List for founders_annual purchases, otherwise use default campaign
@@ -880,6 +884,17 @@ def add_contact_to_getresponse(email, tag):
             print(f"❌ GetResponse error {response.status_code}: {response.text}")
     except Exception as e:
         print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+
+
+def add_contact_to_getresponse(email, tag):
+    name = "Founder Member" if tag == "founders_annual" else f"{tag.capitalize()} Buyer"
+    deliver_paid(
+        supabase=supabase,
+        email=email,
+        tag=tag,
+        name=name,
+        send_getresponse=lambda: _post_getresponse_paid(email, tag),
+    )
 
 
 # Log tripwire purchase to Supabase
@@ -1066,8 +1081,8 @@ def send_founders_welcome_emails(email):
             }
         }).eq("email", email).execute()
         
-        # Note: Actual email sending will be handled by GetResponse automation
-        # or you can integrate with an email service here
+        # Note: Founders sequence is SQS FIFO (0/5 min) then due-worker when EMAIL_MODE=aws and EMAIL_SEND_ENABLED=true.
+        # GetResponse still sends while EMAIL_MODE is getresponse/shadow/holdout (non-holdout).
         print(f"✅ Triggered founder welcome emails for {email}")
         print(f"   - Welcome email (immediate)")
         print(f"   - Discord invite (5 min)")
@@ -1348,8 +1363,13 @@ def book_giveaway_submission():
             except Exception as db_error:
                 print(f"Warning: Could not check for duplicates: {db_error}")
         
-        # Add to GetResponse
-        add_book_giveaway_to_getresponse(email, name)
+        deliver_lead(
+            supabase=supabase,
+            email=email,
+            name=name,
+            funnel="book-giveaway",
+            send_getresponse=lambda: add_book_giveaway_to_getresponse(email, name),
+        )
         
         # Log submission to database
         if supabase:
@@ -1527,8 +1547,15 @@ def survival_playbook_submission():
         if not re.match(email_pattern, email):
             return jsonify({"error": "Please enter a valid email address"}), 400
         
-        # Add to GetResponse with survival-playbook tag
-        add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content)
+        deliver_lead(
+            supabase=supabase,
+            email=email,
+            name=name,
+            funnel=source or "survival-playbook",
+            send_getresponse=lambda: add_survival_playbook_to_getresponse(
+                email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content
+            ),
+        )
         
         # Log submission to database if available
         if supabase:
@@ -1722,8 +1749,16 @@ def membership_mastery_submission():
         if not re.match(email_pattern, email):
             return jsonify({"error": "Please enter a valid email address"}), 400
         
-        # Add to GetResponse with simplified tracking
-        add_membership_mastery_to_getresponse(email, name, phone, source, 'direct', 'organic', 'membership-mastery', '', '')
+        deliver_lead(
+            supabase=supabase,
+            email=email,
+            name=name,
+            phone=phone,
+            funnel=source or "membership-mastery",
+            send_getresponse=lambda: add_membership_mastery_to_getresponse(
+                email, name, phone, source, "direct", "organic", "membership-mastery", "", ""
+            ),
+        )
         
         # Send Lead event to Facebook Conversions API
         user_data = {
@@ -1857,8 +1892,16 @@ def digital_marketing_domination_submission():
         if not re.match(email_pattern, email):
             return jsonify({"error": "Please enter a valid email address"}), 400
         
-        # Add to GetResponse with simplified tracking
-        add_digital_marketing_domination_to_getresponse(email, name, phone, source, 'direct', 'organic', 'digital-marketing-domination', '', '')
+        deliver_lead(
+            supabase=supabase,
+            email=email,
+            name=name,
+            phone=phone,
+            funnel=source or "digital-marketing-domination",
+            send_getresponse=lambda: add_digital_marketing_domination_to_getresponse(
+                email, name, phone, source, "direct", "organic", "digital-marketing-domination", "", ""
+            ),
+        )
         
         # Send Lead event to Facebook Conversions API
         user_data = {

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { COMPANY_MAILING_ADDRESS, COMPANY_SUPPORT_EMAIL } from '../config/constants';
 
 const Footer = () => {
   return (
@@ -9,11 +10,18 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold mb-4">Revenue Ripple</h3>
             <p className="text-gray-300 mb-4">
-              Empowering entrepreneurs with proven marketing strategies, AI-powered tools, 
-              and comprehensive training to build sustainable online businesses.
+              Educational marketing training: a short welcome series and a 26-lesson course
+              for people who opt in on this site.
+            </p>
+            <p className="text-gray-400 text-sm mb-4">
+              {COMPANY_MAILING_ADDRESS}
+              <br />
+              <a href={`mailto:${COMPANY_SUPPORT_EMAIL}`} className="hover:text-white transition-colors">
+                {COMPANY_SUPPORT_EMAIL}
+              </a>
             </p>
             <div className="flex space-x-4">
-              <a href="mailto:support@revenueripple.org" className="text-gray-300 hover:text-white transition-colors">
+              <a href={`mailto:${COMPANY_SUPPORT_EMAIL}`} className="text-gray-300 hover:text-white transition-colors">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
@@ -27,9 +35,8 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/courses" className="text-gray-300 hover:text-white transition-colors">Courses</Link></li>
-              <li><Link to="/reseller" className="text-gray-300 hover:text-white transition-colors">Reseller Program</Link></li>
+              <li><Link to="/special" className="text-gray-300 hover:text-white transition-colors">Reseller Program</Link></li>
               <li><Link to="/dfy-funnel-consultation" className="text-gray-300 hover:text-white transition-colors">DFY Consultation</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
 
@@ -41,6 +48,7 @@ const Footer = () => {
               <li><Link to="/terms-of-service" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
               <li><Link to="/cookie-policy" className="text-gray-300 hover:text-white transition-colors">Cookie Policy</Link></li>
               <li><Link to="/refund-policy" className="text-gray-300 hover:text-white transition-colors">Refund Policy</Link></li>
+              <li><Link to="/unsubscribe" className="text-gray-300 hover:text-white transition-colors">Unsubscribe</Link></li>
             </ul>
           </div>
         </div>

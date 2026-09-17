@@ -1,5 +1,3 @@
-import Footer from '../components/Footer';
-
 const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -101,7 +99,6 @@ const TermsOfService = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

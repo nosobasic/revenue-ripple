@@ -3,6 +3,7 @@ import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 const AdminEngagementDashboard = lazy(() => import('./admin/EngagementDashboard'));
 const AdminContentEngine = lazy(() => import('../components/admin/ContentEngine'));
+const AdminEmailEnrollments = lazy(() => import('./admin/EmailEnrollments'));
 import {
   RiDashboardLine,
   RiUserLine,
@@ -23,7 +24,6 @@ import './admin.css';
 import { useAuth } from '../context/AuthContext';
 import { courses } from '../data/courses';
 import { getApiBase } from '../config/constants';
-// import { KPITrackerAgent } from '../components/KPITrackerAgent';
 
 // Simplified KPI Dashboard Component
 const KPITracker = () => {
@@ -2091,6 +2091,13 @@ const Admin = () => {
             Engagement
           </Link>
           <Link 
+            to="/admin/email" 
+            className={`admin-nav-item ${location.pathname === '/admin/email' ? 'active' : ''}`}
+          >
+            <RiFileTextLine size={20} />
+            Email
+          </Link>
+          <Link 
             to="/admin/widgets" 
             className={`admin-nav-item ${location.pathname === '/admin/widgets' ? 'active' : ''}`}
           >
@@ -2177,6 +2184,11 @@ const Admin = () => {
           <Route path="engagement" element={
             <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
               <AdminEngagementDashboard />
+            </Suspense>
+          } />
+          <Route path="email" element={
+            <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
+              <AdminEmailEnrollments />
             </Suspense>
           } />
           <Route

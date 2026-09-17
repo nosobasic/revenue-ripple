@@ -1,6 +1,15 @@
 # Revenue Ripple Environment Variables Example
 # Copy this to .env and fill in your actual values
 
+# Backend CORS
+ALLOWED_ORIGINS=https://*.vercel.app,https://revenue-ripple.vercel.app,https://revenueripple.org,https://www.revenueripple.org,http://localhost:3000,http://localhost:5173
+
+# Frontend
+VITE_API_BASE_URL=https://revenue-ripple.onrender.com
+VITE_USE_PROXY=false
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+
 # Supabase Configuration
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
@@ -10,9 +19,31 @@ SUPABASE_DB_URL=postgresql://postgres:[password]@db.[project-ref].supabase.co:54
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
-# GetResponse Configuration
+# GetResponse Configuration (used until EMAIL_MODE=aws)
 GETRESPONSE_API_KEY=your-getresponse-api-key
 GETRESPONSE_CAMPAIGN_ID=your-campaign-id
+GET_RESPONSE_TRIPWIRE_KEY=your-tripwire-getresponse-api-key
+GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID=your-tripwire-campaign-id
+
+# Email CRM / SES (see infra/email/CUTOVER.md)
+# EMAIL_MODE=getresponse|shadow|holdout|aws
+EMAIL_MODE=aws
+EMAIL_WRITE_CRM=true
+EMAIL_SEND_ENABLED=false
+EMAIL_DAILY_SEND_CAP=50
+# EMAIL_HOLDOUT_FUNNELS=dmd-variation-1,digital-marketing-domination
+# EMAIL_FOUNDERS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/359143808201/revenue-ripple-prod-email-founders.fifo
+SES_FROM=Donte Willis <hello@revenueripple.org>
+SES_CONFIGURATION_SET=revenue-ripple-prod-email-cfg
+APP_BASE_URL=https://revenueripple.org
+EMAIL_PHYSICAL_ADDRESS=Revenue Ripple, Attn: Donte Willis
+# Vercel: same string as EMAIL_PHYSICAL_ADDRESS (shown in the site footer)
+VITE_MAILING_ADDRESS=Revenue Ripple, Attn: Donte Willis
+AWS_DEFAULT_REGION=us-east-1
+# AWS_ACCESS_KEY_ID=
+# AWS_SECRET_ACCESS_KEY=
+# After AWS approves production access, set this before CSV import/activate:
+# SES_PRODUCTION_CONFIRMED=true
 
 # OpenAI Configuration
 OPENAI_API_KEY=sk-...

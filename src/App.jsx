@@ -12,7 +12,11 @@ const ROUTE_SEO = {
   '/login': { title: 'Login', description: 'Log in to your Revenue Ripple account to access your dashboard, courses, and training.' },
   '/register': { title: 'Create Account', description: 'Create your Revenue Ripple account and get access to AI-powered marketing training, courses, and community.' },
   '/privacy-policy': { title: 'Privacy Policy', description: 'Revenue Ripple privacy policy. How we collect, use, and protect your data.' },
+  '/terms-of-service': { title: 'Terms of Service', description: 'Revenue Ripple terms of service.' },
+  '/cookie-policy': { title: 'Cookie Policy', description: 'Revenue Ripple cookie policy.' },
+  '/refund-policy': { title: 'Refund Policy', description: 'Revenue Ripple refund policy.' },
   '/data-deletion': { title: 'Data Deletion', description: 'Request deletion of your data from Revenue Ripple.' },
+  '/unsubscribe': { title: 'Unsubscribe', description: 'Unsubscribe from Revenue Ripple marketing emails.' },
   '/survival-playbook': { title: 'The Survival Systems Playbook', description: 'Download the Survival Systems Playbook – practical strategies for entrepreneurs.' },
   '/DMD': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
   '/dfy-funnel-consultation': { title: 'DFY Funnel Consultation', description: 'Done-for-you funnel consultation. Get expert guidance on your marketing funnel.' },
@@ -27,7 +31,7 @@ const ROUTE_SEO = {
   '/dmd-variation-3': { title: 'Digital Marketing Domination', description: 'Digital Marketing Domination – master digital marketing with Revenue Ripple.' },
   '/special': { title: 'Reseller Offer', description: 'Revenue Ripple reseller opportunity. Grow your business with our training and community.' },
 };
-const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success'];
+const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success', '/unsubscribe'];
 
 // Immediate load components (critical path)
 import Home from './pages/Home';
@@ -35,8 +39,11 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AuthCallback from './pages/AuthCallback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
+import RefundPolicy from './pages/RefundPolicy';
 import DataDeletion from './pages/DataDeletion';
-import OAuthTest from './pages/OAuthTest';
+import Unsubscribe from './pages/Unsubscribe';
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));
@@ -197,11 +204,14 @@ const App = () => {
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/oauth-test" element={<OAuthTest />} />
         
         {/* Public legal pages */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/data-deletion" element={<DataDeletion />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
 
         {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
         <Route path="/checkout" element={<Checkout />} />
@@ -211,6 +221,7 @@ const App = () => {
         
         {/* Public landing pages for new customer acquisition */}
         <Route path="/special" element={<Reseller />} />
+        <Route path="/reseller" element={<Navigate to="/special" replace />} />
         <Route path="/DMD" element={<DMDLanding />} />
         <Route path="/dfy-funnel-consultation" element={<DFYFunnelConsultation />} />
         
@@ -289,7 +300,6 @@ const App = () => {
         <Route path="/training/guides/understanding-relevance" element={<ProtectedRoute><UnderstandingRelevance /></ProtectedRoute>} />
         <Route path="/training/guides/writing-ad-copy" element={<ProtectedRoute><WritingAdCopy /></ProtectedRoute>} />
         <Route path="/training/guides/sales-copy" element={<ProtectedRoute><SalesCopy /></ProtectedRoute>} />
-        <Route path="/command-center" element={<CommandCenter />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         
         {/* Survival Playbook Routes */}

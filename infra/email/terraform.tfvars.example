@@ -1,0 +1,8 @@
+supabase_url            = "https://YOUR-PROJECT.supabase.co"
+supabase_service_role_key = "YOUR-SERVICE-ROLE-KEY"
+email_send_enabled      = false
+email_daily_send_cap    = 200
+region                  = "us-east-1"
+domain                  = "revenueripple.org"
+from_address            = "Donte Willis <donte@revenueripple.org>"
+app_base_url            = "https://revenueripple.org"

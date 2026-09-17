@@ -1,5 +1,3 @@
-import Footer from '../components/Footer';
-
 const RefundPolicy = () => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,7 +111,6 @@ const RefundPolicy = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

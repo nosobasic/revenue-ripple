@@ -39,3 +39,11 @@ override.tf.json
 *.tfvars
 !*.tfvars.example
 *.tfvars.json
+
+# GetResponse PII exports + terraform lambda zips
+exports/getresponse/
+infra/email/.build/*.zip
+
+# Local email copy (indoctrination series — do not push)
+email-content/
+

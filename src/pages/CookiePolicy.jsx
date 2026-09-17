@@ -1,5 +1,3 @@
-import Footer from '../components/Footer';
-
 const CookiePolicy = () => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -104,7 +102,6 @@ const CookiePolicy = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

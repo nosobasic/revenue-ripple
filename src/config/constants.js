@@ -29,6 +29,12 @@ export const VIDEO_CDN_BASE_URL =
 
 export const USE_PROXY = import.meta.env.VITE_USE_PROXY === 'true';
 
+/** CAN-SPAM postal address. Keep in sync with EMAIL_PHYSICAL_ADDRESS on Render. */
+export const COMPANY_MAILING_ADDRESS = (
+  import.meta.env.VITE_MAILING_ADDRESS || 'Revenue Ripple, Attn: Donte Willis'
+).trim();
+export const COMPANY_SUPPORT_EMAIL = 'hello@revenueripple.org';
+
 export const API_ENDPOINTS = {
   BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
   PAYMENT_INTENT: '/create-payment-intent',

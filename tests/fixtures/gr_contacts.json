@@ -1,0 +1,36 @@
+[
+  {
+    "email": "ada@example.com",
+    "name": "Ada Lovelace (Digital Marketing Domination)",
+    "dayOfCycle": "10",
+    "createdOn": "2026-01-01T00:00:00Z",
+    "contactId": "c1",
+    "campaign": { "campaignId": "50yn9" }
+  },
+  {
+    "email": "bo@example.com",
+    "name": "Bo (Membership Mastery)",
+    "dayOfCycle": "2",
+    "createdOn": "2026-09-08T00:00:00Z",
+    "contactId": "c2"
+  },
+  {
+    "email": "cy@example.com",
+    "name": "Cy (Survival Playbook)",
+    "dayOfCycle": "400",
+    "createdOn": "2024-01-01T00:00:00Z"
+  },
+  {
+    "email": "dee@example.com",
+    "name": "Dee (Book Giveaway)",
+    "dayOfCycle": "0",
+    "unsubscribed": true
+  },
+  {
+    "email": "ed@example.com",
+    "name": "Tripwire Buyer",
+    "tags": [{ "name": "tripwire" }],
+    "dayOfCycle": "1",
+    "createdOn": "2026-09-09T00:00:00Z"
+  }
+]

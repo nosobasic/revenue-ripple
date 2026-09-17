@@ -24,5 +24,31 @@ services:
         fromEnvVar: GET_RESPONSE_TRIPWIRE_KEY
       - key: GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID
         fromEnvVar: GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID
+      - key: EMAIL_MODE
+        fromEnvVar: EMAIL_MODE
+      - key: EMAIL_WRITE_CRM
+        fromEnvVar: EMAIL_WRITE_CRM
+      - key: EMAIL_SEND_ENABLED
+        fromEnvVar: EMAIL_SEND_ENABLED
+      - key: EMAIL_HOLDOUT_FUNNELS
+        fromEnvVar: EMAIL_HOLDOUT_FUNNELS
+      - key: EMAIL_FOUNDERS_QUEUE_URL
+        fromEnvVar: EMAIL_FOUNDERS_QUEUE_URL
+      - key: EMAIL_DAILY_SEND_CAP
+        fromEnvVar: EMAIL_DAILY_SEND_CAP
+      - key: EMAIL_PHYSICAL_ADDRESS
+        fromEnvVar: EMAIL_PHYSICAL_ADDRESS
+      - key: SES_FROM
+        fromEnvVar: SES_FROM
+      - key: SES_CONFIGURATION_SET
+        fromEnvVar: SES_CONFIGURATION_SET
+      - key: APP_BASE_URL
+        fromEnvVar: APP_BASE_URL
+      - key: AWS_DEFAULT_REGION
+        fromEnvVar: AWS_DEFAULT_REGION
+      - key: AWS_ACCESS_KEY_ID
+        fromEnvVar: AWS_ACCESS_KEY_ID
+      - key: AWS_SECRET_ACCESS_KEY
+        fromEnvVar: AWS_SECRET_ACCESS_KEY
       - key: OPENAI_API_KEY
         fromEnvVar: OPENAI_API_KEY

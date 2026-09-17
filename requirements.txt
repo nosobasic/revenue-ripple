@@ -1,4 +1,3 @@
-# requirements.txt
 Flask
 flask-cors
 python-dotenv
@@ -9,14 +8,4 @@ PyJWT
 gunicorn
 openai
 paypalrestsdk
-flask
-flask-cors
-gunicorn
-openai
-paypalrestsdk
-PyJWT
-python-dotenv
-requests
-stripe
-supabase
-openai
+boto3
