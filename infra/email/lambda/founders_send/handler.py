@@ -15,7 +15,7 @@ import boto3
 
 SUPABASE_URL = (os.environ.get("SUPABASE_URL") or "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or ""
-FROM_ADDR = os.environ.get("SES_FROM") or "Donte Willis <donte@revenueripple.org>"
+FROM_ADDR = os.environ.get("SES_FROM") or "Donte from RR <hello@revenueripple.org>"
 CONFIG_SET = os.environ.get("SES_CONFIGURATION_SET") or ""
 APP_BASE = (os.environ.get("APP_BASE_URL") or "https://revenueripple.org").rstrip("/")
 REGION = os.environ.get("AWS_DEFAULT_REGION") or "us-east-1"

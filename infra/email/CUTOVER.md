@@ -56,7 +56,7 @@ Thank you for reviewing case 178959060600794. I am requesting **production acces
 People type their name and email on our forms and consent to receive the free educational course. This is explicit single opt-in on our domain. We do not buy, scrape, or rent lists.
 
 **What we send**
-- Automated educational course delivery from `hello@revenueripple.org` on verified domain `revenueripple.org` (DKIM Success, custom MAIL FROM `mail.revenueripple.org` Success).
+- Automated educational course delivery from `Donte from RR <hello@revenueripple.org>` on verified domain `revenueripple.org` (DKIM Success, custom MAIL FROM `mail.revenueripple.org` Success).
 - A 9-email welcome series after opt-in, then a 26-lesson course at one lesson every two weeks.
 - Occasional product or account updates to the same opted-in list only.
 - Not cold outreach. Not purchased lists.

@@ -10,7 +10,7 @@ variable "domain" {
 
 variable "from_address" {
   type    = string
-  default = "Donte Willis <donte@revenueripple.org>"
+  default = "Donte from RR <hello@revenueripple.org>"
 }
 
 variable "app_base_url" {

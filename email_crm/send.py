@@ -68,7 +68,7 @@ def send_ses(*, to_email: str, subject: str, html: str, unsubscribe_url: str) ->
     import boto3
 
     client = boto3.client("ses", region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1"))
-    source = os.getenv("SES_FROM") or "Donte Willis <hello@revenueripple.org>"
+    source = os.getenv("SES_FROM") or "Donte from RR <hello@revenueripple.org>"
     config_set = os.getenv("SES_CONFIGURATION_SET")
     extra = {}
     if config_set:

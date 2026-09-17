@@ -67,7 +67,7 @@ def main() -> int:
         return 1
 
     os.environ["EMAIL_SEND_ENABLED"] = "true"
-    os.environ.setdefault("SES_FROM", "Donte Willis <hello@revenueripple.org>")
+    os.environ.setdefault("SES_FROM", "Donte from RR <hello@revenueripple.org>")
     os.environ.setdefault("SES_CONFIGURATION_SET", "revenue-ripple-prod-email-cfg")
     os.environ.setdefault("AWS_DEFAULT_REGION", "us-east-1")
     os.environ.setdefault("APP_BASE_URL", "https://revenueripple.org")
