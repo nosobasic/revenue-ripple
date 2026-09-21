@@ -190,7 +190,7 @@ export const courses = [
         title: 'Lead Magnets', 
         description: 'From PDFs to Premium Bundles',
         video: {
-          cdnPath: 'courses/lead-generation/module-1.mp4',
+          cdnPath: 'courses/lead-generation/module-2.mp4',
           vimeoId: '1088245085',
           duration: '5:10',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -201,7 +201,7 @@ export const courses = [
         title: 'Landing Pages', 
         description: 'Build landing pages that convert.',
         video: {
-          cdnPath: 'courses/lead-generation/module-2.mp4',
+          cdnPath: 'courses/lead-generation/module-1.mp4',
           vimeoId: '1088245079',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -284,7 +284,7 @@ export const courses = [
         title: 'Messenger Bots', 
         description: 'Automate conversations with Messenger bots.',
         video: {
-          cdnPath: 'courses/messenger-marketing/module-1.mp4',
+          cdnPath: 'courses/messenger-marketing/module-2.mp4',
           vimeoId: '1088833391',
           duration: '14:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -295,7 +295,7 @@ export const courses = [
         title: 'A Comprehensive Platform Overview', 
         description: 'How to use the platform to its full potential.',
         video: {
-          cdnPath: 'courses/messenger-marketing/module-2.mp4',
+          cdnPath: 'courses/messenger-marketing/module-1.mp4',
           vimeoId: '1088833414',
           duration: '16:40',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -331,7 +331,7 @@ export const courses = [
         title: 'Choose Wisely For Sucess', 
         description: 'How to choose the right platform for your business.',
         video: {
-          cdnPath: 'courses/newsfeed-ads/module-1.mp4',
+          cdnPath: 'courses/newsfeed-ads/module-4.mp4',
           vimeoId: '1088848188',
           duration: '13:25',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -342,7 +342,7 @@ export const courses = [
         title: 'Mastering Audience Targeting and Ad Placement', 
         description: 'How to target the right audience and place your ads for best results.',
         video: {
-          cdnPath: 'courses/newsfeed-ads/module-2.mp4',
+          cdnPath: 'courses/newsfeed-ads/module-1.mp4',
           vimeoId: '1088848176',
           duration: '15:50',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -353,7 +353,7 @@ export const courses = [
         title: 'Mastering Facebook Ads Budget',
         description: 'How to budget and scale your campaigns.',
         video: {
-          cdnPath: 'courses/newsfeed-ads/module-3.mp4',
+          cdnPath: 'courses/newsfeed-ads/module-2.mp4',
           vimeoId: '1088848160',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -364,7 +364,7 @@ export const courses = [
         title: 'From Carosel To Single Image',
         description: 'How to create a newsfeed ad for your business.',
         video: {
-          cdnPath: 'courses/newsfeed-ads/module-4.mp4',
+          cdnPath: 'courses/newsfeed-ads/module-3.mp4',
           vimeoId: '1088848149',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -389,7 +389,7 @@ export const courses = [
         title: 'Facebook Ad Campaigns A Step By Step Guide', 
         description: 'How to create a Facebook Ad Campaign.',
         video: {
-          cdnPath: 'courses/paid-traffic/module-1.mp4',
+          cdnPath: 'courses/paid-traffic/module-2.mp4',
           vimeoId: '1088882623',
           duration: '14:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -400,7 +400,7 @@ export const courses = [
         title: 'Google Search Ads A Step By Step Guide', 
         description: 'How to create a Google Search Ad Campaign.',
         video: {
-          cdnPath: 'courses/paid-traffic/module-2.mp4',
+          cdnPath: 'courses/paid-traffic/module-3.mp4',
           vimeoId: '1088882591',
           duration: '17:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -411,7 +411,7 @@ export const courses = [
         title: 'From Design to Google Display Campaign',
         description: 'How to create a Google Display Campaign.',
         video: {
-          cdnPath: 'courses/paid-traffic/module-3.mp4',
+          cdnPath: 'courses/paid-traffic/module-1.mp4',
           vimeoId: '1088882539',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -483,7 +483,7 @@ export const courses = [
         title: 'Choosing the Right Campaign Goals', 
         description: 'How to choose the right campaign goals for your business.',
         video: {
-          cdnPath: 'courses/search-ads/module-1.mp4',
+          cdnPath: 'courses/search-ads/module-2.mp4',
           vimeoId: '1089074806',
           duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -494,7 +494,7 @@ export const courses = [
         title: 'Campaign Setup Essentials', 
         description: 'How to set up your campaign for success.',
         video: {
-          cdnPath: 'courses/search-ads/module-2.mp4',
+          cdnPath: 'courses/search-ads/module-1.mp4',
           vimeoId: '1089074777',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -588,7 +588,7 @@ export const courses = [
         title: 'Choosing the Right Campaign Objective', 
         description: 'How to choose the right campaign objective for your business.',
         video: {
-          cdnPath: 'courses/twitter-ads/module-1.mp4',
+          cdnPath: 'courses/twitter-ads/module-2.mp4',
           vimeoId: '1089091972',
           duration: '12:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -599,7 +599,7 @@ export const courses = [
         title: 'Targeting Your Ideal Audience', 
         description: 'How to target your ideal audience for your business.',
         video: {
-          cdnPath: 'courses/twitter-ads/module-2.mp4',
+          cdnPath: 'courses/twitter-ads/module-1.mp4',
           vimeoId: '1089091950',
           duration: '15:20',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -646,7 +646,7 @@ export const courses = [
         title: 'Essential Workflows For Success', 
         description: 'How to build automated marketing workflows.',
         video: {
-          cdnPath: 'courses/automation/module-2.mp4',
+          cdnPath: 'courses/automation/module-3.mp4',
           vimeoId: '1088241542',
           duration: '16:40',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -657,7 +657,7 @@ export const courses = [
         title: 'Building a Workflow from Scratch',
         description: 'How to build automated marketing workflows.',
         video: {
-          cdnPath: 'courses/automation/module-3.mp4',
+          cdnPath: 'courses/automation/module-2.mp4',
           vimeoId: '1088241528',
           duration: '6:32',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -682,7 +682,7 @@ export const courses = [
         title: 'Essential Pages Every Business Website Needs', 
         description: 'Learn the fundamentals of web design and modern development practices.',
         video: {
-          cdnPath: 'courses/website-design/module-1.mp4',
+          cdnPath: 'courses/website-design/module-2.mp4',
           vimeoId: '1089098371',
           duration: '4:49',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -693,7 +693,7 @@ export const courses = [
         title: 'Wordpress, Weebly, or Wix', 
         description: 'How to choose the right platform for your business.',
         video: {
-          cdnPath: 'courses/website-design/module-2.mp4',
+          cdnPath: 'courses/website-design/module-1.mp4',
           vimeoId: '1089098340',
           duration: '4:11',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -730,7 +730,7 @@ export const courses = [
         title: 'SEO Sucess with Keyword Research', 
         description: 'How to find the right keywords for your business.',
         video: {
-          cdnPath: 'courses/seo/module-1.mp4',
+          cdnPath: 'courses/seo/module-3.mp4',
           vimeoId: '1089388695',
           duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -752,7 +752,7 @@ export const courses = [
         title: 'Essential Tools and Strategies', 
         description: 'Optimize your website content for better search rankings.',
         video: {
-          cdnPath: 'courses/seo/module-3.mp4',
+          cdnPath: 'courses/seo/module-1.mp4',
           vimeoId: '1089388664',
           duration: '18:30',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -777,7 +777,7 @@ export const courses = [
         title: 'Choosing the Right Type with Click Funnels',  
         description: 'How to choose the right type of funnel for your business.',
         video: {
-          cdnPath: 'courses/funnel-building/module-1.mp4',
+          cdnPath: 'courses/funnel-building/module-2.mp4',
           vimeoId: '1089118691',
           duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -788,7 +788,7 @@ export const courses = [
         title: 'Crafting Offers and Splintering for Success', 
         description: 'How to craft offers and split test for success.',
         video: {
-          cdnPath: 'courses/funnel-building/module-2.mp4',
+          cdnPath: 'courses/funnel-building/module-3.mp4',
           vimeoId: '1089118665',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -799,7 +799,7 @@ export const courses = [
         title: 'Building Your Sales Funnel From Start to Finish', 
         description: 'How to build your sales funnel from start to finish.',
         video: {
-          cdnPath: 'courses/funnel-building/module-3.mp4',
+          cdnPath: 'courses/funnel-building/module-1.mp4',
           vimeoId: '1089118638',
           duration: '4:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -961,7 +961,7 @@ export const courses = [
         title: 'Ultimate Guide to Starting an Online Store', 
         description: 'How to start an online store with Shopify.',
         video: {
-          cdnPath: 'courses/ecommerce/module-1.mp4',
+          cdnPath: 'courses/ecommerce/module-4.mp4',
           vimeoId: '1089912560',
           duration: '6:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -972,7 +972,7 @@ export const courses = [
         title: 'Shopify Store Customization Guide', 
         description: 'How to customize your Shopify store to your brand.',
         video: {
-          cdnPath: 'courses/ecommerce/module-2.mp4',
+          cdnPath: 'courses/ecommerce/module-3.mp4',
           vimeoId: '1089912546',
           duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -983,7 +983,7 @@ export const courses = [
         title: 'Stock Your Shopify Store', 
         description: 'How to stock your Shopify store with products.',
         video: {
-          cdnPath: 'courses/ecommerce/module-3.mp4',
+          cdnPath: 'courses/ecommerce/module-2.mp4',
           vimeoId: '1089912515',
           duration: '4:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -994,7 +994,7 @@ export const courses = [
         title: 'Final Steps to Go Live',
         description: 'How to go live with your Shopify store.',
         video: {
-          cdnPath: 'courses/ecommerce/module-4.mp4',
+          cdnPath: 'courses/ecommerce/module-1.mp4',
           vimeoId: '1089912530',
           duration: '4:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -1019,7 +1019,7 @@ export const courses = [
         title: 'Discover High Demand Services You Can Offer', 
         description: 'How to find the right services to offer as a freelancer.',
         video: {
-          cdnPath: 'courses/freelancing/module-1.mp4',
+          cdnPath: 'courses/freelancing/module-3.mp4',
           vimeoId: '1089909743',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1041,7 +1041,7 @@ export const courses = [
         title: 'Your Guide to Freelancing Success', 
         description: 'How to be successful as a freelancer.',
         video: {
-          cdnPath: 'courses/freelancing/module-3.mp4',
+          cdnPath: 'courses/freelancing/module-1.mp4',
           vimeoId: '1089909758',
           duration: '3:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -1066,7 +1066,7 @@ export const courses = [
         title: 'Split Testing Basics', 
         description: 'Understand the fundamentals of A/B testing.',
         video: {
-          cdnPath: 'courses/split-testing/module-1.mp4',
+          cdnPath: 'courses/split-testing/module-2.mp4',
           vimeoId: '1089391800',
           duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1077,7 +1077,7 @@ export const courses = [
         title: 'Step By Step Guide To Boost Your Conversions', 
         description: 'How to boost your conversions with A/B testing.',
         video: {
-          cdnPath: 'courses/split-testing/module-2.mp4',
+          cdnPath: 'courses/split-testing/module-1.mp4',
           vimeoId: '1089391783',
           duration: '2:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -1113,7 +1113,7 @@ export const courses = [
         title: 'Preliminary Research for Effective Cold Calling', 
         description: 'How to do preliminary research for effective cold calling.',
         video: {
-          cdnPath: 'courses/cold-calling/module-1.mp4',
+          cdnPath: 'courses/cold-calling/module-3.mp4',
           vimeoId: '1089907494',
           duration: '3:15',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1124,7 +1124,7 @@ export const courses = [
         title: 'From Gatekeeper to Decision Maker', 
         description: 'How to get past the gatekeeper and get to the decision maker.',
         video: {
-          cdnPath: 'courses/cold-calling/module-2.mp4',
+          cdnPath: 'courses/cold-calling/module-1.mp4',
           vimeoId: '1089907480',
           duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -1135,7 +1135,7 @@ export const courses = [
         title: 'Outsourcing Strategies for Success', 
         description: 'How to outsource your cold calling to a virtual team.',
         video: {
-          cdnPath: 'courses/cold-calling/module-3.mp4',
+          cdnPath: 'courses/cold-calling/module-2.mp4',
           vimeoId: '1089907472',
           duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -1160,7 +1160,7 @@ export const courses = [
         title: 'Mastering High Converting JV Pages. Launch vs Evergreen', 
         description: 'How to master high converting JV pages and launch vs evergreen.',
         video: {
-          cdnPath: 'courses/affiliate-recruiting/module-1.mp4',
+          cdnPath: 'courses/affiliate-recruiting/module-2.mp4',
           vimeoId: '1090442265',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1171,7 +1171,7 @@ export const courses = [
         title: 'Launch Visibility', 
         description: 'How to get your affiliate products in front of the right people.',
         video: {
-          cdnPath: 'courses/affiliate-recruiting/module-2.mp4',
+          cdnPath: 'courses/affiliate-recruiting/module-3.mp4',
           vimeoId: '1090442284',
           duration: '3:30',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -1182,7 +1182,7 @@ export const courses = [
         title: 'From Headhunters List to Launch Success', 
         description: 'How to get your launch to the next level.',
         video: {
-          cdnPath: 'courses/affiliate-recruiting/module-3.mp4',
+          cdnPath: 'courses/affiliate-recruiting/module-1.mp4',
           vimeoId: '1090442313',
           duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -1207,7 +1207,7 @@ export const courses = [
         title: 'From Slides to Screen Recordings', 
         description: 'Learn how to create engaging online courses.',
         video: {
-          cdnPath: 'courses/online-learning/module-1.mp4',
+          cdnPath: 'courses/online-learning/module-3.mp4',
           vimeoId: '1089406316',
           duration: '5:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1218,7 +1218,7 @@ export const courses = [
         title: 'Guide to Building & Uploading Your Course', 
         description: 'How to build and upload your online course.',
         video: {
-          cdnPath: 'courses/online-learning/module-2.mp4',
+          cdnPath: 'courses/online-learning/module-1.mp4',
           vimeoId: '1089406327',
           duration: '3:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -1229,7 +1229,7 @@ export const courses = [
         title: 'Marketing & Sales', 
         description: 'Effectively market and sell your online courses.',
         video: {
-          cdnPath: 'courses/online-learning/module-3.mp4',
+          cdnPath: 'courses/online-learning/module-2.mp4',
           vimeoId: '1089406336',
           duration: '6:20',
           thumbnail: 'https://vumbnail.com/1087796055.jpg'
@@ -1423,7 +1423,7 @@ export const courses = [
         title: 'Prompt Engineering Basics', 
         description: 'Learn the fundamental principles of effective prompt design.',
         video: {
-          cdnPath: 'courses/prompt-engineering/module-1.mp4',
+          cdnPath: 'courses/prompt-engineering/module-2.mp4',
           vimeoId: '1092539476',
           duration: '1:30',
           thumbnail: 'https://vumbnail.com/1087796011.jpg'
@@ -1434,7 +1434,7 @@ export const courses = [
         title: 'Real-World Applications of Prompt Engineering', 
         description: 'How to use prompt engineering to automate your business.',
         video: {
-          cdnPath: 'courses/prompt-engineering/module-2.mp4',
+          cdnPath: 'courses/prompt-engineering/module-1.mp4',
           vimeoId: '1092539424',
           duration: '2:45',
           thumbnail: 'https://vumbnail.com/1087796031.jpg'
@@ -1520,4 +1520,4 @@ export const courses = [
 
     ]
   }
-]; 
+];
