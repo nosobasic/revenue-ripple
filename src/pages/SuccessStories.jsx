@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTrophy, FaPlus, FaStar, FaCalendar, FaUser, FaHeart } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../config/constants';
 
 const SuccessStories = () => {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ const SuccessStories = () => {
         featured: showFeatured.toString()
       });
 
-      const response = await fetch(`/api/success-stories?${params}`);
+      const response = await fetch(`${getApiBase()}/api/success-stories?${params}`);
       const data = await response.json();
       
       if (response.ok) {

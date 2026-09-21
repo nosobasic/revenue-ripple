@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaSpinner, FaPlus } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../config/constants';
 
 const NewPost = () => {
   const { user } = useAuth();
@@ -45,7 +46,7 @@ const NewPost = () => {
     try {
       setLoading(true);
       
-      const response = await fetch('/api/community/posts', {
+      const response = await fetch(`${getApiBase()}/api/community/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

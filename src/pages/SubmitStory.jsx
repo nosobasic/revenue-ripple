@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrophy, FaArrowLeft, FaSpinner } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../config/constants';
 
 const SubmitStory = () => {
   const { user } = useAuth();
@@ -38,7 +39,7 @@ const SubmitStory = () => {
     try {
       setLoading(true);
       
-      const response = await fetch('/api/success-stories', {
+      const response = await fetch(`${getApiBase()}/api/success-stories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

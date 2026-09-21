@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaThumbsUp, FaReply, FaClock, FaUser, FaEye } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import { getApiBase } from '../config/constants';
 
 const ForumPost = () => {
   const { postId } = useParams();
@@ -20,7 +21,7 @@ const ForumPost = () => {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/community/posts/${postId}`);
+      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}`);
       const data = await response.json();
       
       if (response.ok) {
@@ -43,7 +44,7 @@ const ForumPost = () => {
     }
 
     try {
-      const response = await fetch(`/api/community/posts/${postId}/upvote`, {
+      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}/upvote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ const ForumPost = () => {
     try {
       setSubmittingReply(true);
       
-      const response = await fetch(`/api/community/posts/${postId}/reply`, {
+      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

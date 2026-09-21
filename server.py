@@ -2149,6 +2149,27 @@ def admin_delete_user():
 
 # Community API Routes
 
+def attach_community_users(records):
+    """Attach public profile details without requiring a PostgREST FK to users."""
+    if not records or not supabase:
+        return records
+
+    user_ids = list({record.get('user_id') for record in records if record.get('user_id')})
+    if not user_ids:
+        return records
+
+    try:
+        users_result = supabase.table('users').select('id, name, email').in_('id', user_ids).execute()
+        users = {user['id']: user for user in (users_result.data or [])}
+    except Exception as error:
+        print(f"⚠️ Error loading community user profiles: {str(error)}")
+        users = {}
+
+    return [
+        {**record, 'users': users.get(record.get('user_id'), {'name': 'Member', 'email': None})}
+        for record in records
+    ]
+
 @app.route('/api/community/posts', methods=['GET', 'POST', 'OPTIONS'])
 def community_posts():
     """Handle GET and POST requests for community posts"""
@@ -2209,11 +2230,7 @@ def community_posts():
             }), 503
         
         # Build query
-        query = supabase.table('community_posts').select('''
-            *,
-            users!inner(name, email),
-            post_upvotes(count)
-        ''')
+        query = supabase.table('community_posts').select('*')
         
         # Apply filters
         if category:
@@ -2234,7 +2251,7 @@ def community_posts():
         result = query.execute()
         
         return jsonify({
-            'posts': result.data,
+            'posts': attach_community_users(result.data or []),
             'page': page,
             'limit': limit,
             'total': len(result.data)
@@ -2255,19 +2272,13 @@ def get_community_post(post_id):
             }), 503
         
         # Get post
-        post_result = supabase.table('community_posts').select('''
-            *,
-            users!inner(name, email)
-        ''').eq('id', post_id).execute()
+        post_result = supabase.table('community_posts').select('*').eq('id', post_id).execute()
         
         if not post_result.data:
             return jsonify({'error': 'Post not found'}), 404
         
         # Get replies
-        replies_result = supabase.table('community_replies').select('''
-            *,
-            users!inner(name, email)
-        ''').eq('post_id', post_id).order('created_at', desc=False).execute()
+        replies_result = supabase.table('community_replies').select('*').eq('post_id', post_id).order('created_at', desc=False).execute()
         
         # Increment view count
         supabase.table('community_posts').update({
@@ -2275,8 +2286,8 @@ def get_community_post(post_id):
         }).eq('id', post_id).execute()
         
         return jsonify({
-            'post': post_result.data[0],
-            'replies': replies_result.data
+            'post': attach_community_users(post_result.data)[0],
+            'replies': attach_community_users(replies_result.data or [])
         }), 200
         
     except Exception as e:
@@ -2367,10 +2378,7 @@ def get_success_stories():
         if not supabase:
             return jsonify({'error': 'Database not configured'}), 500
         
-        query = supabase.table('success_stories').select('''
-            *,
-            users!inner(name, email)
-        ''').eq('is_approved', True)
+        query = supabase.table('success_stories').select('*').eq('is_approved', True)
         
         if featured_only:
             query = query.eq('is_featured', True)
@@ -2380,7 +2388,7 @@ def get_success_stories():
         result = query.execute()
         
         return jsonify({
-            'stories': result.data
+            'stories': attach_community_users(result.data or [])
         }), 200
         
     except Exception as e:
