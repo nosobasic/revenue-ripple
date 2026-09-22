@@ -83,7 +83,6 @@ def serve_static(path):
 
 # Stripe secret key
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-print(f"🔍 DEBUG: STRIPE_SECRET_KEY value: {stripe.api_key[:10] + '...' if stripe.api_key else 'None'}")
 if not stripe.api_key:
     print("Warning: STRIPE_SECRET_KEY not set. Stripe functionality will not work.")
     stripe.api_key = "sk_test_dummy_key_for_development"
@@ -111,7 +110,6 @@ CONVERSIONS_API_URL = f"https://graph.facebook.com/v23.0/{FACEBOOK_PIXEL_ID}/eve
 
 PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID")
 PAYPAL_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET")
-print(PAYPAL_CLIENT_ID, PAYPAL_SECRET)
 PAYPAL_BASE = os.environ.get("PAYPAL_BASE", "https://api-m.sandbox.paypal.com")
 if not os.getenv("PAYPAL_CLIENT_ID"):
     print("Warning: PAYPAL_CLIENT_ID not set. PayPal functionality will not work.")
