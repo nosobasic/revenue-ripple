@@ -1,5 +1,5 @@
-import { getSupabaseAdmin, logActivity } from '../lib/supabaseAdmin.js';
-import { getOpenAI, parseJsonFromModel } from '../lib/openaiClient.js';
+import { getSupabaseAdmin, logActivity } from '../../server/lib/supabaseAdmin.js';
+import { getOpenAI, parseJsonFromModel } from '../../server/lib/openaiClient.js';
 
 const SYSTEM_MESSAGE =
   'You are a marketing education content analyst. Given these course transcripts, identify the top 8 marketing topics and score each 0-100 for how well covered they are. Return only a JSON array, no markdown: [{topic, coverage_pct, priority}]';

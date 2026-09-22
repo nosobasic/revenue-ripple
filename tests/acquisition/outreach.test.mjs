@@ -6,8 +6,8 @@ import {
   parseOpportunity,
   ingestAuth,
   sourceUrl,
-} from "../../api/lib/acquisitionOutreach.js";
-import workerHandler from "../../api/acquisition/worker.js";
+} from "../../server/lib/acquisitionOutreach.js";
+import workerHandler from "../../server/acquisition/worker.js";
 const { PGlite } = await import(
   process.env.PGLITE_MODULE
     ? pathToFileURL(process.env.PGLITE_MODULE).href

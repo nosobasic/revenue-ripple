@@ -1,9 +1,9 @@
-import { ingestAuth } from "../../api/lib/acquisitionOutreach.js";
+import { ingestAuth } from "../../server/lib/acquisitionOutreach.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { summarize } from "../../api/lib/acquisitionAnalytics.js";
+import { summarize } from "../../server/lib/acquisitionAnalytics.js";
 import { captureAcquisitionTouch } from "../../src/utils/acquisitionAttribution.js";
-import { admin, destination, validatePost } from "../../api/lib/acquisition.js";
+import { admin, destination, validatePost } from "../../server/lib/acquisition.js";
 const id = "00000000-0000-4000-8000-000000000001";
 const id2 = "00000000-0000-4000-8000-000000000002";
 function storage() {

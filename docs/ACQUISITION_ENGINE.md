@@ -7,8 +7,8 @@ The existing Content Engine remains at `/admin/content-engine` and owns:
 - `content_gaps`: topic coverage and prioritization.
 - `generated_videos`: scripts, generation status, Synthesia/Vimeo asset references and history.
 - `content_activity_log`: the existing content pipeline's constrained audit events.
-- `api/lib/openaiClient.js`: shared AI client and JSON parsing.
-- `api/lib/supabaseAdmin.js`: shared server-side database client.
+- `server/lib/openaiClient.js`: shared AI client and JSON parsing.
+- `server/lib/supabaseAdmin.js`: shared server-side database client.
 - `api/content/*` and `ContentEngine.jsx`: gap analysis, lesson generation, status, and asset display.
 
 No separate brand-context model or general asset editor was found. The existing Revenue Ripple educator context is extracted into a shared constant without changing the lesson-generation prompt. Acquisition reads generated videos and transcripts by reference; it does not copy assets, generate lessons, render videos, or replace the Content Engine. Acquisition history records promotional variants, not another asset library.
@@ -62,3 +62,7 @@ The Content Engine's existing endpoints and components remain intact. Its genera
 Before rollout, test a staging admin token, apply both migrations to staging Supabase, import one discovery from n8n, review/approve its draft, and record a manual send. Follow its tracked CTA and complete a funnel submission and Stripe test checkout. Re-import the same discovery and verify the edited draft is preserved. No production migrations, scraping, messages, or live payments were executed during implementation.
 
 The production build passes with existing repository warnings. The standard ESLint command is blocked by an existing `globals` entry with trailing whitespace; focused lint passes when that entry is normalized in a temporary configuration (no repository lint configuration changes).
+
+## Vercel packaging
+
+The `api` directory contains five function entry points: three existing Content Engine endpoints, Synthesia, and `api/acquisition/[action].js`. The Acquisition dispatcher preserves `/api/acquisition/<action>` URLs and delegates to unchanged handlers in `server/acquisition`. Shared server-only helpers live in `server/lib`, outside Vercel function discovery. Keep supporting modules outside `api` to stay below the Hobby plan limit of 12 functions. The Vite development API uses the same dispatcher. No database or n8n URL changes are needed for this packaging change.
