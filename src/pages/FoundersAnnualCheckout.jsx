@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -45,7 +46,7 @@ export default function FoundersAnnualCheckout() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          referrer_username: localStorage.getItem('ref_id') || 'none',
+          ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none',
           timer_started_at: timerStarted
         })
       });

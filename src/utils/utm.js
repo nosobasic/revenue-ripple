@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from './acquisitionAttribution';
 /**
  * UTM Parameter Helper Utility
  * Parses UTM parameters from URL and provides utilities for tracking
@@ -98,6 +99,7 @@ export const getUTMForSubmission = (additionalParams = {}) => {
   
   return {
     ...utmParams,
+    ...acquisitionForSubmission(),
     ...additionalParams
   };
 };

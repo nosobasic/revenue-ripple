@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -88,6 +89,7 @@ const SurvivalPlaybook = () => {
       const requestData = {
         ...formData,
         source: 'ig', // Hidden field as specified
+        ...acquisitionForSubmission(),
         ...utmParams
       };
 

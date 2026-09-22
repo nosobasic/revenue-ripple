@@ -1,3 +1,4 @@
+import AcquisitionTracker from './components/AcquisitionTracker';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -191,6 +192,7 @@ const App = () => {
   return (
     <>
       <RouteSEO />
+      <AcquisitionTracker />
       {showReload && (
         <div className="fixed top-0 w-full bg-yellow-300 text-black text-center p-4 z-50">
           A new version is available. <button onClick={() => window.location.reload(true)} className="underline">Refresh</button>

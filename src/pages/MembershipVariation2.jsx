@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -99,6 +100,7 @@ const MembershipVariation2 = () => {
       const requestData = {
         ...formData,
         source: 'membership-variation-2',
+        ...acquisitionForSubmission(),
         ...utmParams
       };
 

@@ -6,6 +6,7 @@ dotenv.config();
 
 function contentEngineDevApi() {
   const routes = {
+    ...Object.fromEntries(['campaigns','posts','analytics','settings','worker','track','opportunities','ingest'].map(name => [`/api/acquisition/${name}`, `./api/acquisition/${name}.js`])),
     '/api/content/status': './api/content/status.js',
     '/api/content/analyze-gaps': './api/content/analyze-gaps.js',
     '/api/content/generate-script': './api/content/generate-script.js',
@@ -44,7 +45,8 @@ function contentEngineDevApi() {
 
         const reqMock = {
           method: req.method,
-          query: {},
+          query: Object.fromEntries(new URL(req.url, 'http://vite.local').searchParams),
+          headers: req.headers,
           body: parsedBody,
           on: req.on.bind(req),
         };
@@ -55,7 +57,8 @@ function contentEngineDevApi() {
             this.statusCode = code;
             return this;
           },
-          setHeader() {},
+          setHeader(key, value) { res.setHeader(key, value); },
+          end() { res.statusCode = this.statusCode; res.end(); },
           json(payload) {
             res.statusCode = this.statusCode || 200;
             res.setHeader('Content-Type', 'application/json');

@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -24,8 +25,8 @@ export default function ResellerCheckout() {
       const response = await fetch(`${getApiBase()}/create-reseller-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          referrer_username: localStorage.getItem("ref_id") || "none" 
+        body: JSON.stringify({
+          ...acquisitionForSubmission(), referrer_username: localStorage.getItem("ref_id") || "none"
         })
       });
       const data = await response.json();
@@ -119,4 +120,4 @@ export default function ResellerCheckout() {
       </div>
     </div>
   );
-} 
+}

@@ -1,8 +1,9 @@
 import { getSupabaseAdmin, logActivity } from '../lib/supabaseAdmin.js';
+import { REVENUE_RIPPLE_CONTEXT } from '../lib/contentContext.js';
 import { getOpenAI } from '../lib/openaiClient.js';
 
 const SYSTEM_MESSAGE =
-  'You are a marketing educator for Revenue Ripple, a platform teaching digital marketing. Write a clear, engaging video script for a lesson on the given topic. Format: Hook (30s), Core concept (2min), Example (1min), Key takeaway (30s). Avoid filler words. Write for an AI avatar presenter. Return only the script text.';
+  REVENUE_RIPPLE_CONTEXT + ' Write a clear, engaging video script for a lesson on the given topic. Format: Hook (30s), Core concept (2min), Example (1min), Key takeaway (30s). Avoid filler words. Write for an AI avatar presenter. Return only the script text.';
 
 async function readJsonBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;

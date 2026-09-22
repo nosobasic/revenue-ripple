@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { FaCheckCircle } from 'react-icons/fa';
@@ -10,7 +11,7 @@ export default function ThreeMonthsFreeUpsell() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        referrer_username: localStorage.getItem("ref_id") || "none",
+        ...acquisitionForSubmission(), referrer_username: localStorage.getItem("ref_id") || "none",
         three_months_free: true 
       })
     });

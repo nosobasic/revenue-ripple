@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { FaCheckCircle } from 'react-icons/fa';
@@ -12,7 +13,7 @@ export default function ProResellerUpsell() {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/create-pro-reseller-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })
+      body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: localStorage.getItem("ref_id") || "none" })
     });
     const data = await res.json();
     if (data.url) {

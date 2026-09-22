@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
 const AdminEngagementDashboard = lazy(() => import('./admin/EngagementDashboard'));
+const AdminAcquisitionEngine = lazy(() => import('../components/admin/AcquisitionEngine'));
 const AdminContentEngine = lazy(() => import('../components/admin/ContentEngine'));
 const AdminEmailEnrollments = lazy(() => import('./admin/EmailEnrollments'));
 import {
@@ -2076,6 +2077,10 @@ const Admin = () => {
             <RiMovie2Line size={20} />
             Content Engine
           </Link>
+          <Link to="/admin/acquisition/overview" className={`admin-nav-item ${location.pathname.startsWith('/admin/acquisition') ? 'active' : ''}`}>
+            <RiUserAddLine size={20} />
+            Acquisition
+          </Link>
           <Link 
             to="/admin/analytics" 
             className={`admin-nav-item ${location.pathname === '/admin/analytics' ? 'active' : ''}`}
@@ -2180,6 +2185,7 @@ const Admin = () => {
               </Suspense>
             }
           />
+          <Route path="acquisition/*" element={<Suspense fallback={<div>Loading Acquisition Engine…</div>}><AdminAcquisitionEngine /></Suspense>} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="engagement" element={
             <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>

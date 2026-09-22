@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
@@ -2353,7 +2354,7 @@ export default function Home() {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-membership-session`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ referrer_username: null })
+                      body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: null })
                     });
                     const data = await response.json();
                     if (data.url) {
@@ -2439,7 +2440,7 @@ export default function Home() {
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ referrer_username: null })
+                      body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: null })
                     });
                     const data = await response.json();
                     if (data.url) {

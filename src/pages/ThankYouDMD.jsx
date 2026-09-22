@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { API_ENDPOINTS } from '../config/constants';
@@ -62,7 +63,7 @@ const ThankYouDMD = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          referrer_username: localStorage.getItem('ref_id') || 'none'
+          ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none'
         })
       });
 

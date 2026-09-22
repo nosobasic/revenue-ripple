@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -99,6 +100,7 @@ const DMDVariation2 = () => {
       const requestData = {
         ...formData,
         source: 'dmd-variation-2',
+        ...acquisitionForSubmission(),
         ...utmParams
       };
 

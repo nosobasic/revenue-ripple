@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
@@ -29,7 +30,7 @@ export default function AuthCallback() {
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ referrer_username: localStorage.getItem('ref_id') || 'none' })
+                  body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none' })
                 });
                 const data = await response.json();
                 if (data.url) {
@@ -78,7 +79,7 @@ export default function AuthCallback() {
               const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ referrer_username: localStorage.getItem('ref_id') || 'none' })
+                body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none' })
               });
               const data = await response.json();
               if (data.url) {
@@ -113,7 +114,7 @@ export default function AuthCallback() {
                       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/create-quarterly-growth-session`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ referrer_username: null })
+                        body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: null })
                       });
                       const data = await response.json();
                       if (data.url) {

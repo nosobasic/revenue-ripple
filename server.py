@@ -1,3 +1,4 @@
+from acquisition.attribution import record_lead as record_acquisition_lead, record_checkout as record_acquisition_checkout, checkout_metadata
 from flask import Flask, request, jsonify, abort, make_response, send_from_directory
 from flask_cors import CORS
 import stripe
@@ -172,6 +173,7 @@ def create_tripwire_session():
             success_url='https://revenueripple.org/tripwire-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/tripwire-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'digital_marketing_domination_book'
             }
@@ -208,6 +210,7 @@ def create_pro_reseller_session():
             success_url='https://revenueripple.org/pro-reseller-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/pro-reseller-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'pro_reseller_subscription',
                 'three_months_free': str(three_months_free)
@@ -234,6 +237,7 @@ def create_pro_reseller_trial_session():
             success_url='https://revenueripple.org/pro-reseller-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/pro-reseller-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'pro_reseller_trial_subscription'
             }
@@ -258,6 +262,7 @@ def create_reseller_session():
             success_url='https://revenueripple.org/reseller-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/reseller-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'reseller_subscription'
             }
@@ -282,6 +287,7 @@ def create_reseller_trial_session():
             success_url='https://revenueripple.org/reseller-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/reseller-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'reseller_trial_subscription'
             }
@@ -306,6 +312,7 @@ def create_membership_session():
             success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/membership-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'membership_subscription'
             }
@@ -333,6 +340,7 @@ def create_quarterly_growth_session():
             success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/membership-cancel',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'quarterly_growth_subscription'
             }
@@ -398,6 +406,7 @@ def create_founders_annual_session():
             success_url='https://revenueripple.org/founders-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/founders-checkout',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'founders_annual_subscription',
                 'timer_started_at': timer_started_at or '',
@@ -426,6 +435,7 @@ def create_founders_monthly_session():
             success_url='https://revenueripple.org/membership-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url='https://revenueripple.org/founders-checkout',
             metadata={
+                **checkout_metadata(data),
                 'referrer_username': referrer_username or 'none',
                 'product': 'membership_subscription',
                 'source': 'founders_page_monthly_option'
@@ -660,6 +670,8 @@ def stripe_webhook():
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
     except stripe.error.SignatureVerificationError:
         return abort(400)
+
+    record_acquisition_checkout(supabase, event)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
@@ -1555,6 +1567,8 @@ def survival_playbook_submission():
             ),
         )
         
+        record_acquisition_lead(supabase, email, source or "survival-playbook", data)
+
         # Log submission to database if available
         if supabase:
             try:
@@ -1758,6 +1772,8 @@ def membership_mastery_submission():
             ),
         )
         
+        record_acquisition_lead(supabase, email, source or "membership-mastery", data)
+
         # Send Lead event to Facebook Conversions API
         user_data = {
             'email': email,
@@ -1901,6 +1917,8 @@ def digital_marketing_domination_submission():
             ),
         )
         
+        record_acquisition_lead(supabase, email, source or "digital-marketing-domination", data)
+
         # Send Lead event to Facebook Conversions API
         user_data = {
             'email': email,

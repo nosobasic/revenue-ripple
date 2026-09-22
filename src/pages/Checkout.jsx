@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
@@ -85,7 +86,7 @@ export default function Checkout() {
       // For DMD, use the tripwire session endpoint
       endpoint = API_ENDPOINTS.TRIPWIRE_SESSION;
       requestBody = {
-        referrer_username: localStorage.getItem('ref_id') || 'none'
+        ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none'
       };
     } else if (effectiveProduct === 'quarterly') {
       // For quarterly growth, use the quarterly session endpoint
@@ -95,13 +96,13 @@ export default function Checkout() {
       // #endregion
       endpoint = API_ENDPOINTS.QUARTERLY_GROWTH_SESSION;
       requestBody = {
-        referrer_username: localStorage.getItem('ref_id') || 'none'
+        ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none'
       };
     } else {
       // For membership, use the membership session endpoint
       endpoint = API_ENDPOINTS.MEMBERSHIP_SESSION;
       requestBody = {
-        referrer_username: localStorage.getItem('ref_id') || 'none'
+        ...acquisitionForSubmission(), referrer_username: localStorage.getItem('ref_id') || 'none'
       };
     }
 

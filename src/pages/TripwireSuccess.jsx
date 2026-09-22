@@ -1,3 +1,4 @@
+import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getApiBase } from '../config/constants';
@@ -7,7 +8,7 @@ const TripwireSuccess = () => {
     const res = await fetch(`${getApiBase()}/create-membership-session`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ referrer_username: localStorage.getItem("ref_id") || "none" })
+      body: JSON.stringify({ ...acquisitionForSubmission(), referrer_username: localStorage.getItem("ref_id") || "none" })
     });
     const data = await res.json();
     window.location.href = data.url;
