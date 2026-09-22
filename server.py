@@ -2293,7 +2293,7 @@ def get_community_post(post_id):
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/community/posts/<post_id>/reply', methods=['POST'])
-def create_community_reply():
+def create_community_reply(post_id):
     """Create a reply to a community post"""
     try:
         data = request.get_json()
@@ -2312,7 +2312,7 @@ def create_community_reply():
         
         # Create reply
         reply_data = {
-            'post_id': request.view_args['post_id'],
+            'post_id': post_id,
             'user_id': user_id,
             'content': content
         }
@@ -2332,7 +2332,7 @@ def create_community_reply():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/community/posts/<post_id>/upvote', methods=['POST'])
-def upvote_community_post():
+def upvote_community_post(post_id):
     """Upvote a community post"""
     try:
         data = request.get_json()
@@ -2346,8 +2346,6 @@ def upvote_community_post():
                 'error': 'Database not configured. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.',
                 'code': 'DB_NOT_CONFIGURED'
             }), 503
-        
-        post_id = request.view_args['post_id']
         
         # Check if already upvoted
         existing = supabase.table('post_upvotes').select('*').eq('post_id', post_id).eq('user_id', user_id).execute()
