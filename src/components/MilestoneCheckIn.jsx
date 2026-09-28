@@ -52,9 +52,9 @@ const MilestoneCheckIn = () => {
     if (!user) return;
 
     const checkMilestones = async () => {
-      // Get unshown milestones
+      // Get unshown achievement milestones
       const { data: unshownMilestones } = await supabase
-        .from('user_milestones')
+        .from('user_achievement_milestones')
         .select('*')
         .eq('user_id', user.id)
         .eq('shown', false)
@@ -90,9 +90,9 @@ const MilestoneCheckIn = () => {
 
   const handleClose = async () => {
     if (milestone && milestone.id) {
-      // Mark milestone as shown
+      // Mark achievement milestone as shown
       await supabase
-        .from('user_milestones')
+        .from('user_achievement_milestones')
         .update({ 
           shown: true, 
           shown_at: new Date().toISOString() 
@@ -210,23 +210,23 @@ const MilestoneCheckIn = () => {
   );
 };
 
-// Helper function to trigger milestones (call this from various parts of the app)
+// Helper function to trigger achievement milestones (call this from various parts of the app)
 export const triggerMilestone = async (userId, milestoneType, milestoneValue = null) => {
   if (!userId) return;
 
   try {
-    // Check if this milestone already exists
+    // Check if this achievement milestone already exists
     const { data: existing } = await supabase
-      .from('user_milestones')
+      .from('user_achievement_milestones')
       .select('id')
       .eq('user_id', userId)
       .eq('milestone_type', milestoneType)
       .single();
 
     if (!existing) {
-      // Insert new milestone
+      // Insert new achievement milestone
       await supabase
-        .from('user_milestones')
+        .from('user_achievement_milestones')
         .insert([
           {
             user_id: userId,
@@ -237,7 +237,7 @@ export const triggerMilestone = async (userId, milestoneType, milestoneValue = n
         ]);
     }
   } catch (error) {
-    console.error('Error triggering milestone:', error);
+    console.error('Error triggering achievement milestone:', error);
   }
 };
 
