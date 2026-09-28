@@ -258,6 +258,18 @@ def test_wrap_layout_has_physical_address():
     assert "unsubscribe" in html.lower()
 
 
+def test_sandbox_unverified_error_detection():
+    from email_crm.send import is_unverified_recipient_error
+
+    class Fake(Exception):
+        def __init__(self):
+            super().__init__("boom")
+            self.response = {"Error": {"Code": "MessageRejected", "Message": "Email address is not verified."}}
+
+    assert is_unverified_recipient_error(Fake()) is True
+    assert is_unverified_recipient_error(RuntimeError("timeout")) is False
+
+
 if __name__ == "__main__":
     test_name_suffixes()
     test_paid_tags_win_over_name()
@@ -276,4 +288,5 @@ if __name__ == "__main__":
     test_list_restart_hands_off_to_lesson_one()
     test_csv_import_blocked_until_production()
     test_wrap_layout_has_physical_address()
+    test_sandbox_unverified_error_detection()
     print("ok")

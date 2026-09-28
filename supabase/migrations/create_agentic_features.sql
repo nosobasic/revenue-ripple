@@ -356,7 +356,7 @@ VALUES
         {
             "id": 5,
             "title": "Set Your Goals",
-            "description": "Define your marketing goals and I'll help you track progress and stay motivated!",
+            "description": "Define your marketing goals and I''ll help you track progress and stay motivated!",
             "target": ".goals-section",
             "placement": "top",
             "action": "complete"

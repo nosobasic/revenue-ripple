@@ -4,7 +4,9 @@ Do not dual-send. GetResponse access is lost, so we **do not resume dayOfCycle**
 
 Founders short waits (welcome + Discord) use SQS FIFO. Everything else uses `email_enrollments.next_send_at` and the EventBridge due-worker.
 
-**Hold the list.** Do not import or `--activate` the GetResponse CSV until SES production access is approved. `scripts/email/import_csv_restart.py` refuses writes unless `SES_PRODUCTION_CONFIRMED=true`. Keep Terraform `email_send_enabled=false` and Render `EMAIL_SEND_ENABLED=false` until then.
+**Sandbox (200/day).** Production access is denied for now. SES will deliver only to **verified identities** — the domain covers `@revenueripple.org`, plus any address you verify in SES (they must click Amazon's email). The GetResponse CSV still cannot be mailed. `import_csv_restart.py` refuses writes unless `SES_PRODUCTION_CONFIRMED=true`. Unverified recipients are skipped and retried after 24 hours.
+
+Set Render `EMAIL_SEND_ENABLED=true` and `EMAIL_DAILY_SEND_CAP=200`. Terraform `email_send_enabled=true`.
 
 ## Phase 0 — Copy + catalog
 

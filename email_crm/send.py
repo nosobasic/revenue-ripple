@@ -13,6 +13,14 @@ TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 PHYSICAL_ADDRESS_DEFAULT = "Revenue Ripple, Attn: Donte Willis"
 
 
+def is_unverified_recipient_error(exc: BaseException) -> bool:
+    """SES sandbox rejects mail to addresses that are not verified identities."""
+    resp = getattr(exc, "response", None) or {}
+    err = resp.get("Error") or {}
+    blob = f"{err.get('Code', '')} {err.get('Message', '')} {exc}".lower()
+    return "not verified" in blob or ("sandbox" in blob and "rejected" in blob)
+
+
 def _read_template(template_key: str) -> str:
     path = TEMPLATES_DIR / template_key
     if path.exists():
@@ -86,7 +94,13 @@ def send_ses(*, to_email: str, subject: str, html: str, unsubscribe_url: str) ->
     }
     if config_set:
         kwargs["ConfigurationSetName"] = config_set
-    resp = client.send_raw_email(**kwargs)
+    try:
+        resp = client.send_raw_email(**kwargs)
+    except Exception as exc:
+        if is_unverified_recipient_error(exc):
+            print(f"SES sandbox skipped unverified recipient {to_email}: {exc}")
+            return {"skipped": True, "reason": "sandbox_unverified", "to": to_email}
+        raise
     return {"message_id": resp.get("MessageId")}
 
 

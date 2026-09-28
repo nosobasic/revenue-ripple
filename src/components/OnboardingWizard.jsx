@@ -13,7 +13,7 @@ const ONBOARDING_STEPS = [
   {
     id: 'goals',
     title: 'Set Your Goals',
-    description: 'What do you want to achieve? Let's set some clear goals',
+    description: "What do you want to achieve? Let's set some clear goals",
     icon: <FaBullseye />
   },
   {
