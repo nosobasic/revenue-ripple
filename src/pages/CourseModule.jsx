@@ -4,6 +4,7 @@ import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import ModuleCompletionFeedback from '../components/ModuleCompletionFeedback';
+import ModuleQuiz from '../components/ModuleQuiz';
 import { triggerMilestone } from '../components/MilestoneCheckIn';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabase/client';
@@ -218,6 +219,18 @@ const CourseModule = () => {
             {completed ? 'Completed' : buttonLoading ? 'Marking...' : 'Mark as Complete'}
           </button>
         </div>
+      </div>
+
+      {/* Module Quiz Section */}
+      <div style={{ marginTop: '48px' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
+          Test Your Knowledge
+        </h2>
+        <ModuleQuiz 
+          courseId={courseSlug}
+          moduleId={moduleId}
+          moduleTitle={module.title}
+        />
       </div>
 
       <div className="module-navigation">

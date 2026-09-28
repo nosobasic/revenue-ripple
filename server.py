@@ -20,6 +20,9 @@ from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
 from email_crm.routes import email_bp
 from email_crm.deliver import deliver_lead, deliver_paid
+from server.routes.goals import goals_bp
+from server.routes.quizzes import quizzes_bp
+from server.routes.onboarding import onboarding_bp
 
 # Import engagement_bp from server package to avoid conflict with this server.py module
 # Use importlib to explicitly load from the server package directory
@@ -135,6 +138,9 @@ def get_paypal_access_token():
 app.register_blueprint(ai_assistant_bp)
 app.register_blueprint(command_center_bp)
 app.register_blueprint(engagement_bp)
+app.register_blueprint(goals_bp)
+app.register_blueprint(quizzes_bp)
+app.register_blueprint(onboarding_bp)
 
 @app.route('/', methods=['GET'])
 def health_check():

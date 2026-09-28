@@ -124,6 +124,8 @@ def ai_assistant():
         return jsonify({"error": "AI assistant is not available - OpenAI API key not configured"}), 503
     
     user_role = request.headers.get("x-user-role")
+    user_id = request.headers.get("x-user-id")
+    
     if not is_authorized(user_role):
         abort(403, "Not authorized")
 
@@ -141,18 +143,33 @@ def ai_assistant():
         
         # Use optimized parameters for faster responses
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Fastest model for good quality
+            model="gpt-4o-mini",
             messages=[{"role": "user", "content": optimized_prompt}],
-            max_tokens=300,  # Reduced for faster responses
+            max_tokens=300,
             temperature=0.7,
-            presence_penalty=0.1,  # Slight penalty to avoid repetition
-            frequency_penalty=0.1,  # Slight penalty for more varied responses
-            top_p=0.9,  # Focus on more likely tokens for consistency
+            presence_penalty=0.1,
+            frequency_penalty=0.1,
+            top_p=0.9,
         )
         
         ai_response = (response.choices[0].message.content or "").strip()
         
-        # Log performance metrics
+        # Log interaction to database for learning and improvement
+        try:
+            if user_id:
+                from server.lib.supabaseAdmin import get_supabase_admin
+                supabase = get_supabase_admin()
+                supabase.table('ai_assistant_interactions').insert({
+                    'user_id': user_id,
+                    'interaction_type': 'question',
+                    'context_page': context.get('page'),
+                    'context_data': context,
+                    'user_message': user_message,
+                    'ai_response': ai_response
+                }).execute()
+        except Exception as log_error:
+            print(f"Failed to log interaction: {log_error}")
+        
         end_time = time.time()
         response_time = end_time - start_time
         print(f"AI Assistant response time: {response_time:.2f}s")
@@ -234,8 +251,143 @@ def get_capabilities():
             "Marketing strategy guidance",
             "Platform navigation help",
             "Affiliate program support",
-            "Course content explanations"
+            "Course content explanations",
+            "Goal setting and tracking",
+            "Proactive learning suggestions",
+            "Interactive quizzes and homework",
+            "Feature tours and onboarding"
         ],
         "maxTokens": 300,
         "averageResponseTime": "1-3 seconds"
-    }) 
+    })
+
+@ai_assistant_bp.route('/api/ai-assistant/suggestions', methods=['GET'])
+def get_proactive_suggestions():
+    """Get proactive AI suggestions based on user context"""
+    if not client:
+        return jsonify({"error": "AI assistant is not available"}), 503
+    
+    user_role = request.headers.get("x-user-role")
+    user_id = request.headers.get("x-user-id")
+    
+    if not is_authorized(user_role) or not user_id:
+        abort(403, "Not authorized")
+    
+    try:
+        from server.lib.supabaseAdmin import get_supabase_admin
+        supabase = get_supabase_admin()
+        
+        goals_response = supabase.table('user_goals')\
+            .select('*')\
+            .eq('user_id', user_id)\
+            .eq('status', 'active')\
+            .order('priority', desc=False)\
+            .limit(3)\
+            .execute()
+        
+        progress_response = supabase.table('user_progress')\
+            .select('*')\
+            .eq('user_id', user_id)\
+            .order('last_updated', desc=True)\
+            .limit(5)\
+            .execute()
+        
+        quiz_response = supabase.table('user_quiz_responses')\
+            .select('*')\
+            .eq('user_id', user_id)\
+            .order('created_at', desc=True)\
+            .limit(3)\
+            .execute()
+        
+        suggestions = []
+        
+        # Goal-based suggestions
+        active_goals = goals_response.data or []
+        if active_goals:
+            high_priority_goals = [g for g in active_goals if g['priority'] == 1]
+            if high_priority_goals:
+                goal = high_priority_goals[0]
+                suggestions.append({
+                    'type': 'goal_reminder',
+                    'priority': 'high',
+                    'title': f"Work on: {goal['title']}",
+                    'message': f"You have a high-priority goal waiting. Let's make progress!",
+                    'action': {'type': 'navigate', 'path': '/dashboard?tab=goals'}
+                })
+        
+        # Course progress suggestions
+        in_progress_courses = [p for p in (progress_response.data or []) 
+                              if p['status'] == 'in_progress' and p['percent_done'] < 100]
+        if in_progress_courses:
+            course = in_progress_courses[0]
+            suggestions.append({
+                'type': 'continue_learning',
+                'priority': 'medium',
+                'title': 'Continue Your Learning',
+                'message': f"You're {course['percent_done']}% through a course. Keep the momentum going!",
+                'action': {'type': 'navigate', 'path': f"/courses/{course['course_id']}"}
+            })
+        
+        # Quiz reminder
+        recent_quizzes = quiz_response.data or []
+        failed_quizzes = [q for q in recent_quizzes if not q['passed']]
+        if failed_quizzes:
+            quiz = failed_quizzes[0]
+            suggestions.append({
+                'type': 'retry_quiz',
+                'priority': 'medium',
+                'title': 'Ready to Try Again?',
+                'message': 'Practice makes perfect! Retake that quiz and master the material.',
+                'action': {'type': 'navigate', 'path': f"/courses/{quiz['course_id']}/module-{quiz['module_id']}?tab=quiz"}
+            })
+        
+        # New content suggestion
+        if not in_progress_courses:
+            suggestions.append({
+                'type': 'start_learning',
+                'priority': 'low',
+                'title': 'Start a New Course',
+                'message': 'Explore our course library and begin learning something new today!',
+                'action': {'type': 'navigate', 'path': '/courses'}
+            })
+        
+        return jsonify({
+            'suggestions': suggestions[:3],
+            'timestamp': time.time()
+        })
+    
+    except Exception as e:
+        print(f"Error generating suggestions: {e}")
+        print(traceback.format_exc())
+        return jsonify({'error': 'Failed to generate suggestions'}), 500
+
+@ai_assistant_bp.route('/api/ai-assistant/feedback', methods=['POST'])
+def record_feedback():
+    """Record user feedback on AI interactions"""
+    user_id = request.headers.get("x-user-id")
+    
+    if not user_id:
+        abort(403, "Not authorized")
+    
+    try:
+        data = request.get_json()
+        interaction_id = data.get('interaction_id')
+        reaction = data.get('reaction')  # 'helpful', 'not_helpful', 'dismissed', 'acted_upon'
+        
+        if not interaction_id or not reaction:
+            return jsonify({'error': 'interaction_id and reaction are required'}), 400
+        
+        from server.lib.supabaseAdmin import get_supabase_admin
+        supabase = get_supabase_admin()
+        
+        supabase.table('ai_assistant_interactions')\
+            .update({'user_reaction': reaction})\
+            .eq('id', interaction_id)\
+            .eq('user_id', user_id)\
+            .execute()
+        
+        return jsonify({'message': 'Feedback recorded'})
+    
+    except Exception as e:
+        print(f"Error recording feedback: {e}")
+        return jsonify({'error': 'Failed to record feedback'}), 500 

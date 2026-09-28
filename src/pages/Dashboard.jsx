@@ -8,6 +8,9 @@ import SEO from '../components/SEO';
 import ReferralTracker from '../components/ReferralTracker.js';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import OnboardingModal from '../components/OnboardingModal';
+import OnboardingWizard from '../components/OnboardingWizard';
+import GoalDashboard from '../components/GoalDashboard';
+import FeatureTour from '../components/FeatureTour';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import MemberRoleUpdateModal from '../components/MemberRoleUpdateModal.jsx';
 import VaultPreview from '../components/VaultPreview';
@@ -104,7 +107,8 @@ import {
   FaBook, 
   FaChartLine, 
   FaBell,
-  FaRocket
+  FaRocket,
+  FaBullseye
 } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -128,6 +132,8 @@ const Dashboard = () => {
     lowStockItems: 0
   });
   const [courseProgress, setCourseProgress] = useState({});
+  const [showNewOnboarding, setShowNewOnboarding] = useState(false);
+  const [showGoalsDashboard, setShowGoalsDashboard] = useState(false);
   const reload = localStorage.getItem("reloadPage")
 
   console.log("reee", typeof(reload))
@@ -173,6 +179,37 @@ const Dashboard = () => {
       setLoading(false);
     }, 1000);
   }, []);
+
+  // Check for new onboarding system
+  useEffect(() => {
+    const checkNewOnboarding = async () => {
+      if (!user) return;
+      
+      try {
+        const { getApiBase } = await import('../config/constants');
+        const response = await fetch(`${getApiBase()}/api/onboarding/state`, {
+          headers: {
+            'x-user-id': user.id,
+            'x-user-role': user.role || 'member'
+          }
+        });
+        
+        if (response.ok) {
+          const { state } = await response.json();
+          if (!state.completed && state.current_step === 0) {
+            const hasSeenOnboarding = localStorage.getItem('hasSeenNewOnboarding');
+            if (!hasSeenOnboarding) {
+              setShowNewOnboarding(true);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to check onboarding:', err);
+      }
+    };
+
+    checkNewOnboarding();
+  }, [user]);
 
   // Fetch all course progress for the user
   useEffect(() => {
@@ -238,6 +275,19 @@ const Dashboard = () => {
         ]}
       />
       <AIAssistantWidget />
+      
+      {/* New Onboarding Wizard */}
+      {showNewOnboarding && (
+        <OnboardingWizard 
+          onComplete={() => {
+            setShowNewOnboarding(false);
+            localStorage.setItem('hasSeenNewOnboarding', 'true');
+          }}
+        />
+      )}
+
+      {/* Feature Tour */}
+      <FeatureTour tourName="platform-overview" />
 
       {/* User Intent Welcome Message */}
       {userIntent && !showOnboarding && (
@@ -314,6 +364,15 @@ const Dashboard = () => {
         <div className="container dashboard-content flex flex-wrap md:flex-nowrap">
           {/* Main Content - Left Side */}
           <div className="main-content w-full md:w-2/3 pr-0 md:pr-8">
+            {/* Goals Dashboard Section */}
+            <div className="section mb-8 goals-section">
+              <div className="section-header" style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)' }}>
+                <FaBullseye className="section-icon" />
+                <h2>YOUR GOALS</h2>
+              </div>
+              <GoalDashboard />
+            </div>
+
             {/* <h2 className="section-overview-title mb-4 mt-2">Your Success Dashboard</h2> */}
             {/* AFFILIATE PROGRAM SECTION - HIDDEN WHILE APP IS FREE
             {isMember &&

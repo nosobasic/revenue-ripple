@@ -20,7 +20,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
     { 
       id: 1, 
       from: 'ai', 
-      text: "👋 Hi! I'm Ripple, your AI Marketing Assistant. Ask me anything about Revenue Ripple or internet marketing!", 
+      text: "👋 Hi! I'm Ripple, your AI Marketing Assistant. I'm here to guide you through your learning journey, help you set and achieve goals, and answer any questions!", 
       timestamp: new Date() 
     }
   ]);
@@ -28,6 +28,8 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [showHelpBubble, setShowHelpBubble] = useState(false);
+  const [showProactiveSuggestion, setShowProactiveSuggestion] = useState(false);
+  const [proactiveSuggestion, setProactiveSuggestion] = useState(null);
   const [lastHelpOffer, setLastHelpOffer] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [apiUnreachable, setApiUnreachable] = useState(false);
@@ -35,6 +37,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const helpBubbleTimer = useRef(null);
+  const suggestionTimer = useRef(null);
 
   // Check if screen is mobile size
   useEffect(() => {
@@ -111,6 +114,44 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
     }
   }, [open]);
 
+  // Fetch proactive suggestions
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!user || open) return;
+      
+      try {
+        const response = await fetch(`${getApiBase()}/api/ai-assistant/suggestions`, {
+          headers: {
+            'x-user-id': user.id,
+            'x-user-role': user.role || 'member'
+          }
+        });
+        
+        if (response.ok) {
+          const { suggestions } = await response.json();
+          if (suggestions && suggestions.length > 0) {
+            const highPriority = suggestions.find(s => s.priority === 'high');
+            if (highPriority) {
+              setProactiveSuggestion(highPriority);
+              setShowProactiveSuggestion(true);
+              setTimeout(() => setShowProactiveSuggestion(false), 12000); // Hide after 12 seconds
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch suggestions:', err);
+      }
+    };
+
+    suggestionTimer.current = setTimeout(fetchSuggestions, 10000);
+    
+    return () => {
+      if (suggestionTimer.current) {
+        clearTimeout(suggestionTimer.current);
+      }
+    };
+  }, [user, open, location.pathname]);
+
   // Periodic help offers based on page context and user activity
   useEffect(() => {
     if (!user) return;
@@ -134,7 +175,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
                           location.pathname.includes('/affiliate') ||
                           showWelcomeBubble;
 
-    if (shouldShowHelp) {
+    if (shouldShowHelp && !showProactiveSuggestion) {
       helpBubbleTimer.current = setTimeout(offerHelp, 15000); // 15 seconds delay
     }
 
@@ -143,7 +184,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         clearTimeout(helpBubbleTimer.current);
       }
     };
-  }, [location.pathname, lastHelpOffer, user, showWelcomeBubble]);
+  }, [location.pathname, lastHelpOffer, user, showWelcomeBubble, showProactiveSuggestion]);
 
   // Generate contextual help messages based on current page
   const getContextualWelcome = useCallback(() => {
@@ -854,8 +895,117 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         )}
       </button>
 
+      {/* Proactive Suggestion Bubble */}
+      {showProactiveSuggestion && proactiveSuggestion && !open && (
+        <div
+          onClick={() => {
+            if (proactiveSuggestion.action?.type === 'navigate') {
+              window.location.href = proactiveSuggestion.action.path;
+            }
+            setShowProactiveSuggestion(false);
+          }}
+          style={{
+            ...getHelpBubbleStyles(),
+            borderLeft: proactiveSuggestion.priority === 'high' ? '4px solid #ef4444' : '4px solid #2563eb'
+          }}
+        >
+          {!isMobile && (
+            <>
+              <div 
+                style={{
+                  position: 'absolute',
+                  right: '-8px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderTop: '8px solid transparent',
+                  borderBottom: '8px solid transparent',
+                  borderLeft: '8px solid #e5e7eb',
+                  zIndex: 1
+                }}
+              ></div>
+              <div 
+                style={{
+                  position: 'absolute',
+                  right: '-7px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: 0,
+                  height: 0,
+                  borderTop: '8px solid transparent',
+                  borderBottom: '8px solid transparent',
+                  borderLeft: '8px solid white',
+                  zIndex: 2
+                }}
+              ></div>
+            </>
+          )}
+          
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <img 
+                src="/assets/icons/revenue_ripple_icon_transparent.png" 
+                alt="Ripple" 
+                style={{ width: isMobile ? '24px' : '20px', height: isMobile ? '24px' : '20px' }}
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p 
+                className="text-sm font-semibold"
+                style={{
+                  fontSize: isMobile ? '16px' : '14px',
+                  color: '#1f2937',
+                  fontWeight: '600',
+                  margin: 0,
+                  marginBottom: '4px'
+                }}
+              >
+                {proactiveSuggestion.title}
+              </p>
+              <p 
+                className="text-sm text-gray-700"
+                style={{
+                  fontSize: isMobile ? '14px' : '13px',
+                  color: '#374151',
+                  margin: 0,
+                  lineHeight: '1.4'
+                }}
+              >
+                {proactiveSuggestion.message}
+              </p>
+            </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowProactiveSuggestion(false);
+              }}
+              className="text-gray-400 hover:text-gray-600 leading-none"
+              style={{
+                color: '#9ca3af',
+                fontSize: isMobile ? '24px' : '18px',
+                lineHeight: 1,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: isMobile ? '8px' : '0',
+                marginLeft: '8px',
+                borderRadius: isMobile ? '50%' : '0',
+                width: isMobile ? '40px' : 'auto',
+                height: isMobile ? '40px' : 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Contextual Thought Bubble */}
-      {showHelpBubble && !open && (
+      {showHelpBubble && !open && !showProactiveSuggestion && (
         <div 
           onClick={openChatWithContext}
           style={getHelpBubbleStyles()}
