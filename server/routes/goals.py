@@ -277,7 +277,7 @@ def create_milestone(user_id, goal_id):
         print(traceback.format_exc())
         return jsonify({'error': 'Failed to create milestone'}), 500
 
-@goals_bp.route('/api/goals/<goal_id>/milestones/<milestone_id>', methods='PUT'])
+@goals_bp.route('/api/goals/<goal_id>/milestones/<milestone_id>', methods=['PUT'])
 @require_auth
 def update_milestone(user_id, goal_id, milestone_id):
     """Mark a milestone as completed"""
