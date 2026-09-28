@@ -52,31 +52,39 @@ const MilestoneCheckIn = () => {
     if (!user) return;
 
     const checkMilestones = async () => {
-      // Get unshown achievement milestones
-      const { data: unshownMilestones } = await supabase
-        .from('user_achievement_milestones')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('shown', false)
-        .order('achieved_at', { ascending: false })
-        .limit(1);
+      try {
+        // user_milestones remains a table or compatibility view after the rename.
+        const { data: unshownMilestones, error } = await supabase
+          .from('user_milestones')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('shown', false)
+          .order('achieved_at', { ascending: false })
+          .limit(1);
 
-      if (unshownMilestones && unshownMilestones.length > 0) {
-        const milestoneData = unshownMilestones[0];
-        const milestoneConfig = milestones[milestoneData.milestone_type];
-        
-        if (milestoneConfig) {
-          setMilestone({
-            id: milestoneData.id,
-            type: milestoneData.milestone_type,
-            ...milestoneConfig
-          });
-          
-          // Show after a short delay
-          setTimeout(() => {
-            setIsVisible(true);
-          }, 1000);
+        if (error) {
+          console.warn('Milestone check skipped:', error.message);
+          return;
         }
+
+        if (unshownMilestones && unshownMilestones.length > 0) {
+          const milestoneData = unshownMilestones[0];
+          const milestoneConfig = milestones[milestoneData.milestone_type];
+          
+          if (milestoneConfig) {
+            setMilestone({
+              id: milestoneData.id,
+              type: milestoneData.milestone_type,
+              ...milestoneConfig
+            });
+            
+            setTimeout(() => {
+              setIsVisible(true);
+            }, 1000);
+          }
+        }
+      } catch (err) {
+        console.warn('Milestone check skipped:', err);
       }
     };
 
@@ -90,14 +98,17 @@ const MilestoneCheckIn = () => {
 
   const handleClose = async () => {
     if (milestone && milestone.id) {
-      // Mark achievement milestone as shown
-      await supabase
-        .from('user_achievement_milestones')
-        .update({ 
-          shown: true, 
-          shown_at: new Date().toISOString() 
-        })
-        .eq('id', milestone.id);
+      try {
+        await supabase
+          .from('user_milestones')
+          .update({ 
+            shown: true, 
+            shown_at: new Date().toISOString() 
+          })
+          .eq('id', milestone.id);
+      } catch (error) {
+        console.warn('Failed to mark milestone shown:', error);
+      }
     }
     
     setIsVisible(false);
@@ -216,17 +227,22 @@ export const triggerMilestone = async (userId, milestoneType, milestoneValue = n
 
   try {
     // Check if this achievement milestone already exists
-    const { data: existing } = await supabase
-      .from('user_achievement_milestones')
+    const { data: existing, error } = await supabase
+      .from('user_milestones')
       .select('id')
       .eq('user_id', userId)
       .eq('milestone_type', milestoneType)
-      .single();
+      .maybeSingle();
+
+    if (error) {
+      console.warn('Milestone lookup skipped:', error.message);
+      return;
+    }
 
     if (!existing) {
       // Insert new achievement milestone
       await supabase
-        .from('user_achievement_milestones')
+        .from('user_milestones')
         .insert([
           {
             user_id: userId,

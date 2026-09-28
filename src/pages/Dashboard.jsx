@@ -196,7 +196,7 @@ const Dashboard = () => {
         
         if (response.ok) {
           const { state } = await response.json();
-          if (!state.completed && state.current_step === 0) {
+          if (state && !state.completed && (state.current_step || 0) === 0) {
             const hasSeenOnboarding = localStorage.getItem('hasSeenNewOnboarding');
             if (!hasSeenOnboarding) {
               setShowNewOnboarding(true);

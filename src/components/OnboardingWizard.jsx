@@ -53,15 +53,29 @@ const EXPERIENCE_LEVELS = [
   { value: 'advanced', label: 'Advanced', description: 'Experienced marketer' }
 ];
 
+const DEFAULT_ONBOARDING_DATA = {
+  goals: '',
+  interests: [],
+  experience: '',
+  targetRevenue: ''
+};
+
+function normalizeOnboardingData(data) {
+  const incoming = data && typeof data === 'object' ? data : {};
+  return {
+    ...DEFAULT_ONBOARDING_DATA,
+    ...incoming,
+    goals: typeof incoming.goals === 'string' ? incoming.goals : '',
+    interests: Array.isArray(incoming.interests) ? incoming.interests : [],
+    experience: typeof incoming.experience === 'string' ? incoming.experience : '',
+    targetRevenue: typeof incoming.targetRevenue === 'string' ? incoming.targetRevenue : ''
+  };
+}
+
 export default function OnboardingWizard({ onComplete }) {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
-  const [onboardingData, setOnboardingData] = useState({
-    goals: '',
-    interests: [],
-    experience: '',
-    targetRevenue: ''
-  });
+  const [onboardingData, setOnboardingData] = useState(DEFAULT_ONBOARDING_DATA);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -82,9 +96,10 @@ export default function OnboardingWizard({ onComplete }) {
       
       if (response.ok) {
         const { state } = await response.json();
-        if (state && state.data) {
-          setOnboardingData(state.data);
-          setCurrentStep(state.current_step || 0);
+        if (state) {
+          setOnboardingData(normalizeOnboardingData(state.data));
+          const nextStep = Number.isInteger(state.current_step) ? state.current_step : 0;
+          setCurrentStep(Math.min(Math.max(nextStep, 0), ONBOARDING_STEPS.length - 1));
           
           if (state.completed) {
             onComplete?.();
@@ -109,7 +124,7 @@ export default function OnboardingWizard({ onComplete }) {
         },
         body: JSON.stringify({
           current_step: currentStep,
-          data: { ...onboardingData, ...stepData }
+          data: normalizeOnboardingData({ ...onboardingData, ...stepData })
         })
       });
     } catch (err) {
@@ -178,26 +193,30 @@ export default function OnboardingWizard({ onComplete }) {
   };
 
   const handleInterestToggle = (interest) => {
-    setOnboardingData(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
+    setOnboardingData(prev => {
+      const current = normalizeOnboardingData(prev);
+      return {
+        ...current,
+        interests: current.interests.includes(interest)
+          ? current.interests.filter(i => i !== interest)
+          : [...current.interests, interest]
+      };
+    });
   };
 
   const canProceed = () => {
     const step = ONBOARDING_STEPS[currentStep];
+    const data = normalizeOnboardingData(onboardingData);
     
-    switch (step.id) {
+    switch (step?.id) {
       case 'welcome':
         return true;
       case 'goals':
-        return onboardingData.goals.length > 0;
+        return data.goals.trim().length > 0;
       case 'interests':
-        return onboardingData.interests.length > 0;
+        return data.interests.length > 0;
       case 'experience':
-        return onboardingData.experience.length > 0;
+        return data.experience.length > 0;
       case 'complete':
         return true;
       default:
@@ -205,7 +224,7 @@ export default function OnboardingWizard({ onComplete }) {
     }
   };
 
-  const step = ONBOARDING_STEPS[currentStep];
+  const step = ONBOARDING_STEPS[currentStep] || ONBOARDING_STEPS[0];
 
   return (
     <div style={styles.overlay}>
@@ -257,8 +276,8 @@ export default function OnboardingWizard({ onComplete }) {
                 <textarea
                   style={styles.textarea}
                   placeholder="E.g., Build an email list of 1,000 subscribers, Learn SEO basics, Launch my first ad campaign..."
-                  value={onboardingData.goals}
-                  onChange={(e) => setOnboardingData(prev => ({ ...prev, goals: e.target.value }))}
+                  value={onboardingData.goals || ''}
+                  onChange={(e) => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), goals: e.target.value }))}
                   rows={4}
                 />
                 <label style={styles.label}>
@@ -268,8 +287,8 @@ export default function OnboardingWizard({ onComplete }) {
                   style={styles.input}
                   type="text"
                   placeholder="$5,000/month"
-                  value={onboardingData.targetRevenue}
-                  onChange={(e) => setOnboardingData(prev => ({ ...prev, targetRevenue: e.target.value }))}
+                  value={onboardingData.targetRevenue || ''}
+                  onChange={(e) => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), targetRevenue: e.target.value }))}
                 />
               </div>
             )}
@@ -281,11 +300,11 @@ export default function OnboardingWizard({ onComplete }) {
                     key={interest}
                     style={{
                       ...styles.interestButton,
-                      ...(onboardingData.interests.includes(interest) ? styles.interestButtonActive : {})
+                      ...((onboardingData.interests || []).includes(interest) ? styles.interestButtonActive : {})
                     }}
                     onClick={() => handleInterestToggle(interest)}
                   >
-                    {onboardingData.interests.includes(interest) && (
+                    {(onboardingData.interests || []).includes(interest) && (
                       <FaCheck style={styles.interestCheck} />
                     )}
                     {interest}
@@ -303,7 +322,7 @@ export default function OnboardingWizard({ onComplete }) {
                       ...styles.experienceButton,
                       ...(onboardingData.experience === level.value ? styles.experienceButtonActive : {})
                     }}
-                    onClick={() => setOnboardingData(prev => ({ ...prev, experience: level.value }))}
+                    onClick={() => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), experience: level.value }))}
                   >
                     <div style={styles.experienceLabelContainer}>
                       <span style={styles.experienceLabel}>{level.label}</span>

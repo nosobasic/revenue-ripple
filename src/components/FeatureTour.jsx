@@ -25,7 +25,8 @@ export default function FeatureTour({ tourName, onComplete }) {
       });
       
       if (toursResponse.ok) {
-        const { tours } = await toursResponse.json();
+        const payload = await toursResponse.json();
+        const tours = Array.isArray(payload?.tours) ? payload.tours : [];
         const foundTour = tours.find(t => t.tour_name === tourName);
         
         if (foundTour && !foundTour.progress?.completed && !foundTour.progress?.skipped) {
