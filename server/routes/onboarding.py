@@ -1,14 +1,14 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 import traceback
-from middleware.auth import require_auth
-from server.lib.supabaseAdmin import get_supabase_admin
+from middleware.request_user import require_user
+from middleware.supabase_admin import get_supabase_admin
 
 onboarding_bp = Blueprint('onboarding', __name__)
 supabase = get_supabase_admin()
 
 @onboarding_bp.route('/api/onboarding/state', methods=['GET'])
-@require_auth
+@require_user
 def get_onboarding_state(user_id):
     """Get the current onboarding state for a user"""
     try:
@@ -45,7 +45,7 @@ def get_onboarding_state(user_id):
         return jsonify({'error': 'Failed to fetch onboarding state'}), 500
 
 @onboarding_bp.route('/api/onboarding/state', methods=['PUT'])
-@require_auth
+@require_user
 def update_onboarding_state(user_id):
     """Update onboarding state"""
     try:
@@ -98,7 +98,7 @@ def update_onboarding_state(user_id):
         return jsonify({'error': 'Failed to update onboarding state'}), 500
 
 @onboarding_bp.route('/api/onboarding/complete', methods=['POST'])
-@require_auth
+@require_user
 def complete_onboarding(user_id):
     """Mark onboarding as completed"""
     try:
@@ -125,7 +125,7 @@ def complete_onboarding(user_id):
         return jsonify({'error': 'Failed to complete onboarding'}), 500
 
 @onboarding_bp.route('/api/feature-tours', methods=['GET'])
-@require_auth
+@require_user
 def get_feature_tours(user_id):
     """Get all available feature tours"""
     try:
@@ -172,7 +172,7 @@ def get_feature_tours(user_id):
         return jsonify({'error': 'Failed to fetch feature tours'}), 500
 
 @onboarding_bp.route('/api/feature-tours/<tour_id>/start', methods=['POST'])
-@require_auth
+@require_user
 def start_feature_tour(user_id, tour_id):
     """Start a feature tour"""
     try:
@@ -219,7 +219,7 @@ def start_feature_tour(user_id, tour_id):
         return jsonify({'error': 'Failed to start tour'}), 500
 
 @onboarding_bp.route('/api/feature-tours/<tour_id>/progress', methods=['PUT'])
-@require_auth
+@require_user
 def update_tour_progress(user_id, tour_id):
     """Update progress on a feature tour"""
     try:
@@ -258,7 +258,7 @@ def update_tour_progress(user_id, tour_id):
         return jsonify({'error': 'Failed to update tour progress'}), 500
 
 @onboarding_bp.route('/api/feature-tours/<tour_id>/skip', methods=['POST'])
-@require_auth
+@require_user
 def skip_tour(user_id, tour_id):
     """Skip a feature tour"""
     try:

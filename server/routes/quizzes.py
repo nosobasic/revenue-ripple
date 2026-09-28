@@ -3,15 +3,15 @@ import openai
 import os
 import json
 import traceback
-from middleware.auth import require_auth
-from server.lib.supabaseAdmin import get_supabase_admin
-from server.lib.openaiClient import client as openai_client
+from middleware.request_user import require_user
+from middleware.supabase_admin import get_supabase_admin
+from middleware.openai_client import client as openai_client
 
 quizzes_bp = Blueprint('quizzes', __name__)
 supabase = get_supabase_admin()
 
 @quizzes_bp.route('/api/quizzes/generate', methods=['POST'])
-@require_auth
+@require_user
 def generate_quiz(user_id):
     """
     Generate a quiz for a course module using AI
@@ -126,7 +126,7 @@ Return ONLY valid JSON in this exact format:
         }), 500
 
 @quizzes_bp.route('/api/quizzes/<course_id>/<module_id>', methods=['GET'])
-@require_auth
+@require_user
 def get_quiz(user_id, course_id, module_id):
     """Get quiz for a specific course module"""
     try:
@@ -159,7 +159,7 @@ def get_quiz(user_id, course_id, module_id):
         return jsonify({'error': 'Failed to fetch quiz'}), 500
 
 @quizzes_bp.route('/api/quizzes/submit', methods=['POST'])
-@require_auth
+@require_user
 def submit_quiz(user_id):
     """Submit and grade a quiz attempt"""
     try:
@@ -251,7 +251,7 @@ def submit_quiz(user_id):
         return jsonify({'error': 'Failed to submit quiz'}), 500
 
 @quizzes_bp.route('/api/quizzes/stats', methods=['GET'])
-@require_auth
+@require_user
 def get_quiz_stats(user_id):
     """Get statistics about user's quiz performance"""
     try:
@@ -292,7 +292,7 @@ def get_quiz_stats(user_id):
         return jsonify({'error': 'Failed to fetch quiz stats'}), 500
 
 @quizzes_bp.route('/api/homework/<course_id>/<module_id>', methods=['GET'])
-@require_auth
+@require_user
 def get_homework(user_id, course_id, module_id):
     """Get homework assignment for a specific course module"""
     try:
@@ -325,7 +325,7 @@ def get_homework(user_id, course_id, module_id):
         return jsonify({'error': 'Failed to fetch homework'}), 500
 
 @quizzes_bp.route('/api/homework/submit', methods=['POST'])
-@require_auth
+@require_user
 def submit_homework(user_id):
     """Submit homework for AI review"""
     if not openai_client:

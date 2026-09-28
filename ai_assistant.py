@@ -157,7 +157,7 @@ def ai_assistant():
         # Log interaction to database for learning and improvement
         try:
             if user_id:
-                from server.lib.supabaseAdmin import get_supabase_admin
+                from middleware.supabase_admin import get_supabase_admin
                 supabase = get_supabase_admin()
                 supabase.table('ai_assistant_interactions').insert({
                     'user_id': user_id,
@@ -274,7 +274,7 @@ def get_proactive_suggestions():
         abort(403, "Not authorized")
     
     try:
-        from server.lib.supabaseAdmin import get_supabase_admin
+        from middleware.supabase_admin import get_supabase_admin
         supabase = get_supabase_admin()
         
         goals_response = supabase.table('user_goals')\
@@ -377,7 +377,7 @@ def record_feedback():
         if not interaction_id or not reaction:
             return jsonify({'error': 'interaction_id and reaction are required'}), 400
         
-        from server.lib.supabaseAdmin import get_supabase_admin
+        from middleware.supabase_admin import get_supabase_admin
         supabase = get_supabase_admin()
         
         supabase.table('ai_assistant_interactions')\

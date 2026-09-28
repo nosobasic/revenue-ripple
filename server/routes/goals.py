@@ -1,14 +1,14 @@
 from flask import Blueprint, request, jsonify, abort
 from datetime import datetime
 import traceback
-from middleware.auth import require_auth
-from server.lib.supabaseAdmin import get_supabase_admin
+from middleware.request_user import require_user
+from middleware.supabase_admin import get_supabase_admin
 
 goals_bp = Blueprint('goals', __name__)
 supabase = get_supabase_admin()
 
 @goals_bp.route('/api/goals', methods=['GET'])
-@require_auth
+@require_user
 def get_goals(user_id):
     """Get all goals for the authenticated user"""
     try:
@@ -30,7 +30,7 @@ def get_goals(user_id):
         return jsonify({'error': 'Failed to fetch goals'}), 500
 
 @goals_bp.route('/api/goals', methods=['POST'])
-@require_auth
+@require_user
 def create_goal(user_id):
     """Create a new goal"""
     try:
@@ -66,7 +66,7 @@ def create_goal(user_id):
         return jsonify({'error': 'Failed to create goal'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>', methods=['PUT'])
-@require_auth
+@require_user
 def update_goal(user_id, goal_id):
     """Update an existing goal"""
     try:
@@ -112,7 +112,7 @@ def update_goal(user_id, goal_id):
         return jsonify({'error': 'Failed to update goal'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>', methods=['DELETE'])
-@require_auth
+@require_user
 def delete_goal(user_id, goal_id):
     """Delete a goal"""
     try:
@@ -133,7 +133,7 @@ def delete_goal(user_id, goal_id):
         return jsonify({'error': 'Failed to delete goal'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>/progress', methods=['POST'])
-@require_auth
+@require_user
 def update_goal_progress(user_id, goal_id):
     """Update progress towards a goal"""
     try:
@@ -182,7 +182,7 @@ def update_goal_progress(user_id, goal_id):
         return jsonify({'error': 'Failed to update goal progress'}), 500
 
 @goals_bp.route('/api/goals/stats', methods=['GET'])
-@require_auth
+@require_user
 def get_goal_stats(user_id):
     """Get statistics about user's goals"""
     try:
@@ -209,7 +209,7 @@ def get_goal_stats(user_id):
         return jsonify({'error': 'Failed to fetch goal stats'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>/milestones', methods=['GET'])
-@require_auth
+@require_user
 def get_goal_milestones(user_id, goal_id):
     """Get milestones for a specific goal"""
     try:
@@ -238,7 +238,7 @@ def get_goal_milestones(user_id, goal_id):
         return jsonify({'error': 'Failed to fetch milestones'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>/milestones', methods=['POST'])
-@require_auth
+@require_user
 def create_milestone(user_id, goal_id):
     """Create a new milestone for a goal"""
     try:
@@ -278,7 +278,7 @@ def create_milestone(user_id, goal_id):
         return jsonify({'error': 'Failed to create milestone'}), 500
 
 @goals_bp.route('/api/goals/<goal_id>/milestones/<milestone_id>', methods=['PUT'])
-@require_auth
+@require_user
 def update_milestone(user_id, goal_id, milestone_id):
     """Mark a milestone as completed"""
     try:
