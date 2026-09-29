@@ -267,7 +267,7 @@ const App = () => {
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/courses/:courseSlug" element={<ProtectedRoute><CourseOverview /></ProtectedRoute>} />
-        <Route path="/courses/:courseSlug/module-:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
+        <Route path="/courses/:courseSlug/:moduleId" element={<ProtectedRoute><CourseModule /></ProtectedRoute>} />
 
         <Route path="/affiliate-centre/*" element={<ProtectedRoute>
           <Routes>
