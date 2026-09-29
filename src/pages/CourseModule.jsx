@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { courses } from '../data/courses';
 import VideoPlayer from '../components/VideoPlayer';
 import AIAssistantWidget from '../components/AIAssistantWidget';
@@ -12,8 +12,10 @@ import { trackModuleView, trackModuleComplete } from '../services/engagementTrac
 import '../styles/courses.css';
 
 const CourseModule = () => {
-  const { courseSlug, moduleId } = useParams();
+  const { courseSlug, moduleId: routeModuleId } = useParams();
+  const moduleId = `module-${String(routeModuleId).replace('module-', '')}`;
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,9 +32,17 @@ const CourseModule = () => {
   useEffect(() => {
     if (!course || !module) {
       setError('Module not found');
+    } else {
+      setError(null);
     }
     setIsLoading(false);
   }, [course, module]);
+
+  useEffect(() => {
+    if (location.hash === '#knowledge-check' && !isLoading) {
+      document.getElementById('knowledge-check')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [isLoading, moduleId, location.hash]);
 
   // Track module view when component mounts
   useEffect(() => {
@@ -43,6 +53,7 @@ const CourseModule = () => {
 
   // Check if this module is already completed for this user
   useEffect(() => {
+    setCompleted(false);
     const fetchCompletion = async () => {
       if (!user) return;
       const { data, error } = await supabase
@@ -222,14 +233,16 @@ const CourseModule = () => {
       </div>
 
       {/* Module Quiz Section */}
-      <div style={{ marginTop: '48px' }}>
+      <div id="knowledge-check" style={{ marginTop: '48px', scrollMarginTop: '24px' }}>
         <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>
           Test Your Knowledge
         </h2>
         <ModuleQuiz 
+          key={`${courseSlug}:${moduleId}`}
           courseId={courseSlug}
           moduleId={moduleId}
           moduleTitle={module.title}
+          moduleDescription={module.description || ''}
         />
       </div>
 

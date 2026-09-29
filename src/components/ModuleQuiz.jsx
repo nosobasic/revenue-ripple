@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { getApiBase } from '../config/constants';
 import { FaQuestionCircle, FaCheck, FaTimes, FaRedo, FaTrophy } from 'react-icons/fa';
 
-export default function ModuleQuiz({ courseId, moduleId, moduleTitle }) {
+export default function ModuleQuiz({ courseId, moduleId, moduleTitle, moduleDescription = '' }) {
   const { user } = useAuth();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export default function ModuleQuiz({ courseId, moduleId, moduleTitle }) {
             course_id: courseId,
             module_id: moduleId,
             module_title: moduleTitle,
-            module_description: ''
+            module_description: moduleDescription
           })
         }
       );

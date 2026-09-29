@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 import traceback
+from uuid import uuid5, NAMESPACE_URL
 from middleware.request_user import require_user
 from middleware.supabase_admin import get_supabase_admin
 
@@ -102,6 +103,23 @@ def update_onboarding_state(user_id):
 def complete_onboarding(user_id):
     """Mark onboarding as completed"""
     try:
+        saved = supabase.table('user_onboarding_state').select('data').eq('user_id', user_id).execute()
+        if not saved.data:
+            return jsonify({'error': 'Onboarding state not found'}), 404
+        profile = saved.data[0].get('data') or {}
+        title = (profile.get('goals') or '').strip()
+        if not title:
+            return jsonify({'error': 'Please save your goal before finishing onboarding'}), 400
+        # Stable ID makes completion retries safe, including after a lost response.
+        goal_id = str(uuid5(NAMESPACE_URL, f'revenue-ripple:onboarding:{user_id}'))
+        supabase.table('user_goals').upsert({
+            'id': goal_id, 'user_id': user_id, 'title': title,
+            'goal_type': 'custom', 'priority': 1,
+            'description': 'Your starting goal from onboarding',
+            'metadata': {'source': 'onboarding', 'interests': profile.get('interests', []),
+                         'experience': profile.get('experience', ''),
+                         'targetRevenue': profile.get('targetRevenue', '')}
+        }, on_conflict='id', ignore_duplicates=True).execute()
         response = supabase.table('user_onboarding_state')\
             .update({
                 'completed': True,

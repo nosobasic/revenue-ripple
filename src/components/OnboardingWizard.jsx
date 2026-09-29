@@ -1,598 +1,242 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getApiBase } from '../config/constants';
-import { FaRocket, FaCheck, FaBullseye, FaGraduationCap, FaChartLine } from 'react-icons/fa';
-
-const ONBOARDING_STEPS = [
-  {
-    id: 'welcome',
-    title: 'Welcome to Revenue Ripple!',
-    description: 'Let me help you get started on your marketing journey',
-    icon: <FaRocket />
-  },
-  {
-    id: 'goals',
-    title: 'Set Your Goals',
-    description: "What do you want to achieve? Let's set some clear goals",
-    icon: <FaBullseye />
-  },
-  {
-    id: 'interests',
-    title: 'Your Interests',
-    description: 'Which marketing areas interest you most?',
-    icon: <FaGraduationCap />
-  },
-  {
-    id: 'experience',
-    title: 'Your Experience',
-    description: 'Help us tailor content to your skill level',
-    icon: <FaChartLine />
-  },
-  {
-    id: 'complete',
-    title: 'All Set!',
-    description: 'Your journey begins now',
-    icon: <FaCheck />
-  }
+import { useEffect, useState } from "react";
+import { ArrowRight, Check, Sparkles, Target } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { memberApi } from "../lib/memberApi";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "./ui/dialog";
+const interests = [
+  "SEO & Content Marketing",
+  "Paid Advertising (PPC)",
+  "Social Media Marketing",
+  "Email Marketing",
+  "Affiliate Marketing",
+  "Funnel Building",
+  "Web Design",
+  "AI & Automation",
 ];
-
-const MARKETING_INTERESTS = [
-  'SEO & Content Marketing',
-  'Paid Advertising (PPC)',
-  'Social Media Marketing',
-  'Email Marketing',
-  'Affiliate Marketing',
-  'Funnel Building',
-  'Web Design',
-  'AI & Automation'
+const titles = [
+  "What would you like to achieve?",
+  "What would you like to learn?",
+  "Choose your experience and pace",
+  "Your learning plan",
 ];
-
-const EXPERIENCE_LEVELS = [
-  { value: 'beginner', label: 'Beginner', description: 'Just starting out' },
-  { value: 'intermediate', label: 'Intermediate', description: 'Some experience' },
-  { value: 'advanced', label: 'Advanced', description: 'Experienced marketer' }
+const descriptions = [
+  "Start with one goal. We’ll keep it front and center on your dashboard.",
+  "Choose the skills you want to put into practice.",
+  "We’ll use this context to help you through the material.",
+  "Review your plan, then take your first step with Ripple.",
 ];
-
-const DEFAULT_ONBOARDING_DATA = {
-  goals: '',
+const defaults = {
+  goals: "",
   interests: [],
-  experience: '',
-  targetRevenue: ''
+  experience: "",
+  targetRevenue: "",
+  dailyMinutes: "15",
 };
-
-function normalizeOnboardingData(data) {
-  const incoming = data && typeof data === 'object' ? data : {};
-  return {
-    ...DEFAULT_ONBOARDING_DATA,
-    ...incoming,
-    goals: typeof incoming.goals === 'string' ? incoming.goals : '',
-    interests: Array.isArray(incoming.interests) ? incoming.interests : [],
-    experience: typeof incoming.experience === 'string' ? incoming.experience : '',
-    targetRevenue: typeof incoming.targetRevenue === 'string' ? incoming.targetRevenue : ''
-  };
-}
-
-export default function OnboardingWizard({ onComplete }) {
+export default function OnboardingWizard({
+  onComplete,
+  onDismiss,
+  initialState,
+}) {
   const { user } = useAuth();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [onboardingData, setOnboardingData] = useState(DEFAULT_ONBOARDING_DATA);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState(defaults);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   useEffect(() => {
-    loadOnboardingState();
-  }, []);
-
-  const loadOnboardingState = async () => {
-    if (!user) return;
-    
-    try {
-      const response = await fetch(`${getApiBase()}/api/onboarding/state`, {
-        headers: {
-          'x-user-id': user.id,
-          'x-user-role': user.role || 'member'
-        }
-      });
-      
-      if (response.ok) {
-        const { state } = await response.json();
-        if (state) {
-          setOnboardingData(normalizeOnboardingData(state.data));
-          const nextStep = Number.isInteger(state.current_step) ? state.current_step : 0;
-          setCurrentStep(Math.min(Math.max(nextStep, 0), ONBOARDING_STEPS.length - 1));
-          
-          if (state.completed) {
-            onComplete?.();
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load onboarding state:', err);
-    }
-  };
-
-  const updateOnboardingState = async (stepData) => {
-    if (!user) return;
-    
-    try {
-      await fetch(`${getApiBase()}/api/onboarding/state`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': user.id,
-          'x-user-role': user.role || 'member'
-        },
-        body: JSON.stringify({
-          current_step: currentStep,
-          data: normalizeOnboardingData({ ...onboardingData, ...stepData })
-        })
-      });
-    } catch (err) {
-      console.error('Failed to update onboarding state:', err);
-    }
-  };
-
-  const completeOnboarding = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      await fetch(`${getApiBase()}/api/onboarding/complete`, {
-        method: 'POST',
-        headers: {
-          'x-user-id': user.id,
-          'x-user-role': user.role || 'member'
-        }
-      });
-      
-      if (onboardingData.goals) {
-        await fetch(`${getApiBase()}/api/goals`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-user-id': user.id,
-            'x-user-role': user.role || 'member'
-          },
-          body: JSON.stringify({
-            title: onboardingData.goals,
-            goal_type: 'custom',
-            description: 'Initial goal set during onboarding',
-            priority: 1,
-            metadata: {
-              interests: onboardingData.interests,
-              experience: onboardingData.experience
-            }
-          })
-        });
-      }
-      
-      onComplete?.();
-    } catch (err) {
-      setError('Failed to complete onboarding. Please try again.');
-      console.error('Onboarding error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleNext = async () => {
-    if (currentStep < ONBOARDING_STEPS.length - 1) {
-      await updateOnboardingState({});
-      setCurrentStep(currentStep + 1);
-    } else {
-      await completeOnboarding();
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleInterestToggle = (interest) => {
-    setOnboardingData(prev => {
-      const current = normalizeOnboardingData(prev);
-      return {
-        ...current,
-        interests: current.interests.includes(interest)
-          ? current.interests.filter(i => i !== interest)
-          : [...current.interests, interest]
-      };
+    const incoming = initialState?.data || {};
+    setData({
+      ...defaults,
+      ...incoming,
+      goals: typeof incoming.goals === "string" ? incoming.goals : "",
+      interests: Array.isArray(incoming.interests) ? incoming.interests : [],
     });
-  };
-
-  const canProceed = () => {
-    const step = ONBOARDING_STEPS[currentStep];
-    const data = normalizeOnboardingData(onboardingData);
-    
-    switch (step?.id) {
-      case 'welcome':
-        return true;
-      case 'goals':
-        return data.goals.trim().length > 0;
-      case 'interests':
-        return data.interests.length > 0;
-      case 'experience':
-        return data.experience.length > 0;
-      case 'complete':
-        return true;
-      default:
-        return false;
+    // Original wizard had a welcome screen at index zero.
+    setStep(Math.min(3, Math.max(0, (initialState?.current_step || 1) - 1)));
+  }, [initialState]);
+  const change = (key, value) => setData((old) => ({ ...old, [key]: value }));
+  const valid =
+    step === 0
+      ? data.goals.trim().length > 0
+      : step === 1
+        ? data.interests.length > 0
+        : step === 2
+          ? !!data.experience
+          : true;
+  async function advance() {
+    if (!valid || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      await memberApi(user, "/api/onboarding/state", {
+        method: "PUT",
+        body: JSON.stringify({
+          current_step: Math.min(step + 2, 4),
+          data: { ...data, goals: data.goals.trim() },
+        }),
+      });
+      if (step === 3) {
+        await memberApi(user, "/api/onboarding/complete", { method: "POST" });
+        onComplete?.(data);
+      } else setStep(step + 1);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
     }
-  };
-
-  const step = ONBOARDING_STEPS[currentStep] || ONBOARDING_STEPS[0];
-
+  }
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        {/* Progress bar */}
-        <div style={styles.progressContainer}>
-          {ONBOARDING_STEPS.map((s, idx) => (
-            <div
-              key={s.id}
-              style={{
-                ...styles.progressStep,
-                ...(idx <= currentStep ? styles.progressStepActive : {})
-              }}
-            />
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open && !busy) onDismiss?.();
+      }}
+    >
+      <DialogContent
+        onEscapeKeyDown={(e) => {
+          if (busy) e.preventDefault();
+        }}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <span className="rr-eyebrow">
+          <Sparkles size={15} /> Welcome to Revenue Ripple
+        </span>
+        <div className="rr-step-bars" aria-label={`Step ${step + 1} of 4`}>
+          {titles.map((_, i) => (
+            <span key={i} className={i <= step ? "active" : ""} />
           ))}
         </div>
-
-        {/* Content */}
-        <div style={styles.content}>
-          <div style={styles.iconContainer}>
-            {step.icon}
-          </div>
-          
-          <h2 style={styles.title}>{step.title}</h2>
-          <p style={styles.description}>{step.description}</p>
-
-          {/* Step-specific content */}
-          <div style={styles.stepContent}>
-            {step.id === 'welcome' && (
-              <div style={styles.welcomeContent}>
-                <p style={styles.welcomeText}>
-                  I'm Ripple, your AI marketing guide! I'll help you:
-                </p>
-                <ul style={styles.featureList}>
-                  <li><FaCheck style={styles.checkIcon} /> Navigate courses and training</li>
-                  <li><FaCheck style={styles.checkIcon} /> Set and track your goals</li>
-                  <li><FaCheck style={styles.checkIcon} /> Test your knowledge with quizzes</li>
-                  <li><FaCheck style={styles.checkIcon} /> Apply skills with real homework</li>
-                  <li><FaCheck style={styles.checkIcon} /> Answer questions anytime</li>
-                </ul>
-              </div>
-            )}
-
-            {step.id === 'goals' && (
-              <div style={styles.inputContainer}>
-                <label style={styles.label}>
-                  What's your main marketing goal right now?
-                </label>
-                <textarea
-                  style={styles.textarea}
-                  placeholder="E.g., Build an email list of 1,000 subscribers, Learn SEO basics, Launch my first ad campaign..."
-                  value={onboardingData.goals || ''}
-                  onChange={(e) => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), goals: e.target.value }))}
-                  rows={4}
-                />
-                <label style={styles.label}>
-                  Target revenue (optional)
-                </label>
-                <input
-                  style={styles.input}
-                  type="text"
-                  placeholder="$5,000/month"
-                  value={onboardingData.targetRevenue || ''}
-                  onChange={(e) => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), targetRevenue: e.target.value }))}
-                />
-              </div>
-            )}
-
-            {step.id === 'interests' && (
-              <div style={styles.interestsGrid}>
-                {MARKETING_INTERESTS.map(interest => (
-                  <button
-                    key={interest}
-                    style={{
-                      ...styles.interestButton,
-                      ...((onboardingData.interests || []).includes(interest) ? styles.interestButtonActive : {})
-                    }}
-                    onClick={() => handleInterestToggle(interest)}
-                  >
-                    {(onboardingData.interests || []).includes(interest) && (
-                      <FaCheck style={styles.interestCheck} />
-                    )}
-                    {interest}
+        <DialogTitle className="rr-dialog-title">{titles[step]}</DialogTitle>
+        <DialogDescription className="rr-muted">
+          {descriptions[step]}
+        </DialogDescription>
+        <div className="rr-onboarding-body">
+          {step === 0 && (
+            <>
+              <label htmlFor="onboarding-goal">My main goal</label>
+              <textarea
+                id="onboarding-goal"
+                maxLength={500}
+                rows={3}
+                placeholder="Build an email list of 1,000 subscribers…"
+                value={data.goals}
+                onChange={(e) => change("goals", e.target.value)}
+              />
+              <div className="rr-chips">
+                {[
+                  "Launch my first campaign",
+                  "Grow my email list",
+                  "Use AI in my business",
+                ].map((goal) => (
+                  <button key={goal} onClick={() => change("goals", goal)}>
+                    {goal}
                   </button>
                 ))}
               </div>
-            )}
-
-            {step.id === 'experience' && (
-              <div style={styles.experienceLevels}>
-                {EXPERIENCE_LEVELS.map(level => (
-                  <button
-                    key={level.value}
-                    style={{
-                      ...styles.experienceButton,
-                      ...(onboardingData.experience === level.value ? styles.experienceButtonActive : {})
-                    }}
-                    onClick={() => setOnboardingData(prev => ({ ...normalizeOnboardingData(prev), experience: level.value }))}
-                  >
-                    <div style={styles.experienceLabelContainer}>
-                      <span style={styles.experienceLabel}>{level.label}</span>
-                      <span style={styles.experienceDescription}>{level.description}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {step.id === 'complete' && (
-              <div style={styles.completeContent}>
-                <div style={styles.confettiIcon}>🎉</div>
-                <p style={styles.completeText}>
-                  You're all set! I'll be here to guide you every step of the way.
-                  Let's start building your marketing success!
-                </p>
-              </div>
-            )}
-          </div>
-
-          {error && (
-            <div style={styles.error}>{error}</div>
+              <label htmlFor="revenue-target">
+                Revenue target <span className="rr-muted">(optional)</span>
+              </label>
+              <input
+                id="revenue-target"
+                value={data.targetRevenue}
+                onChange={(e) => change("targetRevenue", e.target.value)}
+                placeholder="e.g. $5,000 / month"
+              />
+            </>
           )}
-
-          {/* Navigation buttons */}
-          <div style={styles.buttonContainer}>
-            {currentStep > 0 && step.id !== 'complete' && (
-              <button
-                style={styles.backButton}
-                onClick={handlePrevious}
-                disabled={loading}
+          {step === 1 && (
+            <div className="rr-choice-grid">
+              {interests.map((interest) => (
+                <button
+                  key={interest}
+                  aria-pressed={data.interests.includes(interest)}
+                  onClick={() =>
+                    change(
+                      "interests",
+                      data.interests.includes(interest)
+                        ? data.interests.filter((i) => i !== interest)
+                        : [...data.interests, interest],
+                    )
+                  }
+                >
+                  {interest}
+                  {data.interests.includes(interest) && <Check size={16} />}
+                </button>
+              ))}
+            </div>
+          )}
+          {step === 2 && (
+            <>
+              <div className="rr-choice-grid">
+                {["beginner", "intermediate", "advanced"].map((level) => (
+                  <button
+                    key={level}
+                    aria-pressed={data.experience === level}
+                    onClick={() => change("experience", level)}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+              <label htmlFor="learning-time">Time for learning each day</label>
+              <select
+                id="learning-time"
+                value={data.dailyMinutes}
+                onChange={(e) => change("dailyMinutes", e.target.value)}
               >
-                Back
-              </button>
-            )}
-            <button
-              style={{
-                ...styles.nextButton,
-                ...(canProceed() ? {} : styles.nextButtonDisabled)
-              }}
-              onClick={handleNext}
-              disabled={!canProceed() || loading}
-            >
-              {loading ? 'Saving...' : step.id === 'complete' ? 'Get Started!' : 'Next'}
-            </button>
-          </div>
+                {["10", "15", "30", "60"].map((t) => (
+                  <option key={t} value={t}>
+                    {t} minutes
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+          {step === 3 && (
+            <div className="rr-plan-preview">
+              <Target size={26} />
+              <h3>{data.goals}</h3>
+              <p>{data.interests.join(" · ")}</p>
+              <p>
+                {data.experience} · {data.dailyMinutes} minutes a day
+              </p>
+              <ol>
+                <li>Learn with a course matched to your interests.</li>
+                <li>Check your understanding with a module quiz.</li>
+                <li>Ask Ripple for help applying what you learned.</li>
+              </ol>
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+        {error && (
+          <p role="alert" className="rr-error">
+            {error}
+          </p>
+        )}
+        <div className="rr-dialog-actions">
+          <Button
+            variant="ghost"
+            disabled={busy}
+            onClick={() => (step ? setStep(step - 1) : onDismiss?.())}
+          >
+            {step ? "Back" : "Finish later"}
+          </Button>
+          <span className="rr-muted">{step + 1} / 4</span>
+          <Button disabled={!valid || busy} onClick={advance}>
+            {busy
+              ? "Saving your plan…"
+              : step === 3
+                ? "Start my journey"
+                : "Continue"}
+            <ArrowRight />
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
-
-const styles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 9999,
-    backdropFilter: 'blur(4px)'
-  },
-  modal: {
-    backgroundColor: 'white',
-    borderRadius: '16px',
-    width: '90%',
-    maxWidth: '600px',
-    maxHeight: '90vh',
-    overflow: 'auto',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-  },
-  progressContainer: {
-    display: 'flex',
-    gap: '8px',
-    padding: '24px 24px 0'
-  },
-  progressStep: {
-    flex: 1,
-    height: '4px',
-    backgroundColor: '#e5e7eb',
-    borderRadius: '2px',
-    transition: 'background-color 0.3s'
-  },
-  progressStepActive: {
-    backgroundColor: '#2563eb'
-  },
-  content: {
-    padding: '32px'
-  },
-  iconContainer: {
-    fontSize: '48px',
-    color: '#2563eb',
-    textAlign: 'center',
-    marginBottom: '16px'
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: 'bold',
-    color: '#1f2937',
-    textAlign: 'center',
-    marginBottom: '8px'
-  },
-  description: {
-    fontSize: '16px',
-    color: '#6b7280',
-    textAlign: 'center',
-    marginBottom: '32px'
-  },
-  stepContent: {
-    marginBottom: '32px'
-  },
-  welcomeContent: {
-    textAlign: 'left'
-  },
-  welcomeText: {
-    fontSize: '16px',
-    color: '#374151',
-    marginBottom: '16px'
-  },
-  featureList: {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0
-  },
-  checkIcon: {
-    color: '#10b981',
-    marginRight: '12px'
-  },
-  inputContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px'
-  },
-  label: {
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: '4px'
-  },
-  textarea: {
-    width: '100%',
-    padding: '12px',
-    fontSize: '14px',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    resize: 'vertical',
-    fontFamily: 'inherit'
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    fontSize: '14px',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    fontFamily: 'inherit'
-  },
-  interestsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-    gap: '12px'
-  },
-  interestButton: {
-    padding: '16px',
-    fontSize: '14px',
-    fontWeight: '500',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
-    backgroundColor: 'white',
-    color: '#374151',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px'
-  },
-  interestButtonActive: {
-    borderColor: '#2563eb',
-    backgroundColor: '#eff6ff',
-    color: '#2563eb'
-  },
-  interestCheck: {
-    fontSize: '16px'
-  },
-  experienceLevels: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px'
-  },
-  experienceButton: {
-    padding: '20px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '8px',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    textAlign: 'left'
-  },
-  experienceButtonActive: {
-    borderColor: '#2563eb',
-    backgroundColor: '#eff6ff'
-  },
-  experienceLabelContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px'
-  },
-  experienceLabel: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#1f2937'
-  },
-  experienceDescription: {
-    fontSize: '14px',
-    color: '#6b7280'
-  },
-  completeContent: {
-    textAlign: 'center'
-  },
-  confettiIcon: {
-    fontSize: '64px',
-    marginBottom: '16px'
-  },
-  completeText: {
-    fontSize: '16px',
-    color: '#374151',
-    lineHeight: '1.6'
-  },
-  error: {
-    backgroundColor: '#fef2f2',
-    color: '#991b1b',
-    padding: '12px',
-    borderRadius: '8px',
-    fontSize: '14px',
-    marginBottom: '16px'
-  },
-  buttonContainer: {
-    display: 'flex',
-    gap: '12px',
-    justifyContent: 'flex-end'
-  },
-  backButton: {
-    padding: '12px 24px',
-    fontSize: '16px',
-    fontWeight: '500',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    backgroundColor: 'white',
-    color: '#374151',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  },
-  nextButton: {
-    padding: '12px 32px',
-    fontSize: '16px',
-    fontWeight: '500',
-    border: 'none',
-    borderRadius: '8px',
-    background: 'linear-gradient(to right, #2563eb, #1d4ed8)',
-    color: 'white',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  },
-  nextButtonDisabled: {
-    opacity: 0.5,
-    cursor: 'not-allowed'
-  }
-};

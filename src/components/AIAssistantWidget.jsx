@@ -250,12 +250,15 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-role': userRole
+          'x-user-role': userRole,
+          'x-user-id': user.id
         },
         body: JSON.stringify({ 
           message: contextualMessage,
+          previousMessages: messages.slice(-6),
           context: {
             page: location.pathname,
+            learningContext: pageContext,
             userRole: userRole,
             previousMessages: messages.slice(-3), // Send last 3 messages for context
             briefing: briefingContext // Include active briefing context

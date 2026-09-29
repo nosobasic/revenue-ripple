@@ -6,6 +6,16 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        background: 'hsl(var(--background))', foreground: 'hsl(var(--foreground))',
+        card: { DEFAULT: 'hsl(var(--card))', foreground: 'hsl(var(--foreground))' },
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(0 0% 100%)' },
+        secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--foreground))' },
+        accent: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--foreground))' },
+        muted: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--muted-foreground))' },
+        destructive: { DEFAULT: 'hsl(0 70% 50%)', foreground: 'hsl(0 0% 100%)' },
+        input: 'hsl(var(--border))', border: 'hsl(var(--border))', ring: 'hsl(var(--primary))'
+      },
       animation: {
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'bounce': 'bounce 1s infinite',
