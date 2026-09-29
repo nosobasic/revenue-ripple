@@ -1,3 +1,27 @@
+/* Keep the homepage independent of CSS loaded by other routes. */
+.home > .navbar {
+  position: sticky;
+  top: 0;
+}
+
+.home > .hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.home .hero-title {
+  font-weight: 800;
+}
+
+@media (max-width: 768px) {
+  .home > .hero {
+    padding: 2rem 1rem;
+  }
+}
+
 .affiliate-program-section {
   padding: 4rem 0;
   background-color: #f8fafc;
