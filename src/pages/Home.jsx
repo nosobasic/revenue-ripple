@@ -666,23 +666,19 @@ export default function Home() {
   // Removed scroll-based parallax and opacity transforms to prevent fade effects
 
   useEffect(() => {
-    // Hotjar Tracking Code for Revenue Ripple
-    (function(h,o,t,j,a,r){
-      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-      h._hjSettings={hjid:6531289,hjsv:6};
-      a=o.getElementsByTagName('head')[0];
-      r=o.createElement('script');r.async=1;
-      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-      a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    // Keep one recorder across client-side visits instead of reinjecting it.
+    if (!document.getElementById('revenue-hotjar')) {
+      window.hj = window.hj || function () {
+        (window.hj.q = window.hj.q || []).push(arguments);
+      };
+      window._hjSettings = { hjid: 6531289, hjsv: 6 };
+      const script = document.createElement('script');
+      script.id = 'revenue-hotjar';
+      script.async = true;
+      script.src = 'https://static.hotjar.com/c/hotjar-6531289.js?sv=6';
+      document.head.appendChild(script);
+    }
 
-    // Debug environment variables
-    console.log('Environment Variables:', {
-      VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
-      VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
-      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL
-    });
-    
     // Handle window resize for responsive design
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -709,7 +705,7 @@ export default function Home() {
         className="hero"
         style={{ position: 'relative', zIndex: 3 }}
       >
-        {/* Animated Background Gradient */}
+        {/* Static Background Gradient */}
         <motion.div
           className="hero-background"
           style={{
@@ -722,15 +718,7 @@ export default function Home() {
             backgroundSize: '400% 400%',
             opacity: 0.1,
             zIndex: 0,
-            filter: 'blur(100px)'
-          }}
-          animate={{
-            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-          }}
-          transition={{
-            duration: 40,
-            repeat: Infinity,
-            ease: 'linear'
+            pointerEvents: 'none'
           }}
         />
         
@@ -958,7 +946,7 @@ export default function Home() {
               </div>
             </div>
             <div className="content-image">
-              <img 
+              <img loading="lazy" decoding="async" width="1472" height="832"
                 src="/assets/images/images/rev-rip-device.png" 
                 alt="Revenue Ripple Platform" 
                 className="device-image"
@@ -976,7 +964,6 @@ export default function Home() {
               className="stat-card"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255,255,255,0.3)',
                 textAlign: 'center',
                 display: 'flex',
@@ -1002,7 +989,6 @@ export default function Home() {
               className="stat-card"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255,255,255,0.3)',
                 textAlign: 'center',
                 display: 'flex',
@@ -1028,7 +1014,6 @@ export default function Home() {
               className="stat-card"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255,255,255,0.3)',
                 textAlign: 'center',
                 display: 'flex',
@@ -1054,7 +1039,6 @@ export default function Home() {
               className="stat-card"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(255,255,255,0.3)',
                 textAlign: 'center',
                 display: 'flex',
@@ -1113,7 +1097,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.2)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
               }}
@@ -1168,7 +1151,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.2)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
               }}
@@ -1223,7 +1205,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.3)',
                 boxShadow: '0 8px 32px rgba(37, 99, 235, 0.2)',
                 position: 'relative',
@@ -1373,7 +1354,6 @@ export default function Home() {
             >
               <div style={{
                 background: 'rgba(255,255,255,0.15)',
-                backdropFilter: 'blur(10px)',
                 borderRadius: '16px',
                 padding: '2rem',
                 maxWidth: '400px',
@@ -1424,7 +1404,7 @@ export default function Home() {
           overflow: 'hidden'
         }}
       >
-        {/* Animated Background */}
+        {/* Static Background */}
         <motion.div
           style={{
             position: 'absolute',
@@ -1435,14 +1415,6 @@ export default function Home() {
             background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(147, 51, 234, 0.05) 100%)',
             backgroundSize: '200% 200%',
             zIndex: 0
-          }}
-          animate={{
-            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: 'linear'
           }}
         />
         
@@ -1479,7 +1451,7 @@ export default function Home() {
                   whileHover="hover"
                   style={{
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                    backdropFilter: 'blur(10px)',
+
                     border: '1px solid rgba(37, 99, 235, 0.2)',
                     boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                     position: 'relative',
@@ -1645,7 +1617,7 @@ export default function Home() {
                 whileHover="hover"
                 style={{
                   background: 'rgba(255,255,255,0.05)',
-                  backdropFilter: 'blur(10px)',
+
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '16px',
                   padding: '2rem',
@@ -1699,7 +1671,7 @@ export default function Home() {
         variants={containerVariants}
         style={{ background: '#f9fafb', padding: '4rem 0', position: 'relative', overflow: 'hidden' }}
       >
-        {/* Animated Background Pattern */}
+        {/* Static Background Pattern */}
         <motion.div
           style={{
             position: 'absolute',
@@ -1709,15 +1681,6 @@ export default function Home() {
             bottom: 0,
             background: 'radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.05) 0%, transparent 50%)',
             zIndex: 0
-          }}
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
-          }}
-          transition={{
-            duration: 40,
-            repeat: Infinity,
-            repeatType: 'reverse',
-            ease: 'linear'
           }}
         />
         
@@ -1747,7 +1710,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.2)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
               }}
@@ -1777,7 +1739,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(5, 150, 105, 0.3)',
                 boxShadow: '0 8px 32px rgba(5, 150, 105, 0.2)',
                 position: 'relative',
@@ -1837,7 +1798,7 @@ export default function Home() {
             </div>
 
             <div className="affiliate-image">
-              <img 
+              <img loading="lazy" decoding="async" width="1472" height="832"
                 src="/assets/images/images/ebook-explosion.png" 
                 alt="Affiliate Program Materials" 
                 className="responsive-image"
@@ -1849,7 +1810,7 @@ export default function Home() {
                 You'll get access to lead magnets, landing pages, promo scripts, and full walkthroughs so you're never guessing what to do next. We're even dropping exclusive digital books and templates in the mix—because we're not just teaching you how to make money, we're handing you the blueprint.
               </p>
               <div className="affiliate-visual-highlight">
-                <img src="/assets/images/images/Affilate-reseller-earnings-dash.png" alt="Affiliate Dashboard Preview" className="responsive-image" />
+                <img loading="lazy" decoding="async" width="2880" height="1556" src="/assets/images/images/Affilate-reseller-earnings-dash.png" alt="Affiliate Dashboard Preview" className="responsive-image" />
                 <p className="caption">Real dashboard. Real payouts. Real growth.</p>
               </div>
             </div>
@@ -1876,7 +1837,7 @@ export default function Home() {
             marketer. So why wait? Join today for free and take your marketing game to the next level!
           </p>
           <div className="workspace-image">
-            <img src="/assets/images/images/rev-rip-pic.png" alt="Clean modern workspace with Revenue Ripple platform" />
+            <img loading="lazy" decoding="async" width="1472" height="832" src="/assets/images/images/rev-rip-pic.png" alt="Clean modern workspace with Revenue Ripple platform" />
           </div>
           <div className="what-is-cta-container">
             <a 
@@ -1923,7 +1884,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
@@ -1932,7 +1892,7 @@ export default function Home() {
               </div>
               <p className="testimonial-text">"Revenue Ripple transformed my marketing game! The tutorials are incredibly detailed and easy to follow. I've seen a 300% increase in my conversion rates since implementing their strategies."</p>
               <div className="testimonial-author">
-                <img 
+                <img loading="lazy" decoding="async" width="952" height="630"
                   src="/assets/images/images/profile-pic1.png" 
                   alt="Profile of Sarah Johnson" 
                   className="testimonial-avatar"
@@ -1950,7 +1910,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
@@ -1959,7 +1918,7 @@ export default function Home() {
               </div>
               <p className="testimonial-text">"The ROI from implementing Revenue Ripple's strategies has been incredible. Their step-by-step approach made complex marketing concepts easy to understand and implement."</p>
               <div className="testimonial-author">
-                <motion.img 
+                <motion.img loading="lazy" decoding="async" width="674" height="484"
                   src="/assets/images/images/profile-pic2.png" 
                   alt="Profile of Michael Chen" 
                   className="testimonial-avatar"
@@ -1978,7 +1937,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(0,0,0,0.1)'
               }}
             >
@@ -1987,7 +1945,7 @@ export default function Home() {
               </div>
               <p className="testimonial-text">"As a beginner in digital marketing, I was overwhelmed until I found Revenue Ripple. Their platform gave me the confidence and skills I needed to launch my own agency."</p>
               <div className="testimonial-author">
-                <motion.img 
+                <motion.img loading="lazy" decoding="async" width="812" height="472"
                   src="/assets/images/images/profile-pic3.png" 
                   alt="Profile of Paul Rodriguez" 
                   className="testimonial-avatar"
@@ -2006,7 +1964,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The affiliate program is a game-changer! Not only am I learning valuable skills, but I'm also earning while implementing what I learn. It's a win-win situation."</p>
                   <div className="testimonial-author">
-                    <img src="/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
+                    <img loading="lazy" decoding="async" width="692" height="408" src="/assets/images/images/profile-pic4.png" alt="Profile of David Thompson" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>David Thompson</h4>
                       <p>Affiliate Marketer</p>
@@ -2018,7 +1976,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The support team is incredible! They're always there to help and the community is so encouraging. It's like having a marketing family that wants you to succeed."</p>
                   <div className="testimonial-author">
-                    <img src="/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
+                    <img loading="lazy" decoding="async" width="702" height="478" src="/assets/images/images/profile-pic5.png" alt="Profile of Adin Parker" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Adin Parker</h4>
                       <p>Small Business Owner</p>
@@ -2030,7 +1988,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The video courses are pure gold! Each lesson is packed with actionable insights that I could implement immediately. My social media engagement has tripled!"</p>
                   <div className="testimonial-author">
-                    <img src="/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
+                    <img loading="lazy" decoding="async" width="352" height="540" src="/assets/images/images/profile-pic6.png" alt="Profile of James Wilson" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>James Wilson</h4>
                       <p>Social Media Manager</p>
@@ -2042,7 +2000,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"I love how the platform keeps updating with new content and strategies. It helps me stay ahead of the curve in this fast-paced digital marketing world."</p>
                   <div className="testimonial-author">
-                    <img src="/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
+                    <img loading="lazy" decoding="async" width="712" height="570" src="/assets/images/images/profile-pic7.png" alt="Profile of Nina Patel" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Nina Patel</h4>
                       <p>Marketing Director</p>
@@ -2054,7 +2012,7 @@ export default function Home() {
                   <div className="stars">★★★★★</div>
                   <p className="testimonial-text">"The ROI tracking templates and analytics tutorials helped me prove the value of my marketing efforts to clients. My retainer rates have doubled!"</p>
                   <div className="testimonial-author">
-                    <img src="/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
+                    <img loading="lazy" decoding="async" width="580" height="376" src="/assets/images/images/profile-pic8.png" alt="Profile of Alex Foster" className="testimonial-avatar" />
                     <div className="author-info">
                       <h4>Alex Foster</h4>
                       <p>Marketing Analytics Specialist</p>
@@ -2308,7 +2266,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.2)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 borderRadius: '12px',
@@ -2380,7 +2337,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.3)',
                 boxShadow: '0 8px 32px rgba(37, 99, 235, 0.2)',
                 borderRadius: '12px',
@@ -2466,7 +2422,6 @@ export default function Home() {
               whileHover="hover"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                backdropFilter: 'blur(10px)',
                 border: '2px solid rgba(37, 99, 235, 0.2)',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
                 borderRadius: '12px',

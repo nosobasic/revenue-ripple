@@ -34,17 +34,17 @@ const ROUTE_SEO = {
 };
 const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success', '/reseller-success', '/pro-reseller-success', '/thank-you-survival-playbook', '/thank-you-membership-mastery', '/thank-you-dmd', '/thank-you-member-to-affiliate', '/founders-success', '/unsubscribe'];
 
-// Immediate load components (critical path)
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import AuthCallback from './pages/AuthCallback';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import CookiePolicy from './pages/CookiePolicy';
-import RefundPolicy from './pages/RefundPolicy';
-import DataDeletion from './pages/DataDeletion';
-import Unsubscribe from './pages/Unsubscribe';
+// Load page code only when its route is visited.
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const RefundPolicy = lazy(() => import('./pages/RefundPolicy'));
+const DataDeletion = lazy(() => import('./pages/DataDeletion'));
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe'));
 // Lazy load heavy components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Training = lazy(() => import('./pages/Training'));

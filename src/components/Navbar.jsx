@@ -1,3 +1,4 @@
+import { prefetchRoute } from '../utils/routePrefetch';
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -78,7 +79,7 @@ const Navbar = React.memo(() => {
   }, [user]);
 
   return (
-    <nav className="navbar">
+    <nav onPointerOver={prefetchRoute} onFocus={prefetchRoute} onTouchStart={prefetchRoute} className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand" onClick={closeMobileMenu}>
           <img 
