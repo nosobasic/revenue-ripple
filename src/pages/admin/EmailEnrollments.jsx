@@ -1,11 +1,32 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase/client';
+import { getApiBase } from '../../config/constants';
 
 const AdminEmailEnrollments = () => {
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState('active');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pausing, setPausing] = useState(null);
+
+  const pauseEnrollment = async (id) => {
+    setPausing(id);
+    setError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Please sign in again.');
+      const response = await fetch(`${getApiBase()}/api/admin/email/enrollments/${id}/pause`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!response.ok) throw new Error('Could not pause enrollment. Refresh and try again.');
+      setRows((current) => current.flatMap((row) => row.id !== id ? [row] : status === 'active' ? [] : [{ ...row, status: 'paused' }]));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPausing(null);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -70,6 +91,7 @@ const AdminEmailEnrollments = () => {
                 <th style={{ textAlign: 'left', padding: '8px' }}>GR day</th>
                 <th style={{ textAlign: 'left', padding: '8px' }}>Next send</th>
                 <th style={{ textAlign: 'left', padding: '8px' }}>Status</th>
+                <th style={{ textAlign: 'left', padding: '8px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -84,12 +106,13 @@ const AdminEmailEnrollments = () => {
                     <td style={{ padding: '8px' }}>{row.getresponse_day_of_cycle ?? '—'}</td>
                     <td style={{ padding: '8px' }}>{row.next_send_at ? new Date(row.next_send_at).toLocaleString() : '—'}</td>
                     <td style={{ padding: '8px' }}>{row.status}</td>
+                    <td style={{ padding: '8px' }}>{row.status === 'active' && <button disabled={pausing === row.id} onClick={() => pauseEnrollment(row.id)}>{pausing === row.id ? 'Pausing…' : 'Pause'}</button>}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
-          {rows.length === 0 && <p style={{ marginTop: '12px' }}>No enrollments yet. Run the GetResponse import after applying the SQL migration.</p>}
+          {rows.length === 0 && <p style={{ marginTop: '12px' }}>No enrollments match this filter. Import the existing list paused only after SES production access is approved.</p>}
         </div>
       )}
     </div>

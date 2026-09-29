@@ -23,7 +23,7 @@ Automatic posting is disabled. n8n imports discoveries and responses from the su
 
 ## Installation and n8n setup
 
-Apply corrected `002_acquisition_engine.sql` then `003_acquisition_manual_outreach.sql`. The corrected foreign key matches the existing transcript video ID type (text or UUID) without altering Content Engine data. For a failed original install, the delivered `Acquisition_Install_Corrected.sql` combines both changes in one transaction. If 002 already succeeded, apply 003 only.
+Apply corrected `002_acquisition_engine.sql` then `003_acquisition_manual_outreach.sql`. The corrected foreign key matches the existing transcript video ID type (text or UUID) without altering Content Engine data. For a failed original install, apply the corrected 002 file first, then 003; the originally referenced combined installer is not present in this repository. If 002 already succeeded, apply 003 only.
 
 Use `ACQUISITION_INGEST_SECRET` (32+ random characters) for n8n Header Auth, keeping the existing Supabase/OpenAI settings. `ACQUISITION_PUBLIC_ORIGIN` and `ACQUISITION_ALLOWED_ORIGINS` retain their existing meanings. Enable `ACQUISITION_ATTRIBUTION_ENABLED=true` on Flask only after the migration is installed.
 

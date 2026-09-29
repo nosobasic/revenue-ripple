@@ -8,7 +8,7 @@ from typing import Iterable, Optional
 from email_crm.source import normalize_funnel
 
 # EMAIL_MODE:
-#   getresponse — current production (GR sends; still write CRM rows if enabled)
+#   getresponse — explicit legacy mode (GR sends; still write CRM rows if enabled)
 #   shadow      — GR still sends; AWS enrollment is paused (no SES)
 #   holdout     — funnels in EMAIL_HOLDOUT_FUNNELS go AWS-only; everyone else GR
 #   aws         — AWS only
@@ -16,8 +16,10 @@ VALID_MODES = ("getresponse", "shadow", "holdout", "aws")
 
 
 def email_mode() -> str:
-    mode = (os.getenv("EMAIL_MODE") or "getresponse").strip().lower()
-    return mode if mode in VALID_MODES else "getresponse"
+    mode = (os.getenv("EMAIL_MODE") or "aws").strip().lower()
+    if mode not in VALID_MODES:
+        raise ValueError("Invalid EMAIL_MODE")
+    return mode
 
 
 def holdout_funnels() -> set[str]:

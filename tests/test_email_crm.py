@@ -128,7 +128,7 @@ def test_holdout_does_not_double_send(monkeypatch=None):
 def test_founders_delay_split():
     steps = SEQUENCES["founders_annual"]["steps"]
     assert delay_to_next_step(steps, 0) == 300
-    assert next_founders_action(300) == "sqs"
+    assert next_founders_action(300) == "due_worker"
     assert delay_to_next_step(steps, 1) == 6900
     assert next_founders_action(6900) == "due_worker"
     assert delay_to_next_step(steps, 6) is None

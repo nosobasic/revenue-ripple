@@ -6,13 +6,29 @@ create table public.acquisition_campaigns (
   objective text not null, topic text not null default '', pillar text not null default '',
   idea text not null default '',
   source_video_id uuid references public.generated_videos(id),
-  source_transcript_video_id text references public.video_transcripts(video_id),
+  source_transcript_video_id text,
   cta_label text not null, destination_url text not null,
   status text not null default 'active' check (status in ('active','paused','archived')),
   created_by uuid not null references auth.users(id), created_at timestamptz not null default now(),
   check (num_nonnulls(source_video_id, source_transcript_video_id) <= 1),
   check (source_video_id is not null or source_transcript_video_id is not null or length(idea) > 0)
 );
+-- Existing Content Engine installations use either text or UUID video IDs.
+-- Match that type before adding the foreign key; never rewrite source assets.
+do $$
+declare video_id_type text;
+begin
+  select format_type(atttypid, atttypmod) into video_id_type
+  from pg_attribute
+  where attrelid = 'public.video_transcripts'::regclass
+    and attname = 'video_id' and not attisdropped;
+  if video_id_type not in ('text', 'uuid') or video_id_type is null then
+    raise exception 'Unsupported video_transcripts.video_id type: %', video_id_type;
+  end if;
+  execute format('alter table public.acquisition_campaigns alter column source_transcript_video_id type %s using source_transcript_video_id::%s', video_id_type, video_id_type);
+  alter table public.acquisition_campaigns add constraint acquisition_campaigns_source_transcript_video_id_fkey
+    foreign key (source_transcript_video_id) references public.video_transcripts(video_id);
+end $$;
 create table public.acquisition_posts (
   id uuid primary key default gen_random_uuid(),
   campaign_id uuid not null references public.acquisition_campaigns(id),

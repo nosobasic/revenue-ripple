@@ -100,14 +100,19 @@ def enroll_new(
     }
     existing = (
         supabase.table("email_enrollments")
-        .select("id,status")
+        .select("id,status,step_index,next_send_at")
         .eq("contact_id", contact["id"])
         .eq("sequence_id", sequence_id)
         .in_("status", ["active", "paused", "shadow"])
         .execute()
     )
     if existing.data:
-        return existing.data[0]
+        row = existing.data[0]
+        if (sequence_id == "founders_annual" and row["status"] == "active"
+                and row.get("step_index", 0) == 0 and not row.get("next_send_at")
+                and send_enabled()):
+            enqueue_founders_step(contact, row)
+        return row
     inserted = supabase.table("email_enrollments").insert(enrollment).execute()
     row = (inserted.data or [None])[0]
     if sequence_id == "founders_annual" and status == "active" and send_enabled():
@@ -208,8 +213,9 @@ def advance_enrollment(supabase, enrollment: dict, sequence: dict) -> dict:
 def enqueue_founders_step(contact: dict, enrollment: Optional[dict], step_index: int = 0, delay_seconds: int = 0):
     queue_url = os.getenv("EMAIL_FOUNDERS_QUEUE_URL")
     if not queue_url or not enrollment:
-        print("⚠️ EMAIL_FOUNDERS_QUEUE_URL not set — Founders enrollment stored, SQS not enqueued")
-        return
+        raise RuntimeError("EMAIL_FOUNDERS_QUEUE_URL and enrollment are required")
+    if delay_seconds:
+        raise ValueError("Schedule delayed Founders steps with next_send_at, not FIFO message delays")
     try:
         import boto3
 
@@ -227,13 +233,12 @@ def enqueue_founders_step(contact: dict, enrollment: Optional[dict], step_index:
         client.send_message(
             QueueUrl=queue_url,
             MessageBody=body,
-            DelaySeconds=min(max(int(delay_seconds), 0), 900),
             MessageGroupId=str(contact["id"]),
             MessageDeduplicationId=f"{enrollment['id']}:{step_index}",
         )
         print(f"✅ Enqueued Founders step {step_index} for {contact['email']}")
     except Exception as exc:
-        print(f"❌ Failed to enqueue Founders SQS message: {exc}")
+        raise RuntimeError("Failed to enqueue Founders email") from exc
 
 
 def _json_dumps(payload: dict) -> str:

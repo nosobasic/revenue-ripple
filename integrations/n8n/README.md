@@ -6,7 +6,7 @@ These are adapted copies of the two supplied n8n workflows. Neither workflow pub
 
 The failed `002` assumed `video_transcripts.video_id` was text; the existing database uses UUID. The corrected `002_acquisition_engine.sql` detects and matches the existing type while preserving the Content Engine table. It supports both UUID and text installations.
 
-If the original `002` failed, run the supplied **Acquisition_Install_Corrected.sql** in Supabase's SQL editor. It combines corrected 002 and new 003 in one transaction. The original 002 used a transaction, so the reported error should have rolled back its changes. If acquisition tables already exist because you successfully installed 002 elsewhere, run **003_acquisition_manual_outreach.sql only**, rather than re-running the installer. Do not delete existing tables or cast Content Engine IDs.
+If the original `002` failed, run the corrected **002_acquisition_engine.sql**, then **003_acquisition_manual_outreach.sql**, in Supabase's SQL editor. The previously referenced combined installer is not present in this repository. The original 002 used a transaction, so the reported error should have rolled back its changes. If acquisition tables already exist because you successfully installed 002 elsewhere, run **003_acquisition_manual_outreach.sql only**, rather than re-running the installer. Do not delete existing tables or cast Content Engine IDs.
 
 003 adds the opportunity inbox and manual-send recording, enables Reddit in existing posts, and disables the old SQL dispatch functions. The old worker HTTP endpoint returns 410. Calendar dates are manual follow-up reminders.
 

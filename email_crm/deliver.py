@@ -21,7 +21,10 @@ def deliver_lead(
 ) -> dict:
     source = normalize_funnel(funnel)
     result = {"source": source, "getresponse": False, "aws": False}
+    use_getresponse = should_send_getresponse(funnel)
     try:
+        if not use_getresponse and (not write_crm() or not supabase):
+            raise RuntimeError("AWS email enrollment requires an available CRM")
         if write_crm() and supabase:
             contact = upsert_contact(
                 supabase,
@@ -32,17 +35,23 @@ def deliver_lead(
                 tags=tags or [source],
             )
             if should_enroll_aws(funnel) and contact:
-                enroll_new(
+                enrollment = enroll_new(
                     supabase,
                     contact=contact,
                     source=source,
                     funnel=funnel,
                     sequence_id=sequence_id_for_source(source),
                 )
+                if not enrollment:
+                    raise RuntimeError("Email enrollment was not persisted")
                 result["aws"] = True
+            elif not use_getresponse:
+                raise RuntimeError("Email contact was not persisted")
     except Exception as exc:
-        print(f"⚠️ Email CRM enroll failed (GetResponse path still runs if enabled): {exc}")
-    if should_send_getresponse(funnel) and send_getresponse:
+        if not use_getresponse:
+            raise RuntimeError("Email enrollment failed; please retry") from exc
+        print("Email CRM enrollment failed; legacy provider remains enabled")
+    if use_getresponse and send_getresponse:
         send_getresponse()
         result["getresponse"] = True
     return result

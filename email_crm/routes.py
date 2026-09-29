@@ -28,7 +28,10 @@ def unsubscribe():
     email = request.values.get("email") or (request.get_json(silent=True) or {}).get("email")
     if not token and not email:
         return jsonify({"error": "token or email is required"}), 400
-    contact = suppress_contact(_supabase(), token=token, email=email, reason="unsubscribed")
+    sb = _supabase()
+    if not sb:
+        return jsonify({"error": "Unsubscribe temporarily unavailable; please retry"}), 503
+    contact = suppress_contact(sb, token=token, email=email, reason="unsubscribed")
     if not contact:
         return jsonify({"success": True, "message": "If that address is on the list, it has been unsubscribed."})
     return jsonify({"success": True, "email": contact["email"]})
@@ -36,85 +39,35 @@ def unsubscribe():
 
 @email_bp.route("/api/email/ses-events", methods=["POST"])
 def ses_events():
-    """SNS subscription confirmation + SES bounce/complaint notifications."""
-    import json
-
-    from email_crm.enroll import suppress_contact
-
-    payload = request.get_json(silent=True)
-    if not payload:
-        try:
-            payload = json.loads(request.data.decode("utf-8") or "{}")
-        except Exception:
-            return jsonify({"error": "invalid json"}), 400
-
-    # SNS subscription handshake
-    if payload.get("Type") == "SubscriptionConfirmation" and payload.get("SubscribeURL"):
-        import requests
-
-        try:
-            requests.get(payload["SubscribeURL"], timeout=10)
-        except Exception as exc:
-            print(f"⚠️ SNS confirm failed: {exc}")
-        return jsonify({"ok": True, "confirmed": True})
-
-    message = payload.get("Message")
-    if isinstance(message, str):
-        try:
-            message = json.loads(message)
-        except Exception:
-            message = {}
-    notification = message or payload
-    notif_type = (notification.get("notificationType") or notification.get("eventType") or "").lower()
-    mail = notification.get("mail") or {}
-    dest = ""
-    destinations = mail.get("destination") or []
-    if destinations:
-        dest = destinations[0]
-    bounce = notification.get("bounce") or {}
-    complaint = notification.get("complaint") or {}
-    if not dest:
-        bounced = (bounce.get("bouncedRecipients") or [{}])
-        dest = (bounced[0] or {}).get("emailAddress") or ""
-    if not dest:
-        complained = complaint.get("complainedRecipients") or [{}]
-        dest = (complained[0] or {}).get("emailAddress") or ""
-
-    reason = None
-    if "complaint" in notif_type:
-        reason = "complained"
-    elif "bounce" in notif_type:
-        bounce_type = (bounce.get("bounceType") or "").lower()
-        if bounce_type == "transient":
-            return jsonify({"ok": True, "ignored": "transient"})
-        reason = "bounced"
-    if reason and dest:
-        suppress_contact(_supabase(), email=dest, reason=reason)
-        _log_event(dest, reason, notification)
-    return jsonify({"ok": True})
+    # SES events are handled by the authenticated SNS -> Lambda subscription.
+    # Do not accept unsigned notifications or fetch caller-provided SubscribeURLs.
+    return jsonify({"error": "Use the configured SNS Lambda subscription"}), 410
 
 
-def _log_event(email, event_type, payload):
+def _admin_database():
+    from flask import abort
+
+    authorization = request.headers.get("Authorization", "")
+    if not authorization.startswith("Bearer "):
+        abort(401)
     sb = _supabase()
     if not sb:
-        return
+        abort(503)
     try:
-        contact = sb.table("email_contacts").select("id").eq("email", email.strip().lower()).limit(1).execute()
-        contact_id = contact.data[0]["id"] if contact.data else None
-        sb.table("email_events").insert(
-            {
-                "contact_id": contact_id,
-                "event_type": event_type,
-                "payload": payload,
-            }
-        ).execute()
-    except Exception as exc:
-        print(f"⚠️ Failed to log email event: {exc}")
+        user = sb.auth.get_user(authorization[7:]).user
+    except Exception:
+        abort(401)
+    if not user:
+        abort(401)
+    profiles = sb.table("users").select("role").eq("id", user.id).limit(1).execute()
+    if not profiles.data or profiles.data[0].get("role") != "admin":
+        abort(403)
+    return sb
 
 
 @email_bp.route("/api/admin/email/enrollments", methods=["GET"])
 def admin_enrollments():
-    sb = _supabase()
+    sb = _admin_database()
     if not sb:
         return jsonify({"error": "database unavailable"}), 503
     status = request.args.get("status")
@@ -132,3 +85,13 @@ def admin_enrollments():
     if source:
         rows = [r for r in rows if ((r.get("email_contacts") or {}).get("source") == source)]
     return jsonify({"enrollments": rows, "count": len(rows)})
+
+
+@email_bp.route("/api/admin/email/enrollments/<uuid:enrollment_id>/pause", methods=["POST"])
+def pause_enrollment(enrollment_id):
+    sb = _admin_database()
+    rows = (sb.table("email_enrollments").update({"status": "paused"})
+            .eq("id", str(enrollment_id)).eq("status", "active").execute())
+    if not rows.data:
+        return jsonify({"error": "Active enrollment not found"}), 409
+    return jsonify({"success": True})

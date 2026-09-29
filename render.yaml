@@ -26,6 +26,8 @@ services:
         fromEnvVar: GET_RESPONSE_TRIPWIRE_CAMPAIGN_ID
       - key: EMAIL_MODE
         fromEnvVar: EMAIL_MODE
+      - key: ACQUISITION_ATTRIBUTION_ENABLED
+        fromEnvVar: ACQUISITION_ATTRIBUTION_ENABLED
       - key: EMAIL_WRITE_CRM
         fromEnvVar: EMAIL_WRITE_CRM
       - key: EMAIL_SEND_ENABLED

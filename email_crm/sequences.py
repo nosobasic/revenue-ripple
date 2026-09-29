@@ -205,11 +205,9 @@ def delay_to_next_step(steps: list[dict], current_index: int) -> int | None:
 
 
 def next_founders_action(delay_seconds: int | None) -> str:
-    """sqs (DelaySeconds), due_worker (next_send_at), or complete."""
+    """After welcome, every delay is persisted for the due-worker (FIFO has no timers)."""
     if delay_seconds is None:
         return "complete"
-    if delay_seconds <= SQS_MAX_DELAY_SECONDS:
-        return "sqs"
     return "due_worker"
 
 

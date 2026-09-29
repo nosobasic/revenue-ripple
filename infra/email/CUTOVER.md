@@ -2,7 +2,7 @@
 
 Do not dual-send. GetResponse access is lost, so we **do not resume dayOfCycle**. Existing subscribers get an honest reset email, then DMD lesson 1 unless they reply and you pause them in admin. New opt-ins still enter indoctrination.
 
-Founders short waits (welcome + Discord) use SQS FIFO. Everything else uses `email_enrollments.next_send_at` and the EventBridge due-worker.
+Founders welcome uses SQS FIFO. Subsequent steps, including the five-minute Discord delay, use `email_enrollments.next_send_at` and the EventBridge due-worker; delivery occurs on its next scheduled run. FIFO does not support per-message delays. See `docs/ACQUISITION_EMAIL_LAUNCH.md` for the current verified status and deployment gaps.
 
 **Sandbox (200/day).** Production access is denied for now. SES will deliver only to **verified identities** — the domain covers `@revenueripple.org`, plus any address you verify in SES (they must click Amazon's email). The GetResponse CSV still cannot be mailed. `import_csv_restart.py` refuses writes unless `SES_PRODUCTION_CONFIRMED=true`. Unverified recipients are skipped and retried after 24 hours.
 

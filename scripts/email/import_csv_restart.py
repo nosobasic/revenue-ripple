@@ -18,6 +18,7 @@ import csv
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from collections import Counter
 from pathlib import Path
 
@@ -64,6 +65,25 @@ def load_rows(path: Path) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+def enroll_restart(sb, contact, activate=False):
+    """Idempotent import; explicit activation resumes only this import's paused rows."""
+    if not contact or contact.get("status") != "active":
+        return "suppressed"
+    existing = (sb.table("email_enrollments").select("id,status,origin")
+                .eq("contact_id", contact["id"]).eq("sequence_id", "list_restart")
+                .execute()).data
+    if existing:
+        if activate:
+            for row in existing:
+                if row["status"] == "paused" and row.get("origin") == "csv_restart":
+                    (sb.table("email_enrollments").update({"status": "active", "next_send_at": datetime.now(timezone.utc).isoformat()})
+                     .eq("id", row["id"]).eq("status", "paused").execute())
+        return "existing"
+    enroll_new(sb, contact=contact, source="list_restart", funnel="list_restart",
+               sequence_id="list_restart", status="active" if activate else "paused", origin="csv_restart")
+    return "created"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("contacts_csv")
@@ -71,7 +91,7 @@ def main() -> int:
     parser.add_argument(
         "--activate",
         action="store_true",
-        help="Set list_restart enrollments active (ready to send). Default is paused.",
+        help="Activate new and existing paused CSV restart enrollments. Default is paused.",
     )
     args = parser.parse_args()
 
@@ -137,17 +157,10 @@ def main() -> int:
             name=item["name"],
             source="list_restart",
         )
-        enroll_new(
-            sb,
-            contact=contact,
-            source="list_restart",
-            funnel="list_restart",
-            sequence_id="list_restart",
-            status=status,
-            origin="csv_restart",
-        )
-        written += 1
-    print(f"Imported {written} contacts into list_restart ({status}).")
+        outcome = enroll_restart(sb, contact, activate=args.activate)
+        stats[outcome] += 1
+        written += outcome != "suppressed"
+    print(f"Processed {written} eligible contacts for list_restart ({status}); {stats['created']} new, {stats['existing']} existing, {stats['suppressed']} suppressed.")
     return 0
 
 

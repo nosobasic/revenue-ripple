@@ -82,7 +82,7 @@ def send_ses(*, to_email: str, subject: str, html: str, unsubscribe_url: str) ->
     if config_set:
         extra["ConfigurationSetName"] = config_set
     headers = {
-        "List-Unsubscribe": f"<{unsubscribe_url}>",
+        "List-Unsubscribe": f"<{unsubscribe_url.replace('/unsubscribe?', '/api/email/unsubscribe?')}>",
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
     }
     # SES v2 supports List-Unsubscribe natively; v1 SendEmail uses raw for custom headers.

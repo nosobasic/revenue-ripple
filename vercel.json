@@ -18,8 +18,9 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/email/unsubscribe", "destination": "https://revenue-ripple.onrender.com/api/email/unsubscribe" },
     { "source": "/dlds/MembershipMastery.pdf", "destination": "/assets/downloads/MembershipMastery.pdf" },
     { "source": "/dlds/dmd", "destination": "/assets/downloads/digital-marketing.pdf" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
-} 
+}
