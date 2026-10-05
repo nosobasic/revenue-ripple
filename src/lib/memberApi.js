@@ -1,7 +1,8 @@
+import { authenticatedFetch } from './authenticatedFetch';
 import { getApiBase } from "../config/constants";
 export async function memberApi(user, path, options = {}) {
   if (!user?.id) throw new Error("Please sign in to continue.");
-  const response = await fetch(`${getApiBase()}${path}`, {
+  const response = await authenticatedFetch(`${getApiBase()}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

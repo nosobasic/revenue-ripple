@@ -30,7 +30,7 @@ const MemberRoleUpdateModal = ({setIsModalOpen}) => {
       const { data, error } = await supabase
         .from("users")
         .update({
-          role: "affiliate",
+          // Affiliate activation requires a trusted backend workflow.
           paypal_email: paypalEmail.trim(), // ✅ update PayPal email
         })
         .eq("id", user.id)

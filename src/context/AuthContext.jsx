@@ -56,6 +56,12 @@ export function AuthProvider({ children }) {
 
   const fetchUserData = async (authUser) => {
     try {
+      await supabase.from('users').upsert({
+        id: authUser.id, email: authUser.email, role: 'member', plan: '',
+        status: 'active', commission_rate: 0, name: authUser.user_metadata?.name || '',
+      }, { onConflict: 'id', ignoreDuplicates: true });
+      // The server validates email against the verified token identity.
+      await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
       // Use select(*) to get all available columns without hardcoding
       const { data: userData, error } = await supabase
         .from("users")
@@ -104,18 +110,19 @@ export function AuthProvider({ children }) {
         email,
         password,
       });
-      console.log("authData==",authData, "authError==",authError)
+
       if (authError) throw authError;
 
       // Create a user document in Supabase
-      if (authData.user) {
+      if (authData.user && authData.session) {
         const { error: userError } = await supabase.from("users").insert([
           {
             id: authData.user.id,
             name: firstName + " " + lastName,
             email,
-            role: role,
+            role: 'member', // Paid/affiliate roles are assigned by trusted backend flows.
             status: "active",
+            commission_rate: 0,
             created_at: new Date().toISOString(),
             phone: "",
             company: "",
@@ -140,6 +147,7 @@ export function AuthProvider({ children }) {
         }
       }
 
+      if (!authData.session) throw new Error('Check your email to confirm your account, then sign in.');
       return authData.user;
     } catch (error) {
       throw error;
@@ -220,7 +228,9 @@ export function AuthProvider({ children }) {
         console.error("Error updating auth email:", authError);
         throw authError;
       }
-      updateData.email = profileData.email; // Update email in users table as well
+      // Synchronize users.email only after Auth confirms the new address.
+      const { data: verified } = await supabase.auth.getUser();
+      if (verified?.user?.email === profileData.email) updateData.email = profileData.email;
     }
 
     // Check if there are any fields to update

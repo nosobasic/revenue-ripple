@@ -1,3 +1,4 @@
+from middleware.verified_identity import verified_identity
 """
 Command Center API Routes
 Feature flag controlled agent management endpoints
@@ -23,15 +24,7 @@ def is_write_mode_enabled():
     return os.getenv('REVRIPPLE_WRITE_MODE', 'false').lower() == 'true'
 
 def get_user_from_request(request):
-    """Extract user ID from request (implement auth middleware)"""
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return None
-    
-    # For now, return mock user ID for development
-    # TODO: Implement proper Supabase JWT validation
-    # In production, you would validate the JWT token with Supabase
-    return 'mock-user-id'
+    return str(verified_identity().id)
 
 def require_auth(f):
     """Decorator to require authentication"""

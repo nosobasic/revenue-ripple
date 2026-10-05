@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaSearch, FaFilter, FaComments, FaThumbsUp, FaEye, FaClock } from 'react-icons/fa';
@@ -44,7 +45,7 @@ const CommunityForum = () => {
         params.append('category', selectedCategory);
       }
 
-      const response = await fetch(`${getApiBase()}/api/community/posts?${params}`);
+      const response = await authenticatedFetch(`${getApiBase()}/api/community/posts?${params}`);
       const data = await response.json();
       
       if (response.ok) {

@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getApiBase } from '../../config/constants';
@@ -20,14 +21,14 @@ const EngagementDashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch engagement score
-        const scoreResponse = await fetch(`${getApiBase()}/api/engagement/score?user_id=${user.id}`);
+        const scoreResponse = await authenticatedFetch(`${getApiBase()}/api/engagement/score?user_id=${user.id}`);
         if (scoreResponse.ok) {
           const scoreData = await scoreResponse.json();
           setEngagement(scoreData);
         }
 
         // Fetch recent history
-        const historyResponse = await fetch(`${getApiBase()}/api/engagement/history?user_id=${user.id}&limit=10`);
+        const historyResponse = await authenticatedFetch(`${getApiBase()}/api/engagement/history?user_id=${user.id}&limit=10`);
         if (historyResponse.ok) {
           const historyData = await historyResponse.json();
           setHistory(historyData.events || []);

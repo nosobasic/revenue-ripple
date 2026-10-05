@@ -1,3 +1,4 @@
+from middleware.verified_identity import install_access_guard
 from acquisition.attribution import record_lead as record_acquisition_lead, record_checkout as record_acquisition_checkout, checkout_metadata
 from flask import Flask, request, jsonify, abort, make_response, send_from_directory
 from flask_cors import CORS
@@ -73,6 +74,7 @@ else:
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
 app.supabase = supabase
+install_access_guard(app)
 app.register_blueprint(email_bp)
 
 @app.route('/')
@@ -96,7 +98,7 @@ else:
 
 # Facebook Conversions API Configuration
 FACEBOOK_PIXEL_ID = "474617768829501"
-FACEBOOK_ACCESS_TOKEN = "EAAaorhtVhdIBPtZCpGyZBnDES7bo8KmhDbCXZAmhctKQcyyuhZCcivpkGu1QrV4kxahttmlzGI6ePE93GR0v28K8FOjt2cy1pZB9uCJ5h4KCvzOdv8BEZBRL1Ggb3gdL0IkahZCx73ipxZANHralNdKAtQN98gjINqlUCoyWCBz7xzORUY6hrAmpHfVQ37rKhwZDZD"
+FACEBOOK_ACCESS_TOKEN = os.getenv("FACEBOOK_ACCESS_TOKEN", "")
 CONVERSIONS_API_URL = f"https://graph.facebook.com/v23.0/{FACEBOOK_PIXEL_ID}/events"
 
 # PayPal configuration
@@ -669,14 +671,21 @@ print(f"🔍 DEBUG: STRIPE_WEBHOOK_SECRET value: {'SET' if endpoint_secret else 
 
 @app.route('/webhook', methods=['POST'])
 def stripe_webhook():
+    if not endpoint_secret:
+        return jsonify({'error': 'Payment verification unavailable'}), 503
     payload = request.data
     sig_header = request.headers.get('stripe-signature')
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-    except stripe.error.SignatureVerificationError:
+    except (ValueError, stripe.error.SignatureVerificationError):
         return abort(400)
 
+    if event.get('type') == 'checkout.session.completed':
+        # A signed completion event can still represent an unpaid checkout/trial.
+        # Activation waits for a verified paid event; never trust the return URL.
+        if event.get('data', {}).get('object', {}).get('payment_status') != 'paid':
+            return jsonify({'status': 'pending_payment'}), 200
     record_acquisition_checkout(supabase, event)
 
     if event['type'] == 'checkout.session.completed':
@@ -2181,14 +2190,14 @@ def attach_community_users(records):
         return records
 
     try:
-        users_result = supabase.table('users').select('id, name, email').in_('id', user_ids).execute()
-        users = {user['id']: user for user in (users_result.data or [])}
+        users_result = supabase.table('users').select('id, name').in_('id', user_ids).execute()
+        users = {user['id']: {'id': user['id'], 'name': user.get('name') or 'Member'} for user in (users_result.data or [])}
     except Exception as error:
         print(f"⚠️ Error loading community user profiles: {str(error)}")
         users = {}
 
     return [
-        {**record, 'users': users.get(record.get('user_id'), {'name': 'Member', 'email': None})}
+        {**record, 'users': users.get(record.get('user_id'), {'name': 'Member'})}
         for record in records
     ]
 

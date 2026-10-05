@@ -1,3 +1,5 @@
+import { getApiBase } from '../config/constants';
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -5,7 +7,7 @@ import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+const API_BASE_URL = getApiBase();
 
 const Vault = () => {
   const { user } = useAuth();
@@ -23,7 +25,7 @@ const Vault = () => {
   const fetchPlaybooks = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/vault/playbooks`);
+      const response = await authenticatedFetch(`${API_BASE_URL}/api/vault/playbooks`);
       const data = await response.json();
       
       if (data.success) {

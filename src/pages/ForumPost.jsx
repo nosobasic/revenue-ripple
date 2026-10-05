@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaThumbsUp, FaReply, FaClock, FaUser, FaEye } from 'react-icons/fa';
@@ -21,7 +22,7 @@ const ForumPost = () => {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}`);
+      const response = await authenticatedFetch(`${getApiBase()}/api/community/posts/${postId}`);
       const data = await response.json();
       
       if (response.ok) {
@@ -44,7 +45,7 @@ const ForumPost = () => {
     }
 
     try {
-      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}/upvote`, {
+      const response = await authenticatedFetch(`${getApiBase()}/api/community/posts/${postId}/upvote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +84,7 @@ const ForumPost = () => {
     try {
       setSubmittingReply(true);
       
-      const response = await fetch(`${getApiBase()}/api/community/posts/${postId}/reply`, {
+      const response = await authenticatedFetch(`${getApiBase()}/api/community/posts/${postId}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +203,6 @@ const ForumPost = () => {
               />
               <div>
                 <p className="font-medium text-gray-900">{post.users?.name || 'Anonymous'}</p>
-                <p className="text-sm text-gray-500">{post.users?.email}</p>
               </div>
             </div>
 

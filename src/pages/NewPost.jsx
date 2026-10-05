@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaSpinner, FaPlus } from 'react-icons/fa';
@@ -46,7 +47,7 @@ const NewPost = () => {
     try {
       setLoading(true);
       
-      const response = await fetch(`${getApiBase()}/api/community/posts`, {
+      const response = await authenticatedFetch(`${getApiBase()}/api/community/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

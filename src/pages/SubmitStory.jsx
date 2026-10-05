@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTrophy, FaArrowLeft, FaSpinner } from 'react-icons/fa';
@@ -39,7 +40,7 @@ const SubmitStory = () => {
     try {
       setLoading(true);
       
-      const response = await fetch(`${getApiBase()}/api/success-stories`, {
+      const response = await authenticatedFetch(`${getApiBase()}/api/success-stories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

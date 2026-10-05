@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getApiBase } from '../config/constants';
@@ -22,7 +23,7 @@ export default function ModuleQuiz({ courseId, moduleId, moduleTitle, moduleDesc
     
     setLoading(true);
     try {
-      const response = await fetch(
+      const response = await authenticatedFetch(
         `${getApiBase()}/api/quizzes/${courseId}/${moduleId}`,
         {
           headers: {
@@ -51,7 +52,7 @@ export default function ModuleQuiz({ courseId, moduleId, moduleTitle, moduleDesc
     
     setLoading(true);
     try {
-      const response = await fetch(
+      const response = await authenticatedFetch(
         `${getApiBase()}/api/quizzes/generate`,
         {
           method: 'POST',
@@ -93,7 +94,7 @@ export default function ModuleQuiz({ courseId, moduleId, moduleTitle, moduleDesc
     const timeTaken = Math.floor((Date.now() - startTime) / 1000);
     
     try {
-      const response = await fetch(
+      const response = await authenticatedFetch(
         `${getApiBase()}/api/quizzes/submit`,
         {
           method: 'POST',

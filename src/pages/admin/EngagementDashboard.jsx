@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getApiBase } from '../../config/constants';
@@ -42,21 +43,21 @@ const EngagementDashboard = () => {
         setLoading(true);
 
         // Fetch engagement statistics
-        const statsResponse = await fetch(`${getApiBase()}/api/engagement/stats`);
+        const statsResponse = await authenticatedFetch(`${getApiBase()}/api/engagement/stats`);
         if (statsResponse.ok) {
           const statsData = await statsResponse.json();
           setStats(statsData.segments);
         }
 
         // Fetch at-risk users
-        const atRiskResponse = await fetch(`${getApiBase()}/api/engagement/at-risk-users`);
+        const atRiskResponse = await authenticatedFetch(`${getApiBase()}/api/engagement/at-risk-users`);
         if (atRiskResponse.ok) {
           const atRiskData = await atRiskResponse.json();
           setAtRiskUsers(atRiskData.users || []);
         }
 
         // Fetch popular content
-        const contentResponse = await fetch(`${getApiBase()}/api/engagement/popular-content`);
+        const contentResponse = await authenticatedFetch(`${getApiBase()}/api/engagement/popular-content`);
         if (contentResponse.ok) {
           const contentData = await contentResponse.json();
           setPopularContent(contentData.content || []);
@@ -189,7 +190,7 @@ const EngagementDashboard = () => {
             <button
               onClick={() => {
                 // Trigger manual recalculation
-                fetch(`${getApiBase()}/api/engagement/recalculate`, { method: 'POST' })
+                authenticatedFetch(`${getApiBase()}/api/engagement/recalculate`, { method: 'POST' })
                   .then(() => {
                     alert('Recalculation triggered');
                     // Refresh data
@@ -338,7 +339,7 @@ const EngagementDashboard = () => {
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <button
               onClick={() => {
-                fetch(`${getApiBase()}/api/engagement/recalculate`, { method: 'POST' })
+                authenticatedFetch(`${getApiBase()}/api/engagement/recalculate`, { method: 'POST' })
                   .then(() => alert('Score recalculation triggered'))
                   .catch(err => alert('Error: ' + err.message));
               }}

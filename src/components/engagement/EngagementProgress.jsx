@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getApiBase } from '../../config/constants';
@@ -15,7 +16,7 @@ const EngagementProgress = () => {
 
     const fetchEngagement = async () => {
       try {
-        const response = await fetch(`${getApiBase()}/api/engagement/score?user_id=${user.id}`);
+        const response = await authenticatedFetch(`${getApiBase()}/api/engagement/score?user_id=${user.id}`);
         if (response.ok) {
           const data = await response.json();
           setEngagement(data);

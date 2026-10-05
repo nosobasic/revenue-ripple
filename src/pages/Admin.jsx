@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useLocation, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from '../supabase/client';
@@ -1303,7 +1304,7 @@ const DevOpsIntegration = () => {
         ? '/devops/keys' 
         : `${getApiBase()}/devops/keys`;
         
-      const response = await fetch(apiUrl, {
+      const response = await authenticatedFetch(apiUrl, {
         headers: {
           'x-user-id': userData.user.id
         }
@@ -1328,7 +1329,7 @@ const DevOpsIntegration = () => {
         ? '/devops/generate-key' 
         : `${getApiBase()}/devops/generate-key`;
       
-      const response = await fetch(apiUrl, {
+      const response = await authenticatedFetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1397,17 +1398,17 @@ const DevOpsIntegration = () => {
         : getApiBase();
         
       // Sync user data
-      const userResponse = await fetch(`${baseUrl}/devops/sync/users`, {
+      const userResponse = await authenticatedFetch(`${baseUrl}/devops/sync/users`, {
         headers: { 'x-api-key': 'your-api-key-here' } // Would use actual key
       });
       
       // Sync revenue data
-      const revenueResponse = await fetch(`${baseUrl}/devops/sync/revenue`, {
+      const revenueResponse = await authenticatedFetch(`${baseUrl}/devops/sync/revenue`, {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
       // Sync commission data
-      const commissionResponse = await fetch(`${baseUrl}/devops/sync/commissions`, {
+      const commissionResponse = await authenticatedFetch(`${baseUrl}/devops/sync/commissions`, {
         headers: { 'x-api-key': 'your-api-key-here' }
       });
       
@@ -1662,7 +1663,7 @@ const Admin = () => {
         ? '/devops/generate-api-key' 
         : `${getApiBase()}/devops/generate-api-key`;
         
-      const res = await fetch(apiUrl, {
+      const res = await authenticatedFetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -1887,7 +1888,7 @@ const Admin = () => {
           ? '/admin/delete-user' 
           : 'https://revenue-ripple.onrender.com/admin/delete-user';
         
-        const response = await fetch(apiUrl, {
+        const response = await authenticatedFetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

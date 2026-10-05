@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getApiBase } from '../config/constants';
@@ -17,7 +18,7 @@ export default function FeatureTour({ tourName, onComplete }) {
     if (!user || !tourName) return;
     
     try {
-      const toursResponse = await fetch(`${getApiBase()}/api/feature-tours`, {
+      const toursResponse = await authenticatedFetch(`${getApiBase()}/api/feature-tours`, {
         headers: {
           'x-user-id': user.id,
           'x-user-role': user.role || 'member'
@@ -50,7 +51,7 @@ export default function FeatureTour({ tourName, onComplete }) {
     if (!user) return;
     
     try {
-      await fetch(`${getApiBase()}/api/feature-tours/${tourId}/start`, {
+      await authenticatedFetch(`${getApiBase()}/api/feature-tours/${tourId}/start`, {
         method: 'POST',
         headers: {
           'x-user-id': user.id,
@@ -66,7 +67,7 @@ export default function FeatureTour({ tourName, onComplete }) {
     if (!user || !tour) return;
     
     try {
-      await fetch(`${getApiBase()}/api/feature-tours/${tour.id}/progress`, {
+      await authenticatedFetch(`${getApiBase()}/api/feature-tours/${tour.id}/progress`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +108,7 @@ export default function FeatureTour({ tourName, onComplete }) {
     if (!user || !tour) return;
     
     try {
-      await fetch(`${getApiBase()}/api/feature-tours/${tour.id}/skip`, {
+      await authenticatedFetch(`${getApiBase()}/api/feature-tours/${tour.id}/skip`, {
         method: 'POST',
         headers: {
           'x-user-id': user.id,

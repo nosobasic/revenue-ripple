@@ -25,40 +25,8 @@ export default function FoundersSuccess() {
     localStorage.removeItem('founders_timer_start');
   }, []);
 
-  useEffect(() => {
-    // Update user role to founder member after successful purchase
-    const updateUserRole = async () => {
-      if (!user?.id) return;
+  // Founder status is assigned only by the verified payment webhook.
 
-      try {
-        const { data, error } = await supabase
-          .from('users')
-          .update({ 
-            role: 'member',
-            plan: 'founders_annual',
-            is_founder: true,
-            has_paid: true,
-            payment_status: 'active'
-          })
-          .eq('id', user.id)
-          .select();
-
-        if (error) {
-          console.error('Error updating user role:', error);
-        } else {
-          console.log('User updated with founder status:', data);
-          // Refresh the user data in AuthContext to reflect the changes
-          if (refreshUserData) {
-            await refreshUserData();
-          }
-        }
-      } catch (err) {
-        console.error('Unexpected error updating user:', err);
-      }
-    };
-
-    updateUserRole();
-  }, [user, refreshUserData]);
 
   const nextSteps = [
     {

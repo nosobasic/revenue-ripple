@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import { supabase } from '../lib/supabaseClient';
 import { getApiBase } from '../config/constants';
 
@@ -69,7 +70,7 @@ export async function trackEvent(
       // Fallback: try to track via backend API
       try {
         const apiBase = getApiBase();
-        await fetch(`${apiBase}/api/engagement/track`, {
+        await authenticatedFetch(`${apiBase}/api/engagement/track`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

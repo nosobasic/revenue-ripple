@@ -1,3 +1,4 @@
+from server.quiz_projection import public_quiz
 from flask import Blueprint, request, jsonify
 import openai
 import os
@@ -37,7 +38,7 @@ def generate_quiz(user_id):
         
         if existing_quiz.data:
             return jsonify({
-                'quiz': existing_quiz.data[0],
+                'quiz': public_quiz(existing_quiz.data[0]),
                 'message': 'Quiz already exists'
             })
         
@@ -113,7 +114,7 @@ Return ONLY valid JSON in this exact format:
             .execute()
         
         return jsonify({
-            'quiz': db_response.data[0] if db_response.data else None,
+            'quiz': public_quiz(db_response.data[0]) if db_response.data else None,
             'message': 'Quiz generated successfully'
         }), 201
     
@@ -149,7 +150,7 @@ def get_quiz(user_id, course_id, module_id):
             .execute()
         
         return jsonify({
-            'quiz': quiz,
+            'quiz': public_quiz(quiz),
             'previousAttempts': user_attempts.data if user_attempts.data else []
         })
     

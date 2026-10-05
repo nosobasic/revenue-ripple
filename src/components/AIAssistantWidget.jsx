@@ -1,3 +1,4 @@
+import { authenticatedFetch } from '../lib/authenticatedFetch';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLocation } from 'react-router-dom';
@@ -120,7 +121,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
       if (!user || open) return;
       
       try {
-        const response = await fetch(`${getApiBase()}/api/ai-assistant/suggestions`, {
+        const response = await authenticatedFetch(`${getApiBase()}/api/ai-assistant/suggestions`, {
           headers: {
             'x-user-id': user.id,
             'x-user-role': user.role || 'member'
@@ -246,7 +247,7 @@ export default function AIAssistantWidget({ showWelcomeBubble = false, pageConte
         tags: activeBriefingContext.tags
       } : null;
 
-      const response = await fetch(`${getApiBase()}/api/ai-assistant`, {
+      const response = await authenticatedFetch(`${getApiBase()}/api/ai-assistant`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

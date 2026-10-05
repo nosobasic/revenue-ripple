@@ -18,35 +18,8 @@ export default function ProResellerSuccess() {
   //   return () => clearTimeout(timer);
   // }, [navigate]);
 
-  useEffect(() => {
-    const handleUpdateRole = async () => {
-      try {
-        // const queryParams = new URLSearchParams(location.search);
-        // const userId = queryParams.get("session_id");
+  // Entitlements are assigned only by the verified payment webhook.
 
-        // if (!userId) {
-        //   console.error("No session_id found in URL");
-        //   return;
-        // }
-        const { data, error } = await supabase
-          .from("users")
-          .update({ role: "pro_reseller" })   // 👈 new role
-          .eq("id", user.id)
-          .select();
-
-          console.log("dataaaaa", data)
-        if (error) {
-          console.error("Supabase update error:", error);
-        } else {
-          console.log("User role updated:", data);
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
-    };
-
-    handleUpdateRole();
-  }, [user]);
 
   return (
     <div className="frontend-container">
@@ -54,7 +27,7 @@ export default function ProResellerSuccess() {
       <section className="hero-section">
         <h1 className="hero-title">Welcome to the Revenue Ripple Reseller Pro Program! 🎉</h1>
         <p className="hero-subtitle">
-          Congratulations on joining our exclusive reseller pro program. You're now part of a community of successful digital marketers.
+          Your access activates after payment verification. You're now part of a community of successful digital marketers.
         </p>
       </section>
 

@@ -1,3 +1,4 @@
+from middleware.verified_identity import verified_identity, verified_profile_role
 from flask import Blueprint, request, jsonify, abort
 import openai
 import os
@@ -128,8 +129,8 @@ def ai_assistant():
     if not client:
         return jsonify({"error": "AI assistant is not available - OpenAI API key not configured"}), 503
     
-    user_role = request.headers.get("x-user-role")
-    user_id = request.headers.get("x-user-id")
+    user_role = verified_profile_role()
+    user_id = str(verified_identity().id)
     
     if not is_authorized(user_role):
         abort(403, "Not authorized")
@@ -272,8 +273,8 @@ def get_proactive_suggestions():
     if not client:
         return jsonify({"error": "AI assistant is not available"}), 503
     
-    user_role = request.headers.get("x-user-role")
-    user_id = request.headers.get("x-user-id")
+    user_role = verified_profile_role()
+    user_id = str(verified_identity().id)
     
     if not is_authorized(user_role) or not user_id:
         abort(403, "Not authorized")
@@ -369,7 +370,7 @@ def get_proactive_suggestions():
 @ai_assistant_bp.route('/api/ai-assistant/feedback', methods=['POST'])
 def record_feedback():
     """Record user feedback on AI interactions"""
-    user_id = request.headers.get("x-user-id")
+    user_id = str(verified_identity().id)
     
     if not user_id:
         abort(403, "Not authorized")
