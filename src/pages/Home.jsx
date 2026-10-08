@@ -654,7 +654,6 @@ const buttonVariants = {
 };
 
 export default function Home() {
-  const [showAllTestimonials, setShowAllTestimonials] = useState(false);
   const [recentActivity] = useState([
     "Free learning remains available",
     "Owner pilot is in preparation", 
@@ -1852,181 +1851,6 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* Testimonials Section */}
-      <motion.section 
-        className="testimonials-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={containerVariants}
-      >
-        <div className="container">
-          <motion.h2 
-            className="section-title"
-            variants={textRevealVariants}
-          >
-            Ways to Put Learning into Practice
-          </motion.h2>
-          <motion.div 
-            className="testimonials-grid"
-            variants={containerVariants}
-          >
-            {/* Initial testimonials that are always shown */}
-            <motion.div 
-              className="testimonial-card"
-              variants={cardVariants}
-              whileHover="hover"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                border: '1px solid rgba(0,0,0,0.1)'
-              }}
-            >
-              <div className="stars">
-                LEARN
-              </div>
-              <p className="testimonial-text">Choose one marketing lesson and write down a small action you can try.</p>
-              <div className="testimonial-author">
-                <img loading="lazy" decoding="async" width="952" height="630"
-                  src="/assets/images/images/profile-pic1.png" 
-                  alt="Illustrative learner portrait" 
-                  className="testimonial-avatar"
-                />
-                <div className="author-info">
-                  <h4>Learning example</h4>
-                  <p>Digital Marketing Consultant</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="testimonial-card"
-              variants={cardVariants}
-              whileHover="hover"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                border: '1px solid rgba(0,0,0,0.1)'
-              }}
-            >
-              <div className="stars">
-                LEARN
-              </div>
-              <p className="testimonial-text">Map a customer question to a helpful piece of content.</p>
-              <div className="testimonial-author">
-                <motion.img loading="lazy" decoding="async" width="674" height="484"
-                  src="/assets/images/images/profile-pic2.png" 
-                  alt="Illustrative learner portrait" 
-                  className="testimonial-avatar"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                />
-                <div className="author-info">
-                  <h4>Learning example</h4>
-                  <p>E-commerce Entrepreneur</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="testimonial-card"
-              variants={cardVariants}
-              whileHover="hover"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)',
-                border: '1px solid rgba(0,0,0,0.1)'
-              }}
-            >
-              <div className="stars">
-                LEARN
-              </div>
-              <p className="testimonial-text">Outline a simple funnel before choosing your tools.</p>
-              <div className="testimonial-author">
-                <motion.img loading="lazy" decoding="async" width="812" height="472"
-                  src="/assets/images/images/profile-pic3.png" 
-                  alt="Illustrative learner portrait" 
-                  className="testimonial-avatar"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                />
-                <div className="author-info">
-                  <h4>Learning example</h4>
-                  <p>Agency Founder</p>
-                </div>
-              </div>
-            </motion.div>
-
-            {showAllTestimonials && (
-              <>
-                <div className="testimonial-card">
-                  <div className="stars">LEARN</div>
-                  <p className="testimonial-text">Learn referral basics while new program terms remain under review.</p>
-                  <div className="testimonial-author">
-                    <img loading="lazy" decoding="async" width="692" height="408" src="/assets/images/images/profile-pic4.png" alt="Illustrative learner portrait" className="testimonial-avatar" />
-                    <div className="author-info">
-                      <h4>Learning example</h4>
-                      <p>Affiliate Marketer</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="testimonial-card">
-                  <div className="stars">LEARN</div>
-                  <p className="testimonial-text">List the questions you want to explore in your next lesson.</p>
-                  <div className="testimonial-author">
-                    <img loading="lazy" decoding="async" width="702" height="478" src="/assets/images/images/profile-pic5.png" alt="Illustrative learner portrait" className="testimonial-avatar" />
-                    <div className="author-info">
-                      <h4>Learning example</h4>
-                      <p>Small Business Owner</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="testimonial-card">
-                  <div className="stars">LEARN</div>
-                  <p className="testimonial-text">Review an AI response for accuracy before using it.</p>
-                  <div className="testimonial-author">
-                    <img loading="lazy" decoding="async" width="352" height="540" src="/assets/images/images/profile-pic6.png" alt="Illustrative learner portrait" className="testimonial-avatar" />
-                    <div className="author-info">
-                      <h4>Learning example</h4>
-                      <p>Social Media Manager</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="testimonial-card">
-                  <div className="stars">LEARN</div>
-                  <p className="testimonial-text">Practice writing a clear email for your audience.</p>
-                  <div className="testimonial-author">
-                    <img loading="lazy" decoding="async" width="712" height="570" src="/assets/images/images/profile-pic7.png" alt="Illustrative learner portrait" className="testimonial-avatar" />
-                    <div className="author-info">
-                      <h4>Learning example</h4>
-                      <p>Marketing Director</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="testimonial-card">
-                  <div className="stars">LEARN</div>
-                  <p className="testimonial-text">Decide what evidence would help you evaluate an experiment.</p>
-                  <div className="testimonial-author">
-                    <img loading="lazy" decoding="async" width="580" height="376" src="/assets/images/images/profile-pic8.png" alt="Illustrative learner portrait" className="testimonial-avatar" />
-                    <div className="author-info">
-                      <h4>Learning example</h4>
-                      <p>Marketing Analytics Specialist</p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </motion.div>
-          <div className="show-more-container">
-            <button 
-              className="show-more-button"
-              onClick={() => setShowAllTestimonials(!showAllTestimonials)}
-            >
-              {showAllTestimonials ? 'Show Less' : 'Show More Examples'}
-            </button>
-          </div>
-        </div>
-      </motion.section>
-
       {/* Community Section removed per request */}
 
       {/* Text Message Testimonials Section */}
@@ -2043,13 +1867,13 @@ export default function Home() {
             className="section-title"
             variants={textRevealVariants}
           >
-            Practical Next Steps
+            Real Messages from Real Results
           </motion.h2>
           <motion.p 
             className="section-subtitle"
             variants={textRevealVariants}
           >
-            Illustrative learning ideas, not customer testimonials or promised results
+            See what people are saying about Revenue Ripple
           </motion.p>
           
           <motion.div 
@@ -2081,7 +1905,7 @@ export default function Home() {
                 marginBottom: '1rem',
                 textAlign: 'center'
               }}>
-                Learning idea
+                Today 6:12 PM
               </div>
               <div style={{
                 background: '#e5e7eb',
@@ -2096,7 +1920,7 @@ export default function Home() {
                   fontSize: '0.875rem',
                   lineHeight: '1.5'
                 }}>
-                  Choose one workflow to understand before deciding whether to automate it.
+                  "My guy Donte made a my work flow that perfectly handles my YouTube video summary automation"
                 </p>
               </div>
             </motion.div>
@@ -2119,7 +1943,7 @@ export default function Home() {
                 marginBottom: '1rem',
                 textAlign: 'center'
               }}>
-                Planning idea
+                Today 4:37 PM
               </div>
               <div style={{
                 background: '#e5e7eb',
@@ -2133,7 +1957,7 @@ export default function Home() {
                   fontSize: '0.875rem',
                   lineHeight: '1.5'
                 }}>
-                  Write down your audience, your goal, and the next question you need to answer before planning a website.
+                  "Working with Donte at Revenue Ripple has been an absolute game changer for my foundation. From the very beginning, he understood my vision on both a technical and emotional level; transforming it into a stunning, professional website that perfectly reflects our mission. Donte was hands-on, patient, and incredibly responsive, guiding me through every step of the process with clarity and care."
                 </p>
               </div>
               <div style={{
@@ -2143,7 +1967,7 @@ export default function Home() {
                 textAlign: 'center',
                 marginTop: '0.5rem'
               }}>
-                — Illustrative planning exercise
+                — Nykiah Morgan, Founder
               </div>
             </motion.div>
 
@@ -2165,7 +1989,7 @@ export default function Home() {
                 marginBottom: '1rem',
                 textAlign: 'center'
               }}>
-                Practice idea
+                Mon, Sep 22 at 3:21 PM
               </div>
               <div style={{
                 background: '#e5e7eb',
@@ -2179,7 +2003,7 @@ export default function Home() {
                   fontSize: '0.875rem',
                   lineHeight: '1.5'
                 }}>
-                  Apply one lesson to a small experiment, then review what you observed before taking the next step.
+                  "I've been learning so much about marketing and leads on revenue ripple, I seriously can't thank you enough! Applying the knowledge ive gained from the site, I've been able to generate and convert way more leads for my business 💪🔥"
                 </p>
               </div>
             </motion.div>
