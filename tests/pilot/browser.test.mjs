@@ -44,7 +44,7 @@ try {
  const wait=async expression=>{for(let n=0;n<100;n++){if(await evaluate(expression))return;await new Promise(r=>setTimeout(r,200));}throw Error('UI condition timed out: '+expression+'; text: '+await evaluate('document.body.innerText')+'; requests: '+JSON.stringify(blocked));};
 
  await call('Page.navigate',{url:'http://127.0.0.1:5187/'},sessionId);
- await wait("document.body.innerText.includes('Build your marketing skills.')");
+ await wait("document.body.innerText.includes('Build Your Marketing Skills.')");
  for(const width of [1280,390]) {
   await call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<700},sessionId);
   assert.equal(await evaluate('document.documentElement.scrollWidth <= window.innerWidth'),true);
