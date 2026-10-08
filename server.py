@@ -1,4 +1,5 @@
 from middleware.verified_identity import install_access_guard
+from owner_pilot import owner_pilot
 from acquisition.attribution import record_lead as record_acquisition_lead, record_checkout as record_acquisition_checkout, checkout_metadata
 from flask import Flask, request, jsonify, abort, make_response, send_from_directory
 from flask_cors import CORS
@@ -75,6 +76,7 @@ app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
 app.supabase = supabase
 install_access_guard(app)
+app.register_blueprint(owner_pilot)
 app.register_blueprint(email_bp)
 
 @app.route('/')

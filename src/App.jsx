@@ -36,6 +36,8 @@ const NO_INDEX_PATHS = ['/thank-you', '/membership-success', '/tripwire-success'
 
 // Load page code only when its route is visited.
 const Home = lazy(() => import('./pages/Home'));
+const MembershipReview = lazy(() => import('./pages/MembershipReview'));
+const VisibilityPilot = lazy(() => import('./pages/VisibilityPilot'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const AuthCallback = lazy(() => import('./pages/AuthCallback'));
@@ -129,9 +131,6 @@ const SubmitStory = lazy(() => import('./pages/SubmitStory'));
 const Vault = lazy(() => import('./pages/Vault'));
 const VaultDetail = lazy(() => import('./pages/VaultDetail'));
 // AI Visibility components
-const AIVisibilityDashboard = lazy(() => import('./pages/AIVisibilityDashboard'));
-const AIVisibilitySetup = lazy(() => import('./pages/AIVisibilitySetup'));
-const AIVisibilityTracker = lazy(() => import('./pages/AIVisibilityTracker'));
 const TranscriptPipelinePage = lazy(() => import('./pages/TranscriptPipeline'));
 
 const LoadingFallback = () => (
@@ -201,7 +200,7 @@ const App = () => {
       <MilestoneCheckIn />
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
-        <Route path="/" element={<UnprotectedRoute><Home /></UnprotectedRoute>} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<UnprotectedRoute><Login /></UnprotectedRoute>} />
         <Route path="/register" element={<UnprotectedRoute><Register /></UnprotectedRoute>} />
         <Route path="/affiliate-login" element={<UnprotectedRoute><AffiliateLogin /></UnprotectedRoute>} />
@@ -259,10 +258,12 @@ const App = () => {
         <Route path="/vault" element={<ProtectedRoute requirePayment={true}><Vault /></ProtectedRoute>} />
         <Route path="/vault/:id" element={<ProtectedRoute requirePayment={true}><VaultDetail /></ProtectedRoute>} />
         
-        {/* AI Visibility */}
-        <Route path="/ai-visibility" element={<ProtectedRoute><AIVisibilityDashboard /></ProtectedRoute>} />
-        <Route path="/ai-visibility/setup" element={<ProtectedRoute><AIVisibilitySetup /></ProtectedRoute>} />
-        <Route path="/ai-visibility-tracker" element={<AIVisibilityTracker />} />
+        {/* Preparation-only pilot; scan execution is not enabled. */}
+        <Route path="/membership" element={<MembershipReview />} />
+        <Route path="/visibility-pilot" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
+        <Route path="/ai-visibility" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
+        <Route path="/ai-visibility/setup" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
+        <Route path="/ai-visibility-tracker" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
         <Route path="/admin/transcripts" element={<ProtectedRoute requireAdmin><TranscriptPipelinePage /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

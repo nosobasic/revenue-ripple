@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
@@ -127,8 +128,14 @@ function synthesiaDevApi() {
 }
 
 // https://vitejs.dev/config/
+function releaseEvidence() {
+  return { name: 'release-evidence', generateBundle() {
+    const commit = process.env.VERCEL_GIT_COMMIT_SHA || execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    this.emitFile({ type: 'asset', fileName: 'release.json', source: JSON.stringify({ release: 'visibility-owner-preparation-v1', commit, scans_enabled: false }) });
+  } };
+}
 export default defineConfig({
-  plugins: [react(), contentEngineDevApi(), synthesiaDevApi()],
+  plugins: [releaseEvidence(),react(), contentEngineDevApi(), synthesiaDevApi()],
   build: {
     rollupOptions: {
       output: {
