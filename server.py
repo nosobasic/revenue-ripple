@@ -1,3 +1,4 @@
+from middleware.legacy_membership import require_paid_checkout, legacy_profile_update, preserve_legacy_identity
 from middleware.verified_identity import install_access_guard
 from owner_pilot import owner_pilot
 from acquisition.attribution import record_lead as record_acquisition_lead, record_checkout as record_acquisition_checkout, checkout_metadata
@@ -679,7 +680,10 @@ def stripe_webhook():
     sig_header = request.headers.get('stripe-signature')
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        # Parse only after signature validation. Newer Stripe SDK Event objects
+        # are not dicts; our existing handlers operate on plain JSON mappings.
+        event = json.loads(payload)
     except (ValueError, stripe.error.SignatureVerificationError):
         return abort(400)
 
@@ -722,7 +726,7 @@ def stripe_webhook():
             log_founders_annual_purchase(customer_email, amount_total, referrer_username, session)
             
             # Update user with founder status
-            set_user_as_founder(customer_email)
+            set_user_as_founder(customer_email, verified_event=event)
             
             # Add to GetResponse with founder tag
             add_contact_to_getresponse(customer_email, "founders_annual")
@@ -752,17 +756,17 @@ def stripe_webhook():
             if referrer_username and referrer_username != 'none':
                 log_commission(referrer_username, customer_email, tier, amount_total)
             if product == "membership_subscription":
-                set_user_role(customer_email, "member")
+                set_user_role(customer_email, "member", verified_event=event)
             elif product == "reseller_subscription":
-                set_user_role(customer_email, "reseller")
+                set_user_role(customer_email, "reseller", verified_event=event)
             elif product == "pro_reseller_subscription":
-                set_user_role(customer_email, "pro_reseller")
+                set_user_role(customer_email, "pro_reseller", verified_event=event)
             elif product == "reseller_trial_subscription":
-                set_user_role(customer_email, "reseller")
+                set_user_role(customer_email, "reseller", verified_event=event)
             elif product == "pro_reseller_trial_subscription":
-                set_user_role(customer_email, "pro_reseller")
+                set_user_role(customer_email, "pro_reseller", verified_event=event)
             elif product == "quarterly_growth_subscription":
-                set_user_role(customer_email, "member")
+                set_user_role(customer_email, "member", verified_event=event)
             
             # Send Subscribe event to Facebook Conversions API
             user_data = {'email': customer_email}
@@ -826,8 +830,12 @@ def process_tripwire_purchase(customer_email, amount_total, referrer_username):
         print(f"❌ Error processing tripwire purchase: {e}")
         raise e
 
-def process_subscription_purchase(customer_email, amount_total, referrer_username, product):
+def process_subscription_purchase(customer_email, amount_total, referrer_username, product, *, verified_event=None):
     """Process subscription purchase with role updates and error handling"""
+    # Internal helper has no callers/routes today. Require the same paid context
+    # if a verified webhook dispatcher uses it in future; never accept a return URL.
+    expected = {'membership_subscription': 'member', 'reseller_subscription': 'reseller', 'pro_reseller_subscription': 'pro_reseller'}.get(product)
+    require_paid_checkout(verified_event, customer_email, expected)
     try:
         tier = product.replace("_subscription", "")
         print(f"{tier.capitalize()} subscription by {customer_email} — Referrer: {referrer_username} — Amount: ${amount_total}")
@@ -844,11 +852,11 @@ def process_subscription_purchase(customer_email, amount_total, referrer_usernam
         
         # Update user role based on subscription type
         if product == "membership_subscription":
-            set_user_role(customer_email, "member")
+            set_user_role(customer_email, "member", verified_event=verified_event)
         elif product == "reseller_subscription":
-            set_user_role(customer_email, "reseller")
+            set_user_role(customer_email, "reseller", verified_event=verified_event)
         elif product == "pro_reseller_subscription":
-            set_user_role(customer_email, "pro_reseller")
+            set_user_role(customer_email, "pro_reseller", verified_event=verified_event)
             
         # Mark webhook as processed
         update_webhook_processed(customer_email, f"{tier}_subscription")
@@ -971,19 +979,26 @@ def log_commission(referrer_username, buyer_email, tier, amount):
     except Exception as e:
         print("❌ Failed to log commission:", str(e))
 
-def set_user_role(email, role):
+def set_user_role(email, role, *, verified_event=None):
+    # Signature authentication occurs in stripe_webhook before dispatch. Recheck
+    # paid event/product/recipient semantics here so accidental callers fail closed.
+    require_paid_checkout(verified_event, email, role)
     try:
-        response = supabase.table("users").select("id").eq("email", email).execute()
+        response = supabase.table("users").select("id,role,plan,has_paid,payment_status").eq("email", email).execute()
         if response.data and len(response.data) > 0:
-            # User exists, update role and plan
-            supabase.table("users").update({
-                "role": role,
-                "plan": role,
-                "has_paid": True,
-                "payment_status": "completed",
-                "updated_at": "now()"
-            }).eq("email", email).execute()
-            print(f"✅ Updated role and plan to '{role}' for {email}")
+            if len(response.data) != 1:
+                raise ValueError('Ambiguous legacy profile; manual reconciliation required')
+            current = response.data[0]
+            updates = legacy_profile_update(current, role)
+            if not updates:
+                return
+            updates['updated_at'] = 'now()'
+            query = supabase.table('users').update(updates).eq('id', current['id'])
+            # Compare the trusted role/plan at write time: a concurrent admin or
+            # lifetime assignment must not be overwritten by a stale read.
+            for field in ('role', 'plan'):
+                query = query.is_(field, 'null') if current.get(field) is None else query.eq(field, current[field])
+            query.execute()
         else:
             # User not found, create auth user first
             auth_response = supabase.auth.admin.create_user({
@@ -1039,13 +1054,18 @@ def log_founders_annual_purchase(email, amount, referrer_username, session):
     except Exception as e:
         print(f"❌ Failed to log Founders Annual purchase: {str(e)}")
 
-def set_user_as_founder(email):
-    """Update user record with founder status"""
+def set_user_as_founder(email, *, verified_event=None):
+    """Update founder benefits only from the authenticated paid webhook path."""
+    require_paid_checkout(verified_event, email, 'member')
+    if verified_event['data']['object']['metadata'].get('product') != 'founders_annual_subscription':
+        raise ValueError('Founder checkout context required')
     try:
-        response = supabase.table("users").select("id").eq("email", email).execute()
+        response = supabase.table("users").select("id,role,plan").eq("email", email).execute()
         if response.data and len(response.data) > 0:
-            # Update existing user
-            supabase.table("users").update({
+            if len(response.data) != 1:
+                raise ValueError('Ambiguous legacy profile; manual reconciliation required')
+            current = response.data[0]
+            updates = preserve_legacy_identity(current, {
                 "is_founder": True,
                 "subscription_type": "annual",
                 "role": "member",
@@ -1058,8 +1078,11 @@ def set_user_as_founder(email):
                     "locked_pricing": True
                 },
                 "updated_at": "now()"
-            }).eq("email", email).execute()
-            print(f"✅ Set founder status for {email}")
+            })
+            query = supabase.table('users').update(updates).eq('id', current['id'])
+            for field in ('role', 'plan'):
+                query = query.is_(field, 'null') if current.get(field) is None else query.eq(field, current[field])
+            query.execute()
         else:
             # Create user with founder status
             auth_response = supabase.auth.admin.create_user({
