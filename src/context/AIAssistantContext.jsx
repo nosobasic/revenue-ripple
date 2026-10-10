@@ -14,6 +14,16 @@ export const useAIAssistant = () => {
 
 export const AIAssistantProvider = ({ children }) => {
   const { user } = useAuth();
+  // Remount account-owned UI state so old transcripts, drafts, pending insights,
+  // and late replies cannot cross a logout/login or account switch.
+  return (
+    <AssistantSessionProvider key={user?.id ?? "signed-out"}>
+      {children}
+    </AssistantSessionProvider>
+  );
+};
+
+const AssistantSessionProvider = ({ children }) => {
   const location = useLocation();
   
   // Global AI assistant state

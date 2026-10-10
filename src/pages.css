@@ -7,10 +7,10 @@
   z-index: 3;
 }
 
-/* Navbar Styles */
+/* Navbar layout only. Colors belong to components/Navbar.css so lazy-loaded
+   routes cannot replace the shared blue navigation palette. */
 .navbar {
   position: relative;
-  background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
@@ -48,17 +48,11 @@
 }
 
 .navbar-link {
-  color: #333;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   transition: all 0.3s ease;
-}
-
-.navbar-link:hover {
-  color: #007bff;
-  background-color: rgba(0, 123, 255, 0.1);
 }
 
 .navbar-button {
@@ -77,11 +71,6 @@
 .navbar-button:hover {
   color: #dc3545;
   background-color: rgba(220, 53, 69, 0.1);
-}
-
-.navbar-link.active {
-  color: #2563eb;
-  background-color: #eff6ff;
 }
 
 /* Auth Pages (Login & Register) */
