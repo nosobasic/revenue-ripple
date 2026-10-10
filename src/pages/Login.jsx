@@ -27,7 +27,8 @@ export default function Login() {
 
     try {
       clearPurchaseIntent();
-      await login(email, password);
+      const authenticatedUser = await login(email, password);
+      if (!authenticatedUser) return; // A newer login/logout superseded this request.
       navigate(from, { replace: true }); // Redirect to intended page
     } catch (error) {
       console.error('Login error:', error);

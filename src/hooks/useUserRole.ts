@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext';
 export interface UserRoleInfo {
   role: string;
   hasRole: boolean;
-  hasSubscription: boolean;
+  hasSubscription: boolean | null;
+  subscriptionStatus: 'unverified';
   requiresCheckout: boolean;
   isAdmin: boolean;
   isAffiliate: boolean;
@@ -24,7 +25,8 @@ export function useUserRole(): UserRoleInfo {
     return {
       role: DEFAULT_ROLE,
       hasRole: false,
-      hasSubscription: false,
+      hasSubscription: null,
+      subscriptionStatus: 'unverified',
       requiresCheckout: false,
       isAdmin: false,
       isAffiliate: false,
@@ -37,13 +39,14 @@ export function useUserRole(): UserRoleInfo {
   
   // A legacy payment flag is not a current subscription, and admin is not a paid tier.
   // New rr_subscriptions entitlements are deliberately not inferred here.
-  const hasPaid = false;
+  const hasPaid = null;
   const requiresCheckout = false; // Free learning never requires repurchase.
 
   return {
     role,
     hasRole: true,
     hasSubscription: hasPaid,
+    subscriptionStatus: 'unverified',
     requiresCheckout,
     isAdmin: role === 'admin',
     isAffiliate: ['affiliate', 'reseller', 'pro_reseller'].includes(role),

@@ -1,5 +1,7 @@
 # Existing-member authentication and checkout review — 2026-10-10
 
+Follow-up: see AUTH_PAYMENT_FOLLOWUP_REVIEW.md for independent review corrections, explicit unverified subscription state, and final 123-assertion validation. This document preserves the initial investigation evidence.
+
 ## Verified baseline and owner record
 
 - Isolated clone: `codex/auth-member-routing`, based on fetched remote main `1a08ea101e16ede86d19840fc1034c01db5e14e7`.

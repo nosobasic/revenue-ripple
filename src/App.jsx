@@ -2,6 +2,8 @@ import AcquisitionTracker from './components/AcquisitionTracker';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import UnprotectedRoute from './components/SignedOutRoute';
+import MembershipCancel from './pages/MembershipCancel';
 import Footer from './components/Footer';
 import MilestoneCheckIn from './components/MilestoneCheckIn';
 import SEO from './components/SEO';
@@ -153,25 +155,6 @@ function RouteSEO() {
   );
 }
 
-const UnprotectedRoute = ({ children }) => {
-  const isAuthenticated = !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-  const location = useLocation();
-  
-  // If user is authenticated and trying to access register/login, check if they need to complete checkout
-  // Only redirect to dashboard if they're NOT in the process of navigating to checkout after signup
-  if (isAuthenticated && (location.pathname === '/register' || location.pathname === '/login')) {
-    const isNavigatingToCheckout = sessionStorage.getItem('navigating-to-checkout') === 'true';
-    const isOnCheckoutPath = location.pathname.startsWith('/checkout') || location.pathname.startsWith('/reseller-checkout');
-    
-    // Don't redirect if user is navigating to checkout (just signed up) or already on checkout
-    if (!isNavigatingToCheckout && !isOnCheckoutPath) {
-      return <Navigate to="/dashboard" replace />;
-    }
-  }
-  
-  return children;
-};
-
 const App = () => {
   const [showReload, setShowReload] = useState(false);
 
@@ -216,6 +199,7 @@ const App = () => {
 
         {/* Checkout - unprotected for DMD tripwire, component handles auth check for other products */}
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/membership-cancel" element={<MembershipCancel />} />
         <Route path="/membership-success" element={<ProtectedRoute><MembershipSuccess /></ProtectedRoute>} />
         <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
         <Route path="/affiliate/sign-up" element={<AffiliateSign />} />

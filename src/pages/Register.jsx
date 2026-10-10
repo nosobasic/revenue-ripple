@@ -34,7 +34,8 @@ export default function Register() {
     }
 
     try {
-      await signup(email, password, firstName, lastName,"member","");
+      const authenticatedUser = await signup(email, password, firstName, lastName,"member","");
+      if (!authenticatedUser) return;
       
       // FREE ACCESS: Redirect directly to dashboard after registration
       navigate('/dashboard', { replace: true });

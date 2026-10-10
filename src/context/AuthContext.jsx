@@ -17,6 +17,29 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState(null);
   const generation = useRef(0);
   const currentSession = useRef(null);
+  const authOperation = useRef(0);
+  const authQueue = useRef(Promise.resolve());
+  const activeSdkOperation = useRef(null);
+  // SDK calls persist sessions. Serialize them so logout completes only after
+  // earlier sign-in persistence has settled and cannot be undone by it.
+  const runAuthOperation = (operation, action, mustRun = false) => {
+    const task = authQueue.current.then(async () => {
+      if (!mustRun && operation !== authOperation.current) return null;
+      activeSdkOperation.current = operation;
+      try { return await action(); }
+      finally { activeSdkOperation.current = null; }
+    });
+    authQueue.current = task.catch(() => {});
+    return task;
+  };
+  const pendingAuth = useRef(new Set());
+  const intendedEmail = useRef(null);
+  const beginAuth = (email) => {
+    const operation = ++authOperation.current;
+    pendingAuth.current.add(operation);
+    intendedEmail.current = email.trim().toLowerCase();
+    return operation;
+  };
 
   // Keep identity/profile resolution atomic and discard requests from older accounts.
   const resolveSession = useCallback(async (nextSession) => {
@@ -35,6 +58,9 @@ export function AuthProvider({ children }) {
         id: authUser.id, email: authUser.email, role: 'member', plan: '',
         status: 'active', commission_rate: 0, name: authUser.user_metadata?.name || '',
       }, { onConflict: 'id', ignoreDuplicates: true });
+      // Keep legacy email-based billing lookup aligned with the Auth identity.
+      // Existing RLS/trigger containment verifies this email against the token.
+      await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
       const { data, error } = await supabase.from('users').select('*')
         .eq('id', nextSession.user.id).single();
       if (error || !data || data.id !== nextSession.user.id) {
@@ -56,6 +82,11 @@ export function AuthProvider({ children }) {
     let eventSeen = false;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       eventSeen = true;
+      if (activeSdkOperation.current !== null && activeSdkOperation.current !== authOperation.current) return;
+      // Supabase can emit SIGNED_IN before its promise resolves. Ignore an old
+      // in-flight operation after logout or a newer account's sign-in request.
+      if (nextSession && pendingAuth.current.size &&
+          nextSession.user?.email?.toLowerCase() !== intendedEmail.current) return;
       // Return synchronously so Supabase can release its auth callback lock.
       if (active) void resolveSession(nextSession);
     });
@@ -88,19 +119,23 @@ export function AuthProvider({ children }) {
   }, [resolveSession]);
 
   async function signup(email, password, firstName, lastName ,role, paypal) {
+    const operation = beginAuth(email);
     try {
       setLoading(true);
       
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const response = await runAuthOperation(operation, () => supabase.auth.signUp({
         email,
         password,
-      });
+        options: { data: { name: `${firstName} ${lastName}`.trim() } },
+      }));
 
+      if (!response || operation !== authOperation.current) return null;
+      const { data: authData, error: authError } = response;
       if (authError) throw authError;
 
       // Create a user document in Supabase
       if (authData.user && authData.session) {
-        const { error: userError } = await supabase.from("users").insert([
+        const { error: userError } = await supabase.from("users").upsert([
           {
             id: authData.user.id,
             name: firstName + " " + lastName,
@@ -115,7 +150,8 @@ export function AuthProvider({ children }) {
             plan: "",
             paypal_email:paypal
           },
-        ]);
+        ], { onConflict: 'id', ignoreDuplicates: true });
+        if (operation !== authOperation.current) return null;
 
         if (userError) {
           console.error("Error creating user record:", userError);
@@ -124,6 +160,7 @@ export function AuthProvider({ children }) {
         // CRITICAL: Fetch user data immediately after creating the record
         // This ensures the user object is loaded in AuthContext before Register navigates
         await resolveSession(authData.session);
+        if (operation !== authOperation.current) return null;
         
         // Supabase owns its session storage; never overwrite it with a raw JWT.
       }
@@ -131,28 +168,27 @@ export function AuthProvider({ children }) {
       if (!authData.session) throw new Error('Check your email to confirm your account, then sign in.');
       return authData.user;
     } catch (error) {
-      setLoading(false);
+      if (operation === authOperation.current) setLoading(false);
       throw error;
+    } finally {
+      pendingAuth.current.delete(operation);
     }
   }
 
   async function login(email, password) {
+    const operation = beginAuth(email);
     try {
       setLoading(true);
       
-      const { data: authData, error: authError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-
-
+      const response = await runAuthOperation(operation, () => supabase.auth.signInWithPassword({ email, password }));
+      if (!response || operation !== authOperation.current) return null;
+      const { data: authData, error: authError } = response;
       if (authError) throw authError;
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
       await resolveSession(authData.session);
+      if (operation !== authOperation.current) return null;
       
       // Track daily login for engagement
       if (authData.user) {
@@ -162,12 +198,16 @@ export function AuthProvider({ children }) {
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
-      setLoading(false);
+      if (operation === authOperation.current) setLoading(false);
       throw error;
+    } finally {
+      pendingAuth.current.delete(operation);
     }
   }
 
   async function logout() {
+    const operation = ++authOperation.current;
+    intendedEmail.current = null;
     ++generation.current;
     currentSession.current = null;
     setUser(null);
@@ -176,16 +216,20 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true);
       
-      const { error } = await supabase.auth.signOut();
+      const response = await runAuthOperation(operation, () => supabase.auth.signOut(), true);
+      if (!response || operation !== authOperation.current) return;
+      const { error } = response;
       if (error) throw error;
       
-      setUser(null);
-      setSession(null);
+      if (operation === authOperation.current) {
+        setUser(null);
+        setSession(null);
+      }
     } catch (error) {
       console.error("Logout error:", error);
       throw error;
     } finally {
-      setLoading(false);
+      if (operation === authOperation.current) setLoading(false);
     }
   }
 

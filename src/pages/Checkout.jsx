@@ -15,12 +15,12 @@ export default function Checkout() {
   const [params] = useSearchParams();
   const location = useLocation();
   const product = params.get('product');
-  const offer = products[product];
+  const offer = Object.hasOwn(products, product) ? products[product] : null;
   const { user, session, loading, authError, refreshUserData } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const request = useRef(null);
-  const identity = user?.id;
+  const identity = session?.user?.id;
   useEffect(() => {
     setBusy(false);
     setError('');
@@ -62,7 +62,8 @@ export default function Checkout() {
     if (!session || !user) return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return <main className="checkout-container"><div className="checkout-content">
-    <h1>{offer ? `Review ${offer.title} purchase` : 'Choose a membership option'}</h1>
+    <h1>{offer ? `Review ${offer.title} purchase` : 'Purchase unavailable'}</h1>
+    {!offer && <p>This purchase option is not available. Check membership &amp; program status for supported offers.</p>}
     <p>Signing in does not require a purchase. Free learning remains available.</p>
     {user && <p>Your existing verified account access is unchanged by this page.</p>}
     {error && <p role="alert">{error}</p>}
