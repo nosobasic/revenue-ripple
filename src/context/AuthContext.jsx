@@ -244,7 +244,6 @@ export function AuthProvider({ children }) {
     if (profileData.company !== undefined) updateData.company = profileData.company;
     if (profileData.bio !== undefined) updateData.bio = profileData.bio;
 
-    console.log('Updating user profile with data:', updateData);
 
     // Handle email update separately if provided
     if (profileData.email !== undefined && profileData.email !== user.email) {
@@ -266,17 +265,14 @@ export function AuthProvider({ children }) {
       return true; // No changes to save
     }
 
-    console.log("userId====", user.id)
 
     // Update the user's data in Supabase
     const r = await supabase
       .from("users")
       .update(updateData)
       .eq("id", user.id);
-    console.log('update response',r)
     if (r.error) {
-      console.error("Supabase update error:", error);
-      throw error;
+      throw r.error;
     }
 
     // Update the local user state

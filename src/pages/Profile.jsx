@@ -1,563 +1,74 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useUserRole } from "../hooks/useUserRole";
-import { useNavigate } from "react-router-dom";
-import {
-  FaUser,
-  FaEnvelope,
-  FaPhone,
-  FaBuilding,
-  FaEdit,
-  FaSave,
-  FaTimes,
-  FaSignOutAlt,
-} from "react-icons/fa";
-import Navbar from "../components/Navbar";
-import "../pages.css";
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useUserRole } from '../hooks/useUserRole';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+import MembershipBilling from '../components/MembershipBilling';
+import '../pages.css';
+import './Profile.css';
 
-const Profile = () => {
+const fields = [
+  ['name', 'Full name', 'text', 'name'],
+  ['email', 'Email address', 'email', 'email'],
+  ['phone', 'Phone number', 'tel', 'tel'],
+  ['company', 'Company', 'text', 'organization'],
+];
+const details = user => Object.fromEntries(['name', 'email', 'phone', 'company', 'bio'].map(key => [key, user?.[key] || '']));
+
+export default function Profile() {
   const { user, updateUserProfile, logout } = useAuth();
-  const { role: userRole } = useUserRole();
+  const { role } = useUserRole();
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    role: "",
-    bio: "",
-  });
+  // Keyed content discards edits and in-flight UI on account changes.
+  return <div className="dashboard profile-page"><Navbar />{user
+    ? <ProfileDetails key={user.id} user={user} role={role} updateUserProfile={updateUserProfile} logout={logout} navigate={navigate} />
+    : <main className="container profile-empty"><h1>Profile settings</h1><p>Please sign in to view your profile.</p><Link to="/login" state={{ from: '/profile' }}>Sign in</Link></main>}</div>;
+}
 
-  console.log("user-=-=-=", user);
-
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        company: user.company || "",
-        role: userRole || "",
-        bio: user.bio || "",
-      });
-    }
-  }, [user, userRole]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    console.log("Form field changed:", name, value);
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+function ProfileDetails({ user, role, updateUserProfile, logout, navigate }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [form, setForm] = useState(() => details(user));
+  useEffect(() => { if (!editing) setForm(details(user)); }, [user, editing]);
+  async function save(event) {
+    event.preventDefault();
+    if (saving) return;
+    setSaving(true); setMessage('');
     try {
-      console.log("Submitting profile data:", formData);
-      await updateUserProfile(formData);
-      setIsEditing(false);
-      alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Error updating profile: " + error.message);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      alert("Error logging out: " + error.message);
-    }
-  };
-
-  if (!user) {
-    return (
-      <div className="dashboard">
-        <Navbar />
-        <header className="dashboard-header">
-          <div className="container">
-            <h1 className="dashboard-title">Access Required</h1>
-            <p className="dashboard-welcome">
-              Please log in to view your profile
-            </p>
-          </div>
-        </header>
-        <div className="container dashboard-content">
-          <div className="section">
-            <div className="section-content">
-              <div className="course-item">
-                <div className="course-details">
-                  <p
-                    style={{
-                      textAlign: "center",
-                      marginBottom: "2rem",
-                      color: "rgba(255, 255, 255, 0.9)",
-                    }}
-                  >
-                    You need to be logged in to access your profile settings.
-                  </p>
-                  <div style={{ textAlign: "center" }}>
-                    <button
-                      onClick={() => navigate("/login")}
-                      className="cta-button"
-                    >
-                      Go to Login
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+      const emailChanged = form.email !== user.email;
+      await updateUserProfile(form);
+      setEditing(false);
+      setMessage(emailChanged ? 'Profile saved. Follow the email confirmation instructions to complete an email change.' : 'Profile saved.');
+    } catch { setMessage('We could not save your profile. Please try again.'); }
+    finally { setSaving(false); }
   }
-
-  return (
-    <div className="dashboard">
-      <Navbar />
-
-      {/* Profile Header */}
-      <header className="dashboard-header">
-        <div className="container">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: "1.5rem",
-                  border: "3px solid rgba(255, 255, 255, 0.3)",
-                }}
-              >
-                <FaUser style={{ fontSize: "2rem", color: "white" }} />
-              </div>
-              <div>
-                <h1 className="dashboard-title">
-                  {user.name || "Your Profile"}
-                </h1>
-                <p className="dashboard-welcome">
-                  {userRole
-                    ? `${
-                        userRole.charAt(0).toUpperCase() + userRole.slice(1)
-                      } Account`
-                    : "Member Account"}
-                </p>
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="cta-button"
-                style={{
-                  background: "rgba(255, 255, 255, 0.2)",
-                  border: "2px solid rgba(255, 255, 255, 0.3)",
-                  backdropFilter: "blur(10px)",
-                }}
-              >
-                {isEditing ? (
-                  <>
-                    <FaTimes style={{ marginRight: "0.5rem" }} />
-                    Cancel
-                  </>
-                ) : (
-                  <>
-                    <FaEdit style={{ marginRight: "0.5rem" }} />
-                    Edit Profile
-                  </>
-                )}
-              </button>
-              <button
-                onClick={handleLogout}
-                className="cta-button"
-                style={{
-                  background: "rgba(239, 68, 68, 0.2)",
-                  border: "2px solid rgba(239, 68, 68, 0.3)",
-                  backdropFilter: "blur(10px)",
-                  color: "#FEE2E2",
-                }}
-              >
-                <FaSignOutAlt style={{ marginRight: "0.5rem" }} />
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Profile Content */}
-      <div className="container dashboard-content">
-        <div className="main-content">
-          <section className="section">
-            <div className="section-header marketing">
-              <div className="section-icon">👤</div>
-              <h2>Personal Information</h2>
-            </div>
-            <div className="section-content">
-              <form onSubmit={handleSubmit}>
-                <div className="course-item">
-                  <div className="course-details">
-                    {/* Name */}
-                    <div className="form-group">
-                      <label
-                        style={{
-                          color: "#374151",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                          display: "block",
-                        }}
-                      >
-                        <FaUser style={{ marginRight: "0.5rem" }} />
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        style={{
-                          background: isEditing ? "#ffffff" : "#f9fafb",
-                          border: "1px solid #d1d5db",
-                          color: "#1f2937",
-                          padding: "0.75rem",
-                          borderRadius: "6px",
-                          width: "100%",
-                          marginBottom: "1rem",
-                        }}
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="form-group">
-                      <label
-                        style={{
-                          color: "#374151",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                          display: "block",
-                        }}
-                      >
-                        <FaEnvelope style={{ marginRight: "0.5rem" }} />
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        style={{
-                          background: isEditing ? "#ffffff" : "#f9fafb",
-                          border: "1px solid #d1d5db",
-                          color: "#1f2937",
-                          padding: "0.75rem",
-                          borderRadius: "6px",
-                          width: "100%",
-                          marginBottom: "1rem",
-                        }}
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div className="form-group">
-                      <label
-                        style={{
-                          color: "#374151",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                          display: "block",
-                        }}
-                      >
-                        <FaPhone style={{ marginRight: "0.5rem" }} />
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        placeholder="Enter your phone number"
-                        style={{
-                          background: isEditing ? "#ffffff" : "#f9fafb",
-                          border: "1px solid #d1d5db",
-                          color: "#1f2937",
-                          padding: "0.75rem",
-                          borderRadius: "6px",
-                          width: "100%",
-                          marginBottom: "1rem",
-                        }}
-                      />
-                    </div>
-
-                    {/* Company */}
-                    <div className="form-group">
-                      <label
-                        style={{
-                          color: "#374151",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                          display: "block",
-                        }}
-                      >
-                        <FaBuilding style={{ marginRight: "0.5rem" }} />
-                        Company/Business Name
-                      </label>
-                      <input
-                        type="text"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        placeholder="Enter your company name"
-                        style={{
-                          background: isEditing ? "#ffffff" : "#f9fafb",
-                          border: "1px solid #d1d5db",
-                          color: "#1f2937",
-                          padding: "0.75rem",
-                          borderRadius: "6px",
-                          width: "100%",
-                          marginBottom: "1rem",
-                        }}
-                      />
-                    </div>
-
-                    {/* Bio */}
-                    <div className="form-group">
-                      <label
-                        style={{
-                          color: "#374151",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                          display: "block",
-                        }}
-                      >
-                        About You
-                      </label>
-                      <textarea
-                        name="bio"
-                        rows={4}
-                        value={formData.bio}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className="form-input"
-                        placeholder="Tell us about yourself and your marketing goals..."
-                        style={{
-                          background: isEditing ? "#ffffff" : "#f9fafb",
-                          border: "1px solid #d1d5db",
-                          color: "#1f2937",
-                          padding: "0.75rem",
-                          borderRadius: "6px",
-                          width: "100%",
-                          marginBottom: "1rem",
-                          resize: "vertical",
-                        }}
-                      />
-                    </div>
-
-                    {/* Save Button */}
-                    {isEditing && (
-                      <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                        <button
-                          type="submit"
-                          className="cta-button"
-                          style={{ cursor: "pointer" }}
-                        >
-                          <FaSave style={{ marginRight: "0.5rem" }} />
-                          Save Changes
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </form>
-            </div>
-          </section>
-        </div>
-
-        {/* Side Content */}
-        <div className="side-content">
-          {/* Account Status */}
-          <section className="section">
-            <div className="section-header affiliate">
-              <div className="section-icon">⭐</div>
-              <h2>Account Status</h2>
-            </div>
-            <div className="section-content">
-              <div className="course-item">
-                <div className="course-details">
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <span
-                      style={{
-                        background:
-                          userRole === "pro_reseller"
-                            ? "#10B981"
-                            : userRole === "reseller"
-                            ? "#F59E0B"
-                            : "#3B82F6",
-                        color: "white",
-                        padding: "0.25rem 0.75rem",
-                        borderRadius: "20px",
-                        fontSize: "0.875rem",
-                        fontWeight: "600",
-                      }}
-                    >
-                      {userRole
-                        ? userRole.replace("_", " ").toUpperCase()
-                        : "MEMBER"}
-                    </span>
-                  </div>
-                  <p style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                    {userRole === "pro_reseller"
-                      ? "You have access to all premium features and earn 100% commission on every sale."
-                      : userRole === "reseller"
-                      ? "You can resell memberships and earn 100% commission on every other sale."
-                      : userRole === "affiliate"
-                      ? "You can promote products and earn commissions on successful referrals."
-                      : "Access to all member training and resources."}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Account Actions */}
-          <section className="section">
-            <div className="section-header digital">
-              <div className="section-icon">🚀</div>
-              <h2>Quick Actions</h2>
-            </div>
-            <div className="section-content">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.75rem",
-                }}
-              >
-                {userRole !== "pro_reseller" && (
-                  <button
-                    onClick={() => navigate("/affiliate-centre/tools")}
-                    className="cta-link"
-                    style={{ textAlign: "left", padding: "0.75rem" }}
-                  >
-                    <span className="item-icon">🛠️</span>
-                    Marketing Tools
-                  </button>
-                )}
-                <button
-                  onClick={() => navigate("/affiliate-centre/training")}
-                  className="cta-link"
-                  style={{ textAlign: "left", padding: "0.75rem" }}
-                >
-                  <span className="item-icon">📚</span>
-                  Training & Guides
-                </button>
-                <button
-                  onClick={() => navigate("/affiliate-centre/payouts")}
-                  className="cta-link"
-                  style={{ textAlign: "left", padding: "0.75rem" }}
-                >
-                  <span className="item-icon">💰</span>
-                  Earnings & Payouts
-                </button>
-                <button
-                  onClick={() => navigate("/affiliate-centre/support")}
-                  className="cta-link"
-                  style={{ textAlign: "left", padding: "0.75rem" }}
-                >
-                  <span className="item-icon">💬</span>
-                  Support & FAQ
-                </button>
-              </div>
-            </div>
-          </section>
-
-          {/* Upgrade Options */}
-          {user.role !== "pro_reseller" && (
-            <section className="section">
-              <div className="section-header reseller">
-                <div className="section-icon">⬆️</div>
-                <h2>Upgrade Your Account</h2>
-              </div>
-              <div className="section-content">
-                <div className="course-item">
-                  <div className="course-details">
-                    {userRole === "affiliate" && (
-                      <>
-                        <p style={{ color: "#374151", marginBottom: "1rem" }}>
-                          Upgrade to Reseller and start earning 100% commission
-                          on every other membership sale.
-                        </p>
-                        <button
-                          onClick={() => navigate("/special")}
-                          className="cta-button"
-                          style={{ width: "100%", marginBottom: "0.5rem" }}
-                        >
-                          Become a Reseller
-                        </button>
-                      </>
-                    )}
-                    {(userRole === "affiliate" ||
-                      userRole === "reseller") && (
-                      <>
-                        <p
-                          style={{
-                            color: "#374151",
-                            marginBottom: "1rem",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          Pro Resellers earn 100% commission on EVERY sale and
-                          get exclusive marketing materials.
-                        </p>
-                        <button
-                          onClick={() => navigate("/affiliate-centre/tools")}
-                          className="cta-button"
-                          style={{ width: "100%" }}
-                        >
-                          Upgrade to Pro Reseller
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Profile;
+  async function signOut() {
+    try { await logout(); navigate('/'); }
+    catch { setMessage('We could not sign you out. Please try again.'); }
+  }
+  return <>
+    <header className="dashboard-header"><div className="container profile-header">
+      <div className="profile-identity"><span className="profile-avatar" aria-hidden="true"><FaUser /></span><div><h1 className="dashboard-title">Profile settings</h1><p className="dashboard-welcome">{user.name || 'Your account'}</p></div></div>
+      <div className="profile-actions"><button className="profile-button light" disabled={saving} onClick={() => { setEditing(!editing); setForm(details(user)); setMessage(''); }}>{editing ? 'Cancel editing' : 'Edit profile'}</button><button className="profile-button light" disabled={saving} onClick={signOut}>Sign out</button></div>
+    </div></header>
+    <main className="container profile-layout">
+      <section className="profile-card" aria-labelledby="personal-heading"><h2 id="personal-heading">Personal information</h2>
+        <p className="profile-note">Update your contact details. Account roles and membership access are managed separately.</p>
+        <form onSubmit={save}>
+          <div className="profile-fields">{fields.map(([key, label, type, autoComplete]) => <div className="profile-field" key={key}><label htmlFor={`profile-${key}`}>{label}</label><input id={`profile-${key}`} name={key} type={type} autoComplete={autoComplete} value={form[key]} readOnly={!editing} disabled={saving} onChange={event => setForm(previous => ({ ...previous, [key]: event.target.value }))} /></div>)}</div>
+          <div className="profile-field"><label htmlFor="profile-bio">About you</label><textarea id="profile-bio" name="bio" rows={4} value={form.bio} readOnly={!editing} disabled={saving} onChange={event => setForm(previous => ({ ...previous, bio: event.target.value }))} /></div>
+          {editing && <button type="submit" className="profile-button" disabled={saving}>{saving ? 'Saving…' : 'Save changes'}</button>}
+          <p role="status" aria-live="polite">{message}</p>
+        </form>
+      </section>
+      <aside className="profile-sidebar">
+        <section className="profile-card" aria-labelledby="access-heading"><h2 id="access-heading">Account access</h2><dl className="profile-access"><dt>Account role</dt><dd>{role ? role.replaceAll('_', ' ') : 'Unavailable'}</dd><dt>Recorded plan</dt><dd>{user.plan || 'Not recorded'}</dd></dl><p>Learning access and existing membership are separate from a linked Stripe billing account.</p><p className="profile-note">Administrator access does not grant paid scan credits. Scans are not enabled.</p></section>
+        <MembershipBilling userId={user.id} />
+        {['affiliate', 'reseller'].includes(role) && <nav className="profile-card profile-links" aria-label="Optional upgrades"><h2>Explore upgrade options</h2>{role === 'affiliate' && <Link to="/special">Explore Reseller</Link>}<Link to="/affiliate-centre/tools">Explore Pro Reseller</Link><p className="profile-note">Review the offer before choosing an upgrade. These links do not change your current membership.</p></nav>}
+        <nav className="profile-card profile-links" aria-label="Account resources"><h2>Quick actions</h2>{role !== 'pro_reseller' && <Link to="/affiliate-centre/tools">Marketing tools</Link>}<Link to="/affiliate-centre/training">Training & guides</Link><Link to="/affiliate-centre/payouts">Earnings & payouts</Link><Link to="/affiliate-centre/support">Support & FAQ</Link></nav>
+      </aside>
+    </main>
+  </>;
+}
