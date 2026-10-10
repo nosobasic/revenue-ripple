@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { safeReturnTo, clearPurchaseIntent } from '../utils/loginRouting';
+import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ClearCacheButton from '../components/ClearCacheButton';
@@ -17,7 +18,7 @@ export default function Login() {
   const { login, resetPassword, signInWithOAuth } = useAuth();
 
   // Get the intended redirect path, default to dashboard
-  const from = location.state?.from?.pathname || '/dashboard';
+  const from = safeReturnTo(location.state?.from);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ export default function Login() {
     setLoading(true);
 
     try {
+      clearPurchaseIntent();
       await login(email, password);
       navigate(from, { replace: true }); // Redirect to intended page
     } catch (error) {

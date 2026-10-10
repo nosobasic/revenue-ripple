@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "../supabase/client";
+import { safeReturnTo, clearPurchaseIntent } from '../utils/loginRouting';
 import { trackDailyLogin } from "../services/engagementTracking";
 
 const AuthContext = createContext();
@@ -13,94 +14,78 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
 
-  useEffect(() => {
-    // Check if we're in the middle of OAuth callback
-    const isOAuthCallback = window.location.pathname === '/auth/callback' || 
-                            window.location.hash.includes('access_token');
-    
-    const token = localStorage.getItem("revenue-ripple-auth-token");
+  const [authError, setAuthError] = useState(null);
+  const generation = useRef(0);
+  const currentSession = useRef(null);
 
-    // Don't force signOut during OAuth flow - let Supabase handle it
-    if (!token && !isOAuthCallback) {
-      supabase.auth.signOut().finally(() => {
-        setUser(null);
-        setSession(null);
-        setLoading(false);
-      });
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserData(session.user);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserData(session.user);
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchUserData = async (authUser) => {
+  // Keep identity/profile resolution atomic and discard requests from older accounts.
+  const resolveSession = useCallback(async (nextSession) => {
+    const request = ++generation.current;
+    currentSession.current = nextSession;
+    setSession(nextSession);
+    setUser(null);
+    setAuthError(null);
+    setLoading(true);
     try {
+      if (!nextSession?.user) return;
+      // Preserve existing OAuth profile provisioning: only a basic free profile,
+      // ignore an existing row so historical roles/plans are never overwritten.
+      const authUser = nextSession.user;
       await supabase.from('users').upsert({
         id: authUser.id, email: authUser.email, role: 'member', plan: '',
         status: 'active', commission_rate: 0, name: authUser.user_metadata?.name || '',
       }, { onConflict: 'id', ignoreDuplicates: true });
-      // The server validates email against the verified token identity.
-      await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
-      // Use select(*) to get all available columns without hardcoding
-      const { data: userData, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", authUser.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user data:", error);
-        // If user doesn't exist in users table, create basic user object
-        setUser({
-          ...authUser,
-          role: 'member', // default role
-          status: 'active'
-        });
-        return;
+      const { data, error } = await supabase.from('users').select('*')
+        .eq('id', nextSession.user.id).single();
+      if (error || !data || data.id !== nextSession.user.id) {
+        throw new Error('Unable to verify your account. Please retry.');
       }
-
-      if (userData) {
-        setUser({
-          ...authUser,
-          ...userData,
-        });
-      } else {
-        setUser({
-          ...authUser,
-          role: 'member',
-          status: 'active'
-        });
+      if (request === generation.current) {
+        // Role/plan come from the RLS-protected row, never user_metadata or headers.
+        setUser({ ...nextSession.user, ...data });
       }
-    } catch (error) {
-      console.error("Error in fetchUserData:", error);
-      setUser({
-        ...authUser,
-        role: 'member',
-        status: 'active'
-      });
+    } catch {
+      if (request === generation.current) setAuthError('Unable to verify your account. Please retry.');
+    } finally {
+      if (request === generation.current) setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    let eventSeen = false;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      eventSeen = true;
+      // Return synchronously so Supabase can release its auth callback lock.
+      if (active) void resolveSession(nextSession);
+    });
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active || eventSeen) return;
+      if (error) {
+        setAuthError('Unable to restore your session. Please retry.');
+        setLoading(false);
+      } else void resolveSession(data.session);
+    }).catch(() => {
+      if (active && !eventSeen) {
+        setAuthError('Unable to restore your session. Please retry.');
+        setLoading(false);
+      }
+    });
+    return () => { active = false; ++generation.current; subscription.unsubscribe(); };
+  }, [resolveSession]);
+
+  const refreshUserData = useCallback(async () => {
+    if (currentSession.current) return resolveSession(currentSession.current);
+    const request = generation.current;
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (request !== generation.current) return;
+      if (error) throw error;
+      return resolveSession(data.session);
+    } catch {
+      if (request === generation.current) setAuthError('Unable to restore your session. Please retry.');
+    }
+  }, [resolveSession]);
 
   async function signup(email, password, firstName, lastName ,role, paypal) {
     try {
@@ -138,21 +123,16 @@ export function AuthProvider({ children }) {
         
         // CRITICAL: Fetch user data immediately after creating the record
         // This ensures the user object is loaded in AuthContext before Register navigates
-        await fetchUserData(authData.user);
+        await resolveSession(authData.session);
         
-        // Store auth token in localStorage for persistence
-        if (authData.session) {
-          localStorage.setItem("revenue-ripple-auth-token", authData.session.access_token);
-          setSession(authData.session);
-        }
+        // Supabase owns its session storage; never overwrite it with a raw JWT.
       }
 
       if (!authData.session) throw new Error('Check your email to confirm your account, then sign in.');
       return authData.user;
     } catch (error) {
-      throw error;
-    } finally {
       setLoading(false);
+      throw error;
     }
   }
 
@@ -172,7 +152,7 @@ export function AuthProvider({ children }) {
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
-      await fetchUserData(authData.user);
+      await resolveSession(authData.session);
       
       // Track daily login for engagement
       if (authData.user) {
@@ -182,14 +162,17 @@ export function AuthProvider({ children }) {
       return authData.user;
     } catch (error) {
       console.error("login: error", error);
-      throw error;
-    } finally {
       setLoading(false);
+      throw error;
     }
   }
 
   async function logout() {
-    localStorage.removeItem("revenue-ripple-auth-token");
+    ++generation.current;
+    currentSession.current = null;
+    setUser(null);
+    setSession(null);
+    clearPurchaseIntent();
     try {
       setLoading(true);
       
@@ -253,10 +236,7 @@ export function AuthProvider({ children }) {
     }
 
     // Update the local user state
-    setUser((prev) => ({
-      ...prev,
-      ...updateData,
-    }));
+    setUser((prev) => prev?.id === user.id ? { ...prev, ...updateData } : prev);
 
     return true;
   } catch (error) {
@@ -294,21 +274,14 @@ async function resetPassword(email) {
   }
 }
 
-async function signInWithOAuth(provider, redirectPath = '/checkout?product=membership') {
+async function signInWithOAuth(provider, redirectPath = '/dashboard') {
   try {
     setLoading(true);
     
-    console.log('🔵 Starting OAuth flow for:', provider);
-    console.log('📍 Origin:', window.location.origin);
-    console.log('📍 Redirect path to save:', redirectPath);
-    
-    // Store redirect path in localStorage so we can use it after OAuth callback
-    localStorage.setItem('oauth-redirect-path', redirectPath);
-    console.log('💾 Saved to localStorage:', localStorage.getItem('oauth-redirect-path'));
-    
+    clearPurchaseIntent();
+    sessionStorage.setItem('oauth-return-to', safeReturnTo(redirectPath));
     const redirectUrl = `${window.location.origin}/auth/callback`;
-    console.log('🔗 OAuth redirectTo URL:', redirectUrl);
-    
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
@@ -320,7 +293,7 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
       }
     });
 
-    console.log('OAuth response:', { data, error });
+
     
     if (error) {
       console.error('❌ OAuth error:', error);
@@ -341,6 +314,8 @@ async function signInWithOAuth(provider, redirectPath = '/checkout?product=membe
     user,
     session,
     loading,
+    authError,
+    refreshUserData,
     signup,
     login,
     logout,

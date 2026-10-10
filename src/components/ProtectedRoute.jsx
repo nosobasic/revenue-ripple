@@ -40,9 +40,9 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
 );
 
 export default function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, loading } = useAuth();
+  const { user, session, loading, authError, refreshUserData } = useAuth();
   const location = useLocation();
-  const token = localStorage.getItem("revenue-ripple-auth-token");
+
 
   // Show a loading spinner while auth state is loading
   if (loading) {
@@ -50,7 +50,9 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
   }
 
   // Redirect to login if not authenticated
-  if (!token) {
+  if (authError) return <div role="alert">{authError}<button onClick={refreshUserData}>Retry account check</button></div>;
+
+  if (!session || !user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
