@@ -4,7 +4,7 @@ import { useUserRole } from '../hooks/useUserRole';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
-import MembershipBilling from '../components/MembershipBilling';
+import MembershipStatus from '../components/MembershipStatus';
 import '../pages.css';
 import './Profile.css';
 
@@ -65,7 +65,7 @@ function ProfileDetails({ user, role, updateUserProfile, logout, navigate }) {
       </section>
       <aside className="profile-sidebar">
         <section className="profile-card" aria-labelledby="access-heading"><h2 id="access-heading">Account access</h2><dl className="profile-access"><dt>Account role</dt><dd>{role ? role.replaceAll('_', ' ') : 'Unavailable'}</dd><dt>Recorded plan</dt><dd>{user.plan || 'Not recorded'}</dd></dl><p>Learning access and existing membership are separate from a linked Stripe billing account.</p><p className="profile-note">Administrator access does not grant paid scan credits. Scans are not enabled.</p></section>
-        <MembershipBilling userId={user.id} />
+        <MembershipStatus />
         {['affiliate', 'reseller'].includes(role) && <nav className="profile-card profile-links" aria-label="Optional upgrades"><h2>Explore upgrade options</h2>{role === 'affiliate' && <Link to="/special">Explore Reseller</Link>}<Link to="/affiliate-centre/tools">Explore Pro Reseller</Link><p className="profile-note">Review the offer before choosing an upgrade. These links do not change your current membership.</p></nav>}
         <nav className="profile-card profile-links" aria-label="Account resources"><h2>Quick actions</h2>{role !== 'pro_reseller' && <Link to="/affiliate-centre/tools">Marketing tools</Link>}<Link to="/affiliate-centre/training">Training & guides</Link><Link to="/affiliate-centre/payouts">Earnings & payouts</Link><Link to="/affiliate-centre/support">Support & FAQ</Link></nav>
       </aside>

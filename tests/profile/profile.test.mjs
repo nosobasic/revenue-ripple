@@ -21,7 +21,7 @@ async function mount(component=React.createElement(Profile)){await act(async()=>
 async function click(text){await act(async()=>renderer.root.findAllByType('button').find(node=>node.children.join('')===text).props.onClick())}
 const text=()=>JSON.stringify(renderer.toJSON());
 await mount();
-check(fixture.calls,[['/api/billing/status','GET']]);check(text().includes('buy your membership again'),true);check(text().includes('lifetime'),true);
+check(fixture.calls,[]);check(text().includes('Online billing management is not available yet'),true);check(text().includes('Free learning remains available'),true);check(text().includes('buy your membership again'),true);check(text().includes('lifetime'),true);
 check(renderer.root.findAllByType('input').every(input=>input.props.readOnly),true);
 for (const input of [...renderer.root.findAllByType('input'),...renderer.root.findAllByType('textarea')]) check(renderer.root.findAllByType('label').some(label=>label.props.htmlFor===input.props.id),true);
 await click('Edit profile');check(renderer.root.findAllByType('input').every(input=>!input.props.readOnly),true);
@@ -31,10 +31,10 @@ check(fixture.updates[0].name,'Changed name');check('role' in fixture.updates[0]
 await act(async()=>renderer.unmount());
 // Explicit click only; token refresh/same account renders cause no duplicate request.
 fixture.calls=[]; fixture.request=async(path,options)=>{fixture.calls.push([path,options?.method||'GET']);return {ok:true,json:async()=>path.endsWith('status')?{state:'linked'}:{state:'ready',url:'https://billing.stripe.com/p/synthetic'}}};
-await mount();check(fixture.calls.length,1);await act(async()=>renderer.update(React.createElement(Profile)));check(fixture.calls.length,1);
+await mount(React.createElement(Billing,{userId:'a'}));check(fixture.calls.length,1);await act(async()=>renderer.update(React.createElement(Billing,{userId:'a'})));check(fixture.calls.length,1);
 await click('Manage membership in Stripe');check(fixture.calls.at(-1),['/api/billing/portal','POST']);check(fixture.navigation,['https://billing.stripe.com/p/synthetic']);await act(async()=>renderer.unmount());
 // Loading/error with retry; no checkout or entitlement write.
-fixture.request=async()=>{throw Error('offline')};await mount();check(text().includes('unavailable right now'),true);
+fixture.request=async()=>{throw Error('offline')};await mount(React.createElement(Billing,{userId:'a'}));check(text().includes('unavailable right now'),true);
 fixture.request=async()=>({ok:true,json:async()=>({state:'not_linked'})});await click('Retry billing lookup');check(text().includes('buy your membership again'),true);await act(async()=>renderer.unmount());
 // Late portal responses after account switch/unmount never redirect.
 let resolve;
@@ -47,13 +47,13 @@ await act(async()=>renderer.update(React.createElement(Billing,{userId:'b'})));
 await act(async()=>{resolve({ok:true,json:async()=>({state:'ready',url:'https://billing.stripe.com/p/old'})});await pending});check(fixture.navigation,[]);await act(async()=>renderer.unmount());
 // Hostile provider URL is never followed.
 fixture.request=async path=>({ok:true,json:async()=>path.endsWith('status')?{state:'linked'}:{state:'ready',url:'https://evil.test'}});
-await mount();await click('Manage membership in Stripe');check(fixture.navigation,[]);check(text().includes('unavailable right now'),true);await act(async()=>renderer.unmount());
+await mount(React.createElement(Billing,{userId:'a'}));await click('Manage membership in Stripe');check(fixture.navigation,[]);check(text().includes('unavailable right now'),true);await act(async()=>renderer.unmount());
 console.log(`Profile/portal: ${assertions} assertions passed (synthetic only)`);
 // Preserve distinct optional upgrade journeys; never show a repurchase prompt to admin.
 for (const role of ['admin','member','affiliate','reseller','pro_reseller']) {
- fixture.user={...fixture.user,role};fixture.request=async()=>({ok:true,json:async()=>({state:'not_linked'})});
+ fixture.calls=[];fixture.user={...fixture.user,role};fixture.request=async()=>({ok:true,json:async()=>({state:'not_linked'})});
  await mount();
- check(text().includes('Explore upgrade options'),['affiliate','reseller'].includes(role));
+ check(fixture.calls,[]);check(text().includes('Explore upgrade options'),['affiliate','reseller'].includes(role));
  check(text().includes('Explore Reseller'),role==='affiliate');
  await act(async()=>renderer.unmount());
 }
@@ -62,13 +62,13 @@ const originalTimeout=globalThis.setTimeout;
 let timeout;
 globalThis.setTimeout=(callback,delay,...args)=>delay===15000?(timeout=callback,0):originalTimeout(callback,delay,...args);
 fixture.request=async()=>new Promise(()=>{}); // stalled session lookup ignores signal
-await mount();check(text().includes('Checking your linked'),true);
+await mount(React.createElement(Billing,{userId:'a'}));check(text().includes('Checking your linked'),true);
 await act(async()=>timeout());check(text().includes('unavailable right now'),true);check(text().includes('Retry billing lookup'),true);
 await act(async()=>renderer.unmount());globalThis.setTimeout=originalTimeout;
 // A stalled portal/session lookup also times out, without a redirect or grant.
 globalThis.setTimeout=(callback,delay,...args)=>delay===15000?(timeout=callback,0):originalTimeout(callback,delay,...args);
 fixture.request=async path=>path.endsWith('status')?{ok:true,json:async()=>({state:'linked'})}:new Promise(()=>{});
-await mount();
+await mount(React.createElement(Billing,{userId:'a'}));
 await act(async()=>{pending=renderer.root.findByProps({className:'profile-button',disabled:false}).props.onClick()});
 await act(async()=>{timeout();await pending});
 check(text().includes('Retry billing lookup'),true);check(fixture.navigation,[]);
