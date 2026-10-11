@@ -1,8 +1,10 @@
+import EmailSequenceConsent, { EMAIL_CONSENT_VERSION } from '../components/EmailSequenceConsent';
 import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MembershipVariation1 = () => {
+  const [emailConsent, setEmailConsent] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,6 +101,8 @@ const MembershipVariation1 = () => {
       
       const requestData = {
         ...formData,
+        email_consent: emailConsent,
+        email_consent_version: EMAIL_CONSENT_VERSION,
         source: 'membership-variation-1',
         ...acquisitionForSubmission(),
         ...utmParams
@@ -358,6 +362,8 @@ const MembershipVariation1 = () => {
                   </div>
                 )}
 
+                <EmailSequenceConsent checked={emailConsent} onChange={setEmailConsent} />
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -392,8 +398,7 @@ const MembershipVariation1 = () => {
               </div>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By submitting this form, you agree to receive marketing communications from us. 
-                You can unsubscribe at any time.
+                Your download is free. Email lessons are optional.
               </p>
             </div>
           </div>

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from typing import Optional
 
 from email_crm.provider import aws_enrollment_status, send_enabled
@@ -85,129 +85,30 @@ def enroll_new(
 ) -> Optional[dict]:
     if not supabase or not contact:
         return None
+    if contact.get("status", "active") != "active":
+        return None
     sequence_id = sequence_id or sequence_id_for_source(source)
-    seq = get_sequence(sequence_id)
+    if sequence_id == "list_restart":
+        raise ValueError("Use affirmative restart consent; automatic list_restart enrollment is disabled")
+    get_sequence(sequence_id)  # validate against the application catalog
     status = status or aws_enrollment_status(funnel)
-    now = _now()
-    enrollment = {
-        "contact_id": contact["id"],
-        "sequence_id": sequence_id,
-        "step_index": 0,
-        "status": status,
-        "origin": origin,
-        "next_send_at": _iso(now) if seq["engine"] == "due_worker" else None,
-        "getresponse_day_of_cycle": 0,
-    }
-    existing = (
-        supabase.table("email_enrollments")
-        .select("id,status,step_index,next_send_at")
-        .eq("contact_id", contact["id"])
-        .eq("sequence_id", sequence_id)
-        .in_("status", ["active", "paused", "shadow"])
-        .execute()
-    )
-    if existing.data:
-        row = existing.data[0]
-        if (sequence_id == "founders_annual" and row["status"] == "active"
-                and row.get("step_index", 0) == 0 and not row.get("next_send_at")
-                and send_enabled()):
-            enqueue_founders_step(contact, row)
-        return row
-    inserted = supabase.table("email_enrollments").insert(enrollment).execute()
-    row = (inserted.data or [None])[0]
-    if sequence_id == "founders_annual" and status == "active" and send_enabled():
-        enqueue_founders_step(contact, row, step_index=0, delay_seconds=0)
+    response = supabase.rpc("email_enroll", {
+        "p_contact": contact["id"], "p_sequence": sequence_id,
+        "p_status": status, "p_origin": origin,
+    }).execute()
+    row = response.data
+    if (row and sequence_id == "founders_annual" and row["status"] == "active"
+            and row.get("step_index", 0) == 0 and not row.get("next_send_at") and send_enabled()):
+        enqueue_founders_step(contact, row)
     return row
 
 
-def enroll_resume(supabase, mapped: dict) -> Optional[dict]:
-    """Legacy GR resume import. Cutover uses scripts/email/import_csv_restart.py instead."""
-    if not supabase or not mapped.get("email"):
-        return None
-    ensure_sequences(supabase)
-    extra = {
-        "getresponse_contact_id": mapped.get("getresponse_contact_id"),
-        "getresponse_campaign_id": mapped.get("getresponse_campaign_id"),
-    }
-    if mapped.get("suppressed"):
-        extra["status"] = "unsubscribed"
-        extra["unsubscribed_at"] = "now()"
-    contact = upsert_contact(
-        supabase,
-        email=mapped["email"],
-        name=mapped.get("name") or "",
-        source=mapped.get("source") or "unknown",
-        extra=extra,
-    )
-    if mapped.get("suppressed") or not mapped.get("enrollment"):
-        return contact
-    enr = mapped["enrollment"]
-    payload = {
-        "contact_id": contact["id"],
-        "sequence_id": enr["sequence_id"],
-        "step_index": enr["step_index"],
-        "status": enr.get("status") or "paused",
-        "origin": "getresponse_import",
-        "next_send_at": _iso(enr.get("next_send_at")),
-        "getresponse_day_of_cycle": mapped.get("getresponse_day_of_cycle"),
-    }
-    existing = (
-        supabase.table("email_enrollments")
-        .select("id")
-        .eq("contact_id", contact["id"])
-        .eq("sequence_id", enr["sequence_id"])
-        .execute()
-    )
-    if existing.data:
-        supabase.table("email_enrollments").update(payload).eq("id", existing.data[0]["id"]).execute()
-        return existing.data[0]
-    inserted = supabase.table("email_enrollments").insert(payload).execute()
-    return (inserted.data or [None])[0]
+def enroll_resume(*args, **kwargs):
+    raise RuntimeError("Legacy resume import is disabled: recover verified delivery history first")
 
 
-def advance_enrollment(supabase, enrollment: dict, sequence: dict) -> dict:
-    nxt_index = enrollment["step_index"] + 1
-    steps = sequence["steps"]
-    if nxt_index < len(steps):
-        step = steps[nxt_index]
-        delay_days = 0
-        if "day_offset" in step and "day_offset" in steps[enrollment["step_index"]]:
-            delay_days = step["day_offset"] - steps[enrollment["step_index"]]["day_offset"]
-        elif sequence["id"] == "dmd_course_26":
-            delay_days = 14
-        next_at = _now() + timedelta(days=max(delay_days, 0))
-        supabase.table("email_enrollments").update(
-            {
-                "step_index": nxt_index,
-                "next_send_at": _iso(next_at),
-                "last_sent_at": _iso(_now()),
-            }
-        ).eq("id", enrollment["id"]).execute()
-        return {"status": "advanced", "step_index": nxt_index}
-
-    next_seq = sequence.get("next_sequence")
-    supabase.table("email_enrollments").update(
-        {
-            "status": "completed",
-            "next_send_at": None,
-            "last_sent_at": _iso(_now()),
-            "completed_at": _iso(_now()),
-        }
-    ).eq("id", enrollment["id"]).execute()
-    if next_seq:
-        delay = int(sequence.get("next_delay_days") or 14)
-        supabase.table("email_enrollments").insert(
-            {
-                "contact_id": enrollment["contact_id"],
-                "sequence_id": next_seq,
-                "step_index": 0,
-                "status": enrollment.get("status") or "active",
-                "origin": "handoff",
-                "next_send_at": _iso(_now() + timedelta(days=delay)),
-            }
-        ).execute()
-        return {"status": "handed_off", "sequence_id": next_seq}
-    return {"status": "completed"}
+def advance_enrollment(*args, **kwargs):
+    raise RuntimeError("Advancement requires durable provider acceptance via email_accept RPC")
 
 
 def enqueue_founders_step(contact: dict, enrollment: Optional[dict], step_index: int = 0, delay_seconds: int = 0):
@@ -261,17 +162,10 @@ def suppress_contact(supabase, *, email: Optional[str] = None, token: Optional[s
     if not found.data:
         return None
     contact = found.data[0]
-    status = "complained" if reason == "complained" else "unsubscribed"
-    if reason == "bounced":
-        status = "bounced"
-    supabase.table("email_contacts").update(
-        {
-            "status": status,
-            "unsubscribed_at": "now()",
-            "suppression_reason": reason,
-        }
-    ).eq("id", contact["id"]).execute()
-    supabase.table("email_enrollments").update({"status": "suppressed", "next_send_at": None}).eq(
-        "contact_id", contact["id"]
-    ).in_("status", ["active", "paused"]).execute()
+    import uuid
+    supabase.rpc("email_record_event", {
+        "p_provider": "app", "p_key": str(uuid.uuid4()), "p_email": contact["email"],
+        "p_type": reason if reason in {"bounced", "complained"} else "unsubscribed",
+        "p_message_id": None,
+    }).execute()
     return contact

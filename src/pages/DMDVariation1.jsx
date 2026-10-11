@@ -1,8 +1,10 @@
+import EmailSequenceConsent, { EMAIL_CONSENT_VERSION } from '../components/EmailSequenceConsent';
 import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DMDVariation1 = () => {
+  const [emailConsent, setEmailConsent] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,6 +101,8 @@ const DMDVariation1 = () => {
       
       const requestData = {
         ...formData,
+        email_consent: emailConsent,
+        email_consent_version: EMAIL_CONSENT_VERSION,
         source: 'dmd-variation-1',
         ...acquisitionForSubmission(),
         ...utmParams
@@ -320,6 +324,8 @@ const DMDVariation1 = () => {
                   </div>
                 )}
 
+                <EmailSequenceConsent checked={emailConsent} onChange={setEmailConsent} />
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -340,8 +346,7 @@ const DMDVariation1 = () => {
               </form>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By submitting this form, you agree to receive marketing communications from us. 
-                You can unsubscribe at any time.
+                Your download is free. Email lessons are optional.
               </p>
             </div>
           </div>

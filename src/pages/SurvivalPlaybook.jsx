@@ -1,8 +1,10 @@
+import EmailSequenceConsent, { EMAIL_CONSENT_VERSION } from '../components/EmailSequenceConsent';
 import { acquisitionForSubmission } from '../utils/acquisitionAttribution';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SurvivalPlaybook = () => {
+  const [emailConsent, setEmailConsent] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     name: ''
@@ -88,6 +90,8 @@ const SurvivalPlaybook = () => {
       
       const requestData = {
         ...formData,
+        email_consent: emailConsent,
+        email_consent_version: EMAIL_CONSENT_VERSION,
         source: 'ig', // Hidden field as specified
         ...acquisitionForSubmission(),
         ...utmParams
@@ -254,6 +258,8 @@ const SurvivalPlaybook = () => {
                   </div>
                 )}
 
+                <EmailSequenceConsent checked={emailConsent} onChange={setEmailConsent} />
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -274,8 +280,7 @@ const SurvivalPlaybook = () => {
               </form>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By submitting this form, you agree to receive marketing communications from us. 
-                You can unsubscribe at any time.
+                Your download is free. Email lessons are optional.
               </p>
             </div>
           </div>

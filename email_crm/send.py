@@ -22,19 +22,16 @@ def is_unverified_recipient_error(exc: BaseException) -> bool:
 
 
 def _read_template(template_key: str) -> str:
-    path = TEMPLATES_DIR / template_key
-    if path.exists():
-        return path.read_text(encoding="utf-8")
-    folder = Path(template_key).parts[0] if template_key else ""
-    fallback = TEMPLATES_DIR / folder / "_placeholder.html"
-    if fallback.exists():
-        return fallback.read_text(encoding="utf-8")
-    return (
-        "<p>Hi {{first_name}},</p>"
-        "<p>This email is a placeholder. Replace <code>{{template_key}}</code> "
-        "with the GetResponse HTML after Phase 0 export.</p>"
-        "<p>— Donte<br>Revenue Ripple</p>"
-    )
+    from email_crm.delivery_runtime.runtime import SIMULATOR_TEMPLATE_KEY, SIMULATOR_HTML
+    if template_key == SIMULATOR_TEMPLATE_KEY:
+        return SIMULATOR_HTML
+    path = (TEMPLATES_DIR / template_key).resolve()
+    if not path.is_relative_to(TEMPLATES_DIR.resolve()) or not path.is_file():
+        raise ValueError("Missing email template")
+    content = path.read_text(encoding="utf-8")
+    if not content.strip() or "placeholder" in content.lower():
+        raise ValueError("Placeholder email template")
+    return content
 
 
 def render_email(*, template_key: str, contact: dict, extra=None) -> str:
@@ -72,64 +69,15 @@ You're receiving this because you opted in at revenueripple.org.
 </body></html>"""
 
 
-def send_ses(*, to_email: str, subject: str, html: str, unsubscribe_url: str) -> dict:
-    import boto3
-
-    client = boto3.client("ses", region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1"))
-    source = os.getenv("SES_FROM") or "Donte from RR <hello@revenueripple.org>"
-    config_set = os.getenv("SES_CONFIGURATION_SET")
-    extra = {}
-    if config_set:
-        extra["ConfigurationSetName"] = config_set
-    headers = {
-        "List-Unsubscribe": f"<{unsubscribe_url.replace('/unsubscribe?', '/api/email/unsubscribe?')}>",
-        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-    }
-    # SES v2 supports List-Unsubscribe natively; v1 SendEmail uses raw for custom headers.
-    raw = _raw_message(source, to_email, subject, html, headers)
-    kwargs = {
-        "Source": source,
-        "Destinations": [to_email],
-        "RawMessage": {"Data": raw},
-    }
-    if config_set:
-        kwargs["ConfigurationSetName"] = config_set
-    try:
-        resp = client.send_raw_email(**kwargs)
-    except Exception as exc:
-        if is_unverified_recipient_error(exc):
-            print(f"SES sandbox skipped unverified recipient {to_email}: {exc}")
-            return {"skipped": True, "reason": "sandbox_unverified", "to": to_email}
-        raise
-    return {"message_id": resp.get("MessageId")}
+def send_ses(**kwargs):
+    """Retired direct-send helper: do not bypass the durable budget/suppression gate."""
+    raise RuntimeError("Direct sends are disabled. Use send_enrollment_step with enrollment_id.")
 
 
-def _raw_message(source, to_email, subject, html, headers) -> bytes:
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = source
-    msg["To"] = to_email
-    for key, val in headers.items():
-        msg[key] = val
-    msg.attach(MIMEText(html, "html", "utf-8"))
-    return msg.as_bytes()
-
-
-def send_enrollment_step(*, contact: dict, sequence_id: str, step_index: int) -> dict:
-    seq = get_sequence(sequence_id)
-    step = seq["steps"][step_index]
-    extra = {}
-    if step.get("title"):
-        extra["lesson_title"] = step["title"]
-        extra["lesson_number"] = str(step_index + 1)
-    html = render_email(template_key=step["template_key"], contact=contact, extra=extra)
-    token = contact.get("unsubscribe_token") or ""
-    base = (os.getenv("APP_BASE_URL") or "https://revenueripple.org").rstrip("/")
-    unsub = f"{base}/unsubscribe?token={token}"
-    address = os.getenv("EMAIL_PHYSICAL_ADDRESS") or PHYSICAL_ADDRESS_DEFAULT
-    if "<html" not in html.lower():
-        html = wrap_layout(html, unsub, address)
-    return send_ses(to_email=contact["email"], subject=step["subject"], html=html, unsubscribe_url=unsub)
+def send_enrollment_step(*, enrollment_id: str, step_index: int | None = None) -> dict:
+    if (os.getenv("EMAIL_SEND_ENABLED") or "").lower() not in {"1", "true", "yes"}:
+        return {"status": "disabled"}
+    from email_crm.delivery_runtime.runtime import Database, Delivery
+    from email_crm.delivery_runtime.providers import configured_provider
+    service = Delivery(Database(os.environ), configured_provider(os.environ), _read_template, os.environ)
+    return {"status": service.deliver(enrollment_id, step_index)}

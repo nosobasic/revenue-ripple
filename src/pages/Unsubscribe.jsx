@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getApiBase } from '../config/constants';
+import { requireUnsubscribeSuccess } from '../utils/unsubscribeResponse';
 
 export default function Unsubscribe() {
   const [params] = useSearchParams();
@@ -16,7 +17,7 @@ export default function Unsubscribe() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token }),
     })
-      .then((res) => res.json())
+      .then(requireUnsubscribeSuccess)
       .then(() => {
         setStatus('done');
         setStatusMessage('You are unsubscribed. You will not receive further marketing emails.');
@@ -36,7 +37,7 @@ export default function Unsubscribe() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      await res.json();
+      await requireUnsubscribeSuccess(res);
       setStatus('done');
       setStatusMessage('If that address is on the list, it has been unsubscribed.');
     } catch {

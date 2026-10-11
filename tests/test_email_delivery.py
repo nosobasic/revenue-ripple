@@ -19,31 +19,49 @@ class DeliveryTests(unittest.TestCase):
     def deliver(self, **kw):
         return deliver_lead(email='test@example.com', name='Test', funnel='dmd-variation-1', **kw)
 
-    def test_aws_failure_propagates_without_legacy_send(self):
-        legacy = MagicMock()
-        with patch('email_crm.deliver.upsert_contact', side_effect=RuntimeError('db down')):
-            with self.assertRaises(RuntimeError):
-                self.deliver(supabase=MagicMock(), send_getresponse=legacy)
+    def test_declining_or_missing_consent_never_writes_or_calls_legacy(self):
+        legacy, sb = MagicMock(), MagicMock()
+        for consent in (None, {'accepted': False}):
+            result = self.deliver(supabase=sb, send_getresponse=legacy, consent=consent)
+            self.assertEqual(result['subscription'], 'not_requested')
+        sb.rpc.assert_not_called()
+        sb.table.assert_not_called()
         legacy.assert_not_called()
 
-    def test_missing_database_or_disabled_crm_is_not_success(self):
+    def test_capture_requires_database_and_current_consent(self):
+        from email_crm.consent import CONSENT_VERSION
         with self.assertRaises(RuntimeError):
-            self.deliver(supabase=None)
-        with patch.dict(os.environ, {'EMAIL_WRITE_CRM': 'false'}):
-            with self.assertRaises(RuntimeError):
-                self.deliver(supabase=MagicMock())
+            self.deliver(supabase=None, consent={'accepted':True,'version':CONSENT_VERSION})
+        with self.assertRaises(ValueError):
+            self.deliver(supabase=MagicMock(), consent={'accepted':True,'version':'old'})
 
-    def test_empty_enrollment_is_not_success(self):
-        with patch('email_crm.deliver.upsert_contact', return_value={'id':'c'}), patch('email_crm.deliver.enroll_new', return_value=None):
-            with self.assertRaises(RuntimeError):
-                self.deliver(supabase=MagicMock())
-
-    def test_success_is_persisted_and_aws_only(self):
-        legacy = MagicMock()
-        with patch('email_crm.deliver.upsert_contact', return_value={'id':'c'}), patch('email_crm.deliver.enroll_new', return_value={'id':'e'}):
-            result = self.deliver(supabase=MagicMock(), send_getresponse=legacy)
-        self.assertTrue(result['aws'])
+    def test_capture_fails_closed_without_legacy_fallback(self):
+        from email_crm.consent import CONSENT_VERSION
+        sb, legacy = MagicMock(), MagicMock()
+        sb.rpc.return_value.execute.side_effect = RuntimeError('db down')
+        with self.assertRaises(RuntimeError):
+            self.deliver(supabase=sb, send_getresponse=legacy, consent={'accepted':True,'version':CONSENT_VERSION})
         legacy.assert_not_called()
+        sb.table.assert_not_called()
+
+    def test_capture_rpc_records_without_enabling_sends(self):
+        from email_crm.consent import CONSENT_VERSION
+        sb, legacy = MagicMock(), MagicMock()
+        sb.rpc.return_value.execute.return_value.data = {'status':'recorded'}
+        result = self.deliver(supabase=sb, send_getresponse=legacy, consent={'accepted':True,'version':CONSENT_VERSION})
+        self.assertEqual(result, {'getresponse':False,'aws':False,'subscription':'recorded'})
+        self.assertEqual(sb.rpc.call_args.args[0], 'email_capture_optin')
+        self.assertNotIn('p_status', sb.rpc.call_args.args[1])
+        legacy.assert_not_called()
+
+    def test_consent_payload_is_not_truthiness_or_client_timestamp(self):
+        from email_crm.consent import consent_from_payload, CONSENT_VERSION
+        for value in ('true', 1, [], None):
+            with self.assertRaises(ValueError): consent_from_payload({'email_consent':value})
+        with self.assertRaises(ValueError): consent_from_payload({'email_consent':True})
+        self.assertFalse(consent_from_payload({})['accepted'])
+        self.assertEqual(consent_from_payload({'email_consent':True,'email_consent_version':CONSENT_VERSION,'consent_at':'yesterday'}),
+                         {'accepted':True,'version':CONSENT_VERSION})
 
     def test_default_aws_and_invalid_mode_fails(self):
         with patch.dict(os.environ, {}, clear=True):
@@ -67,17 +85,14 @@ class DeliveryTests(unittest.TestCase):
     def test_existing_founder_retries_queue_handoff(self):
         sb = MagicMock()
         row = {'id':'e','status':'active','step_index':0,'next_send_at':None}
-        sb.table.return_value.select.return_value.eq.return_value.eq.return_value.in_.return_value.execute.return_value.data = [row]
+        sb.rpc.return_value.execute.return_value.data = row
         with patch.dict(os.environ, {'EMAIL_SEND_ENABLED':'true'}), patch('email_crm.enroll.enqueue_founders_step') as queue:
             self.assertEqual(enroll_new(sb, contact={'id':'c'}, source='founders_annual', funnel='founders_annual'), row)
             queue.assert_called_once()
 
-    def test_one_click_header_uses_backend(self):
-        with patch('boto3.client') as client:
-            send_ses(to_email='test@example.com', subject='Test', html='<p>Test</p>', unsubscribe_url='https://revenueripple.org/unsubscribe?token=test')
-            raw = client.return_value.send_raw_email.call_args.kwargs['RawMessage']['Data'].decode()
-            self.assertIn('/api/email/unsubscribe?token=test', raw)
-            self.assertIn('List-Unsubscribe-Post: List-Unsubscribe=One-Click', raw)
+    def test_direct_send_cannot_bypass_ledger(self):
+        with self.assertRaises(RuntimeError):
+            send_ses(to_email='test@example.com', subject='Test', html='<p>Test</p>', unsubscribe_url='https://example.com/unsubscribe?token=x')
 
 
 class RouteTests(unittest.TestCase):

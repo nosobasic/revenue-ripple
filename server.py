@@ -23,6 +23,7 @@ from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
 from email_crm.routes import email_bp
 from email_crm.deliver import deliver_lead, deliver_paid
+from email_crm.consent import consent_from_payload
 from server.routes.goals import goals_bp
 from server.routes.quizzes import quizzes_bp
 from server.routes.onboarding import onboarding_bp
@@ -1375,6 +1376,12 @@ def book_giveaway_submission():
     
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"error": "A JSON object is required"}), 400
+        try:
+            email_consent = consent_from_payload(data)
+        except ValueError as error:
+            return jsonify({"error": str(error)}), 400
         print(f"📥 Request data: {data}")
         name = data.get('name', '').strip()
         email = data.get('email', '').strip().lower()
@@ -1414,6 +1421,7 @@ def book_giveaway_submission():
                 print(f"Warning: Could not check for duplicates: {db_error}")
         
         deliver_lead(
+            consent=email_consent,
             supabase=supabase,
             email=email,
             name=name,
@@ -1563,6 +1571,12 @@ def survival_playbook_submission():
     
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"error": "A JSON object is required"}), 400
+        try:
+            email_consent = consent_from_payload(data)
+        except ValueError as error:
+            return jsonify({"error": str(error)}), 400
         print(f"📥 Request data: {data}")
         name = data.get('name', '').strip()
         email = data.get('email', '').strip().lower()
@@ -1598,6 +1612,7 @@ def survival_playbook_submission():
             return jsonify({"error": "Please enter a valid email address"}), 400
         
         deliver_lead(
+            consent=email_consent,
             supabase=supabase,
             email=email,
             name=name,
@@ -1775,6 +1790,12 @@ def membership_mastery_submission():
     
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"error": "A JSON object is required"}), 400
+        try:
+            email_consent = consent_from_payload(data)
+        except ValueError as error:
+            return jsonify({"error": str(error)}), 400
         print(f"📥 Membership Mastery submission data: {data}")
         
         if not data:
@@ -1802,6 +1823,7 @@ def membership_mastery_submission():
             return jsonify({"error": "Please enter a valid email address"}), 400
         
         deliver_lead(
+            consent=email_consent,
             supabase=supabase,
             email=email,
             name=name,
@@ -1920,6 +1942,12 @@ def digital_marketing_domination_submission():
     
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            return jsonify({"error": "A JSON object is required"}), 400
+        try:
+            email_consent = consent_from_payload(data)
+        except ValueError as error:
+            return jsonify({"error": str(error)}), 400
         print(f"📥 Digital Marketing Domination submission data: {data}")
         
         if not data:
@@ -1947,6 +1975,7 @@ def digital_marketing_domination_submission():
             return jsonify({"error": "Please enter a valid email address"}), 400
         
         deliver_lead(
+            consent=email_consent,
             supabase=supabase,
             email=email,
             name=name,
