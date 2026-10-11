@@ -10,9 +10,20 @@ export function EmailReportView({ report }) {
   const list = report.list;
   const counts = delivery.counts || {};
   const feedbackIsOld = delivery.last_feedback_recorded_at && new Date(report.generated_at) - new Date(delivery.last_feedback_recorded_at) > 86400000;
+  if (report.classification?.status === 'unavailable') return <section className="email-report-setup" aria-labelledby="report-setup-title">
+    <span className="email-report-eyebrow">REPORTING COVERAGE</span>
+    <h2 id="report-setup-title">A trustworthy report starts with the right audience.</h2>
+    <p>We’re waiting for verified test-activity exclusions before showing human email results. This keeps simulator sends out of your business totals.</p>
+    <div className="email-report-notice" role="status"><strong>Metrics are withheld, not zero.</strong><br />No sending or tracking settings have been changed.</div>
+    <h3>What this report will show</h3>
+    <p>Accepted sends, recorded deliveries, list health, and sequence trends once the reporting boundary is verified.</p>
+    <details><summary>Engagement and growth coverage</summary><p>Open and click tracking is not verified, so CTR, open rate, and CTOR are unavailable. Net eligible-list growth also needs historical eligibility records. These metrics will not be inferred from delivery events.</p></details>
+    <p className="email-report-muted">Last checked: {date(report.generated_at)}</p>
+  </section>;
   return <>
     <p className="email-report-muted">{new Date(report.window_start).toLocaleDateString()} – {new Date(report.window_end).toLocaleDateString()} · Last {report.days} days · Updated {date(report.generated_at)}</p>
     <div className="email-report-notice"><strong>Know what is measured.</strong> Open and click tracking is not verified. Rates stay unavailable until reliable tracking exists. Simulator activity is excluded.</div>
+    {report.classification?.status === 'unavailable' && <p role="status" className="email-report-notice">Human metrics are withheld because authoritative test-activity exclusions could not be verified. An approved reporting data source is required.</p>}
     <section aria-labelledby="overview-title">
       <h2 id="overview-title">Your email overview</h2>
       {(delivery.status !== 'available' || list.status !== 'available') && <p role="status" className="email-report-notice">Some reporting sources are unavailable. No partial totals are shown.</p>}

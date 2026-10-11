@@ -18,7 +18,7 @@ The active safeguards rollout confirmed the delivery-reliability and opt-in-gate
 - Suppressed contacts: current unsubscribed/bounced/complained status, counted once. Review: legacy_review/existing_review admissions. Counts may overlap.
 - Recent unsubscribes: currently unsubscribed contacts whose `unsubscribed_at` falls in the window. This is explicitly not complete transition history or campaign attribution.
 - Legacy exclusion count reflects manifest rows, not imported CRM contacts. No address/hash/ID/name is returned to the browser.
-- All contacts with `ses-simulator:` source or `@simulator.amazonses.com` address are excluded before joins. Consent with simulator source cannot establish human eligibility. Owner-only simulator admission tables are not queried or granted. This matches the rollout's exact simulator-address gate.
+- All contacts with `ses-simulator:` source or `@simulator.amazonses.com` address are excluded before joins. Consent with simulator source cannot establish human eligibility. Authoritative simulator admissions (enrollment_id, contact_id, run_id) must also be readable: every historical admission is excluded regardless of run expiry or later changes to address/source. Any operator-test-not-human-consent source in contacts or consent records is excluded. If the authoritative admission read fails, all human metrics are withheld. No grants were added. The currently deployed owner-only table therefore blocks live reporting until a separately reviewed read-only contract exists.
 
 ## Engagement and growth gaps
 
@@ -48,7 +48,7 @@ Tests exercise trusted-admin authorization, anonymous/member/expired/mismatched 
 
 `tests/email-reporting/preview.jsx` renders the actual view with unavailable states offline. It makes no API calls and contains no campaign fixture metrics. The generated review artifact lives beside this checkout as `email-reporting-preview.html`.
 
-Browser checks are held for the safeguards task's active browser session until explicit handoff. Production integration/deployment remains a separate coordinated action after that rollout. Parent should cherry-pick this isolated commit into the then-current main and rerun focused tests/build.
+After an explicit handoff, the offline blocked-report state was visually checked in native Chrome at desktop width and in a 390px iframe viewport. Disclosure interaction worked and text wrapped without clipping. UTF-8 metadata was corrected in the generated preview. Screenshots were saved; the preview tab was closed and the production SQL tab was left unchanged. Browser control was returned to the safeguards rollout. Full authenticated production integration and the populated KPI layout remain unverified in-browser. Production integration/deployment remains a separate coordinated action after that rollout. Parent should cherry-pick this isolated commit into the then-current main and rerun focused tests/build.
 
 Definitions supplied by the parent from:
 - https://www.getresponse.com/help/what-is-click-to-open-rate-ctor.html
@@ -57,4 +57,15 @@ Definitions supplied by the parent from:
 - https://docs.aws.amazon.com/ses/latest/dg/faqs-metrics.html
 - https://docs.aws.amazon.com/ses/latest/dg/reputationdashboardmessages.html
 
-Validation completed locally: 16 reporting tests + 21 existing Python security tests pass; production Vite build passes. Static preview renders six cards without invalid values. Normal ESLint is blocked by the pre-existing globals package entry `AudioWorkletGlobalScope ` (trailing whitespace). Focused lint passed with only global-key whitespace trimmed in memory; repository lint configuration is unchanged.
+Validation completed locally: 21 reporting tests + 21 existing Python security tests + 3 request-lifecycle tests pass; production Vite build passes. Static preview renders the coherent blocked-report state without invented values. Admin report instances are keyed by verified account ID, and cancelled requests cannot publish late data/errors after unmount, logout, or account switch. Normal ESLint is blocked by the pre-existing globals package entry `AudioWorkletGlobalScope ` (trailing whitespace). Focused lint passed with only global-key whitespace trimmed in memory; repository lint configuration is unchanged.
+
+
+## Required integration proposal — NOT applied
+
+The rollout owner verified there is no existing service-readable historical simulator exclusion contract. The active/unexpired `email_simulator_admitted` predicate is owner-only and would be incorrect for historical reporting. Never call operational claim/send functions to discover test identity.
+
+Preferred minimal contract: a new read-only aggregate RPC, conceptually `email_reporting_snapshot(p_days integer) RETURNS jsonb`, with a fixed 7/30/90-day allowlist and the same aggregate response shape. Its single SQL snapshot performs `NOT EXISTS` against **all** historical simulator admissions, joining by contact and enrollment; it does not filter run status/expiry. Keep source/domain defenses and current consent/exclusion/quarantine checks. Bound output to daily and known sequence/step groups, no contact identifiers, addresses, tokens, hashes, raw payloads, or run IDs. It must not mutate tables or invoke operational RPCs.
+
+Exact proposed privilege impact (requires separate approval and review): create a narrowly scoped SECURITY DEFINER function owned by the existing database owner, fixed `search_path=pg_catalog,public` and schema-qualified objects; REVOKE EXECUTE from PUBLIC, anon, authenticated; GRANT EXECUTE only to service_role. Keep both simulator tables owner-only, and keep the Flask verified-admin guard. No direct table grants, credentials, new roles, browser access, or sending privileges. This adds a new aggregate-only execution capability to the backend service role. Review its SQL and malicious-parameter/privilege tests before applying. No migration file or grant has been created in this branch.
+
+Once approved and available, replace the bounded Python source scans with this one snapshot RPC. Existing useful metric logic covers accepted/delivered counts/rate, observed bounce/complaint/reject outcomes, sequence/daily groups, current eligibility/suppression/review/exclusions and operational attempts. Engagement and eligible net growth remain unavailable until their separate instrumentation/history gaps are solved. This reporting dependency does not block the safeguards deployment or bounded simulator tests.

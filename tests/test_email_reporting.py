@@ -16,6 +16,7 @@ NOW = datetime(2026, 10, 11, 12, tzinfo=timezone.utc)
 def dataset():
     return {
         'users': [{'id': 'admin-id', 'role': 'admin'}],
+        'email_simulator_admissions': [],
         'email_contacts': [
             {'id': 'h', 'email': 'human@example.test', 'source': 'form', 'status': 'active', 'unsubscribed_at': None},
             {'id': 's', 'email': 'success@simulator.amazonses.com', 'source': 'form', 'status': 'active'},
@@ -83,6 +84,37 @@ class Aggregates(unittest.TestCase):
         serialized = json.dumps(result)
         self.assertNotIn('@', serialized)
         self.assertNotIn('admin-id', serialized)
+    def test_authoritative_simulator_ids_override_human_looking_mutable_fields(self):
+        self.db.data['email_simulator_admissions'] = [{'enrollment_id': 'h', 'contact_id': 'h', 'run_id': 'expired-test-run'}]
+        result = self.report()
+        self.assertEqual(result['delivery']['counts']['accepted'], 0)
+        self.assertEqual(result['list']['eligible'], 0)
+        self.assertNotIn('expired-test-run', json.dumps(result))
+
+    def test_operator_consent_marker_excludes_human_looking_address(self):
+        self.db.data['email_optin_consents'][0]['source'] = 'archived:operator-test-not-human-consent'
+        self.assertEqual(self.report()['delivery']['counts']['accepted'], 0)
+        self.assertEqual(self.report()['list']['eligible'], 0)
+
+    def test_owner_only_simulator_history_fails_closed(self):
+        self.db.fail.add('email_simulator_admissions')
+        result = self.report()
+        self.assertEqual(result['classification']['status'], 'unavailable')
+        self.assertEqual(result['delivery'], {'status': 'unavailable'})
+        self.assertEqual(result['list'], {'status': 'unavailable'})
+        self.assertNotIn('email_delivery_attempts', self.db.reads)
+
+    def test_uncertain_outcome_and_other_cohorts_never_count_as_sent(self):
+        a = self.db.data['email_delivery_attempts'][0]
+        a['state'] = 'uncertain'
+        self.assertEqual(self.report()['delivery']['counts']['accepted'], 0)
+        a['state'] = 'accepted'; a['accepted_at'] = '2026-09-01T00:00:00Z'
+        self.assertEqual(self.report()['delivery']['counts']['delivery'], 0)
+        a['accepted_at'] = '2026-10-10T12:00:00Z'
+        for event in self.db.data['email_provider_events']:
+            event['occurred_at'] = '2026-10-12T00:00:00Z'
+        self.assertEqual(self.report()['delivery']['counts']['delivery'], 0)
+
     def test_no_messages_does_not_fabricate_tracking(self):
         self.db.data['email_delivery_attempts'] = []
         result = self.report()
@@ -174,6 +206,17 @@ class Authorization(unittest.TestCase):
         self.assertEqual(response.headers['Cache-Control'], 'no-store')
         self.assertNotIn('@', response.get_data(as_text=True))
         self.assertEqual(self.get({'Authorization': 'Bearer valid'}, '?days=999').status_code, 400)
+    def test_logout_account_switch_and_role_revocation_are_checked_per_request(self):
+        headers = {'Authorization': 'Bearer valid'}
+        self.assertEqual(self.get(headers).status_code, 200)
+        self.assertEqual(self.get().status_code, 401)
+        self.db.auth.get_user = lambda token: SimpleNamespace(user=SimpleNamespace(id='member-id'))
+        self.db.data['users'].append({'id': 'member-id', 'role': 'member'})
+        self.assertEqual(self.get(headers).status_code, 403)
+        self.db.auth.get_user = lambda token: SimpleNamespace(user=SimpleNamespace(id='admin-id'))
+        self.db.data['users'][0]['role'] = 'member'
+        self.assertEqual(self.get(headers).status_code, 403)
+
     def test_missing_profile_and_auth_store_failure(self):
         self.db.data['users'] = []
         self.assertEqual(self.get({'Authorization': 'Bearer valid'}).status_code, 403)

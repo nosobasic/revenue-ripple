@@ -4,6 +4,7 @@ import { authenticatedFetch } from '../../lib/authenticatedFetch';
 import './email-reporting.css';
 
 import { EmailReportView } from './EmailReportView';
+import { startEmailReportRequest } from './emailReportRequest';
 
 export default function EmailReporting() {
   const [days, setDays] = useState('30');
@@ -11,15 +12,8 @@ export default function EmailReporting() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState('');
   useEffect(() => {
-    const controller = new AbortController();
     setReport(null); setError('');
-    authenticatedFetch(`/api/admin/email/reporting?days=${days}`, { signal: controller.signal })
-      .then(async response => {
-        if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? 'Administrator sign-in required.' : 'Email reporting is unavailable. Try again.');
-        return response.json();
-      }).then(data => { if (!controller.signal.aborted) setReport(data); })
-      .catch(err => { if (!controller.signal.aborted) setError(err.message); });
-    return () => controller.abort();
+    return startEmailReportRequest(authenticatedFetch, days, setReport, setError);
   }, [days, refresh]);
   return <div className="email-report">
     <header className="email-report-header"><div><span className="email-report-eyebrow">REVENUE RIPPLE · EMAIL CRM</span><h1>Email reports</h1><p>A clear view of delivery, engagement, and list health.</p></div><Link to="/admin/email">Manage enrollments →</Link></header>

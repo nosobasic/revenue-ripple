@@ -33,3 +33,7 @@
 .email-report-health div { background: white; padding: 16px; }
 .email-report-health dt { color: #52637a; font-size: 13px; }
 .email-report-health dd { margin: 8px 0 0; font-size: 20px; font-weight: 600; }
+
+.email-report-setup { background: white; border: 1px solid #dce4ef; border-radius: 18px; padding: clamp(20px, 4vw, 42px); max-width: 880px; }
+.email-report-setup h2 { max-width: 620px; font-size: clamp(24px, 4vw, 32px); line-height: 1.25; margin-top: 14px; }
+.email-report-setup h3 { margin-top: 26px; }

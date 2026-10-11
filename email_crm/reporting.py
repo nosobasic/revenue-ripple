@@ -27,8 +27,12 @@ def _rows(db, table, columns, order='id', since=None, until=None, time_column=No
     raise ValueError('Reporting limit exceeded')
 
 
+def _test_source(value):
+    return (value or '').startswith('ses-simulator:') or 'operator-test-not-human-consent' in (value or '')
+
+
 def _synthetic(contact):
-    return (contact.get('source') or '').startswith('ses-simulator:') or (contact.get('email') or '').lower().endswith('@simulator.amazonses.com')
+    return _test_source(contact.get('source')) or (contact.get('email') or '').strip().lower().endswith('@simulator.amazonses.com')
 
 
 def _time(value):
@@ -49,6 +53,7 @@ def build_report(db, days=30, now=None):
         'generated_at': now.isoformat(), 'window_start': start.isoformat(),
         'window_end': now.isoformat(), 'days': days,
         'delivery': {'status': 'unavailable'}, 'list': {'status': 'unavailable'},
+        'classification': {'status': 'unavailable'},
         'engagement': {'status': 'unavailable', 'reason': 'Open and click tracking is not verified. No rates can be calculated.'},
         'notes': [
             'Delivery metrics cover SES messages accepted in this window, with feedback recorded by report time. They are not inbox-placement or AWS reputation metrics.',
@@ -58,15 +63,23 @@ def build_report(db, days=30, now=None):
         ],
     }
     try:
+        # Authoritative historical exclusions, including expired/disabled runs.
+        # Owner-only in the current rollout: permission failure MUST withhold KPIs.
+        simulator_admissions = _rows(db, 'email_simulator_admissions', 'enrollment_id,contact_id,run_id', order='enrollment_id')
+        test_contacts = {row['contact_id'] for row in simulator_admissions}
+        test_enrollments = {row['enrollment_id'] for row in simulator_admissions}
+        consents = _rows(db, 'email_optin_consents', 'contact_id,version,source,captured_at', order='contact_id,version')
+        test_contacts.update(c['contact_id'] for c in consents if _test_source(c['source']))
         contacts = _rows(db, 'email_contacts', 'id,email,source,status,unsubscribed_at')
-        humans = {c['id']: c for c in contacts if not _synthetic(c)}
+        humans = {c['id']: c for c in contacts if c['id'] not in test_contacts and not _synthetic(c)}
+        report['classification'] = {'status': 'available'}
     except Exception:
         return report  # Without this boundary we cannot safely exclude synthetic data.
 
     quarantined_contacts = None
     try:
         enrollments = _rows(db, 'email_enrollments', 'id,contact_id,sequence_id')
-        enrollments = {e['id']: e for e in enrollments if e['contact_id'] in humans}
+        enrollments = {e['id']: e for e in enrollments if e['contact_id'] in humans and e['id'] not in test_enrollments}
         # All attempts are needed for current operational states; the cohort is filtered below.
         attempts = _rows(db, 'email_delivery_attempts', 'id,enrollment_id,step_index,provider,state,provider_message_id,accepted_at,created_at')
         attempts = [a for a in attempts if a['enrollment_id'] in enrollments and a['provider'] == 'ses']
@@ -116,11 +129,10 @@ def build_report(db, days=30, now=None):
 
     try:
         admissions = _rows(db, 'email_launch_admissions', 'contact_id,disposition,recorded_at', order='contact_id')
-        consents = _rows(db, 'email_optin_consents', 'contact_id,version,source,captured_at', order='contact_id,version')
         manifest = _rows(db, 'email_legacy_manifest', 'id,ready,expected_count')
         exclusions = _rows(db, 'email_legacy_exclusions', 'email_sha256', order='email_sha256')
         hashes = {r['email_sha256'] for r in exclusions}
-        consented = {c['contact_id'] for c in consents if c['version'] == CONSENT_VERSION and not c['source'].startswith('ses-simulator:')}
+        consented = {c['contact_id'] for c in consents if c['version'] == CONSENT_VERSION and not _test_source(c['source'])}
         admitted = {a['contact_id'] for a in admissions if a['disposition'] == 'new_optin'}
         eligible = {cid for cid, c in humans.items() if c['status'] == 'active' and cid in consented & admitted and cid not in (quarantined_contacts or set())
                     and hashlib.sha256(c['email'].strip().lower().encode()).hexdigest() not in hashes}

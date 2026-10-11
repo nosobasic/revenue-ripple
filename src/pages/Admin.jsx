@@ -2195,7 +2195,7 @@ const Admin = () => {
               <AdminEngagementDashboard />
             </Suspense>
           } />
-          <Route path="email-reports" element={<Suspense fallback={<div>Loading email reports…</div>}><AdminEmailReporting /></Suspense>} />
+          <Route path="email-reports" element={<Suspense fallback={<div>Loading email reports…</div>}><AdminEmailReporting key={user.id} /></Suspense>} />
           <Route path="email" element={
             <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
               <AdminEmailEnrollments />
