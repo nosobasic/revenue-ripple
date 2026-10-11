@@ -1,71 +1,82 @@
 # Email CRM reporting — local review handoff
 
-Base: `ddbd1e646eb6de5afc10c42a99e4f4f2462b16a0`. Isolated branch: `codex/email-crm-reporting`.
+Base: `d53a111405487f4948b33f562117ae5edeae33b9` (final deployed safeguards). Isolated branch: `codex/email-crm-reporting`. Nothing in this branch has been pushed, deployed, or applied to production.
 
-Adds `/admin/email-reports` within the existing admin shell and a read-only `GET /api/admin/email/reporting?days=7|30|90` Flask endpoint. Existing navbar, coach, enrollment management and authentication are preserved. No SQL migrations, credentials, grants, SES configuration, sending behavior, or production deployment changes.
+## Delivered
 
-## Sources and semantics
+Adds `/admin/email-reports` inside the existing admin shell and `GET /api/admin/email/reporting?days=7|30|90`. Preserves navbar, coach and existing auth. Six overview cards, compact list health, sequence/message and UTC daily trends, operational details, definitions and freshness. Desktop cards use three columns, tablet two, mobile one. Missing/unapproved RPC produces one coherent setup notice, never invented zeroes.
 
-The active safeguards rollout confirmed the delivery-reliability and opt-in-gate migrations were applied. Reporting reads their existing service-readable tables without changing access. The newer migrations are not yet committed in this base checkout. The UI remains usable with unavailable states if they are absent/unreadable.
+The request path uses one aggregate RPC with the already verified caller JWT. The older Python source aggregator remains only an offline reference for regression tests; it is not a production fallback. Requests are no-store, abort on unmount and cannot publish stale responses after account changes.
 
-- `email_delivery_attempts`: distinct SES provider-message + recipient pairs in state accepted with `accepted_at` in `[now − days, now)`. Same person receiving two messages counts twice. Neither API retries nor legacy `email_events.sent` add counts.
-- `email_provider_events`: semantically deduplicate outcomes by provider + message + recipient + outcome type; match only accepted cohort recipients. Repeated transport events therefore do not increase delivery, bounce or complaint counts. Feedback recorded before acceptance reconciliation is retained. Feedback after report generation is excluded.
-- Delivery counts require Delivery events, not accepted minus bounces. Delivery rate is recorded delivered / accepted; no sends yields an unavailable rate. Outcome types may overlap, and are not a partition.
-- `occurred_at` currently defaults to database ingestion time, despite its name. The UI labels it as feedback recording time, displays the latest matched record, and calls out age over 24 hours without equating low traffic with pipeline failure.
-- `bounced` is permanent. `transient_bounce` combines temporary and undetermined types; final soft bounces cannot be derived. Raw campaign metrics are not SES account reputation.
-- Current attempt states expose uncertain/quarantined, retryable, blocked, sending and claimed. Retryable includes budget deferrals, so it is not labeled failed delivery. These are current snapshots across recorded human attempts, not historical failure-event totals.
-- Current eligibility requires active status, current human consent version, `new_optin` admission, ready/count-matching legacy manifest, no legacy hash match, and no uncertain attempt. This is permission eligibility, not enrollment/due status or enabled delivery. Missing quarantine visibility makes eligibility unavailable.
-- Suppressed contacts: current unsubscribed/bounced/complained status, counted once. Review: legacy_review/existing_review admissions. Counts may overlap.
-- Recent unsubscribes: currently unsubscribed contacts whose `unsubscribed_at` falls in the window. This is explicitly not complete transition history or campaign attribution.
-- Legacy exclusion count reflects manifest rows, not imported CRM contacts. No address/hash/ID/name is returned to the browser.
-- All contacts with `ses-simulator:` source or `@simulator.amazonses.com` address are excluded before joins. Consent with simulator source cannot establish human eligibility. Authoritative simulator admissions (enrollment_id, contact_id, run_id) must also be readable: every historical admission is excluded regardless of run expiry or later changes to address/source. Any operator-test-not-human-consent source in contacts or consent records is excluded. If the authoritative admission read fails, all human metrics are withheld. No grants were added. The currently deployed owner-only table therefore blocks live reporting until a separately reviewed read-only contract exists.
+## Exact database approval scope — NOT APPLIED
 
-## Engagement and growth gaps
+Candidate: `docs/review-sql/email-reporting-snapshot.sql`.
+Function: `public.email_reporting_snapshot(p_days integer DEFAULT 30) RETURNS jsonb`.
+SHA-256: `152cca346aef0d10e94cf91bf789879037a2f0a958145b3a136b38afe365f9e9`.
 
-Open/click capture and per-message tracking coverage are unverified; all engagement counts/rates remain unavailable, even when delivery exists. No fixture values enter the application. The interface defines future CTR as unique content-clicked messages / accepted messages with verified click tracking and a content link; open rate as opened-delivered messages / delivered HTML messages with verified open tracking; CTOR as unique clicked / opened messages on the same both-trackable cohort. These are percentages. Unsubscribe/preferences clicks must be excluded. CTOR can exceed 100%; no inferred opens or clamping. Observed engagement will need privacy-prefetch/scanner caveats. Exact GetResponse parity is not promised.
+Plain-language permission request: allow signed-in, currently authorized Revenue Ripple administrators to retrieve only the aggregate email report through this one read-only function. The database itself rejects members, anonymous callers and the service-role principal. This is a new privileged aggregate read capability and needs separate approval before production application.
 
-Net eligible-list growth is unavailable without historical eligibility transitions or snapshots. No imported-list count is portrayed as acquisition growth.
+Exact privilege changes:
 
-Minimum separately approved pipeline work: persist actual provider occurrence and receive timestamps, bounce subtype/finality, immutable message/version and test provenance, open/click coverage version, content-vs-unsubscribe link category, and eligibility transitions. Verify SES instrumentation and applicable consent behavior before enabling it. Do not backfill fabricated events.
+- SECURITY DEFINER function owned by existing `postgres`; STABLE, fixed `search_path=pg_catalog,public`, UTC, schema-qualified source tables.
+- Revoke function execution from PUBLIC, anon, authenticated and service_role, then grant EXECUTE only to authenticated.
+- Require `auth.role()='authenticated'`, non-null `auth.uid()`, and the current protected `public.users.role='admin'` row for that subject. No caller-supplied ID, admin boolean or metadata role is accepted.
+- Direct invocation by authenticated clients is possible, but the database admin guard always applies. Flask independently verifies the caller with Supabase Auth and checks current protected profile role.
+- The existing server service credential is only the gateway apikey header. Authorization contains the verified user's JWT. The shared service client is never mutated.
+- No direct table grants, credentials, new roles, sending permissions, table writes, tracking grants or operational RPC calls.
 
-## Bounded reads and limitations
+Owner-context reads: `users`, `email_contacts`, `email_optin_consents`, `email_launch_admissions`, `email_legacy_manifest`, `email_legacy_exclusions`, `email_enrollments`, `email_delivery_attempts`, `email_provider_events`, and `email_simulator_admissions`. Simulator tables remain owner-only; `email_simulator_runs` is not read. All admission history is used regardless of run state/expiry.
 
-Reads use stable ordered 500-row pages and stop at 20,000 rows per source. Missing sources, read failures, or over-limit results make the dependent section unavailable; never emit truncated totals. Scans are intentionally conservative for this first local version, using existing grants with no new RPC/security surface. At scale, propose a reviewed aggregate query/RPC separately. Reads are not a transactionally consistent snapshot; concurrent changes may affect page boundaries. No marketing decision should rely on exact live snapshot consistency.
+Output contains counts, allowlisted sequence names, bounded steps, dates/timestamps and readiness. No contact addresses, names, IDs, hashes, run IDs, tokens or provider payloads. The API rebuilds an allowlisted response and rejects malformed aggregates. Windows are restricted to 7/30/90 days; output is bounded to days+1 daily rows and 707 sequence/step groups. Source scan work is not capped by row count; production-scale performance still needs integration observation.
 
-Supported windows are rolling 7/30/90 days in UTC; accepted daily rows are grouped by UTC date with partial first/last day. Summary timestamps display browser local time. Outcomes are as of report generation, with late recorded feedback attached to the accepted cohort on refresh. Responses are `Cache-Control: no-store`.
+## Metric semantics and exclusions
 
-## Validation and preview
+- Accepted: distinct SES message + recipient pairs in accepted state within the half-open rolling UTC window. One person receiving two messages counts twice; retries and legacy sent events cannot add counts.
+- Delivered: matched Delivery feedback, not accepted minus bounces. Delivery rate is delivered / accepted; an empty denominator is unavailable. Outcomes may overlap.
+- Feedback is semantically deduped per message/recipient/outcome. Reordered feedback before acceptance reconciliation is retained; future feedback is excluded. `occurred_at` is currently recording/ingestion time, not verified provider occurrence time. Freshness is labeled accordingly.
+- Recipient disagreement between a cohort message and its feedback fails closed for reconciliation instead of showing false zero delivery.
+- Permanent bounce, non-permanent bounce (temporary or undetermined), complaint and reject follow the accepted cohort. Final soft-bounce classification is unavailable.
+- Operations are current attempt-state counts: uncertain/quarantined, retryable, blocked, sending and claimed. Retryable includes budget deferrals and is not labeled delivery failure.
+- Eligibility requires active status, current explicit consent version/capture, new-optin admission, sealed count-matching legacy manifest, no legacy exclusion and no uncertain attempt. This is permission eligibility, not enabled sending or due enrollment.
+- Suppression is current unsubscribed/bounced/complained status counted once. Review includes legacy/existing review admissions. Counts may overlap.
+- Recent unsubscribes means currently unsubscribed contacts timestamped inside the window, not complete transition history or campaign attribution. Legacy exclusion count is manifest addresses, not imported contacts.
+- Exclude all historical simulator admissions by contact and enrollment, even expired/disabled runs or subsequently edited identity. Also exclude simulator domain, contact/consent simulator or operator-test source and simulator template snapshots. Missing authoritative history prevents reporting. Never invoke operational claim/send functions to discover test identity.
+- One SQL statement supplies the snapshot. Late recorded outcomes attach to the accepted cohort on refresh. Dates group by UTC with partial first/last days; summary timestamps display browser-local time.
 
-Run from the checkout with a Python environment containing Flask:
+## Tracking gaps
 
-```
-python -m unittest discover -s tests -p test_email_reporting.py -v
+Open/click capture and message-level coverage are unverified, so engagement counts/rates remain unavailable. Net eligible-list growth remains unavailable without eligibility transition history.
+
+Future definitions supplied by parent: CTR = unique content-clicked messages / accepted messages with verified click tracking and a content link; open rate = opened-delivered messages / delivered HTML messages with verified open tracking; CTOR = clicked / opened messages within the same both-trackable cohort. Exclude unsubscribe/preferences links. CTOR may exceed 100%; never infer opens or clamp. Observed engagement needs privacy-prefetch/scanner caveats. Exact GetResponse parity is not claimed.
+
+Minimum separate pipeline proposal: actual provider occurrence plus ingestion timestamps, bounce subtype/finality, immutable message/version/test provenance, open/click coverage versions, content vs unsubscribe link categorization, and eligibility transitions. Verify SES instrumentation and consent behavior before enabling. No fabricated backfill.
+
+## Validation and evidence
+
+62 tests passed: 27 Python reporting/API tests, 21 existing security tests, 3 request lifecycle tests and 11 actual PostgreSQL contract tests. Production Vite build passed. New report components pass focused lint with the pre-existing installed globals key whitespace normalized only in memory; repository lint configuration is unchanged. Admin.jsx retains exactly its base 7 errors and 3 warnings, unrelated to the added route/nav entry.
+
+The PostgreSQL suite creates a private Unix-socket-only temporary cluster, applies this exact SQL to test tables, exercises actual role permissions and separate JWT-claim sessions, and stops/removes the cluster. No production DSN/env is read. Coverage includes forged metadata, member/anonymous/service-role denial, revoked admin role, no actor argument, window bounds, deduplication, reordered/future events, quarantines, legacy exclusions, expired simulator history, changed enrollment identity, read-only transactions and output privacy.
+
+```sh
+python -m unittest discover -s tests -p 'test_email_reporting*.py'
 python -m unittest discover -s tests/security -p 'test_*.py'
+node --test tests/email-reporting/request.test.mjs
+python tests/email-reporting/run_postgres.py --pg-bin /path/to/postgresql/bin --preview-json ../populated-fixture.json
+node tests/email-reporting/render_preview.mjs ../populated-fixture.json ../preview/populated-reporting-preview.html
 npm run build
 ```
 
-Tests exercise trusted-admin authorization, anonymous/member/expired/mismatched identity, missing profile/auth-store failure, bounded windows, duplicates/retries, simulator/legacy exclusion, quarantine, half-open/timezone boundaries, late/reordered feedback, multiple messages for one recipient, missing tracking, empty cohorts, page limits and absence of PII.
+Offline populated preview uses actual SQL output and the API sanitizer, clearly marked SYNTHETIC FIXTURES / NOT PRODUCTION. Fixture totals: 8 accepted, 6 delivered, 75%; sequence/daily disclosures checked in native Chrome. Desktop layout and initial 390px mobile viewport inspected. A later mobile scroll failed because the browser window became unavailable; deeper mobile scrolling is not claimed. The blocked-state preview was also checked earlier. Full authenticated live integration is unverified.
 
-`tests/email-reporting/preview.jsx` renders the actual view with unavailable states offline. It makes no API calls and contains no campaign fixture metrics. The generated review artifact lives beside this checkout as `email-reporting-preview.html`.
+Populated screenshot: `../email-reporting-populated-desktop.png`.
+Verified Library ID: `libfile_bc413edfda04819196219c879c5daa1a` (read back successfully).
+Preview: `../preview/populated-reporting-preview.html`; mobile wrapper: `../preview/populated-reporting-preview-mobile.html`.
+Local preview server stopped; browser returned to rollout owner. Local preview tab may remain open after the window became unavailable. Production SQL UI unchanged.
 
-After an explicit handoff, the offline blocked-report state was visually checked in native Chrome at desktop width and in a 390px iframe viewport. Disclosure interaction worked and text wrapped without clipping. UTF-8 metadata was corrected in the generated preview. Screenshots were saved; the preview tab was closed and the production SQL tab was left unchanged. Browser control was returned to the safeguards rollout. Full authenticated production integration and the populated KPI layout remain unverified in-browser. Production integration/deployment remains a separate coordinated action after that rollout. Parent should cherry-pick this isolated commit into the then-current main and rerun focused tests/build.
+Remaining blockers: separate approval/application of the exact SQL permission contract and coordinated app deployment; then authenticated integration verification. No campaign activation is part of reporting. Opens/clicks and net growth need separately approved instrumentation/history work.
 
-Definitions supplied by the parent from:
+Definition references supplied by parent:
 - https://www.getresponse.com/help/what-is-click-to-open-rate-ctor.html
 - https://www.getresponse.com/help/where-can-i-see-how-my-messages-are-doing.html
 - https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html
 - https://docs.aws.amazon.com/ses/latest/dg/faqs-metrics.html
-- https://docs.aws.amazon.com/ses/latest/dg/reputationdashboardmessages.html
-
-Validation completed locally: 21 reporting tests + 21 existing Python security tests + 3 request-lifecycle tests pass; production Vite build passes. Static preview renders the coherent blocked-report state without invented values. Admin report instances are keyed by verified account ID, and cancelled requests cannot publish late data/errors after unmount, logout, or account switch. Normal ESLint is blocked by the pre-existing globals package entry `AudioWorkletGlobalScope ` (trailing whitespace). Focused lint passed with only global-key whitespace trimmed in memory; repository lint configuration is unchanged.
-
-
-## Required integration proposal — NOT applied
-
-The rollout owner verified there is no existing service-readable historical simulator exclusion contract. The active/unexpired `email_simulator_admitted` predicate is owner-only and would be incorrect for historical reporting. Never call operational claim/send functions to discover test identity.
-
-Preferred minimal contract: a new read-only aggregate RPC, conceptually `email_reporting_snapshot(p_days integer) RETURNS jsonb`, with a fixed 7/30/90-day allowlist and the same aggregate response shape. Its single SQL snapshot performs `NOT EXISTS` against **all** historical simulator admissions, joining by contact and enrollment; it does not filter run status/expiry. Keep source/domain defenses and current consent/exclusion/quarantine checks. Bound output to daily and known sequence/step groups, no contact identifiers, addresses, tokens, hashes, raw payloads, or run IDs. It must not mutate tables or invoke operational RPCs.
-
-Exact proposed privilege impact (requires separate approval and review): create a narrowly scoped SECURITY DEFINER function owned by the existing database owner, fixed `search_path=pg_catalog,public` and schema-qualified objects; REVOKE EXECUTE from PUBLIC, anon, authenticated; GRANT EXECUTE only to service_role. Keep both simulator tables owner-only, and keep the Flask verified-admin guard. No direct table grants, credentials, new roles, browser access, or sending privileges. This adds a new aggregate-only execution capability to the backend service role. Review its SQL and malicious-parameter/privilege tests before applying. No migration file or grant has been created in this branch.
-
-Once approved and available, replace the bounded Python source scans with this one snapshot RPC. Existing useful metric logic covers accepted/delivered counts/rate, observed bounce/complaint/reject outcomes, sequence/daily groups, current eligibility/suppression/review/exclusions and operational attempts. Engagement and eligible net growth remain unavailable until their separate instrumentation/history gaps are solved. This reporting dependency does not block the safeguards deployment or bounded simulator tests.

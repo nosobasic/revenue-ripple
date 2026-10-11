@@ -46,7 +46,7 @@ def _in_window(value, start, end):
     return date is not None and start <= date < end
 
 
-def build_report(db, days=30, now=None):
+def unavailable_report(days=30, now=None):
     now = now or datetime.now(timezone.utc)
     start = now - timedelta(days=days)
     report = {
@@ -62,6 +62,14 @@ def build_report(db, days=30, now=None):
             'Feedback timestamps reflect database recording time, not necessarily the original provider event time. No feedback does not prove ingestion is healthy.',
         ],
     }
+    return report
+
+
+def build_report(db, days=30, now=None):
+    """Offline reference aggregator; production serves the user-scoped SQL RPC."""
+    now = now or datetime.now(timezone.utc)
+    start = now - timedelta(days=days)
+    report = unavailable_report(days, now)
     try:
         # Authoritative historical exclusions, including expired/disabled runs.
         # Owner-only in the current rollout: permission failure MUST withhold KPIs.

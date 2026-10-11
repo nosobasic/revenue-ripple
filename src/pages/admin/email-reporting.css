@@ -37,3 +37,6 @@
 .email-report-setup { background: white; border: 1px solid #dce4ef; border-radius: 18px; padding: clamp(20px, 4vw, 42px); max-width: 880px; }
 .email-report-setup h2 { max-width: 620px; font-size: clamp(24px, 4vw, 32px); line-height: 1.25; margin-top: 14px; }
 .email-report-setup h3 { margin-top: 26px; }
+.email-report-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1050px) { .email-report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .email-report-grid { grid-template-columns: minmax(0, 1fr); } }
