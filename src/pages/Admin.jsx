@@ -6,6 +6,7 @@ const AdminEngagementDashboard = lazy(() => import('./admin/EngagementDashboard'
 const AdminAcquisitionEngine = lazy(() => import('../components/admin/AcquisitionEngine'));
 const AdminContentEngine = lazy(() => import('../components/admin/ContentEngine'));
 const AdminEmailEnrollments = lazy(() => import('./admin/EmailEnrollments'));
+const AdminEmailReporting = lazy(() => import('./admin/EmailReporting'));
 import {
   RiDashboardLine,
   RiUserLine,
@@ -2096,6 +2097,7 @@ const Admin = () => {
             <RiBarChartLine size={20} />
             Engagement
           </Link>
+          <Link to="/admin/email-reports" className={`admin-nav-item ${location.pathname === '/admin/email-reports' ? 'active' : ''}`}><RiBarChartLine size={20} />Email reports</Link>
           <Link 
             to="/admin/email" 
             className={`admin-nav-item ${location.pathname === '/admin/email' ? 'active' : ''}`}
@@ -2193,6 +2195,7 @@ const Admin = () => {
               <AdminEngagementDashboard />
             </Suspense>
           } />
+          <Route path="email-reports" element={<Suspense fallback={<div>Loading email reports…</div>}><AdminEmailReporting /></Suspense>} />
           <Route path="email" element={
             <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>}>
               <AdminEmailEnrollments />

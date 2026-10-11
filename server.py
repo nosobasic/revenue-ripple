@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from ai_assistant import ai_assistant_bp
 from command_center_routes import command_center_bp
 from email_crm.routes import email_bp
+from email_crm.reporting_routes import email_reporting_bp
 from email_crm.deliver import deliver_lead, deliver_paid
 from email_crm.consent import consent_from_payload
 from server.routes.goals import goals_bp
@@ -80,6 +81,7 @@ app.supabase = supabase
 install_access_guard(app)
 app.register_blueprint(owner_pilot)
 app.register_blueprint(email_bp)
+app.register_blueprint(email_reporting_bp)
 
 @app.route('/')
 def serve_index():

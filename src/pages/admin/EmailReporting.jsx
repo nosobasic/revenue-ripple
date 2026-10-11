@@ -1,0 +1,29 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { authenticatedFetch } from '../../lib/authenticatedFetch';
+import './email-reporting.css';
+
+import { EmailReportView } from './EmailReportView';
+
+export default function EmailReporting() {
+  const [days, setDays] = useState('30');
+  const [refresh, setRefresh] = useState(0);
+  const [report, setReport] = useState(null);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    setReport(null); setError('');
+    authenticatedFetch(`/api/admin/email/reporting?days=${days}`, { signal: controller.signal })
+      .then(async response => {
+        if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? 'Administrator sign-in required.' : 'Email reporting is unavailable. Try again.');
+        return response.json();
+      }).then(data => { if (!controller.signal.aborted) setReport(data); })
+      .catch(err => { if (!controller.signal.aborted) setError(err.message); });
+    return () => controller.abort();
+  }, [days, refresh]);
+  return <div className="email-report">
+    <header className="email-report-header"><div><span className="email-report-eyebrow">REVENUE RIPPLE · EMAIL CRM</span><h1>Email reports</h1><p>A clear view of delivery, engagement, and list health.</p></div><Link to="/admin/email">Manage enrollments →</Link></header>
+    <div className="email-report-controls"><label>Reporting window <select value={days} onChange={e => setDays(e.target.value)}><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label><button onClick={() => setRefresh(value => value + 1)}>Refresh</button></div>
+    {error ? <p role="alert" className="email-report-notice">{error}</p> : report ? <EmailReportView report={report} /> : <p role="status">Loading email report…</p>}
+  </div>;
+}
