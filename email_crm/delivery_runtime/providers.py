@@ -45,6 +45,7 @@ class SESProvider:
             raise DeliveryError('simulator_admission_required', 'blocked')
         raw = MIMEMultipart("alternative")
         raw["From"], raw["To"], raw["Subject"] = self.source, message.to, message.subject
+        raw["Reply-To"] = self.source
         raw["List-Unsubscribe"] = "<" + message.unsubscribe_url.replace("/unsubscribe?", "/api/email/unsubscribe?") + ">"
         raw["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
         raw.attach(MIMEText(message.html, "html", "utf-8"))
