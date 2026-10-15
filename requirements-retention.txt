@@ -1,0 +1,3 @@
+# Optional evidence-service runtime; tested locally, not installed/deployed here.
+stripe==16.0.0
+psycopg[binary]==3.3.6

@@ -1,5 +1,4 @@
-import { getApiBase } from '../config/constants';
-import { authenticatedFetch } from '../lib/authenticatedFetch';
+import { useRetentionContent } from '../hooks/useRetentionContent';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,46 +6,19 @@ import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 
-const API_BASE_URL = getApiBase();
 
 const VaultDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [playbook, setPlaybook] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: playbook, loading, error: accessError } = useRetentionContent('playbooks', id);
+  const error = accessError?.message || null;
   const [isSticky, setIsSticky] = useState(false);
-
   useEffect(() => {
-    fetchPlaybook();
-    
-    // Handle sticky header
-    const handleScroll = () => {
-      setIsSticky(window.scrollY > 100);
-    };
+    const handleScroll = () => setIsSticky(window.scrollY > 100);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [id]);
-
-  const fetchPlaybook = async () => {
-    try {
-      setLoading(true);
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/vault/playbooks/${id}`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setPlaybook(data.playbook);
-      } else {
-        setError(data.error || 'Playbook not found');
-      }
-    } catch (err) {
-      setError('Failed to fetch playbook. Please try again later.');
-      console.error('Error fetching playbook:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, []);
 
   const formatWeekDate = (publishedAt) => {
     if (!publishedAt) return '';

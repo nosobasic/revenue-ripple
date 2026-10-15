@@ -1,34 +1,13 @@
-import { getApiBase } from '../config/constants';
-import { authenticatedFetch } from '../lib/authenticatedFetch';
+import { useRetentionContent } from '../hooks/useRetentionContent';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBook } from 'react-icons/fa';
 
-const API_BASE_URL = getApiBase();
 
 const VaultPreview = () => {
-  const [latestPlaybook, setLatestPlaybook] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading, error } = useRetentionContent('playbooks');
+  const latestPlaybook = data?.[0] || null;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchLatestPlaybook();
-  }, []);
-
-  const fetchLatestPlaybook = async () => {
-    try {
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/vault/playbooks`);
-      const data = await response.json();
-      
-      if (data.success && data.playbooks && data.playbooks.length > 0) {
-        setLatestPlaybook(data.playbooks[0]); // Get the most recent (first in list)
-      }
-    } catch (err) {
-      console.error('Error fetching latest playbook:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const formatWeekDate = (publishedAt) => {
     if (!publishedAt) return '';
@@ -40,6 +19,7 @@ const VaultPreview = () => {
     });
   };
 
+  if (error) return <p role="status">{error.message}</p>;
   if (loading || !latestPlaybook) {
     return null; // Don't show anything while loading or if no playbook
   }

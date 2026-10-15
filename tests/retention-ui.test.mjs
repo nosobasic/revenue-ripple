@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {visibleRetentionState,retentionMessage} from '../src/lib/retentionState.js';
+const state={key:'A:playbooks:',token:'token-A',data:[{full_body:'private fixture'}],expires:200,loading:false};
+test('same verified identity retains unexpired content',()=>assert.equal(visibleRetentionState(state,state.key,state.token,false,100).data,state.data));
+test('account switch clears bodies synchronously',()=>assert.equal(visibleRetentionState(state,'B:playbooks:',state.token,false,100).data,null));
+test('changed session clears bodies synchronously',()=>assert.equal(visibleRetentionState(state,state.key,'token-B',false,100).data,null));
+test('auth refresh cannot show old bodies',()=>assert.equal(visibleRetentionState(state,state.key,state.token,true,100).data,null));
+test('paid period expiry removes bodies at exact boundary',()=>assert.equal(visibleRetentionState(state,state.key,state.token,false,200).data,null));
+test('route change cannot show other item',()=>assert.equal(visibleRetentionState(state,'A:playbooks:other',state.token,false,100).data,null));
+test('free message preserves free learning',()=>assert.match(retentionMessage(403,'membership_required'),/free courses remain available/));
+test('review state never tells existing buyers to repurchase',()=>assert.match(retentionMessage(503,'access_review'),/do not purchase again/));

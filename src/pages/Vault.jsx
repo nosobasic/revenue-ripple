@@ -1,5 +1,4 @@
-import { getApiBase } from '../config/constants';
-import { authenticatedFetch } from '../lib/authenticatedFetch';
+import { useRetentionContent } from '../hooks/useRetentionContent';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,39 +6,15 @@ import Navbar from '../components/Navbar';
 import AIAssistantWidget from '../components/AIAssistantWidget';
 import '../pages.css';
 
-const API_BASE_URL = getApiBase();
 
 const Vault = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [playbooks, setPlaybooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error: accessError } = useRetentionContent('playbooks');
+  const playbooks = data || [];
+  const error = accessError?.message || null;
   const [selectedTag, setSelectedTag] = useState(null);
-  const [layout, setLayout] = useState('grid'); // 'grid' or 'carousel'
-
-  useEffect(() => {
-    fetchPlaybooks();
-  }, []);
-
-  const fetchPlaybooks = async () => {
-    try {
-      setLoading(true);
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/vault/playbooks`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setPlaybooks(data.playbooks || []);
-      } else {
-        setError(data.error || 'Failed to load playbooks');
-      }
-    } catch (err) {
-      setError('Failed to fetch playbooks. Please try again later.');
-      console.error('Error fetching playbooks:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [layout, setLayout] = useState('grid');
 
   const formatWeekDate = (publishedAt) => {
     if (!publishedAt) return '';

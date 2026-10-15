@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
@@ -27,6 +27,11 @@ const Training = () => {
   const [selectedBriefing, setSelectedBriefing] = useState(null);
   const [showBriefingModal, setShowBriefingModal] = useState(false);
   const { data: briefings, loading: briefingsLoading, error: briefingsError } = usePremiumBriefings();
+  useEffect(() => {
+    if (briefingsLoading || briefingsError || !briefings?.some(item => item.id === selectedBriefing?.id)) {
+      setShowBriefingModal(false); setSelectedBriefing(null);
+    }
+  }, [user?.id, briefings, briefingsLoading, briefingsError, selectedBriefing?.id]);
   const [bookingData, setBookingData] = useState({
     name: '',
     email: '',
@@ -37,10 +42,7 @@ const Training = () => {
     urgency: 'normal'
   });
 
-  // TODO: Re-enable paid membership check when ready to monetize
-  // const isMember = user?.has_paid === true;
-  // TEMPORARY: App is free during validation phase - all users get full access
-  const isMember = true;
+  const isMember = !briefingsLoading && !briefingsError && briefings !== null;
 
   const handleBriefingClick = (briefing) => {
     setSelectedBriefing(briefing);
@@ -518,7 +520,7 @@ const Training = () => {
                     border: '1px solid #fecaca',
                   }}>
                     <p style={{ margin: 0, fontSize: window.innerWidth <= 768 ? '0.9375rem' : '1rem' }}>
-                      Having trouble loading premium briefings right now. Try again soon.
+                      {briefingsError.message}
                     </p>
                   </div>
                 ) : (
@@ -1036,12 +1038,12 @@ const Training = () => {
 
       {/* Premium Briefing Modal */}
       <PremiumBriefingModal
-        isOpen={showBriefingModal}
+        isOpen={showBriefingModal && !briefingsLoading && !briefingsError && !!briefings?.some(item => item.id === selectedBriefing?.id)}
         onClose={() => {
           setShowBriefingModal(false);
           setSelectedBriefing(null);
         }}
-        briefing={selectedBriefing}
+        briefing={briefings?.find(item => item.id === selectedBriefing?.id) || null}
       />
     </div>
   );
