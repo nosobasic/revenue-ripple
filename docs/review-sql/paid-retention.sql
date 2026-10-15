@@ -1,4 +1,4 @@
--- NOT APPROVED FOR DEPLOYMENT. Replaces the rejected free-member option.
+-- Scoped retention tightening authorized October 15, 2026. This rehearsal copy rolls back.
 -- Eligibility reconciliation and backend/frontend changes in paid-content-review.txt
 -- are prerequisites. No changes to courses, quizzes, progress, or free learning.
 BEGIN;
@@ -115,13 +115,13 @@ BEGIN
  RETURN jsonb_build_object('state','denied');
 END;
 $fn$;
-REVOKE ALL ON FUNCTION public.rr_retention_access() FROM PUBLIC,anon;
+REVOKE ALL ON FUNCTION public.rr_retention_access() FROM PUBLIC,anon,service_role;
 GRANT EXECUTE ON FUNCTION public.rr_retention_access() TO authenticated;
 CREATE FUNCTION public.rr_can_read_retention_content() RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $fn$
  SELECT public.rr_retention_access()->>'state'='allowed';
 $fn$;
-REVOKE ALL ON FUNCTION public.rr_can_read_retention_content() FROM PUBLIC,anon;
+REVOKE ALL ON FUNCTION public.rr_can_read_retention_content() FROM PUBLIC,anon,service_role;
 GRANT EXECUTE ON FUNCTION public.rr_can_read_retention_content() TO authenticated;
 REVOKE ALL ON TABLE public.ve_content_items FROM PUBLIC,anon,authenticated;
 GRANT SELECT ON TABLE public.ve_content_items TO authenticated;
