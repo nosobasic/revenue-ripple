@@ -69,6 +69,25 @@ class Delivery:
         try:
             step = a["sequence_snapshot"]["steps"][a["step_index"]]
             template = self.loader(step["template_key"])
+            pilot = claim.get("pilot")
+            if pilot is not None:
+                if (hashlib.sha256(template.encode("utf-8")).hexdigest() != pilot.get("template_sha256")
+                    or step["subject"] != pilot.get("subject")
+                    or step["template_key"] != pilot.get("template_key")):
+                    raise ContentError("pilot_content_changed")
+            nurture = claim.get("nurture")
+            if nurture is not None:
+                if (not self.env.get("EMAIL_NURTURE_BUNDLE_ID")
+                    or nurture.get("bundle_id") != self.env["EMAIL_NURTURE_BUNDLE_ID"]
+                    or nurture.get("bundle_id") != a["sequence_snapshot"].get("_nurture_bundle")
+                    or nurture.get("attempt_id") != a["id"]
+                    or nurture.get("claim_token") != a["claim_token"]
+                    or nurture.get("step_index") != a["step_index"]
+                    or hashlib.sha256(template.encode("utf-8")).hexdigest() != nurture.get("template_sha256")
+                    or step.get("template_sha256") != nurture.get("template_sha256")
+                    or step["subject"] != nurture.get("subject")
+                    or step["template_key"] != nurture.get("template_key")):
+                    raise ContentError("nurture_content_changed")
             body,unsub = render(template,contact,step,self.env)
         except Exception:
             self.db.rpc("email_fail_attempt",p_attempt=a["id"],p_token=a["claim_token"],p_state="blocked",p_code="content_unavailable")
@@ -77,7 +96,7 @@ class Delivery:
         if state != "sending":
             return state
         try:
-            message_id = self.provider.send(Message(contact["email"],step["subject"],body,unsub,a["id"],claim.get("simulator_run")))
+            message_id = self.provider.send(Message(contact["email"],step["subject"],body,unsub,a["id"],claim.get("simulator_run"),claim.get("pilot"),claim.get("nurture"),a["claim_token"]))
         except Exception as exc:
             outcome = exc.outcome if isinstance(exc,DeliveryError) else "uncertain"
             self.db.rpc("email_fail_attempt",p_attempt=a["id"],p_token=a["claim_token"],p_state=outcome,

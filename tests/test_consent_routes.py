@@ -32,6 +32,14 @@ class ConsentRouteTests(unittest.TestCase):
                 with self.subTest(handler=name, payload=payload):
                     self.exercise(tree, name, payload, expected, captures)
 
+    def test_dmd_variants_use_the_reviewed_nurture_source(self):
+        tree = ast.parse(Path('server.py').read_text())
+        for source in ('dmd-variation-1', 'dmd-variation-2', 'dmd-variation-3'):
+            with self.subTest(source=source):
+                self.exercise(tree, 'digital_marketing_domination_submission',
+                    {'source': source, 'email_consent': True,
+                     'email_consent_version': CONSENT_VERSION}, 200, 1)
+
     def test_capture_failure_never_reports_success_or_falls_back(self):
         tree = ast.parse(Path('server.py').read_text())
         for name in NAMES:
@@ -66,6 +74,10 @@ class ConsentRouteTests(unittest.TestCase):
             args = db.rpc.call_args.args
             self.assertEqual(args[0], 'email_capture_optin')
             self.assertEqual(args[1]['p_email'], 'test@example.com')
+            self.assertIs(args[1]['p_accepted'], True)
+            self.assertEqual(args[1]['p_version'], CONSENT_VERSION)
+            if name == 'digital_marketing_domination_submission':
+                self.assertEqual(args[1]['p_source'], 'digital-marketing-domination')
         legacy.assert_not_called()
 
 if __name__ == '__main__':
