@@ -133,6 +133,7 @@ const SubmitStory = lazy(() => import('./pages/SubmitStory'));
 const Vault = lazy(() => import('./pages/Vault'));
 const VaultDetail = lazy(() => import('./pages/VaultDetail'));
 // AI Visibility components
+const AIVisibilityDashboard = lazy(() => import('./pages/AIVisibilityDashboard'));
 const TranscriptPipelinePage = lazy(() => import('./pages/TranscriptPipeline'));
 
 const LoadingFallback = () => (
@@ -245,8 +246,8 @@ const App = () => {
         {/* Preparation-only pilot; scan execution is not enabled. */}
         <Route path="/membership" element={<MembershipReview />} />
         <Route path="/visibility-pilot" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
-        <Route path="/ai-visibility" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
-        <Route path="/ai-visibility/setup" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
+        <Route path="/ai-visibility" element={<ProtectedRoute><AIVisibilityDashboard /></ProtectedRoute>} />
+        <Route path="/ai-visibility/setup" element={<ProtectedRoute><Navigate to="/ai-visibility" replace /></ProtectedRoute>} />
         <Route path="/ai-visibility-tracker" element={<ProtectedRoute><VisibilityPilot /></ProtectedRoute>} />
         <Route path="/admin/transcripts" element={<ProtectedRoute requireAdmin><TranscriptPipelinePage /></ProtectedRoute>} />
         <Route path="/admin/*" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />

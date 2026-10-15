@@ -1,3 +1,4 @@
+from visibility.routes import visibility_bp
 from middleware.legacy_membership import require_paid_checkout, legacy_profile_update, preserve_legacy_identity
 from middleware.verified_identity import install_access_guard
 from owner_pilot import owner_pilot
@@ -82,6 +83,7 @@ install_access_guard(app)
 app.register_blueprint(owner_pilot)
 app.register_blueprint(email_bp)
 app.register_blueprint(email_reporting_bp)
+app.register_blueprint(visibility_bp)
 
 @app.route('/')
 def serve_index():

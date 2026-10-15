@@ -1,0 +1,34 @@
+AI visibility integration — review branch, not pushed or deployed
+
+Based on current main 8157ee2. Imports only the visibility runtime/API and simple
+snapshot component from the isolated October7 implementation. No billing-route,
+CRM, navbar, layout stylesheet, or security-guard changes. Existing authenticated
+/ai-visibility route remains; old /ai-visibility/setup redirects there. Old unsafe
+/api/ai-visibility endpoints remain blocked by the current access guard.
+
+Journey: business/domain/topic -> three-question preview -> single idempotent
+submission -> saved progress -> three evidence records and actionable findings.
+Uses existing authenticatedFetch and Navbar. Removed an unavailable /membership
+link. No fabricated scores or ETA; purchases explicitly unavailable. Preview is
+unbilled; scan button requires enabled allowance from backend.
+
+Server changes are only blueprint import/registration. App's existing Supabase
+client and verified identity middleware are reused. Runtime package is byte-matched
+to the deployed AWS bundle; no activation on import. Production database SQL must
+be verified independently before app deployment. SQL under tests/visibility/fixtures
+is test data only, outside migration runner; do not apply it as a production migration.
+It includes the older entitlement schema: reconcile with current paid-retention work
+rather than overwriting newer rr_subscriptions or rr_access implementations.
+
+Validation: offline fixture jobs/adapters plus current middleware integration tests;
+production frontend build. No browser QA, live provider call or hosted integration
+test. No credentials included. PGlite tests do not establish independent-connection
+PostgreSQL concurrency. Re-run hosted/schema/entitlement verification before enablement.
+
+Run tests:
+RR_PGLITE_PACKAGE=<installed @electric-sql/pglite/dist/index.js> PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:tests/visibility python -m unittest discover -s tests/visibility -p 'test_*.py'
+npm run build
+
+Remaining: hosted SQL/ACL reconciliation, narrow runtime credentials, provider
+compatibility and approved spend, pilot user end-to-end QA, approved alarm destinations,
+and reviewed application deployment. Keep scans disabled until these gates pass.
