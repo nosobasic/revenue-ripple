@@ -109,7 +109,7 @@ const Vault = () => {
                 {error}
               </p>
               <button 
-                onClick={fetchPlaybooks}
+                onClick={() => window.location.reload()}
                 style={{
                   padding: '0.75rem 1.5rem',
                   background: '#2563eb',
