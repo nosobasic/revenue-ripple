@@ -39,11 +39,15 @@ WHERE n.nspname='public' AND c.relkind IN ('r','p')
                    'email_nurture_bundles','email_nurture_admissions',
                    'email_legacy_exclusions','email_legacy_manifest')
 ORDER BY c.relname, grantee, a.privilege_type;
-SELECT enabled, daily_cap, min_interval_seconds FROM public.email_delivery_policy;
+SELECT count(*) AS policy_rows, bool_or(enabled) AS any_sending_enabled,
+ min(daily_cap) AS smallest_daily_cap,max(daily_cap) AS largest_daily_cap,
+ min(min_interval_seconds) AS shortest_interval_seconds
+FROM public.email_delivery_policy;
 SELECT count(*) AS historical_exclusions FROM public.email_legacy_exclusions;
-SELECT e.status, e.step_index
-FROM public.email_enrollments e JOIN public.email_contacts c ON c.id=e.contact_id
-WHERE c.email='nosobasic@duck.com' AND e.sequence_id='indoctrination';
+-- Aggregate sequence state only; deliberately omits contact identities.
+SELECT count(*) AS indoctrination_enrollments,
+ count(*) FILTER(WHERE status='paused' AND step_index=1) AS paused_at_step_one
+FROM public.email_enrollments WHERE sequence_id='indoctrination';
 -- Shared retention / visibility catalog; fixture SQL must NEVER replace these.
 SELECT p.proname,pg_get_function_identity_arguments(p.oid) AS arguments,
  pg_get_userbyid(p.proowner) AS owner,p.prosecdef,p.proconfig,p.proacl,
