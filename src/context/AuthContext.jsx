@@ -3,6 +3,8 @@ import { supabase } from "../supabase/client";
 import { safeReturnTo, clearPurchaseIntent } from '../utils/loginRouting';
 import { trackDailyLogin } from "../services/engagementTracking";
 
+import { resolveAccountProfile, AccountProfileError } from '../lib/resolveAccountProfile';
+
 const AuthContext = createContext();
 
 export function useAuth() {
@@ -42,7 +44,7 @@ export function AuthProvider({ children }) {
   };
 
   // Keep identity/profile resolution atomic and discard requests from older accounts.
-  const resolveSession = useCallback(async (nextSession) => {
+  const resolveSession = useCallback(async (nextSession, signupDetails) => {
     const request = ++generation.current;
     currentSession.current = nextSession;
     setSession(nextSession);
@@ -51,27 +53,18 @@ export function AuthProvider({ children }) {
     setLoading(true);
     try {
       if (!nextSession?.user) return;
-      // Preserve existing OAuth profile provisioning: only a basic free profile,
-      // ignore an existing row so historical roles/plans are never overwritten.
-      const authUser = nextSession.user;
-      await supabase.from('users').upsert({
-        id: authUser.id, email: authUser.email, role: 'member', plan: '',
-        status: 'active', commission_rate: 0, name: authUser.user_metadata?.name || '',
-      }, { onConflict: 'id', ignoreDuplicates: true });
-      // Keep legacy email-based billing lookup aligned with the Auth identity.
-      // Existing RLS/trigger containment verifies this email against the token.
-      await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
-      const { data, error } = await supabase.from('users').select('*')
-        .eq('id', nextSession.user.id).single();
-      if (error || !data || data.id !== nextSession.user.id) {
-        throw new Error('Unable to verify your account. Please retry.');
-      }
+      const data = await resolveAccountProfile(supabase, nextSession.user, () => request === generation.current, signupDetails);
       if (request === generation.current) {
         // Role/plan come from the RLS-protected row, never user_metadata or headers.
         setUser({ ...nextSession.user, ...data });
+        return { user: data };
       }
-    } catch {
-      if (request === generation.current) setAuthError('Unable to verify your account. Please retry.');
+    } catch (error) {
+      if (request === generation.current) {
+        const message = error instanceof AccountProfileError ? error.message : 'Unable to verify your account. Please retry.';
+        setAuthError(message);
+        return { error: message };
+      }
     } finally {
       if (request === generation.current) setLoading(false);
     }
@@ -118,7 +111,7 @@ export function AuthProvider({ children }) {
     }
   }, [resolveSession]);
 
-  async function signup(email, password, firstName, lastName ,role, paypal) {
+  async function signup(email, password, firstName, lastName, role, paypal) {
     const operation = beginAuth(email);
     try {
       setLoading(true);
@@ -133,36 +126,10 @@ export function AuthProvider({ children }) {
       const { data: authData, error: authError } = response;
       if (authError) throw authError;
 
-      // Create a user document in Supabase
       if (authData.user && authData.session) {
-        const { error: userError } = await supabase.from("users").upsert([
-          {
-            id: authData.user.id,
-            name: firstName + " " + lastName,
-            email,
-            role: 'member', // Paid/affiliate roles are assigned by trusted backend flows.
-            status: "active",
-            commission_rate: 0,
-            created_at: new Date().toISOString(),
-            phone: "",
-            company: "",
-            bio: "",
-            plan: "",
-            paypal_email:paypal
-          },
-        ], { onConflict: 'id', ignoreDuplicates: true });
+        const resolved = await resolveSession(authData.session, { paypal_email: paypal });
         if (operation !== authOperation.current) return null;
-
-        if (userError) {
-          console.error("Error creating user record:", userError);
-        }
-        
-        // CRITICAL: Fetch user data immediately after creating the record
-        // This ensures the user object is loaded in AuthContext before Register navigates
-        await resolveSession(authData.session);
-        if (operation !== authOperation.current) return null;
-        
-        // Supabase owns its session storage; never overwrite it with a raw JWT.
+        if (!resolved?.user) throw new Error(resolved?.error || 'Unable to verify your account. Please retry.');
       }
 
       if (!authData.session) throw new Error('Check your email to confirm your account, then sign in.');
@@ -187,8 +154,9 @@ export function AuthProvider({ children }) {
       if (!authData.user)
         throw new Error("No user returned from signInWithPassword");
 
-      await resolveSession(authData.session);
+      const resolved = await resolveSession(authData.session);
       if (operation !== authOperation.current) return null;
+      if (!resolved?.user) throw new Error(resolved?.error || 'Unable to verify your account. Please retry.');
       
       // Track daily login for engagement
       if (authData.user) {
