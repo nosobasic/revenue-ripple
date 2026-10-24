@@ -15,10 +15,11 @@ globalThis.localStorage=memory();globalThis.sessionStorage=memory();
 globalThis.window={location:{origin:'http://fixture.test',assign:()=>{throw Error('Unexpected payment navigation')}}};
 let listener,initial=null,profile={id:'a',role:'admin',plan:'lifetime',has_paid:true};
 let deferred,failed=false;
+const profileEmails = new Map();
 const session=id=>({user:{id,email:'fixture@example.test',user_metadata:{role:'admin'}},access_token:'synthetic'});
 globalThis.fixture={navigation:[],params:'product=membership',location:{pathname:'/courses/a',search:'?x=1',hash:'#part'},supabase:{
  auth:{getSession:async()=>({data:{session:initial}}),onAuthStateChange:cb=>{listener=cb;return {data:{subscription:{unsubscribe(){}}}}},signOut:async()=>{listener('SIGNED_OUT',null);return {}},signInWithPassword:async()=>({data:{user:session('a').user,session:session('a')}})},
- from:()=>({upsert:async()=>({}),update:()=>({eq:async()=>({})}),select:()=>({eq:(_column,id)=>({single:()=>deferred?new Promise(resolve=>deferred.push({id,resolve})):Promise.resolve(failed?{error:{code:'offline'}}:{data:{...profile,id}})})})})
+ from:()=>({upsert:async()=>({}),update:values=>({eq:async(_column,id)=>{profileEmails.set(id,values.email);return {}}}),select:()=>({eq:(_column,id)=>({maybeSingle:()=>deferred?new Promise(resolve=>deferred.push({id,resolve})):Promise.resolve(failed?{error:{code:'offline'}}:{data:{...profile,id,email:profileEmails.get(id)||'fixture@example.test'}})})})})
 }};
 await build({stdin:{contents:`export {AuthProvider,useAuth} from './src/context/AuthContext.jsx';export {default as Callback} from './src/pages/AuthCallback.jsx';export {default as Guard} from './src/components/ProtectedRoute.jsx';export {default as Checkout} from './src/pages/Checkout.jsx';export {default as Success} from './src/pages/MembershipSuccess.jsx';export {default as Cancel} from './src/pages/MembershipCancel.jsx';export {default as SignedOut} from './src/components/SignedOutRoute.jsx';export {default as Reseller} from './src/pages/ResellerCheckout.jsx';export {default as Founders} from './src/pages/FoundersAnnualCheckout.jsx';export {default as ProReseller} from './src/pages/ProResellerUpsell.jsx';export {useUserRole} from './src/hooks/useUserRole.ts';`,resolveDir:process.cwd(),loader:'jsx'},define:{'import.meta.env.VITE_API_BASE_URL':JSON.stringify('https://fixture.invalid')},bundle:true,platform:'node',format:'cjs',jsx:'automatic',outfile:`${testRoot}/bundle.cjs`,external:['react','react/jsx-runtime'],plugins:[{name:'fixtures',setup(b){
  b.onResolve({filter:/components\/(Navbar|FoundersTimer|FoundersSpotCounter|PlanSwitcher|Button|Card)$/},a=>({path:'ui',namespace:'fixture'}));
@@ -53,10 +54,10 @@ await act(async()=>deferred.shift().resolve({error:{code:'offline'}}));check(cur
 deferred=null;await act(async()=>current.refreshUserData());check(current.user.role,'admin');await unmount();
 // Account switch and logout cannot be undone by a late profile response.
 deferred=[];await mount();await act(async()=>listener('SIGNED_IN',session('b')));
-await act(async()=>deferred.find(x=>x.id==='b').resolve({data:{id:'b',role:'member'}}));
-await act(async()=>deferred.find(x=>x.id==='a').resolve({data:{id:'a',role:'admin'}}));check(current.user.id,'b');check(current.user.role,'member');
+await act(async()=>deferred.find(x=>x.id==='b').resolve({data:{email:'fixture@example.test',id:'b',role:'member'}}));
+await act(async()=>deferred.find(x=>x.id==='a').resolve({data:{email:'fixture@example.test',id:'a',role:'admin'}}));check(current.user.id,'b');check(current.user.role,'member');
 await act(async()=>listener('TOKEN_REFRESHED',session('b')));await act(async()=>current.logout());
-await act(async()=>deferred.at(-1).resolve({data:{id:'b',role:'admin'}}));check(current.user,null);check(current.session,null);await unmount();deferred=null;
+await act(async()=>deferred.at(-1).resolve({data:{email:'fixture@example.test',id:'b',role:'admin'}}));check(current.user,null);check(current.session,null);await unmount();deferred=null;
 // Ordinary role mapping keeps partner distinctions without inventing subscription/credits.
 for(const role of ['member','affiliate','reseller','pro_reseller','admin']){
  profile={id:'a',role,plan:role==='admin'?'lifetime':'',has_paid:role==='member'};fixture.navigation=[];await mount(React.createElement(Callback));check(fixture.navigation,['/dashboard']);
@@ -127,10 +128,11 @@ await mount();check(current.user,null);check(current.session,null);await unmount
 fixture.supabase.auth.getSession=originalGetSession;fixture.supabase.auth.signOut=originalSignOut;fixture.supabase.auth.signInWithPassword=originalSignIn;
 // Missing profile is an explicit retryable error, not a free or paid membership decision.
 initial=session('a');deferred=[];await mount();
+await act(async()=>deferred.shift().resolve({data:null,error:null}));
 await act(async()=>deferred.shift().resolve({data:null,error:null}));check(current.user,null);check(Boolean(current.authError),true);await unmount();deferred=null;
 // Signup provisioning uses the submitted name in the Auth event; duplicate provisioning preserves it.
 const originalFrom=fixture.supabase.from;let profileRow=null,signupOptions;
-fixture.supabase.from=()=>({upsert:async(value,options)=>{check(options.ignoreDuplicates,true);const row=Array.isArray(value)?value[0]:value;if(!profileRow)profileRow={...row};return {}},update:values=>({eq:async()=>{if(profileRow)Object.assign(profileRow,values);return {}}}),select:()=>({eq:()=>({single:async()=>({data:profileRow})})})});
+fixture.supabase.from=()=>({upsert:async(value,options)=>{check(options.ignoreDuplicates,true);const row=Array.isArray(value)?value[0]:value;if(!profileRow)profileRow={...row};return {}},update:values=>({eq:async()=>{if(profileRow)Object.assign(profileRow,values);return {}}}),select:()=>({eq:()=>({maybeSingle:async()=>({data:profileRow})})})});
 fixture.supabase.auth.signUp=async args=>{signupOptions=args;const signed={...session('fresh'),user:{...session('fresh').user,email:args.email,user_metadata:args.options.data}};listener('SIGNED_IN',signed);return {data:{user:signed.user,session:signed}}};
 initial=null;await mount();await act(async()=>current.signup('fresh@example.test','fixture','Fresh','Member','admin',''));
 check(signupOptions.options.data.name,'Fresh Member');check(current.user.name,'Fresh Member');check(current.user.role,'member');check(current.user.plan,'');check(current.user.email,'fresh@example.test');await unmount();
@@ -176,4 +178,26 @@ for(const plan of ['annual','monthly']){
  if(plan==='monthly')await act(async()=>root.root.findAllByType('button').find(b=>b.props.children==='Fixture monthly selector').props.onClick());
  await act(async()=>root.root.findAllByType('button').find(b=>b.props.className==='checkout-btn').props.onClick());check(sent,['https://fixture.invalid/timer','https://fixture.invalid/'+plan]);await unmount();
 }
+// Failed Google profile provisioning is retryable and must never navigate as signed in.
+let blockedCreate=true, recoveredRow=null;
+fixture.supabase.from=()=>({
+ select:()=>({eq:()=>({maybeSingle:async()=>({data:recoveredRow})})}),
+ upsert:async row=>{if(blockedCreate)return {error:{message:'private-provider-and-email'}};recoveredRow=row;return {}},
+ update:()=>({eq:async()=>({})}),
+});
+initial=session('a');fixture.navigation=[];await mount(React.createElement(Callback));
+check(current.user,null);check(current.loading,false);check(fixture.navigation,[]);
+check(current.authError.includes('create your account profile'),true);
+check(JSON.stringify(root.toJSON()).includes('private-provider'),false);
+blockedCreate=false;await act(async()=>root.root.findAllByType('button').find(b=>b.props.children==='Retry account check').props.onClick());
+check(current.user.role,'member');check(current.user.plan,'');check(fixture.navigation,['/dashboard']);await unmount();
+// Password sign-in and signup reject when profile provisioning fails, so callers cannot navigate on false success.
+blockedCreate=true;recoveredRow=null;initial=null;await mount();
+await act(async()=>{await assert.rejects(current.login('fixture@example.test','synthetic-password'),/create your account profile/)});
+check(current.user,null);check(Boolean(current.authError),true);await unmount();
+fixture.supabase.auth.signUp=async args=>{const signed={...session('fresh'),user:{...session('fresh').user,email:args.email,user_metadata:args.options.data}};return {data:{user:signed.user,session:signed}}};
+initial=null;await mount();
+await act(async()=>{await assert.rejects(current.signup('fresh@example.test','synthetic','Fresh','Member','admin',''),/create your account profile/)});
+check(current.user,null);check(Boolean(current.authError),true);await unmount();
+fixture.supabase.from=originalFrom;
 console.log(`${count} synthetic auth/routing/checkout assertions passed; no external requests.`);

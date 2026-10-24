@@ -25,6 +25,7 @@ import {
 } from 'react-icons/fa';
 import './admin.css';
 import { useAuth } from '../context/AuthContext';
+import { useAdminUsers } from '../hooks/useAdminUsers';
 import { courses } from '../data/courses';
 import { getApiBase } from '../config/constants';
 
@@ -471,7 +472,7 @@ const EditUserModal = ({ user, isOpen, onClose, onSave }) => {
 };
 
 // User Management Component
-const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFilterStatus, handleRoleChange, handleStatusChange, handleDeleteUser, onEditUser, onAddUser }) => (
+const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFilterStatus, handleRoleChange, handleStatusChange, handleDeleteUser, onEditUser, onAddUser, onRefresh, loading, error }) => (
   <>
     <header className="admin-header">
       <h1 className="admin-title">User Management</h1>
@@ -502,13 +503,17 @@ const UserManagement = ({ users, searchTerm, setSearchTerm, filterStatus, setFil
               <option value="inactive">Inactive</option>
             </select>
           </div>
+          <button className="add-user-btn" onClick={onRefresh} disabled={loading}>
+            {loading ? 'Refreshing…' : 'Refresh'}
+          </button>
           <button className="add-user-btn" onClick={onAddUser}>
             <RiUserAddLine />
             Add User
           </button>
         </div>
       </div>
-      <div className="table-wrapper">
+      {error && <p role="alert">{error}</p>}
+      <div className="table-wrapper" aria-busy={loading}>
         <table className="user-table">
           <thead>
             <tr>
@@ -1644,7 +1649,10 @@ const Admin = () => {
   const [dashboardLoading, setDashboardLoading] = useState(true);
   const [stats, setStats] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
-  const [users, setUsers] = useState([]);
+  const { users, loading: usersLoading, error: usersError, refresh: fetchFilteredUsers } = useAdminUsers({
+    enabled: !authLoading && user?.role === 'admin', adminId: user?.id,
+    pathname: location.pathname, searchTerm, filterStatus,
+  });
   const [error, setError] = useState(null);
   const [editUser, setEditUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -1717,13 +1725,6 @@ const Admin = () => {
       fetchDashboardData();
     }
   }, [user, authLoading]);
-
-  useEffect(() => {
-    // Only fetch filtered users if user is loaded and is admin
-    if (!authLoading && user && user.role === 'admin') {
-      fetchFilteredUsers();
-    }
-  }, [searchTerm, filterStatus, user, authLoading]);
 
   const fetchDashboardData = async () => {
     try {
@@ -1827,43 +1828,6 @@ const Admin = () => {
     }
   };
 
-  const fetchFilteredUsers = async () => {
-    try {
-      setError(null);
-
-      let query = supabase
-        .from('users')
-        .select('*');
-
-      // Apply search filter
-      if (searchTerm) {
-        query = query.or(`name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
-      }
-
-      // Apply status filter
-      if (filterStatus !== 'all') {
-        query = query.eq('status', filterStatus);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      setUsers(data?.map(user => ({
-        id: user.id,
-        name: user.name || 'N/A',
-        email: user.email,
-        status: user.status || 'inactive',
-        memberSince: new Date(user.created_at).toLocaleDateString(),
-        earnings: `$${user.total_earnings || 0}`,
-        role: user.role || 'member',
-      })) || []);
-
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching users:', err);
-    }
-  };
 
   const handleRoleChange = async (userId, newRole) => {
     await supabase
@@ -2155,6 +2119,9 @@ const Admin = () => {
             <>
               <UserManagement 
                 users={users}
+                loading={usersLoading}
+                error={usersError}
+                onRefresh={fetchFilteredUsers}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 filterStatus={filterStatus}
