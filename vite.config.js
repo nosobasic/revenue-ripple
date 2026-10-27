@@ -131,7 +131,7 @@ function synthesiaDevApi() {
 function releaseEvidence() {
   return { name: 'release-evidence', generateBundle() {
     const commit = process.env.VERCEL_GIT_COMMIT_SHA || execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-    this.emitFile({ type: 'asset', fileName: 'release.json', source: JSON.stringify({ release: 'visibility-owner-preparation-v1', commit, scans_enabled: false }) });
+    this.emitFile({ type: 'asset', fileName: 'release.json', source: JSON.stringify({ release: 'visibility-owner-preparation-v1', commit, build_node: process.versions.node, scans_enabled: false }) });
   } };
 }
 export default defineConfig({

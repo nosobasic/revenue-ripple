@@ -11,6 +11,15 @@ import requests
 import time
 import paypalrestsdk
 import json
+import platform
+from importlib.metadata import version as dependency_version
+
+# Non-sensitive startup evidence for deployment verification; never log environment dumps.
+print("DEPENDENCY_RELEASE " + json.dumps({
+    "commit": os.environ.get("RENDER_GIT_COMMIT", "unknown"),
+    "python": platform.python_version(),
+    "certifi": dependency_version("certifi"),
+}), flush=True)
 from datetime import datetime, date
 import re
 import hashlib

@@ -16,7 +16,8 @@
     "diag:env": "node scripts/print-env.js",
     "normalize:videos": "node scripts/normalize-course-videos.mjs",
     "normalize:videos:apply": "node scripts/normalize-course-videos.mjs --apply",
-    "test:routing": "node --test tests/auth/router-major.test.mjs"
+    "test:routing": "node --test tests/auth/router-major.test.mjs",
+    "prebuild": "node scripts/verify-node-runtime.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -60,5 +61,8 @@
     "terser": "^5.51.2",
     "vite": "^6.4.5",
     "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

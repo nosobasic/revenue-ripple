@@ -3,7 +3,7 @@ services:
   - type: web
     name: revenue-ripple-api
     env: python
-    buildCommand: ""
+    buildCommand: "bash scripts/render-build.sh"
     startCommand: gunicorn server:app --bind 0.0.0.0:$PORT
     envVars:
       - key: SUPABASE_URL

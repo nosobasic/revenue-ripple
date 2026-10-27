@@ -1,3 +1,5 @@
+# Keep the verified Render application versions while refreshing certifi.
+-c requirements-render-constraints.txt
 Flask
 flask-cors
 python-dotenv
