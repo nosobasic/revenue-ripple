@@ -15,7 +15,9 @@
     "diag:options": "node scripts/diag-options.js",
     "diag:env": "node scripts/print-env.js",
     "normalize:videos": "node scripts/normalize-course-videos.mjs",
-    "normalize:videos:apply": "node scripts/normalize-course-videos.mjs --apply"
+    "normalize:videos:apply": "node scripts/normalize-course-videos.mjs --apply",
+    "test:routing": "node --test tests/auth/router-major.test.mjs",
+    "prebuild": "node scripts/verify-node-runtime.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.14",
@@ -23,7 +25,7 @@
     "@radix-ui/react-slot": "^1.3.3",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.0",
-    "@supabase/supabase-js": "^2.39.0",
+    "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-query": "^5.80.6",
     "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.0",
@@ -32,29 +34,35 @@
     "dotenv": "^16.5.0",
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.513.0",
-    "moment": "^2.30.1",
+    "moment": "^2.31.0",
     "openai": "^6.39.1",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^4.11.0",
-    "react-router-dom": "^6.20.0",
+    "react-router-dom": "^7.18.4",
     "tailwind-merge": "^3.7.0",
-    "undici": "^6.19.8"
+    "undici": "^6.29.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^4.2.0",
-    "autoprefixer": "^10.4.16",
+    "@eslint/js": "8.57.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.6.1",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5",
-    "terser": "^5.43.1",
-    "vite": "^5.0.0",
-    "zod": "^4.0.17"
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "11.12.0",
+    "postcss": "^8.5.31",
+    "react-test-renderer": "18.3.1",
+    "tailwindcss": "^3.4.19",
+    "terser": "^5.51.2",
+    "vite": "^6.4.5",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

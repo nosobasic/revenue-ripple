@@ -1,3 +1,5 @@
+# Keep the verified Render application versions while refreshing certifi.
+-c requirements-render-constraints.txt
 Flask
 flask-cors
 python-dotenv
@@ -9,3 +11,6 @@ gunicorn
 openai
 paypalrestsdk
 boto3
+
+# Render eMudhra advisory: refresh the HTTP clients' CA bundle.
+certifi>=2026.10.19
