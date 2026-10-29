@@ -13,6 +13,16 @@ class EvidenceStore:
         self.connect, self.provider = connect, provider
         self.policy = policy or PaidPolicy()
 
+    def lock_user(self, cur, user):
+        cur.execute('SELECT id FROM public.users WHERE id=%s FOR UPDATE', (user,))
+        return cur.fetchone() is not None
+
+    def binding(self, cur, user, subscription):
+        cur.execute('''SELECT customer_id,price_id,product_id FROM public.rr_retention_bindings
+            WHERE account_id=%s AND subscription_id=%s AND user_id=%s FOR UPDATE''',
+            (self.provider.scope.account,subscription,user))
+        return cur.fetchone()
+
     @staticmethod
     def hold(cur, user, reason, reference):
         cur.execute('''INSERT INTO public.rr_retention_review_holds(user_id,reason,evidence_ref)
@@ -22,13 +32,9 @@ class EvidenceStore:
         with self.connect() as con:
             if con.autocommit: raise ValueError('transaction_required')
             with con.cursor() as cur:
-                cur.execute('SELECT id FROM public.users WHERE id=%s FOR UPDATE',(user,))
-                if cur.fetchone() is None:return 'review'
-                cur.execute('''SELECT customer_id,price_id,product_id FROM public.rr_retention_bindings
-                    WHERE account_id=%s AND subscription_id=%s AND user_id=%s FOR UPDATE''',
-                    (self.provider.scope.account,subscription,user))
-                row=cur.fetchone()
-                if row is None:return 'review'
+                if not self.lock_user(cur,user):return 'unmatched_review'
+                row=self.binding(cur,user,subscription)
+                if row is None:return 'unmatched_review'
                 binding=Binding(self.provider.scope,subscription,row[0],str(user),row[1],row[2])
                 try:
                     cur.execute('''SELECT 1 FROM public.rr_retention_catalog WHERE account_id=%s AND price_id=%s
@@ -91,10 +97,11 @@ class EvidenceStore:
         with self.connect() as con:
             if con.autocommit:raise ValueError('transaction_required')
             with con.cursor() as cur:
-                cur.execute('''SELECT u.id FROM public.users u JOIN public.rr_retention_evidence e ON e.user_id=u.id
-                    WHERE e.account_id=%s AND e.charge_id=%s FOR UPDATE OF u''',(self.provider.scope.account,charge_id))
+                cur.execute('''SELECT user_id FROM public.rr_retention_evidence
+                    WHERE account_id=%s AND charge_id=%s''',(self.provider.scope.account,charge_id))
                 row=cur.fetchone()
                 if row is None:return 'unmatched_review'
+                if not self.lock_user(cur,row[0]):return 'unmatched_review'
                 c=self.provider.charge(charge_id)
                 if (c.get('livemode') is not self.provider.scope.live or c.get('refunded') is not False
                     or c.get('amount_refunded')!=0 or c.get('disputed') is not False
@@ -102,3 +109,20 @@ class EvidenceStore:
                     self.hold(cur,row[0],'refund_or_dispute_manual_review',charge_id)
                     return 'review'
                 return 'unchanged'
+
+
+class RestrictedEvidenceStore(EvidenceStore):
+    """Private lock capability + append-only table privileges. Explicit opt-in.
+
+    Catalog/bindings are owner-maintained and immutable while ingestion runs.
+    No profile/table UPDATE privilege is needed by this worker.
+    """
+    def lock_user(self, cur, user):
+        cur.execute('SELECT rr_billing_private.lock_bound_user(%s)', (user,))
+        return cur.fetchone()[0] is not None
+
+    def binding(self, cur, user, subscription):
+        cur.execute('''SELECT customer_id,price_id,product_id FROM public.rr_retention_bindings
+            WHERE account_id=%s AND subscription_id=%s AND user_id=%s''',
+            (self.provider.scope.account,subscription,user))
+        return cur.fetchone()

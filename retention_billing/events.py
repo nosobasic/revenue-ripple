@@ -7,13 +7,21 @@ import stripe
 from .types import ReviewRequired, object_id
 from .store import EvidenceStore
 from .stripe_adapter import plain
+from .policy import PaidPolicy
 
 class EventHandler:
-    def __init__(self, connect, provider, endpoint_secret):
+    def __init__(self, connect, provider, endpoint_secret, policy=None, store_factory=EvidenceStore):
+        policy = policy or PaidPolicy()
+        if not endpoint_secret or policy.scope != provider.scope:
+            raise ValueError('invalid_event_configuration')
         self.connect,self.provider,self.secret=connect,provider,endpoint_secret
-        self.store=EvidenceStore(connect,provider)
+        self.store=store_factory(connect,provider,policy)
     def handle(self,raw,signature):
         event=plain(stripe.Webhook.construct_event(raw,signature,self.secret,tolerance=300))
+        return self.process_verified(event)
+
+    def process_verified(self,event):
+        """Trusted durable-receipt worker only; never an unsigned HTTP entrypoint."""
         scope=self.provider.scope
         if (event.get('livemode') is not scope.live or event.get('account',scope.account)!=scope.account
             or event.get('api_version')!=scope.api_version):raise ReviewRequired('event_scope_mismatch')

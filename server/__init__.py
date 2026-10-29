@@ -18,4 +18,5 @@ spec.loader.exec_module(server_module)
 
 # Re-export the app and other important objects so gunicorn can find them
 app = server_module.app
-__all__ = ['app']
+create_retention_server = server_module.create_retention_server
+__all__ = ['app', 'create_retention_server']

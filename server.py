@@ -86,6 +86,22 @@ else:
     print("⚠️ OpenAI credentials not found - AI visibility features will be disabled")
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
+from retention_billing.server import install_retention_billing
+install_retention_billing(app)
+
+
+def create_retention_server(*, connect, provider, endpoint_secret, policy):
+    """Explicit startup factory; existing server:app stays ingestion-disabled.
+
+    A reviewed runtime wrapper must inject the dedicated writer connection and
+    scoped provider. The worker is exposed for a separately supervised process;
+    neither importing this module nor calling the factory starts a worker loop.
+    """
+    install_retention_billing(app, enabled=True, connect=connect, provider=provider,
+                             endpoint_secret=endpoint_secret, policy=policy)
+    return app
+
+
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
 app.supabase = supabase
 install_access_guard(app)
