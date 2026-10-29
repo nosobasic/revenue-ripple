@@ -30,8 +30,10 @@ md5(jsonb_build_object(
 'columns',(SELECT jsonb_agg(jsonb_build_array(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,pg_get_expr(d.adbin,d.adrelid),a.attacl::text) ORDER BY a.attnum) FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped),
 'constraints',(SELECT jsonb_agg(jsonb_build_array(k.conname,pg_get_constraintdef(k.oid,true),k.convalidated) ORDER BY k.conname) FROM pg_constraint k WHERE k.conrelid=c.oid),
 'indexes',(SELECT jsonb_agg(jsonb_build_array(ic.relname,pg_get_indexdef(i.indexrelid),i.indisvalid) ORDER BY ic.relname) FROM pg_index i JOIN pg_class ic ON ic.oid=i.indexrelid WHERE i.indrelid=c.oid),
-'policies',(SELECT jsonb_agg(pg_get_expr(p.polqual,p.polrelid) ORDER BY p.polname) FROM pg_policy p WHERE p.polrelid=c.oid),
-'triggers',(SELECT jsonb_agg(pg_get_triggerdef(t.oid) ORDER BY t.tgname) FROM pg_trigger t WHERE t.tgrelid=c.oid AND NOT t.tgisinternal)
+'policies',(SELECT jsonb_agg(jsonb_build_array(p.polname,p.polroles,p.polcmd,p.polpermissive,pg_get_expr(p.polqual,p.polrelid),pg_get_expr(p.polwithcheck,p.polrelid)) ORDER BY p.polname) FROM pg_policy p WHERE p.polrelid=c.oid),
+-- Include internal FK constraint triggers and their enabled state. Names contain
+-- catalog OIDs, so a restored database requires a fresh independently reviewed snapshot.
+'triggers',(SELECT jsonb_agg(jsonb_build_array(pg_get_triggerdef(t.oid),t.tgenabled,t.tgisinternal,t.tgdeferrable,t.tginitdeferred) ORDER BY t.tgname) FROM pg_trigger t WHERE t.tgrelid=c.oid)
 )::text) AS fingerprint
 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('rr_retention_catalog','rr_retention_bindings','rr_retention_evidence','rr_retention_review_holds') ) snapshot;
  IF actual IS DISTINCT FROM current_setting('rr.reviewed_retention_fingerprints',true)::jsonb THEN
@@ -82,9 +84,15 @@ CREATE TABLE rr_billing_private.receipts (
  next_attempt timestamptz NOT NULL DEFAULT clock_timestamp(),
  lease_token uuid,lease_until timestamptz,result text,
  PRIMARY KEY(account_id,event_id),
- CHECK(event->>'account'=account_id AND event->>'id'=event_id),
- CHECK(event->>'livemode'='true'),
- CHECK(event->>'api_version'='2025-03-31.basil')
+ CONSTRAINT receipt_event_integrity CHECK ((
+  jsonb_typeof(event)='object'
+  AND event ?& ARRAY['account','id','livemode','api_version']
+  AND jsonb_typeof(event->'account')='string' AND event->>'account'=account_id
+  AND jsonb_typeof(event->'id')='string' AND event->>'id'=event_id
+  AND jsonb_typeof(event->'livemode')='boolean' AND event->'livemode'='true'::jsonb
+  AND jsonb_typeof(event->'api_version')='string'
+  AND event->>'api_version'='2025-03-31.basil'
+ ) IS TRUE)
 );
 CREATE INDEX receipt_due ON rr_billing_private.receipts(status,next_attempt);
 ALTER TABLE rr_billing_private.receipts ENABLE ROW LEVEL SECURITY;

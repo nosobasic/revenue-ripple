@@ -32,11 +32,35 @@ BEGIN
    AND c.relrowsecurity AND c.relowner='postgres'::regrole)<>5 THEN
   RAISE EXCEPTION 'Retention owner/RLS mismatch';
  END IF;
- IF (SELECT count(*) FROM pg_policy p JOIN pg_class c ON c.oid=p.polrelid JOIN pg_namespace n ON n.oid=c.relnamespace
-   WHERE ((n.nspname='public' AND c.relname IN ('rr_retention_catalog','rr_retention_bindings','rr_retention_evidence','rr_retention_review_holds'))
-    OR (n.nspname='rr_billing_private' AND c.relname='receipts'))
-   AND p.polroles=ARRAY['rr_retention_writer'::regrole::oid])<>7 THEN
-  RAISE EXCEPTION 'Expected seven billing-only policies';
+ -- Compare the complete policy set, including unexpected PUBLIC policies.
+ IF EXISTS (
+  WITH actual AS (
+   SELECT n.nspname::text AS schema_name,c.relname::text AS table_name,p.polname::text AS policy_name,
+    p.polcmd::text AS command,p.polpermissive AS permissive,p.polroles AS roles,
+    regexp_replace(pg_get_expr(p.polqual,p.polrelid),'\s','','g') AS using_expr,
+    regexp_replace(pg_get_expr(p.polwithcheck,p.polrelid),'\s','','g') AS check_expr
+   FROM pg_policy p JOIN pg_class c ON c.oid=p.polrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+   WHERE (n.nspname='public' AND c.relname IN ('rr_retention_catalog','rr_retention_bindings','rr_retention_evidence','rr_retention_review_holds'))
+    OR (n.nspname='rr_billing_private' AND c.relname='receipts')
+  ), reviewed AS (
+   SELECT schema_name,table_name,policy_name,command,true AS permissive,
+    ARRAY['rr_retention_writer'::regrole::oid] AS roles,
+    regexp_replace(using_expr,'\s','','g') AS using_expr,
+    regexp_replace(check_expr,'\s','','g') AS check_expr
+   FROM (VALUES
+    ('public','rr_retention_catalog','writer_catalog','r','(account_id = ''acct_1RHozW2Ku9STqdAd''::text)',NULL),
+    ('public','rr_retention_bindings','writer_bindings','r','(account_id = ''acct_1RHozW2Ku9STqdAd''::text)',NULL),
+    ('public','rr_retention_evidence','writer_evidence_read','r','(account_id = ''acct_1RHozW2Ku9STqdAd''::text)',NULL),
+    ('public','rr_retention_evidence','writer_evidence_insert','a',NULL,'(account_id = ''acct_1RHozW2Ku9STqdAd''::text)'),
+    ('public','rr_retention_review_holds','writer_holds_read','r','(EXISTS ( SELECT 1 FROM public.rr_retention_bindings b WHERE (b.user_id = rr_retention_review_holds.user_id)))',NULL),
+    ('public','rr_retention_review_holds','writer_holds_insert','a',NULL,'(EXISTS ( SELECT 1 FROM public.rr_retention_bindings b WHERE (b.user_id = rr_retention_review_holds.user_id)))'),
+    ('rr_billing_private','receipts','receipt_scope','*','(account_id = ''acct_1RHozW2Ku9STqdAd''::text)','(account_id = ''acct_1RHozW2Ku9STqdAd''::text)')
+   ) v(schema_name,table_name,policy_name,command,using_expr,check_expr)
+  )
+  SELECT * FROM ((SELECT * FROM actual EXCEPT SELECT * FROM reviewed)
+   UNION ALL (SELECT * FROM reviewed EXCEPT SELECT * FROM actual)) mismatch
+ ) THEN
+  RAISE EXCEPTION 'Policy definition/set mismatch';
  END IF;
  FOREACH r IN ARRAY ARRAY['rr_billing_ingest_login','rr_retention_writer'] LOOP
   IF NOT has_schema_privilege(r,'public','USAGE')
@@ -80,8 +104,17 @@ BEGIN
   END LOOP;
  END LOOP;
  IF NOT EXISTS(SELECT 1 FROM pg_proc p WHERE p.oid='rr_billing_private.lock_bound_user(uuid)'::regprocedure
-   AND p.prosecdef AND p.proowner='postgres'::regrole AND p.proconfig=ARRAY['search_path=""']) THEN
-  RAISE EXCEPTION 'Private lock owner/search_path/definer mismatch';
+   AND p.prosecdef AND p.proowner='postgres'::regrole AND p.proconfig=ARRAY['search_path=""']
+   AND p.prolang=(SELECT oid FROM pg_language WHERE lanname='plpgsql')
+   AND p.prosrc=$reviewed_body$
+ DECLARE found_user uuid;
+ BEGIN
+  SELECT u.id INTO found_user FROM public.users u
+  WHERE u.id=p_user AND EXISTS (SELECT 1 FROM public.rr_retention_bindings b
+   WHERE b.user_id=u.id AND b.account_id='acct_1RHozW2Ku9STqdAd') FOR UPDATE OF u;
+  RETURN found_user;
+ END $reviewed_body$) THEN
+  RAISE EXCEPTION 'Private lock body/owner/search_path/definer mismatch';
  END IF;
  FOREACH r IN ARRAY ARRAY['anon','authenticated','service_role'] LOOP
   IF has_schema_privilege(r,'rr_billing_private','USAGE')

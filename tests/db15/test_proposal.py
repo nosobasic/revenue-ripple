@@ -42,6 +42,17 @@ def seed():
     INSERT INTO public.rr_retention_catalog VALUES('acct_1RHozW2Ku9STqdAd','price_synthetic','prod_synthetic',4700,'usd','month',1);
     INSERT INTO public.rr_retention_bindings VALUES('acct_1RHozW2Ku9STqdAd','sub_synthetic','00000000-0000-4000-8000-000000000001','cus_synthetic','price_synthetic','prod_synthetic');""")
 
+def contents(include_receipts=False):
+    tables=['public.rr_retention_'+n for n in ['catalog','bindings','evidence','review_holds']]
+    if include_receipts: tables.append('rr_billing_private.receipts')
+    return {t:sql("SELECT coalesce(jsonb_agg(to_jsonb(r) ORDER BY to_jsonb(r)::text),'[]'::jsonb) FROM "+t+" r;") for t in tables}
+
+def receipt(event=None):
+    if event is None:
+        event={'account':'acct_1RHozW2Ku9STqdAd','id':'evt_synthetic','livemode':True,'api_version':'2025-03-31.basil'}
+    payload=json.dumps(event).replace("'","''")
+    return "INSERT INTO rr_billing_private.receipts(account_id,event_id,event,fingerprint) VALUES('acct_1RHozW2Ku9STqdAd','evt_synthetic','"+payload+"',repeat('0',64));"
+
 class Proposal(unittest.TestCase):
     def setUp(self):
         self.assertEqual(sql('SHOW server_version_num;'),'150008')
@@ -71,6 +82,43 @@ class Proposal(unittest.TestCase):
         error=sql("SET rr.reviewed_retention_fingerprints='"+expected+"';"+file('01-boundary.sql'),success=False)
         self.assertIn('drifted',error)
         self.assertEqual(sql("SELECT count(*) FROM pg_roles WHERE rolname='rr_retention_writer';"),'0')
+
+    def assert_drift(self, setup, mutation):
+        if setup: sql(setup)
+        expected=snapshot();sql(mutation)
+        self.assertIn('drifted',sql("SET rr.reviewed_retention_fingerprints='"+expected+"';"+file('01-boundary.sql'),success=False))
+        self.assertEqual(sql("SELECT count(*) FROM pg_roles WHERE rolname='rr_retention_writer';"),'0')
+
+    def test_fingerprint_query_mirrors_migration(self):
+        query=file('catalog-fingerprints.sql').split('SELECT c.relname,',1)[1].split(' ORDER BY c.relname;',1)[0]
+        embedded=file('01-boundary.sql').split('SELECT c.relname,',1)[1].split(' ) snapshot;',1)[0]
+        self.assertEqual(query.strip(),embedded.strip())
+
+    def test_drift_policy_roles(self):
+        self.assert_drift('CREATE POLICY probe ON public.rr_retention_catalog USING(true);','ALTER POLICY probe ON public.rr_retention_catalog TO anon;')
+
+    def test_drift_policy_command(self):
+        self.assert_drift('CREATE POLICY probe ON public.rr_retention_catalog FOR SELECT USING(true);','DROP POLICY probe ON public.rr_retention_catalog; CREATE POLICY probe ON public.rr_retention_catalog FOR UPDATE USING(true);')
+
+    def test_drift_policy_permissiveness(self):
+        self.assert_drift('CREATE POLICY probe ON public.rr_retention_catalog USING(true);','DROP POLICY probe ON public.rr_retention_catalog; CREATE POLICY probe ON public.rr_retention_catalog AS RESTRICTIVE USING(true);')
+
+    def test_drift_policy_with_check(self):
+        self.assert_drift('CREATE POLICY probe ON public.rr_retention_catalog USING(true) WITH CHECK(false);','ALTER POLICY probe ON public.rr_retention_catalog WITH CHECK(true);')
+
+    def test_drift_user_trigger_enabled(self):
+        self.assert_drift('CREATE TRIGGER probe BEFORE UPDATE ON public.rr_retention_catalog FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();','ALTER TABLE public.rr_retention_catalog DISABLE TRIGGER probe;')
+
+    def test_drift_internal_fk_trigger_enabled(self):
+        self.assertGreater(int(sql("SELECT count(*) FROM pg_trigger WHERE tgrelid='public.rr_retention_bindings'::regclass AND tgisinternal;")),0)
+        self.assert_drift('', 'ALTER TABLE public.rr_retention_bindings DISABLE TRIGGER ALL;')
+
+    def test_migration_preserves_existing_contents(self):
+        seed()
+        sql("INSERT INTO public.rr_retention_review_holds VALUES('00000000-0000-4000-8000-000000000001','synthetic','in_synthetic');")
+        sql("""INSERT INTO public.rr_retention_evidence VALUES('acct_1RHozW2Ku9STqdAd','sub_synthetic','00000000-0000-4000-8000-000000000001','cus_synthetic','price_synthetic','prod_synthetic','in_synthetic','ch_synthetic','pi_synthetic',4700,'usd',now()-interval '1 day',now()+interval '29 days',now(),'active');
+""")
+        before=contents();migrate();self.assertEqual(contents(),before)
 
     def test_existing_role_fails_closed(self):
         expected=snapshot();sql('CREATE ROLE rr_retention_writer NOLOGIN;')
@@ -118,11 +166,45 @@ class Proposal(unittest.TestCase):
         stage();sql('GRANT SELECT ON public.users TO rr_retention_writer;')
         self.assertIn('Unexpected effective',sql(file('04-verify-owner.sql'),success=False))
 
+    def test_verifier_rejects_policy_drift(self):
+        mutations=[
+            'ALTER POLICY receipt_scope ON rr_billing_private.receipts USING(true) WITH CHECK(true);',
+            'CREATE POLICY extra ON rr_billing_private.receipts TO PUBLIC USING(true) WITH CHECK(true);',
+            'ALTER POLICY receipt_scope ON rr_billing_private.receipts TO PUBLIC;',
+            "DROP POLICY receipt_scope ON rr_billing_private.receipts; CREATE POLICY receipt_scope ON rr_billing_private.receipts AS RESTRICTIVE TO rr_retention_writer USING(account_id='acct_1RHozW2Ku9STqdAd') WITH CHECK(account_id='acct_1RHozW2Ku9STqdAd');",
+            "DROP POLICY receipt_scope ON rr_billing_private.receipts; CREATE POLICY receipt_scope ON rr_billing_private.receipts FOR UPDATE TO rr_retention_writer USING(account_id='acct_1RHozW2Ku9STqdAd') WITH CHECK(account_id='acct_1RHozW2Ku9STqdAd');"]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                self.setUp();stage();sql(mutation)
+                self.assertIn('Policy definition/set mismatch',sql(file('04-verify-owner.sql'),success=False))
+
+    def test_verifier_rejects_lock_body_drift(self):
+        stage()
+        sql("CREATE OR REPLACE FUNCTION rr_billing_private.lock_bound_user(p_user uuid) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$ BEGIN RETURN p_user; END $$;")
+        self.assertIn('Private lock body',sql(file('04-verify-owner.sql'),success=False))
+
+    def test_receipt_missing_null_and_wrong_types_rejected(self):
+        enable()
+        valid={'account':'acct_1RHozW2Ku9STqdAd','id':'evt_synthetic','livemode':True,'api_version':'2025-03-31.basil'}
+        invalid=[{},[],True,'true',42]
+        for key in valid:
+            missing=dict(valid);del missing[key];invalid.append(missing)
+            for value in [None,[],{},42]: invalid.append(dict(valid,**{key:value}))
+        invalid.extend([dict(valid,livemode='true'),dict(valid,livemode=False),dict(valid,api_version='wrong')])
+        for event in invalid:
+            with self.subTest(event=event):
+                self.assertIn('receipt_event_integrity',sql(receipt(event),user='rr_billing_ingest_login',success=False))
+        self.assertIn('receipt_event_integrity',sql(receipt().replace('\"livemode\": true','\"livemode\": null'),user='rr_billing_ingest_login',success=False))
+        sql(receipt(),user='rr_billing_ingest_login')
+
     def test_rollback_preserves_evidence_and_disables_login(self):
         enable();seed()
         sql("""INSERT INTO public.rr_retention_evidence VALUES('acct_1RHozW2Ku9STqdAd','sub_synthetic','00000000-0000-4000-8000-000000000001','cus_synthetic','price_synthetic','prod_synthetic','in_synthetic','ch_synthetic','pi_synthetic',4700,'usd',now()-interval '1 day',now()+interval '29 days',now(),'active');
         INSERT INTO public.rr_retention_review_holds VALUES('00000000-0000-4000-8000-000000000001','synthetic','in_synthetic');""",user='rr_billing_ingest_login')
+        sql(receipt(),user='rr_billing_ingest_login')
+        before=contents(include_receipts=True)
         sql(file('rollback-disable-principal.sql'))
+        self.assertEqual(contents(include_receipts=True),before)
         self.assertEqual(sql('SELECT (SELECT count(*) FROM public.rr_retention_evidence),(SELECT count(*) FROM public.rr_retention_review_holds),(SELECT count(*) FROM public.rr_retention_bindings);'),'1|1|1')
         self.assertEqual(sql("SELECT count(*) FROM pg_auth_members WHERE member='rr_billing_ingest_login'::regrole;"),'0')
         self.assertIn('not permitted to log in',sql('SELECT 1;',user='rr_billing_ingest_login',success=False))
