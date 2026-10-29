@@ -1,0 +1,25 @@
+; REVIEW ONLY. Not installed, included, or enabled anywhere.
+; One host/replica only. /opt/rr-billing is a proposed release location.
+; Owner supplies RR_BILLING_* through the approved runtime secret store.
+; No credential values or role/service provisioning in this file.
+[program:rr-retention-worker]
+directory=/opt/rr-billing/app
+command=/opt/rr-billing/venv/bin/python -m retention_billing.worker_runtime
+numprocs=1
+autostart=false
+autorestart=unexpected
+exitcodes=0
+startsecs=2
+startretries=3
+stopsignal=TERM
+stopwaitsecs=5
+stopasgroup=true
+killasgroup=true
+redirect_stderr=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+
+; Platform/container resource proposal: 1 worker replica, 1 CPU, 512 MiB memory;
+; confirm against deployment-image measurements before activation.
+; The Python runner enforces one child at a time and a 90s hard deadline.
+; Local flock prevents a second runner on this host, not on another replica.

@@ -17,8 +17,8 @@ def documents(start=None):
  return {'/v1/subscriptions/sub_fixture':sub,'/v1/invoices/in_fixture':inv,'/v1/invoices/in_fixture/lines':lines,'/v1/invoice_payments':payments,'/v1/payment_intents/pi_fixture':pi,'/v1/charges/ch_fixture':ch,'/v1/refunds':{'object':'list','has_more':False,'data':[]},'/v1/disputes':{'object':'list','has_more':False,'data':[]}}
 class OfflineTransport(stripe.HTTPClient):
  name='offline-retention-only'
- def __init__(self,docs):super().__init__();self.docs=docs;self.calls=[]
+ def __init__(self,docs,scope=LIVE_SCOPE):super().__init__();self.docs=docs;self.calls=[];self.scope=scope
  def request(self,method,url,headers,post_data=None,**kw):
-  assert method.lower()=='get';assert urlparse(url).hostname=='api.stripe.com';assert headers['Stripe-Account']==LIVE_SCOPE.account;assert headers['Stripe-Version']==LIVE_SCOPE.api_version
+  assert method.lower()=='get';assert urlparse(url).hostname=='api.stripe.com';assert headers['Stripe-Account']==self.scope.account;assert headers['Stripe-Version']==self.scope.api_version
   self.calls.append(urlparse(url).path);return json.dumps(deepcopy(self.docs[urlparse(url).path])),200,{}
 def provider(docs):return StripeReadAdapter(stripe.StripeClient('offline-not-a-key',http_client=OfflineTransport(docs),max_network_retries=0),LIVE_SCOPE)

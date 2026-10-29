@@ -1,0 +1,137 @@
+Exact proposed approval bundle — preparation only, October 15, 2026
+
+SANDBOX REHEARSAL (recommended approval; not performed)
+Authorize one rehearsal lasting at most two hours against Revenue Ripple sandbox
+acct_1RHozgRu3OyBjjPu, using existing customer cus_VPwcNpHnUaqreO and existing
+price price_1RHp2hRu3OyBjjPuOX0hfhWP / product prod_SCDToFGV9rgxIP.
+Fresh read-only connector checks confirm customer exists/not deleted/livemode=false;
+price is active/livemode=false, USD4700/month, count1, licensed/per_unit.
+Do not reuse the expired unpaid October14 Checkout as evidence. No paid subscription
+is assumed. No subscription or invoice records were read during this preparation.
+
+Create exactly one sandbox subscription, quantity1, no trial, no discounts, no tax,
+no proration, using only a Stripe-provided successful test payment method. The
+initial simulated invoice total is $47; no real charge or payment method is allowed.
+Do not create a Checkout Session or enable the live checkout. Stop if account mode,
+price terms, customer ownership, payment method or amount differs from this scope.
+Use an idempotency key scoped to this rehearsal to avoid creating a second subscription.
+Also authorize one full sandbox refund of that test charge to verify a sticky hold,
+then cancellation of only this newly created subscription with no proration/invoice.
+Test expiry/failed renewal/cancellation semantics locally; do not create extra
+subscriptions, real refunds, test clocks or new recurring sandbox charges.
+Do not change existing customer-wide default payment settings or delete the customer.
+
+Hosting/destination
+Run the standalone retention app only on 127.0.0.1:8787 at
+http://127.0.0.1:8787/webhook/retention on Donte's Mac. Use official Stripe CLI local
+forwarding for this exact sandbox, not a public tunnel or deployed Render service.
+CLI installation/login/listener configuration is part of the proposed approval,
+not yet performed. Pin forwarding to the reviewed 2025-03-31.basil contract and
+verify actual event.api_version; stop on mismatch, do not weaken the version guard.
+No persistent Stripe Dashboard webhook endpoint is needed for this rehearsal.
+The CLI forwarding signing secret is session-specific and is not a Dashboard
+endpoint signing secret. Accept only the subscribed invoice.paid,
+invoice.payment_succeeded, invoice.payment_failed, invoice.voided,
+invoice.marked_uncollectible, customer.subscription.created/updated/deleted,
+charge.refunded, refund.created/updated/failed and charge.dispute.created/updated/closed
+families supported by the handler. Confirm availability of exact event names before
+listener start; do not silently expand to all account events.
+CLI forwarding may receive other matching events in this sandbox; the application
+must use a disposable DB containing only this rehearsal binding and log no raw
+payloads/customer fields. No events are forwarded to production /webhook.
+
+Credentials and owner handoff
+Owner creates/enters secrets through a secure local prompt/key store with output
+hidden, never chat, committed files, command arguments/history, or logs. Agent does
+not reveal existing keys. Credential creation/access expansion is a separate
+owner-controlled action at execution time. Owner also completes CLI login if needed.
+Runtime requires ONE sandbox-restricted READ-ONLY Stripe key with these GET scopes:
+ subscriptions retrieve; invoices retrieve and line items list; invoice_payments
+ list; payment_intents retrieve; charges retrieve; refunds list; disputes list.
+No customer-list, checkout, write, refund-write, product-write or billing-portal
+permission is needed by the runtime. Map these exact operations to Dashboard
+permission categories and verify them via the rehearsal; do not broaden on a 403
+without review. Expanded price/product fields are read from the subscription.
+The operator's CLI event-forwarding access additionally needs event listening/read
+capability. Test subscription/payment/refund/cancel actions use the owner's separate
+sandbox operator session, never the runtime read-only key. No live-mode credentials
+are copied. No DB credential is created for the local Unix-socket fixture.
+
+Trusted identity binding and production isolation
+Use a fresh disposable local PostgreSQL database with synthetic user UUID
+00000000-0000-4000-8000-000000000005, role=member, plan=member (not admin/lifetime),
+and synthetic published/unpublished content. Initialize only the local fixture;
+never run the reviewed production migration on the hosted database for this test.
+After creating the test subscription, read its canonical sandbox customer and exact
+price/product. Owner verifies it is the newly created subscription for the stated
+customer; operator inserts exactly one mapping from it to the synthetic local user.
+Never infer ownership from email or caller/checkout metadata. Record only the
+subscription/invoice/event identifiers needed for evidence, not customer payloads.
+Inject Scope(acct_1RHozgRu3OyBjjPu, False, 2025-03-31.basil), exact sandbox PaidPolicy,
+local-only DB factory, and session signing secret. Abort before listener startup
+if scope/DB destination differs. No production Supabase URL/key/service-role key,
+CRM/AI credentials, or production billing key is available to this process.
+
+Success evidence and teardown
+Capture redacted result codes: real signed invoice -> recorded; exactly one evidence
+row -> local authenticated member allowed published content; repeat -> duplicate
+with unchanged expiry; invalid signatures and live-mode payloads reject; temporary
+provider failure yields retry, not success; sandbox refund -> sticky manual hold.
+Preserve local synthetic regression results for expiry and failed renewal.
+Stop listener/app, cancel the one created sandbox subscription, revoke the dedicated
+rehearsal key through owner secure action, remove its temporary local secret entries,
+and stop the disposable DB. Retain non-secret result codes/test IDs locally. Stripe
+sandbox invoice/refund/event history remains; do not delete unrelated test data.
+No real funds, paid hosting, production SQL, grants or deployment are authorized.
+
+PRODUCTION WRITER BOUNDARY DESIGN (local contract tested; NOT approved to apply)
+Use a dedicated worker principal, never postgres/service_role/anon/authenticated.
+Proposed capability role: rr_retention_writer, NOLOGIN NOINHERIT NOSUPERUSER
+NOBYPASSRLS NOCREATEDB NOCREATEROLE NOREPLICATION. A later dedicated LOGIN principal
+gets only this capability, with no role-admin option or other inherited roles,
+credential stored in the worker's secret store and only required DB CONNECT/USAGE.
+Do not reuse a general application DB/service key. Private schema is not exposed
+through the Data API. No public RPC ingestion route is proposed.
+
+Exact table capabilities, RLS constrained to live acct_1RHozW2Ku9STqdAd:
+ rr_retention_catalog: SELECT only.
+ rr_retention_bindings: SELECT only.
+ rr_retention_evidence: SELECT + INSERT only; existing FK/unique/check constraints.
+ rr_retention_review_holds: SELECT + INSERT only, bound live-account users only.
+ No UPDATE/DELETE/TRUNCATE on those tables; no profile/content/CRM/AI grants.
+ Catalog/bootstrap bindings and clearing holds remain explicit owner operations.
+The writer is a trusted billing authority: it can append plausible evidence for
+already bound users; SQL cannot itself verify a Stripe signature or canonical API
+response. Runtime code isolation, restricted secrets and exact provider policy are
+part of the trust boundary. RLS alone does not prevent a compromised writer from
+fabricating evidence for its permitted bindings. This must be accepted explicitly.
+
+One non-public SECURITY DEFINER capability lock_bound_user(uuid) takes the existing
+user row lock only if a live-account binding exists; returns only that UUID or NULL,
+uses empty search_path and qualified names; no dynamic SQL. EXECUTE only to writer,
+never PUBLIC/client/service roles. Function owner is postgres in the LOCAL fixture;
+production review must pin ownership and body and ensure no private-schema CREATE
+privilege for worker. This avoids granting UPDATE on profile rows merely to lock.
+
+Required runtime integration BEFORE production approval (not yet implemented):
+replace EvidenceStore's direct users SELECT FOR UPDATE with this private lock;
+replace binding FOR UPDATE with SELECT under the shared user lock, or add a private
+binding-lock capability if concurrent owner binding edits are supported; change
+review_charge's direct users join to evidence lookup then private lock and re-read.
+All evidence writers must acquire this same lock; bindings immutable during an
+active ingestion transaction. A dedicated principal test must run the entire
+HTTP-to-evidence path, concurrent duplicates and refund race after those changes.
+Do not grant UPDATE on profiles/bindings to make the old queries work.
+Before production cutover also require bounded provider timeouts, durable event
+receipt/retry + dead-letter/alert handling, event-age/replay recovery, and measured
+lock latency. The current synchronous HTTP adapter is not that production worker.
+
+Local executable permission contract
+ tests/retention/writer-boundary.sql is explicitly a LOCAL fixture, not rollout SQL.
+ tests/test_retention_writer_boundary.py: four passing PostgreSQL tests demonstrate
+ append/lock capability, denied hold clearing/identity/catalog/binding edits,
+ denied content reads/TRUNCATE/evidence update/delete, denied unbound hold/lock,
+ denied cross-account insert and client/service helper execution, no login/bypass.
+These tests prove the proposed ACL/RLS contract against a synthetic local schema,
+not compatibility with current production or full ingestion under that role.
+No production grants, credentials, migration, runtime wiring or deployment performed.

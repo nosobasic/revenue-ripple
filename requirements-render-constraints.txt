@@ -60,3 +60,7 @@ typing_extensions==4.16.0
 urllib3==2.8.0
 websockets==15.0.1
 yarl==1.25.1
+
+# Billing-only additions; retain every deployed application pin above.
+psycopg==3.3.6
+psycopg-binary==3.3.6

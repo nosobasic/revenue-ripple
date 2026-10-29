@@ -1,0 +1,97 @@
+Billing ingestion local completion — inactive/unregistered
+
+This supersedes the earlier statement that writer wiring and durable retries remain
+unimplemented. It does not supersede the sandbox approval limits or authorize any
+hosted SQL, credentials, provider writes, listener, scheduler or deployment.
+
+Implemented
+1. RestrictedEvidenceStore uses rr_billing_private.lock_bound_user(uuid), reads the
+   owner-managed binding without requiring UPDATE privilege, and resolves review
+   charges through evidence before taking the same user lock. The default store
+   remains available for existing fixtures. Missing user/binding returns unmatched
+   review instead of acknowledging an unpersisted review outcome.
+2. create_durable_app explicitly composes the restricted store, signed HTTP ingress,
+   PostgreSQL ReceiptQueue and ReceiptWorker. No import/registration in server.py;
+   no automatic environment discovery, schema setup, worker loop or startup.
+3. Ingress authenticates raw bytes with Stripe's SDK and enforces mode/account/API
+   contract before persisting only event id/type/scope/object id/charge reference.
+   It omits raw payloads, customer details, metadata and signing secret. Commit
+   precedes HTTP200. Invalid signature400, scope/event-identity conflict409, DB
+   failure503. A semantically identical receipt dedupes by account+event id;
+   conflicting event identity is rejected, never overwritten. Checkout ignored.
+4. Worker uses canonical Stripe GET verification and trusted preexisting bindings.
+   It cannot create bindings/catalog entries or change identity. Work claiming uses
+   SKIP LOCKED, 120-second lease and unique token. Stale workers cannot acknowledge
+   a replacement lease. Evidence and receipt transactions deliberately separate:
+   crash after evidence commit replays safely as duplicate. Entitlement remains
+   governed by immutable settled coverage and sticky manual review holds.
+5. Retryable/provider/DB/unmatched-binding failures persist with exponential delay
+   30,60,120,240,480,960,1920 seconds; attempt8 goes dead, as does an expired final
+   lease. Event-level review rejection goes dead immediately. Refund/dispute before
+   invoice settlement retries instead of disappearing. Receipt state counts are
+   available through queue.counts(); no notification destination is configured.
+
+Verification
+56 retention tests passed with offline Stripe SDK transport and real disposable
+local PostgreSQL17. Thirteen durable-pipeline tests run with SET ROLE to the
+NOLOGIN/NOBYPASSRLS writer capability: HTTP-to-entitlement, redelivery, concurrent
+claims, stale-lease fencing, process death after evidence commit, provider outage,
+missing-binding exhaustion, final-attempt crash, refund and out-of-order dispute,
+canonical customer mismatch, queue-write failure, live/sandbox isolation, and
+minimal stored references. Four permission tests verify denied profile/content
+access, binding/catalog edits, evidence edits/deletion, hold clearing and TRUNCATE.
+Other 39 retention tests remain passing. No live provider calls in these tests.
+Full evidence: /Users/donte/Documents/Codex/2026-10-13/task/retention-billing-local-tests-2026-10-15.txt
+Disposable database stopped afterward. Generated API fixture restored to original.
+
+Review artifacts
+retention_billing/durable.py — receipt persistence, HTTP factory and one-step worker.
+retention_billing/store.py — RestrictedEvidenceStore/private lock integration.
+tests/retention/writer-boundary.sql — executable LOCAL permission/schema fixture.
+docs/review-sql/retention-writer.proposed.sql — corresponding proposed hosted DDL,
+with prerequisite guard, dedicated NOLOGIN role, private schema/lock function and
+receipt table; ends ROLLBACK. NO LOGIN credential or role membership is created.
+The hosted proposal has not been run. Local tests exercise the common DDL body
+under a test role; they do not prove hosted schema/function/ACL compatibility.
+
+Exact remaining activation needs
+A. Execute only the bounded sandbox bundle already documented: owner secure entry
+   of sandbox read-only runtime key + CLI signing secret; local 127.0.0.1:8787;
+   one synthetic bound user in disposable DB; one authorized test subscription /
+   simulated $47 payment and refund; verify actual delivery/account/API contract.
+   Use the durable factory/worker for that rehearsal; derive the sandbox fixture's
+   account+mode checks explicitly from the approved sandbox (never live SQL).
+B. Fresh owner-only hosted preflight must confirm evidence table definitions,
+   constraints, policies, function ownership, role/schema absence, default grants,
+   and PUBLIC-executable definer functions cannot expand the new principal's access.
+   Do not apply this proposal blindly. Existing Supabase service_role stays denied.
+C. Separately approve exact reviewed hosted DDL, one dedicated database LOGIN with
+   only writer capability, DB CONNECT/schema USAGE, and sandbox-proven read-only
+   live Stripe key plus endpoint signing secret in the runtime secret store.
+   These access/credential changes require owner action-time approval/secure entry.
+   The trusted writer can append evidence for bound live users; DB cannot itself
+   verify Stripe signatures/API truth. Its isolation is security-critical.
+D. Owner seeds exact live catalog and individually verified subscription/customer/
+   user bindings. No email-based or checkout-metadata bootstrap. Freeze binding
+   changes during active ingestion; any correction pauses workers and drains locks.
+E. Choose and review a dedicated ingress/worker deployment; do not silently route
+   the legacy /webhook here or replace it. Configure one worker initially, SDK read
+   timeout10s/no SDK retries, DB lock_timeout5s/statement_timeout30s, supervised
+   worker hard lifetime90s against lease120s. Kill/restart rolls back outstanding DB
+   work; expired receipt is reclaimed. These supervisor/SDK deployment limits are
+   required configuration, not activated by the library factory.
+F. Add monitoring for dead receipts, oldest pending age and provider/DB errors with
+   an explicitly approved destination. No raw event/error payloads in logs. Fix
+   missing bindings before owner-approved replay. Dead-letter recovery is an owner
+   transaction that resets only reviewed account/event IDs from dead to pending,
+   attempts0,next_attempt=now(),lease fields NULL; never clears retention holds or
+   alters receipt evidence. No public replay/clear-hold endpoint is provided.
+G. Deploy only after real sandbox verification and fresh reviewed permissions.
+   Verify live signed delivery, duplicates and latency with bounded owner-approved
+   audience. Rollback stops ingress/worker and disables the new endpoint; preserve
+   evidence/holds/receipts. No data-deleting rollback or restored public bypass.
+
+Outstanding unrelated requested reads
+Browser intentionally not retried: last native tool reported locked Mac and failed
+automatic unlock. CRM OWNER-SQL-PREFLIGHT and rr_v_submit definition export remain
+pending owner unlock; no new results/evidence file claimed. No WGU interaction.

@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import calendar
-from .types import ReviewRequired, object_id, LIVE_SCOPE, LIVE_CATALOG
+from .types import ReviewRequired, RetryRequired, object_id, LIVE_SCOPE, LIVE_CATALOG
 
 
 @dataclass(frozen=True)
@@ -49,7 +49,7 @@ class PaidPolicy:
             and price.get('recurring')=={'interval':'month','interval_count':1,'usage_type':'licensed'}
             and price.get('billing_scheme')=='per_unit','unsupported_price_terms')
         require(not sub.get('pending_update') and not sub.get('trial_start') and not sub.get('trial_end')
-            and not sub.get('pause_collection') and sub['status'] in ('active','past_due','unpaid','canceled'),
+            and not sub.get('pause_collection') and sub['status'] in ('incomplete','active','past_due','unpaid','canceled'),
             'unsupported_subscription_change')
         if invoice is None:return Settlement()
         parent=object_id((invoice.get('parent') or {}).get('subscription_details',{}).get('subscription'))
@@ -61,6 +61,12 @@ class PaidPolicy:
             # Failure/void never removes previously verified paid coverage or extends it.
             return Settlement()
         require(invoice.get('status')=='paid','invoice_not_settled')
+        # Initial incomplete is a normal unpaid state, not a sticky review hold.
+        # All scope/catalog/change/owner checks above still apply. If payment
+        # arrives before the canonical subscription activates, retry durably;
+        # never grant from status alone or clear an existing review hold.
+        if sub['status']=='incomplete':
+            raise RetryRequired('subscription_activation_pending')
         require(invoice.get('collection_method')=='charge_automatically'
             and invoice.get('billing_reason') in ('subscription_create','subscription_cycle'),
             'unsupported_invoice_reason')

@@ -1,0 +1,96 @@
+Retention billing ingestion — prepared locally, not activated
+
+Concrete gap
+server.py /webhook verifies Stripe signatures but only dispatches legacy checkout
+behavior. It never invokes retention_billing.events.EventHandler. A valid invoice
+or subscription event can therefore receive success from that legacy route without
+creating rr_retention_evidence. The retention reader is deployed; ordinary paid
+coverage is not automatically populated. Admin/lifetime exceptions are independent.
+
+EventHandler previously constructed EvidenceStore with the default LIVE_SCOPE /
+live catalog policy even when a sandbox provider was injected. This made a genuine
+isolated sandbox settlement fail the exact-catalog policy. Fixed with optional
+explicit policy injection and startup scope/secret validation; live default remains.
+
+Local preparation
+- retention_billing/http.py: separately composed Flask WSGI factory create_app,
+  POST /webhook/retention. It is NOT imported or registered by server.py, and no
+  environment/credential discovery, deployment entrypoint, or endpoint was enabled.
+- Raw bytes + Stripe-Signature reach SDK verification unchanged; wrong/stale
+  signatures reject. Provider account/mode/API version checks precede DB access.
+- recorded/duplicate/no_extension/unchanged/ignored and durably persisted review
+  holds return 200. Missing bindings and temporary provider/DB failures return 503,
+  not false success. Event-level scope/review rejection returns 409. Responses
+  never return exceptions or payloads. 1 MiB request cap; no-store responses.
+- Explicit PaidPolicy(scope, (price_id,product_id)) allows the reviewed sandbox
+  catalog without weakening production exact-catalog validation.
+- No automatic binding creation: matching customer email, checkout metadata or
+  caller-supplied UUID must not become trusted ownership proof.
+
+Fresh sandbox metadata, via existing Stripe connector (read only)
+Account: acct_1RHozgRu3OyBjjPu, Revenue Ripple sandbox, livemode=false.
+Active USD recurring-price query returned exactly one price, has_more=false:
+ price_1RHp2hRu3OyBjjPuOX0hfhWP / prod_SCDToFGV9rgxIP,
+ 4700 USD cents/month, interval_count=1, per_unit, licensed.
+Webhook-endpoint query returned zero endpoints, has_more=false.
+No customers, invoices, subscriptions, secrets or payments were enumerated.
+No CLI found. env_example.txt contains only legacy live placeholders; it is not
+proof of runtime configuration. No sandbox runtime key/signing secret/DB factory
+was discovered or configured. Connector access is not a deployed runtime credential.
+The adapter/policy use the existing reviewed 2025-03-31.basil contract and
+requirements-retention.txt pins stripe16.0.0/psycopg3.3.6; no API upgrade attempted.
+
+Verification
+39 retention Python tests passed on October 15, including eight new HTTP contract
+checks and a new signed HTTP -> real local PostgreSQL evidence -> authenticated
+RLS -> content API integration case using fully offline Stripe SDK transport.
+The sandbox case covers missing binding retry, canonical invoice ingestion,
+duplicate delivery (one evidence row), provider retry, dispute hold, and old paid
+event unable to clear the hold. Existing expiry, cancellation, failed renewal,
+concurrency and ownership tests pass. All provider transport in tests is offline
+GET-only and checks account/version. This is not a real Stripe delivery test.
+Command from repository root:
+ /Users/donte/Documents/Codex/2026-10-07/task/local-test-tools/python/bin/python -m unittest discover -s tests -p 'test_retention*.py' -v
+The existing disposable PostgreSQL fixture uses Unix socket
+/tmp/rr-retention-final-socket:55439 with TCP disabled. It is stopped after testing.
+The test-generated API JSON fixture was restored to its pre-test committed bytes.
+
+Smallest exact owner action for an isolated real-Stripe test
+Authorize ONE sandbox-only end-to-end rehearsal using the existing sandbox above,
+its existing $47 monthly price, a disposable local test user/database, and an
+owner-verified subscription/customer binding. No production Supabase target or
+production permission changes are needed for this rehearsal.
+The owner must configure runtime access locally through an approved secret channel
+(do not paste keys in chat): a sandbox-only read-restricted Stripe key and the
+signing secret for a sandbox test endpoint/CLI listener. Neither exists as a
+verified runtime configuration here. Configure delivery to the standalone adapter,
+not the existing production /webhook. A new sandbox endpoint or local forwarding
+session needs explicit authorization; no endpoint was created this turn.
+Use an existing sandbox settled invoice and its customer/subscription if available;
+the owner identifies and authorizes it, plus its mapping to the disposable test
+user. If none exists, separately approve creation of ONE test subscription/payment
+using Stripe test payment data (no real funds, no production checkout) to exercise
+invoice.paid. No purchase or Checkout Session is requested by this code change.
+Provision only the sandbox catalog/binding in the disposable database. Instantiate
+StripeReadAdapter with Scope(sandbox_account,False,'2025-03-31.basil') and inject
+PaidPolicy with the exact sandbox price/product above into create_app. Keep live
+secrets and production DB endpoints unavailable to that process.
+Required evidence: signed delivery -> 200 recorded -> exactly one evidence row ->
+non-admin test member can read published content; redelivery -> duplicate with
+unchanged paid-through date; unsigned/live-mode payload rejected; failed renewal
+cannot extend access; expiry denies; authorized sandbox refund/dispute holds access.
+Refund/dispute test mutations require inclusion in that explicit sandbox approval.
+
+Separate production gaps after a successful rehearsal
+The deployed owner-only evidence tables intentionally deny service_role access.
+No production writer credential, narrowly reviewed writer boundary, or binding
+bootstrap has been installed. A production SQL/grants/credentials change is NOT
+part of this ordinary code preparation. It needs its own exact review/approval.
+The handler is synchronous; provider reads occur under the user lock. Before a
+production cutover, measure provider latency and review bounded timeouts, durable
+retry/alerting and recovery beyond Stripe's delivery window. Unmatched events are
+not durably queued by this adapter. Do not claim it is a complete production worker.
+No changes were made to CRM, AI, checkout, production configuration or deployments.
+
+Reference for raw-body signature verification and redelivery behavior:
+https://docs.stripe.com/events/manage-webhook-endpoints
