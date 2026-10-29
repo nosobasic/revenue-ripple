@@ -19,12 +19,13 @@ docker run --rm --platform linux/amd64 -v "$PWD:/work" -w /work "$PY_IMAGE" bash
 docker volume create rr-billing-ci-socket
 docker run -d --name rr-billing-ci-pg --platform linux/amd64 --network none \
  --tmpfs /var/lib/postgresql/data -v rr-billing-ci-socket:/tmp/rr-retention-final-socket \
- -e POSTGRES_USER=donte -e POSTGRES_HOST_AUTH_METHOD=trust \
+ -e POSTGRES_USER=donte -e POSTGRES_HOST_AUTH_METHOD=trust -e PGPORT=55439 \
  "$PG_IMAGE" bash -ceu 'chown postgres:postgres /tmp/rr-retention-final-socket
- exec docker-entrypoint.sh postgres -p 55439 -c listen_addresses="" -c unix_socket_directories=/tmp/rr-retention-final-socket'
+ exec docker-entrypoint.sh postgres -p 55439 -c listen_addresses="" -c unix_socket_directories=/var/run/postgresql,/tmp/rr-retention-final-socket'
 ready=false
 for i in $(seq 1 30); do
- if docker exec rr-billing-ci-pg pg_isready -h /tmp/rr-retention-final-socket -p 55439 -U donte; then ready=true; break; fi
+ if [[ "$(docker inspect -f '{{.State.Running}}' rr-billing-ci-pg)" != true ]]; then break; fi
+ if docker logs rr-billing-ci-pg 2>&1 | grep -q 'PostgreSQL init process complete' && docker exec rr-billing-ci-pg pg_isready -h /tmp/rr-retention-final-socket -p 55439 -U donte; then ready=true; break; fi
  sleep 1
 done
 if [[ "$ready" != true ]]; then docker logs rr-billing-ci-pg; exit 1; fi
