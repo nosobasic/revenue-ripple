@@ -20,20 +20,24 @@ def connect():
     except BaseException:
         con.close()
         raise
-fixture.connect = connect
-with connect() as con:
-    print('Verified isolated PostgreSQL', con.execute('SELECT version()').fetchone()[0], flush=True)
-names = ['test_retention_runtime', 'test_retention_full_server', 'test_retention_server',
-         'test_retention_http', 'test_retention_provider', 'test_retention_reconciliation',
-         'test_retention_content', 'test_retention_integration.Integration',
-         'test_retention_writer_boundary.WriterBoundary', 'test_retention_durable.DurableBilling',
-         'test_retention_server_database.ServerDatabase', 'test_retention_activation.Activation']
-suite = unittest.defaultTestLoader.loadTestsFromNames(names)
-assert suite.countTestCases() == 93, suite.countTestCases()
-generated = root / 'tests/retention/api-allowed-fixture.json'
-original = generated.read_bytes()
-try:
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-finally:
-    generated.write_bytes(original)
-sys.exit(not result.wasSuccessful())
+def main():
+    fixture.connect = connect
+    with connect() as con:
+        print('Verified isolated PostgreSQL', con.execute('SELECT version()').fetchone()[0], flush=True)
+    names = ['test_retention_runtime', 'test_retention_full_server', 'test_retention_server',
+             'test_retention_http', 'test_retention_provider', 'test_retention_reconciliation',
+             'test_retention_content', 'test_retention_integration.Integration',
+             'test_retention_writer_boundary.WriterBoundary', 'test_retention_durable.DurableBilling',
+             'test_retention_server_database.ServerDatabase', 'test_retention_activation.Activation']
+    suite = unittest.defaultTestLoader.loadTestsFromNames(names)
+    assert suite.countTestCases() == 93, suite.countTestCases()
+    generated = root / 'tests/retention/api-allowed-fixture.json'
+    original = generated.read_bytes()
+    try:
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+    finally:
+        generated.write_bytes(original)
+    sys.exit(not result.wasSuccessful())
+
+if __name__ == "__main__":
+    main()
