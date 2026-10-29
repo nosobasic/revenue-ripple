@@ -58,15 +58,15 @@ BEGIN
     SELECT COALESCE(MAX(spot_number), 0) + 1 INTO NEW.spot_number
     FROM founders_annual_members
     WHERE spot_number IS NOT NULL;
-    
+
     -- Calculate expiry (1 year from purchase)
     NEW.expires_at := NEW.purchased_at + INTERVAL '1 year';
-    
+
     -- Calculate timer expiry (3 days from timer start)
     IF NEW.timer_started_at IS NOT NULL THEN
         NEW.expires_at := NEW.purchased_at + INTERVAL '1 year';
     END IF;
-    
+
     RETURN NEW;
 END;
 $function$
@@ -87,13 +87,13 @@ CREATE OR REPLACE FUNCTION public.update_post_upvotes()
 AS $function$
 BEGIN
     IF TG_OP = 'INSERT' THEN
-        UPDATE community_posts 
-        SET upvotes = upvotes + 1 
+        UPDATE community_posts
+        SET upvotes = upvotes + 1
         WHERE id = NEW.post_id;
         RETURN NEW;
     ELSIF TG_OP = 'DELETE' THEN
-        UPDATE community_posts 
-        SET upvotes = upvotes - 1 
+        UPDATE community_posts
+        SET upvotes = upvotes - 1
         WHERE id = OLD.post_id;
         RETURN OLD;
     END IF;
@@ -117,13 +117,13 @@ CREATE OR REPLACE FUNCTION public.update_reply_upvotes()
 AS $function$
 BEGIN
     IF TG_OP = 'INSERT' THEN
-        UPDATE community_replies 
-        SET upvotes = upvotes + 1 
+        UPDATE community_replies
+        SET upvotes = upvotes + 1
         WHERE id = NEW.reply_id;
         RETURN NEW;
     ELSIF TG_OP = 'DELETE' THEN
-        UPDATE community_replies 
-        SET upvotes = upvotes - 1 
+        UPDATE community_replies
+        SET upvotes = upvotes - 1
         WHERE id = OLD.reply_id;
         RETURN OLD;
     END IF;
