@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 import { supabase } from "../supabase/client";
 import { safeReturnTo, clearPurchaseIntent } from '../utils/loginRouting';
 import { trackDailyLogin } from "../services/engagementTracking";
+import { unpaidProfile } from "../utils/unpaidProfile";
 
 const AuthContext = createContext();
 
@@ -54,17 +55,19 @@ export function AuthProvider({ children }) {
       // Preserve existing OAuth profile provisioning: only a basic free profile,
       // ignore an existing row so historical roles/plans are never overwritten.
       const authUser = nextSession.user;
-      await supabase.from('users').upsert({
-        id: authUser.id, email: authUser.email, role: 'member', plan: '',
-        status: 'active', commission_rate: 0, name: authUser.user_metadata?.name || '',
-      }, { onConflict: 'id', ignoreDuplicates: true });
+      const { error: profileError } = await supabase.from('users').upsert(
+        unpaidProfile(authUser), { onConflict: 'id', ignoreDuplicates: true });
       // Keep legacy email-based billing lookup aligned with the Auth identity.
       // Existing RLS/trigger containment verifies this email against the token.
-      await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
+      if (!profileError) {
+        await supabase.from('users').update({ email: authUser.email }).eq('id', authUser.id);
+      }
       const { data, error } = await supabase.from('users').select('*')
         .eq('id', nextSession.user.id).single();
       if (error || !data || data.id !== nextSession.user.id) {
-        throw new Error('Unable to verify your account. Please retry.');
+        // A failed insert must remain retryable, not a fabricated membership.
+        // An existing canonical profile can still be read after a duplicate race.
+        throw profileError || error || new Error('Unable to verify your account. Please retry.');
       }
       if (request === generation.current) {
         // Role/plan come from the RLS-protected row, never user_metadata or headers.
@@ -137,17 +140,12 @@ export function AuthProvider({ children }) {
       if (authData.user && authData.session) {
         const { error: userError } = await supabase.from("users").upsert([
           {
-            id: authData.user.id,
+            ...unpaidProfile(authData.user),
             name: firstName + " " + lastName,
-            email,
-            role: 'member', // Paid/affiliate roles are assigned by trusted backend flows.
-            status: "active",
-            commission_rate: 0,
             created_at: new Date().toISOString(),
             phone: "",
             company: "",
             bio: "",
-            plan: "",
             paypal_email:paypal
           },
         ], { onConflict: 'id', ignoreDuplicates: true });

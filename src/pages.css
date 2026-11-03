@@ -181,6 +181,25 @@
   text-decoration: underline;
 }
 
+/* These actions are text links, not the global blue CTA button. Keep the
+   background clear in every interaction state, including keyboard focus. */
+.auth-container button.auth-link,
+.auth-container button.auth-link:hover,
+.auth-container button.auth-link:focus,
+.auth-container button.auth-link:active {
+  background: transparent;
+  border: 0;
+  padding: 0.5rem 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 500;
+}
+
+.auth-container button.auth-link:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 4px;
+}
+
 .error-message {
   background: #fee2e2;
   border: 1px solid #fecaca;
