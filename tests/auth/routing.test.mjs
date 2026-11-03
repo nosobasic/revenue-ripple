@@ -177,3 +177,19 @@ for(const plan of ['annual','monthly']){
  await act(async()=>root.root.findAllByType('button').find(b=>b.props.className==='checkout-btn').props.onClick());check(sent,['https://fixture.invalid/timer','https://fixture.invalid/'+plan]);await unmount();
 }
 console.log(`${count} synthetic auth/routing/checkout assertions passed; no external requests.`);
+
+// A failed new-profile write cannot silently become a member; retry can repair it.
+let writeFails=true,storedProfile=null,profileUpdates=0;
+fixture.supabase.from=()=>({
+ upsert:async (value,options)=>{check(options.ignoreDuplicates,true);if(writeFails)return {error:{code:'42501'}};if(!storedProfile)storedProfile={...value};return {};},
+ update:values=>({eq:async()=>{profileUpdates++;if(storedProfile)Object.assign(storedProfile,values);return {};}}),
+ select:()=>({eq:()=>({single:async()=>({data:storedProfile})})})
+});
+initial={...session('google'),user:{...session('google').user,user_metadata:{full_name:'Synthetic Google Member',role:'admin',has_paid:true}}};
+await mount(React.createElement(Callback));check(current.user,null);check(Boolean(current.authError),true);check(profileUpdates,0);
+writeFails=false;await act(async()=>current.refreshUserData());
+check(current.user.name,'Synthetic Google Member');check(current.user.role,'member');check(current.user.has_paid,false);check(current.user.plan,'');check(current.user.commission_rate,0);check(current.authError,null);await unmount();
+// Duplicate/failed writes never replace an existing canonical admin or paid record.
+storedProfile={id:'a',email:'fixture@example.test',role:'admin',plan:'lifetime',has_paid:true};initial=session('a');writeFails=true;
+await mount();check(current.user.role,'admin');check(current.user.plan,'lifetime');check(current.user.has_paid,true);check(current.authError,null);await unmount();fixture.supabase.from=originalFrom;
+console.log(`${count} total synthetic auth/routing/profile assertions passed; no external requests.`);
