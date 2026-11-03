@@ -66,13 +66,13 @@ export default function MembershipBilling({ userId }) {
     <h2 id="billing-heading">Membership & billing</h2>
     <div role="status" aria-live="polite">
       {state === 'loading' && <p>Checking your linked billing account…</p>}
-      {state === 'linked' && <p>Manage your existing Stripe billing account. Available payment and subscription options are shown in Stripe.</p>}
+      {state === 'linked' && <p>View invoices for your verified Stripe billing account.</p>}
       {state === 'not_linked' && <p>No verified Stripe billing account is linked to this profile. This does not mean you need to buy your membership again.</p>}
       {state === 'unavailable' && <p>Billing management is unavailable right now. The request may not have completed. Try again or contact support. Your verified account access is unchanged.</p>}
     </div>
-    {state === 'linked' && <button className="profile-button" onClick={openPortal} disabled={opening}>{opening ? 'Opening Stripe…' : 'Manage membership in Stripe'}</button>}
+    {state === 'linked' && <button className="profile-button" onClick={openPortal} disabled={opening}>{opening ? 'Opening Stripe…' : 'View invoices in Stripe'}</button>}
     {state === 'unavailable' && <button className="profile-button secondary" onClick={() => setAttempt(value => value + 1)}>Retry billing lookup</button>}
-    <p className="profile-note">Returning from Stripe does not itself confirm a payment or change your access. Subscription changes depend on the available Stripe settings.</p>
+    <p className="profile-note">Returning from Stripe does not itself confirm a payment or change your access. This portal does not change payment details or subscriptions.</p>
     <a href="/affiliate-centre/support">Contact support</a>
   </section>;
 }

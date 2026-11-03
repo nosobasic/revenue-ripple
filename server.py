@@ -104,6 +104,9 @@ def create_retention_server(*, connect, provider, endpoint_secret, policy):
 
 CORS(app, origins=["https://www.revenueripple.org", "https://revenueripple.org", "http://localhost:3000", "http://localhost:5173", "http://localhost:5000"])
 app.supabase = supabase
+from billing_portal import billing_portal, configure_portal
+configure_portal(app)
+app.register_blueprint(billing_portal)
 install_access_guard(app)
 app.register_blueprint(owner_pilot)
 app.register_blueprint(email_bp)
