@@ -6,11 +6,12 @@ const require = createRequire(`${root}/package.json`);
 const React = require('react');
 const { act, create } = require('react-test-renderer');
 let assertions = 0;
+const enabled = process.env.RR_TEST_PORTAL_ENABLED === 'true';
 const check = (a,b) => { assert.deepEqual(a,b); assertions++; };
 globalThis.fixture = { user: {id:'a',name:'Fixture member',email:'member@example.test',role:'admin',plan:'lifetime'}, calls:[], updates:[], navigation:[] };
 globalThis.window = {location:{assign:url=>fixture.navigation.push(url)}};
 fixture.request = async (path, options) => { fixture.calls.push([path,options?.method || 'GET']); return {ok:true,json:async()=>({state:'not_linked'})}; };
-await build({stdin:{contents:`export {default as Profile} from './src/pages/Profile.jsx';export {default as Billing} from './src/components/MembershipBilling.jsx';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:`${root}/profile.cjs`,plugins:[{name:'fixtures',setup(b){
+await build({stdin:{contents:`export {default as Profile} from './src/pages/Profile.jsx';export {default as Billing} from './src/components/MembershipBilling.jsx';`,resolveDir:process.cwd()},define:{'import.meta.env.VITE_BILLING_PORTAL_ENABLED': JSON.stringify(process.env.RR_TEST_PORTAL_ENABLED || 'false')},bundle:true,platform:'node',format:'cjs',outfile:`${root}/profile.cjs`,plugins:[{name:'fixtures',setup(b){
  b.onResolve({filter:/^react$/},()=>({path:require.resolve('react'),external:true}));
  b.onResolve({filter:/AuthContext|useUserRole|react-router-dom|authenticatedFetch|Navbar|\.css$/},a=>({path:a.path,namespace:'fixture'}));
  b.onLoad({filter:/.*/,namespace:'fixture'},a=>({contents:a.path.includes('AuthContext')?`export const useAuth=()=>({user:globalThis.fixture.user,updateUserProfile:async data=>globalThis.fixture.updates.push(data),logout:async()=>{}});`:a.path.includes('useUserRole')?`export const useUserRole=()=>({role:globalThis.fixture.user?.role});`:a.path.includes('react-router')?`import React from 'react'; export const useNavigate=()=>()=>{};export const Link=({to,children,...rest})=>React.createElement('a',{href:to,...rest},children);`:a.path.includes('authenticatedFetch')?`export const authenticatedFetch=(...args)=>globalThis.fixture.request(...args);`:a.path.includes('Navbar')?'export default function Navbar(){return null}':'',loader:'js'}));
@@ -21,7 +22,7 @@ async function mount(component=React.createElement(Profile)){await act(async()=>
 async function click(text){await act(async()=>renderer.root.findAllByType('button').find(node=>node.children.join('')===text).props.onClick())}
 const text=()=>JSON.stringify(renderer.toJSON());
 await mount();
-check(fixture.calls,[]);check(text().includes('Online billing management is not available yet'),true);check(text().includes('Free learning remains available'),true);check(text().includes('buy your membership again'),true);check(text().includes('lifetime'),true);
+check(fixture.calls,enabled ? [['/api/billing/status','GET']] : []);check(text().includes('Online billing management is not available yet'),!enabled);check(text().includes('Free learning remains available'),!enabled);check(text().includes('buy your membership again'),true);check(text().includes('lifetime'),true);
 check(renderer.root.findAllByType('input').every(input=>input.props.readOnly),true);
 for (const input of [...renderer.root.findAllByType('input'),...renderer.root.findAllByType('textarea')]) check(renderer.root.findAllByType('label').some(label=>label.props.htmlFor===input.props.id),true);
 await click('Edit profile');check(renderer.root.findAllByType('input').every(input=>!input.props.readOnly),true);
@@ -32,10 +33,10 @@ await act(async()=>renderer.unmount());
 // Explicit click only; token refresh/same account renders cause no duplicate request.
 fixture.calls=[]; fixture.request=async(path,options)=>{fixture.calls.push([path,options?.method||'GET']);return {ok:true,json:async()=>path.endsWith('status')?{state:'linked'}:{state:'ready',url:'https://billing.stripe.com/p/synthetic'}}};
 await mount(React.createElement(Billing,{userId:'a'}));check(fixture.calls.length,1);await act(async()=>renderer.update(React.createElement(Billing,{userId:'a'})));check(fixture.calls.length,1);
-await click('Manage membership in Stripe');check(fixture.calls.at(-1),['/api/billing/portal','POST']);check(fixture.navigation,['https://billing.stripe.com/p/synthetic']);await act(async()=>renderer.unmount());
+await click('View invoices in Stripe');check(fixture.calls.at(-1),['/api/billing/portal','POST']);check(fixture.navigation,['https://billing.stripe.com/p/synthetic']);await act(async()=>renderer.unmount());
 // Loading/error with retry; no checkout or entitlement write.
 fixture.request=async()=>{throw Error('offline')};await mount(React.createElement(Billing,{userId:'a'}));check(text().includes('unavailable right now'),true);
-fixture.request=async()=>({ok:true,json:async()=>({state:'not_linked'})});await click('Retry billing lookup');check(text().includes('buy your membership again'),true);await act(async()=>renderer.unmount());
+fixture.request=async(path,options)=>{fixture.calls.push([path,options?.method || 'GET']);return {ok:true,json:async()=>({state:'not_linked'})}};await click('Retry billing lookup');check(text().includes('buy your membership again'),true);await act(async()=>renderer.unmount());
 // Late portal responses after account switch/unmount never redirect.
 let resolve;
 fixture.navigation=[];fixture.request=async path=>path.endsWith('status')?{ok:true,json:async()=>({state:'linked'})}:new Promise(done=>{resolve=done});
@@ -47,13 +48,13 @@ await act(async()=>renderer.update(React.createElement(Billing,{userId:'b'})));
 await act(async()=>{resolve({ok:true,json:async()=>({state:'ready',url:'https://billing.stripe.com/p/old'})});await pending});check(fixture.navigation,[]);await act(async()=>renderer.unmount());
 // Hostile provider URL is never followed.
 fixture.request=async path=>({ok:true,json:async()=>path.endsWith('status')?{state:'linked'}:{state:'ready',url:'https://evil.test'}});
-await mount(React.createElement(Billing,{userId:'a'}));await click('Manage membership in Stripe');check(fixture.navigation,[]);check(text().includes('unavailable right now'),true);await act(async()=>renderer.unmount());
+await mount(React.createElement(Billing,{userId:'a'}));await click('View invoices in Stripe');check(fixture.navigation,[]);check(text().includes('unavailable right now'),true);await act(async()=>renderer.unmount());
 console.log(`Profile/portal: ${assertions} assertions passed (synthetic only)`);
 // Preserve distinct optional upgrade journeys; never show a repurchase prompt to admin.
 for (const role of ['admin','member','affiliate','reseller','pro_reseller']) {
- fixture.calls=[];fixture.user={...fixture.user,role};fixture.request=async()=>({ok:true,json:async()=>({state:'not_linked'})});
+ fixture.calls=[];fixture.user={...fixture.user,role};fixture.request=async(path,options)=>{fixture.calls.push([path,options?.method || 'GET']);return {ok:true,json:async()=>({state:'not_linked'})}};
  await mount();
- check(fixture.calls,[]);check(text().includes('Explore upgrade options'),['affiliate','reseller'].includes(role));
+ check(fixture.calls,enabled ? [['/api/billing/status','GET']] : []);check(text().includes('Explore upgrade options'),['affiliate','reseller'].includes(role));
  check(text().includes('Explore Reseller'),role==='affiliate');
  await act(async()=>renderer.unmount());
 }
