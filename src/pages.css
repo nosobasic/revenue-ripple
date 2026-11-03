@@ -2290,6 +2290,7 @@ button:hover {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: white;
+  color: #1f2937;
   cursor: pointer;
   font-weight: 500;
   font-size: 0.875rem;
@@ -2305,8 +2306,15 @@ button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.social-auth-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
 .social-auth-button:disabled {
-  opacity: 0.6;
+  background: #f3f4f6;
+  color: #4b5563;
+  opacity: 1;
   cursor: not-allowed;
 }
 
@@ -2317,6 +2325,7 @@ button:hover {
 }
 
 .social-auth-button span {
+  color: inherit;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2334,10 +2343,6 @@ button:hover {
 }
 
 @media (max-width: 480px) {
-  .social-auth-button span {
-    display: none;
-  }
-  
   .social-auth-button {
     padding: 0.75rem;
     justify-content: center;

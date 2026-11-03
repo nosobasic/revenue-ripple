@@ -139,3 +139,35 @@ test('auth action links remain readable through hover, focus, and press', {
     await rm(profile, { recursive: true, force: true });
   }
 });
+
+// OAuth controls must not inherit the generic CTA's white text on their white background.
+test('Google controls keep readable text on login and register, including mobile and disabled states', async () => {
+  const css = postcss.parse(await read('src/pages.css'));
+  const declarations = selector => {
+    const result = {};
+    css.walkRules(rule => { if (rule.selectors.includes(selector)) rule.walkDecls(decl => { result[decl.prop] = decl.value; }); });
+    return result;
+  };
+  const rgb = value => value === 'white' ? [255, 255, 255] : value.slice(1).match(/../g).map(x => parseInt(x, 16));
+  const base = declarations('.social-auth-button');
+  const disabled = declarations('.social-auth-button:disabled');
+  const hover = declarations('.social-auth-button:hover:not(:disabled)');
+  assert.equal(base.color, '#1f2937');
+  for (const background of [base.background, hover.background]) assert.ok(contrast(rgb(base.color), rgb(background)) >= 4.5);
+  assert.equal(disabled.opacity, '1');
+  assert.ok(contrast(rgb(disabled.color), rgb(disabled.background)) >= 4.5);
+  assert.equal(declarations('.social-auth-button span').color, 'inherit');
+  assert.equal(declarations('.social-auth-button:focus-visible').outline, '2px solid #2563eb');
+  css.walkRules(rule => {
+    if (rule.selectors.includes('.social-auth-button span')) rule.walkDecls('display', decl => assert.notEqual(decl.value, 'none', 'Keep the Google label visible on small screens'));
+  });
+  for (const page of ['Login', 'Register']) {
+    const source = await read(`src/pages/${page}.jsx`);
+    const match = [...source.matchAll(/<button\b[\s\S]*?<\/button>/g)].find(m => /className="social-auth-button"/.test(m[0]));
+    assert.ok(match, `${page} has a Google button`);
+    assert.match(match[0], /<span>Continue with Google<\/span>/);
+    assert.match(match[0], /type="button"/);
+    assert.match(match[0], /handleSocialSignIn\('google'\)/);
+    assert.match(match[0], /disabled=\{loading\}/);
+  }
+});
