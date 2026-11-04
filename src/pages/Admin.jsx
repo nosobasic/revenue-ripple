@@ -1027,95 +1027,117 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('30');
 
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+
   useEffect(() => {
-    fetchAnalyticsData();
-  }, [dateRange]);
-
-  const fetchAnalyticsData = async () => {
-    try {
-      setLoading(true);
+    let cancelled = false;
+    const fetchAnalyticsData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
       
-      const daysBack = parseInt(dateRange);
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysBack);
+        const daysBack = parseInt(dateRange);
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - daysBack);
 
-      // User metrics
-      const { data: users } = await supabase
-        .from('users')
-        .select('created_at, role, status')
-        .gte('created_at', startDate.toISOString());
+        // User metrics
+        const { data: users } = await supabase
+          .from('users')
+          .select('created_at, role, status')
+          .gte('created_at', startDate.toISOString());
 
-      const { data: allUsers } = await supabase
-        .from('users')
-        .select('id, role, status, created_at');
+        const { data: allUsers } = await supabase
+          .from('users')
+          .select('id, role, status, created_at');
 
-      // Revenue metrics
-      const { data: subscriptions } = await supabase
-        .from('subscriptions')
-        .select('amount, subscribed_at, status')
-        .gte('subscribed_at', startDate.toISOString());
+        // Revenue metrics
+        const { data: subscriptions } = await supabase
+          .from('subscriptions')
+          .select('amount, subscribed_at, status')
+          .gte('subscribed_at', startDate.toISOString());
 
-      // Course engagement
-      const { data: progress } = await supabase
-        .from('user_progress')
-        .select('percent_done, created_at, status');
+        // Course engagement
+        const { data: progress, error: progressError } = await supabase
+          .from('user_progress')
+          .select('percent_done, status');
 
-      // Activity metrics
-      const { data: activity } = await supabase
-        .from('activity_log')
-        .select('type, created_at')
-        .gte('created_at', startDate.toISOString());
+        if (progressError) throw progressError;
 
-      // Calculate metrics
-      const userMetrics = {
-        newUsers: users?.length || 0,
-        totalUsers: allUsers?.length || 0,
-        activeUsers: allUsers?.filter(u => u.status === 'active').length || 0,
-        usersByRole: allUsers?.reduce((acc, u) => {
-          acc[u.role] = (acc[u.role] || 0) + 1;
-          return acc;
-        }, {}) || {}
-      };
+        // Activity metrics
+        const { data: activity } = await supabase
+          .from('activity_log')
+          .select('type, created_at')
+          .gte('created_at', startDate.toISOString());
 
-      const revenueMetrics = {
-        totalRevenue: subscriptions?.reduce((sum, s) => sum + (s.amount || 0), 0) || 0,
-        activeSubscriptions: subscriptions?.filter(s => s.status === 'active').length || 0,
-        averageRevenue: subscriptions?.length > 0 ? 
-          (subscriptions.reduce((sum, s) => sum + (s.amount || 0), 0) / subscriptions.length) : 0
-      };
+        // Calculate metrics
+        const userMetrics = {
+          newUsers: users?.length || 0,
+          totalUsers: allUsers?.length || 0,
+          activeUsers: allUsers?.filter(u => u.status === 'active').length || 0,
+          usersByRole: allUsers?.reduce((acc, u) => {
+            acc[u.role] = (acc[u.role] || 0) + 1;
+            return acc;
+          }, {}) || {}
+        };
 
-      const engagementMetrics = {
-        courseCompletions: progress?.filter(p => p.status === 'completed').length || 0,
-        averageProgress: progress?.length > 0 ?
-          (progress.reduce((sum, p) => sum + (p.percent_done || 0), 0) / progress.length) : 0,
-        totalActivity: activity?.length || 0
-      };
+        const revenueMetrics = {
+          totalRevenue: subscriptions?.reduce((sum, s) => sum + (s.amount || 0), 0) || 0,
+          activeSubscriptions: subscriptions?.filter(s => s.status === 'active').length || 0,
+          averageRevenue: subscriptions?.length > 0 ?
+            (subscriptions.reduce((sum, s) => sum + (s.amount || 0), 0) / subscriptions.length) : 0
+        };
 
-      const conversionMetrics = {
-        signupToActiveRate: userMetrics.totalUsers > 0 ? 
-          (userMetrics.activeUsers / userMetrics.totalUsers) * 100 : 0,
-        completionRate: progress?.length > 0 ?
-          (progress.filter(p => p.status === 'completed').length / progress.length) * 100 : 0
-      };
+        const engagementMetrics = {
+          courseCompletions: progress?.filter(p => p.status === 'completed').length || 0,
+          averageProgress: progress?.length > 0 ?
+            (progress.reduce((sum, p) => sum + (p.percent_done || 0), 0) / progress.length) : 0,
+          totalActivity: activity?.length || 0
+        };
 
-      setAnalyticsData({
-        userMetrics,
-        revenueMetrics,
-        engagementMetrics,
-        conversionMetrics
-      });
+        const conversionMetrics = {
+          signupToActiveRate: userMetrics.totalUsers > 0 ?
+            (userMetrics.activeUsers / userMetrics.totalUsers) * 100 : 0,
+          completionRate: progress?.length > 0 ?
+            (progress.filter(p => p.status === 'completed').length / progress.length) * 100 : 0
+        };
 
-    } catch (error) {
-      console.error('Error fetching analytics data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        if (cancelled) return;
+        setAnalyticsData({
+          userMetrics,
+          revenueMetrics,
+          engagementMetrics,
+          conversionMetrics
+        });
+
+      } catch (error) {
+        if (cancelled) return;
+        console.error('Error fetching analytics data:', error);
+        setError('Analytics unavailable. Unable to load analytics data. Please try again.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchAnalyticsData();
+    return () => { cancelled = true; };
+  }, [dateRange, retryCount]);
 
   if (loading) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <div className="loading-spinner">Loading analytics data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div role="alert" style={{ padding: '20px' }}>
+        <p>{error}</p>
+        <button type="button" onClick={() => setRetryCount(count => count + 1)}>
+          Retry analytics
+        </button>
       </div>
     );
   }
