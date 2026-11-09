@@ -1,0 +1,39 @@
+name: Visibility release verification
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+permissions:
+  contents: read
+concurrency:
+  group: visibility-release-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  release-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.4'
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c
+        with:
+          python-version: '3.12.14'
+      - name: Install locked application and isolated fixture dependencies
+        run: |
+          npm ci --no-audit --no-fund
+          npm ci --prefix scripts/ci/visibility-deps --ignore-scripts --no-audit --no-fund
+          python -m pip install --disable-pip-version-check -r scripts/ci/visibility-deps/requirements.txt
+          python -m pip check
+      - name: Test and build exact PR head without network
+        env:
+          EXPECTED_PR_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_PR_SHA"
+          export VERCEL_GIT_COMMIT_SHA="$EXPECTED_PR_SHA"
+          export RR_PGLITE_PACKAGE="$GITHUB_WORKSPACE/scripts/ci/visibility-deps/node_modules/@electric-sql/pglite/dist/index.js"
+          sudo --preserve-env=PATH,RR_PGLITE_PACKAGE,VERCEL_GIT_COMMIT_SHA unshare --net -- bash scripts/ci/visibility_release_checks.sh

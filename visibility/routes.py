@@ -49,7 +49,7 @@ def submit():
     try:
         if available() is None:return unavailable()
         data=rpc('rr_v_submit',p_user=g.user_id,p_key=key,p_hash=fingerprint,p_input=values,p_prompts=prompts)
-        statuses={'key_conflict':409,'run_in_progress':409,'credits_used':429,'attempt_cap':429,'queue_full':503,'budget_unavailable':503,'unavailable':503}
+        statuses={'beta_unavailable':403,'beta_complete':409,'pilot_unavailable':403,'pilot_complete':409,'key_conflict':409,'run_in_progress':409,'credits_used':429,'attempt_cap':429,'queue_full':503,'budget_unavailable':503,'unavailable':503}
         return jsonify(data),statuses.get(data.get('error'),202)
     except Exception:
         return jsonify(error='Submission could not be confirmed. Retry unchanged; the same request will not reserve twice.'),503

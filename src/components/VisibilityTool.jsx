@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const messages = {
+  beta_unavailable: 'This beta is not available for this account. Your learning access continues.',
+  beta_complete: 'This account has reached the beta scan attempt limit. Your saved results and learning access remain available.',
+  pilot_unavailable: 'This supervised pilot is not available for this account.',
+  pilot_complete: 'This pilot attempt is complete. Your saved work remains available; another attempt requires review.',
   credits_used: 'Your scan allowance has been used. Your saved scan and learning access remain available.',
   run_in_progress: 'A scan is already in progress or awaiting review. Refresh its status below.',
   attempt_cap: 'You have reached the rolling 24-hour attempt limit. Your saved work is safe; try again after earlier attempts leave that window.',
@@ -67,18 +71,25 @@ export default function VisibilityTool({ api }) {
     finally { setBusy(false); }
   }
   const result = job?.result;
+  const reservedCredits = (access?.reserved || 0) + (access?.bonus?.reserved || 0);
+  const allowanceNotice = !access ? null
+    : reservedCredits > 0 ? 'Scan credit is reserved for a scan in progress or awaiting review. Check its status below.'
+    : access.remaining === 0 ? 'No scan credits are available. Your saved results and learning access remain available.'
+    : !access.enabled ? 'New scans are not available for this account right now. Your saved results and learning access remain available.'
+    : null;
   return <main className="max-w-3xl mx-auto px-5 py-10 text-slate-900">
     <p className="text-blue-700 font-semibold">AI SEO Visibility Tool</p>
     <h1 className="text-3xl font-bold mt-2 mb-3">See what appears. Know what to do next.</h1>
-    <p className="text-slate-600">Check three customer questions with one search-enabled API, review the evidence, and leave with three practical actions.</p>
+    <p className="text-slate-600">Check three customer questions with one search-enabled API, review the evidence, and see up to three evidence-backed actions.</p>
     {(access?.is_fixture || job?.is_fixture) && <p role="status" className="my-5 border-2 border-amber-500 bg-amber-50 p-4 rounded-xl font-semibold">Offline demonstration — all answers and sources below are synthetic fixtures. No live searches, provider charges, or real account credits.</p>}
     <div className="my-5 bg-blue-50 p-4 rounded-xl">
-      <p className="font-semibold">{access ? `${access.remaining} available · ${access.reserved} reserved · ${access.used} completed` : 'Checking your scan allowance…'}</p>
-      <p>1 scan credit = 3 questions and 3 prioritized actions. Failed scans restore your credit. Saved results remain available.</p>
-      {access?.period === 'month' ? <p className="mt-2">Membership: {access.limit} scans per UTC calendar month. Unused credits do not roll over. {access.resets_at && <>Next reset: {new Date(access.resets_at).toLocaleString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })} UTC.</>}</p> : <p className="mt-2">Free: one completed scan per account, with no monthly reset.</p>}
+      <p className="font-semibold">{access ? `${access.remaining} available · ${access.reserved + (access.bonus?.reserved || 0)} reserved · ${access.used + (access.bonus?.used || 0)} completed` : 'Checking your scan allowance…'}</p>
+      <p>1 scan credit = 3 questions and up to 3 evidence-backed actions. Failed scans restore your credit. Saved results remain available.</p>
+      {access?.period === 'month' ? <p className="mt-2">Membership: {access.limit} scans per UTC calendar month. Unused credits do not roll over. {access.resets_at && <>Next reset: {new Date(access.resets_at).toLocaleString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })} UTC.</>}</p> : <p className="mt-2">Free: one regular starter scan per account, with no monthly reset.</p>}
+      {access?.bonus?.limit > 0 && <p className="mt-2">Welcome-back bonus: {access.bonus.remaining} available · {access.bonus.reserved} reserved · {access.bonus.used} completed, in addition to your regular allowance.</p>}
       {access?.remaining === 0 && <p className="mt-2">{access.period === 'month' ? 'Your next monthly allowance arrives at the reset above while membership remains active.' : 'Membership includes 10 scans per UTC calendar month for $47/month. Purchases are not enabled yet.'}</p>}
       {access?.attempts_per_24h && <p className="text-sm mt-2">Up to {access.attempts_per_24h} attempts per rolling 24 hours, including failed attempts. This safety limit applies to free and paid accounts.</p>}
-      {access && !access.enabled && <p className="mt-2">Scans are not enabled yet. Your learning access continues.</p>}
+      {allowanceNotice && <p className="mt-2" data-testid="allowance-notice">{allowanceNotice}</p>}
     </div>
     {error && <div role="alert" className="my-4 p-4 bg-amber-50 rounded-xl"><p>{error}</p><button className="underline mt-2" onClick={() => refresh().then(() => setError('')).catch(e => setError(e.message))}>Refresh scan status</button></div>}
     {!active && job?.status !== 'reconciliation' && <form onSubmit={showPreview} className="bg-white border rounded-xl p-5 space-y-4">
@@ -92,7 +103,7 @@ export default function VisibilityTool({ api }) {
       <h2 className="text-xl font-bold">Your three questions</h2>
       <ol className="list-decimal pl-6 space-y-3 my-4">{preview.prompts.map(p => <li key={p}>{p}</li>)}</ol>
       {preview.brand_specific && <p className="text-amber-800 mb-3">Your topic includes the business name or domain. These are brand-specific checks, not unprompted discovery observations.</p>}
-      <button onClick={start} disabled={busy || !access?.enabled || access.remaining < 1} className="bg-blue-700 text-white rounded-lg px-5 py-3 disabled:opacity-50">{busy ? 'Submitting…' : access?.plan === 'free' ? 'Use starter credit' : 'Use one scan credit'}</button>
+      <button onClick={start} disabled={busy || !access?.enabled || access.remaining < 1} className="bg-blue-700 text-white rounded-lg px-5 py-3 disabled:opacity-50">{busy ? 'Submitting…' : access?.plan === 'free' && !(access.bonus?.limit > 0) ? 'Use starter credit' : 'Use one scan credit'}</button>
     </section>}
     {active && <section aria-live="polite" className="p-5 border rounded-xl bg-white"><h2 className="text-xl font-bold">{job.status === 'queued' ? 'Your scan is queued' : 'Checking your questions'}</h2><p>{job.completed_questions} of 3 answers saved. You can leave and return; refreshing will not start another scan.</p></section>}
     {job?.error && <p role="status" className="my-5 p-4 bg-amber-50 rounded-xl">{job.error}</p>}
@@ -110,7 +121,8 @@ export default function VisibilityTool({ api }) {
           <p className="text-xs text-slate-500 mt-3">{record.interpretation}</p>
         </details>
       </article>)}</div>
-      <h2 className="text-2xl font-bold mt-8 mb-4">Your next three actions</h2>
+      <h2 className="text-2xl font-bold mt-8 mb-4">Your next actions</h2>
+      {result.actions.length === 0 && <p role="status" className="p-4 bg-slate-50 rounded-xl">No evidence-backed actions were identified in this check. Review the three answers and sources above; this does not mean there is nothing to improve.</p>}
       <ol className="space-y-4">{result.actions.map((action,i) => <li key={action.title} className="bg-white border rounded-xl p-5"><h3 className="font-semibold">{i + 1}. {action.title}</h3><p className="my-2">{action.action}</p><p className="text-sm text-slate-600">Evidence: {action.evidence}</p>{action.source_url && <a href={action.source_url} className="underline text-blue-700" target="_blank" rel="noreferrer">Review source</a>}</li>)}</ol>
       <p className="text-sm text-slate-600 mt-5">{result.limitations}</p>
     </section>}
