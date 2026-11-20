@@ -1,0 +1,27 @@
+name: Billing database proposal PostgreSQL 15
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: billing-db15-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  proposal:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'codex/billing-db-proposal'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Fetch exact public PR head without credentials
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git init .
+          git remote add origin https://github.com/nosobasic/revenue-ripple.git
+          git fetch --depth=1 origin "$HEAD_SHA"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$HEAD_SHA"
+      - name: Disposable network-isolated PostgreSQL 15.8 proposal tests
+        run: bash scripts/ci/billing_db15.sh
