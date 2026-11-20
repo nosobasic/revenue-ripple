@@ -17,7 +17,7 @@ def touch_id(value):
         return None
 
 
-def record_lead(db, email, funnel, payload):
+def record_lead(db, email, funnel, payload, *, log_exception_trace=True):
     if not enabled() or not db:
         return
     attribution = payload.get('acquisition') if isinstance(payload, dict) else None
@@ -34,7 +34,11 @@ def record_lead(db, email, funnel, payload):
         }).execute()
     except Exception:
         # The existing funnel/nurture path must continue. Alert on this event.
-        logger.exception('acquisition.lead_attribution_failed')
+        if log_exception_trace:
+            logger.exception('acquisition.lead_attribution_failed')
+        else:
+            # Database exception text can contain submitted contact details.
+            logger.error('acquisition.lead_attribution_failed')
 
 
 def checkout_metadata(payload):

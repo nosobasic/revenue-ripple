@@ -1599,19 +1599,18 @@ def survival_playbook_submission():
         })
     
     # Handle POST requests
-    print(f"📥 Survival playbook submission received from {request.remote_addr}")
-    print(f"📥 Request method: {request.method}")
-    print(f"📥 Request headers: {dict(request.headers)}")
+    print("survival_playbook.submission_received")
     
     try:
         data = request.get_json()
         if not isinstance(data, dict):
+            print("survival_playbook.invalid_payload")
             return jsonify({"error": "A JSON object is required"}), 400
         try:
             email_consent = consent_from_payload(data)
         except ValueError as error:
+            print("survival_playbook.invalid_consent")
             return jsonify({"error": str(error)}), 400
-        print(f"📥 Request data: {data}")
         name = data.get('name', '').strip()
         email = data.get('email', '').strip().lower()
         source = data.get('source', 'direct')
@@ -1627,6 +1626,7 @@ def survival_playbook_submission():
         if ip_address in submission_attempts:
             attempts = [t for t in submission_attempts[ip_address] if current_time - t < 3600]  # Last hour
             if len(attempts) >= 3:
+                print("survival_playbook.rate_limited")
                 return jsonify({"error": "Too many attempts. Please try again later."}), 429
             submission_attempts[ip_address] = attempts
         else:
@@ -1637,12 +1637,14 @@ def survival_playbook_submission():
         
         # Validate input
         if not name or not email:
+            print("survival_playbook.invalid_contact")
             return jsonify({"error": "Name and email are required"}), 400
         
         # Basic email validation
         import re
         email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
         if not re.match(email_pattern, email):
+            print("survival_playbook.invalid_contact")
             return jsonify({"error": "Please enter a valid email address"}), 400
         
         deliver_lead(
@@ -1656,7 +1658,9 @@ def survival_playbook_submission():
             ),
         )
         
-        record_acquisition_lead(supabase, email, source or "survival-playbook", data)
+        record_acquisition_lead(
+            supabase, email, source or "survival-playbook", data, log_exception_trace=False
+        )
 
         # Log submission to database if available
         if supabase:
@@ -1675,17 +1679,18 @@ def survival_playbook_submission():
                     "user_agent": request.headers.get('User-Agent', '')
                 }
                 supabase.table("survival_playbook_submissions").insert(submission_data).execute()
-                print(f"✅ Logged survival playbook submission for {email}")
-            except Exception as db_error:
-                print(f"❌ Failed to log survival playbook submission: {db_error}")
+                print("survival_playbook.submission_stored")
+            except Exception:
+                print("survival_playbook.submission_store_failed")
         
+        print("survival_playbook.submission_accepted")
         return jsonify({
             "success": True,
             "message": "Successfully submitted! Redirecting to your free guide..."
         })
         
-    except Exception as e:
-        print(f"❌ Survival playbook submission error: {str(e)}")
+    except Exception:
+        print("survival_playbook.submission_failed")
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
 def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_medium, utm_campaign, utm_term, utm_content):
@@ -1718,13 +1723,13 @@ def add_survival_playbook_to_getresponse(email, name, source, utm_source, utm_me
     try:
         response = requests.post("https://api.getresponse.com/v3/contacts", json=body, headers=headers, timeout=10)
         if response.status_code == 202:
-            print(f"✅ Successfully added {email} to GetResponse (Survival Playbook)")
+            print("survival_playbook.legacy_provider_accepted")
         elif response.status_code == 409:
-            print(f"⚠️ Contact {email} already exists in GetResponse")
+            print("survival_playbook.legacy_provider_duplicate")
         else:
-            print(f"❌ GetResponse error {response.status_code}: {response.text}")
-    except Exception as e:
-        print(f"❌ Failed to add contact to GetResponse: {str(e)}")
+            print("survival_playbook.legacy_provider_rejected")
+    except Exception:
+        print("survival_playbook.legacy_provider_failed")
 
 # Facebook Conversions API Helper Functions
 def hash_email(email):
